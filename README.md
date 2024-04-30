@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🌋 Developer Portal 🌋
 
 ## Getting Started
 
-First, run the development server:
+These instructions will get your copy of the Developer Portal up and running on your local machine for development and testing purposes. Follow these simple steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Make sure you have Node.js installed on your system. We use `nvm` (Node Version Manager) to manage Node.js versions:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install and use the proper version of Node.js:**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```bash
+   nvm install && nvm use
+   ```
 
-## Learn More
+   This command installs and switches to the Node.js version specified in the `.nvmrc` file located in the project's root directory.
 
-To learn more about Next.js, take a look at the following resources:
+2. **Install project dependencies:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   npm ci
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   Using `npm ci` helps ensure that your package versions match those in `package-lock.json`, providing a more consistent installation process.
 
-## Deploy on Vercel
+3. **Start the application in development mode:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   This command compiles and launches the application, making it available at [http://localhost:3000](http://localhost:3000).
