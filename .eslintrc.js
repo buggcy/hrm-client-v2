@@ -10,6 +10,7 @@ module.exports = {
     'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended',
     'plugin:tailwindcss/recommended',
+    'plugin:jest-dom/recommended',
   ],
   plugins: [
     '@typescript-eslint',
@@ -54,4 +55,14 @@ module.exports = {
     React: true,
     JSX: true,
   },
+  overrides: [
+    {
+      files: 'src/**',
+      extends: ['plugin:testing-library/react'],
+    },
+    {
+      files: 'e2e/**',
+      extends: ['plugin:playwright/recommended'],
+    },
+  ],
 };
