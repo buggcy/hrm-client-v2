@@ -47,10 +47,10 @@
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
       "eslint --max-warnings=0",
-      "prettier -w --ignore-path .prettierignore"
+      "prettier -w"
     ],
     "**/*.{json,css,scss,md,webmanifest}": [
-      "prettier -w --ignore-path .prettierignore"
+      "prettier -w"
     ]
   }
 }
