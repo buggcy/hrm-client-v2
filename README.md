@@ -6,7 +6,7 @@ These instructions will get your copy of the Developer Portal up and running on 
 
 ### Prerequisites
 
-Make sure you have Node.js installed on your system. We use `nvm` (Node Version Manager) to manage Node.js versions:
+Make sure you have Node.js installed on your system. We use [`nvm` (Node Version Manager)](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) to manage Node.js versions:
 
 1. **Install and use the proper version of Node.js:**
 
