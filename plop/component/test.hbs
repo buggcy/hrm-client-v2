@@ -1,0 +1,10 @@
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+
+import { {{properCase name}} } from './{{properCase name}}';
+
+test('Component {{properCase name}} to be rendered', async () => {
+  render(<{{properCase name}} />);
+
+  expect(screen.getByText('{{properCase name}}')).toBeInTheDocument();
+});
