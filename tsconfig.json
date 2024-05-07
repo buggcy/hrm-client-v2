@@ -25,12 +25,12 @@
     }
   },
   "include": [
+    ".eslintrc.js",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "build/types/**/*.ts",
-    "plopfile.ts"
+    "build/types/**/*.ts"
   ],
   "exclude": ["node_modules"],
   "moduleResolution": ["node_modules", ".next", "node"]

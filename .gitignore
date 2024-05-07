@@ -16,6 +16,8 @@
 # production
 /build
 
+/bin
+
 # misc
 .DS_Store
 *.pem
@@ -40,3 +42,6 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Sentry Config File
+.sentryclirc
