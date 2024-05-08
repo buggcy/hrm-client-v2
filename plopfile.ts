@@ -22,7 +22,7 @@ export default function Plop(plop: NodePlopAPI) {
         type: 'input',
         name: 'name',
         message: 'Please enter a name',
-        validate: function (value) {
+        validate: function (value: string) {
           if (/.+/.test(value.trim())) {
             return true;
           }
@@ -30,7 +30,7 @@ export default function Plop(plop: NodePlopAPI) {
         },
       },
     ],
-    actions: (data) => {
+    actions: data => {
       if (!data) return [];
 
       const { type } = data as {
@@ -48,6 +48,7 @@ export default function Plop(plop: NodePlopAPI) {
             },
           ];
         case 'shared component':
+          // eslint-disable-next-line no-case-declarations
           const folderName = 'src/components/{{properCase name}}';
           return [
             {

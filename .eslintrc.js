@@ -1,33 +1,31 @@
 module.exports = {
+  root: true,
   env: {
     browser: true,
     es2021: true,
     node: true,
   },
   extends: [
-    'plugin:prettier/recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'eslint:recommended',
     'next/core-web-vitals',
-    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
     'plugin:tailwindcss/recommended',
+    'plugin:@tanstack/eslint-plugin-query/recommended',
   ],
-  plugins: [
-    '@typescript-eslint',
-    'unused-imports',
-    'tailwindcss',
-    'simple-import-sort',
-  ],
+  plugins: ['tailwindcss', 'unused-imports', 'simple-import-sort'],
   rules: {
     //*=========== Import Sort ===========
     'simple-import-sort/imports': [
       'error',
       {
         groups: [
+          ['^react$', '^next'],
           // ext library & side effect imports
           ['^@?\\w', '^\\u0000'],
-          // Lib and hooks
-          ['^@/lib', '^@/hooks'],
           // components
-          ['^@/components', '^@/container'],
+          ['^@/components', '^@/providers'],
           // Other imports
           ['^@/'],
           // relative paths up until 3 level
@@ -54,6 +52,20 @@ module.exports = {
     JSX: true,
   },
   overrides: [
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      extends: [
+        'plugin:import/typescript',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+      ],
+      parserOptions: {
+        project: ['./tsconfig.json'],
+        ecmaVersion: 'latest',
+      },
+    },
     {
       files: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
       plugins: ['jest', 'jest-formatting', 'testing-library', 'jest-dom'],
