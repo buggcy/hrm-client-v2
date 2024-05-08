@@ -1,4 +1,5 @@
-import { NodePlopAPI } from 'plop';
+import { ESLint } from 'eslint';
+import { CustomActionFunction, NodePlopAPI } from 'plop';
 
 const FILE_TYPES = [
   'page',
@@ -8,7 +9,21 @@ const FILE_TYPES = [
   'e2e',
 ] as const;
 
+const lintFixAction: CustomActionFunction = async (_, config) => {
+  try {
+    if (!config) return 'No path config provided';
+    const eslint = new ESLint({ fix: true });
+    const results = await eslint.lintFiles([config.path]);
+    await ESLint.outputFixes(results);
+    return 'Lint fixed';
+  } catch {
+    return 'Error while fixing lint';
+  }
+};
+
 export default function Plop(plop: NodePlopAPI) {
+  plop.setActionType('lint:fix', lintFixAction);
+
   plop.setGenerator('component', {
     description: 'Add a new component',
     prompts: [
@@ -89,8 +104,18 @@ export default function Plop(plop: NodePlopAPI) {
           return [
             {
               type: 'add',
-              path: `src/services/{{properCase name}}.service.ts`,
+              path: `src/services/{{camelCase name}}.service.ts`,
               templateFile: 'plop/service/index.hbs',
+            },
+            {
+              type: 'modify',
+              path: `src/services/index.ts`,
+              pattern: /\n$/,
+              template: `export * from './{{camelCase name}}.service';`,
+            },
+            {
+              type: 'lint:fix',
+              path: `src/services/index.ts`,
             },
           ];
         case 'e2e':
