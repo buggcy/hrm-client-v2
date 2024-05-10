@@ -92,5 +92,5 @@ jobs:
               aws s3 sync build/ s3://${{ env.BUCKET }} --delete
       - name: Copy files to the dev website with the AWS CLI
         run: |
-              DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Aliases.Items[0]=='dev.developer-portal.tavus.io'].{id:Id}" --output text)
+              DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Aliases.Items[0]=='dev.platform.tavus.io'].{id:Id}" --output text)
               aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*" --output text

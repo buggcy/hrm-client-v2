@@ -6,12 +6,12 @@ Parameters:
     Default: dev
     Description: "Name of current env (eg. test, prod)"
   DomainName:
-    Default: dev.developer-portal.tavus.io
+    Default: dev.platform.tavus.io
     Description: The DNS name of an Amazon Route 53 hosted zone
     Type: String
   HostedZoneId:
     Type: String
-    Default: Z09341912MVSTM3PSCLA7
+    Default: Z013084135OBL7TN95DU4
 
 Resources:
   Certificate:
