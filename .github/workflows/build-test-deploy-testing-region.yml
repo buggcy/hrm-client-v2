@@ -90,7 +90,11 @@ jobs:
       - name: Run test
         run: npm test
       - name: Make build
-        run: npm run build
+        run: |
+          touch .env
+          echo NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }} >> .env
+          echo NEXT_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }} >> .env
+          npm run build
       - name: Deploy Build to dev S3
         run: |
               aws s3 sync build/ s3://${{ env.BUCKET }} --delete
