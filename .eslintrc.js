@@ -1,9 +1,10 @@
 module.exports = {
   root: true,
   env: {
-    browser: true,
-    es2021: true,
     node: true,
+    jest: true,
+    es2021: true,
+    browser: true,
   },
   extends: [
     'plugin:import/errors',
@@ -51,6 +52,7 @@ module.exports = {
     React: true,
     JSX: true,
   },
+  ignorePatterns: ['!.jest'],
   overrides: [
     {
       files: ['**/*.ts', '**/*.tsx'],
@@ -64,6 +66,9 @@ module.exports = {
       parserOptions: {
         project: ['./tsconfig.json'],
         ecmaVersion: 'latest',
+      },
+      rules: {
+        '@typescript-eslint/unbound-method': 'off',
       },
     },
     {

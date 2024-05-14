@@ -1,20 +1,32 @@
-import { API_BASE_URL } from '@/constants';
+import {
+  GoogleAuthProvider,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from 'firebase/auth';
+
+import { firebaseAuth } from '@/libs';
 
 export const AuthService = {
-  login: async (email: string, password: string) => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+  signInWithGoogle: async () => {
+    const provider = new GoogleAuthProvider();
+    // TODO: Confirm the scope
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+    provider.setCustomParameters({ login_hint: 'user@example.com' });
 
-    if (!response.ok) {
-      throw new Error('Login failed');
-    }
-
-    const data = (await response.json()) as unknown;
-    return data;
+    return signInWithPopup(firebaseAuth, provider);
+  },
+  signInWithEmailAndPassword: ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => signInWithEmailAndPassword(firebaseAuth, email, password),
+  sendPasswordResetEmail: async (email: string) =>
+    sendPasswordResetEmail(firebaseAuth, email),
+  getToken: () => firebaseAuth.currentUser?.getIdToken(),
+  logout: async () => {
+    await firebaseAuth.signOut();
   },
 };

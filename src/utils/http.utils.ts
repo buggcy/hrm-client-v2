@@ -1,6 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
-// import axios, { AxiosError } from 'axios';
-// import { API_BASE_URL } from '@/constants';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+
+import { API_BASE_URL } from '@/constants';
+import { AuthService } from '@/services';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,31 +15,27 @@ export const queryClient = new QueryClient({
   },
 });
 
-// export const HttpService = axios.create({
-//   baseURL: API_BASE_URL,
-//   headers: { 'Content-Type': 'application/json' },
-// });
+export const HttpService = axios.create({
+  baseURL: API_BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+});
 
-// HttpService.interceptors.request.use(async config => {
-//   const token = await firebase.getToken();
+HttpService.interceptors.request.use(async config => {
+  const token = await AuthService.getToken();
 
-//   if (token) config.headers['Authorization'] = `Bearer ${token}`;
+  if (token) config.headers['Authorization'] = `Bearer ${token}`;
 
-//   return config;
-// });
+  return config;
+});
 
-// HttpService.interceptors.response.use(
-//   res => res.data,
-//   async (error: AxiosError) => {
-//     const status = error.response?.status || 500;
+HttpService.interceptors.response.use(
+  res => res.data as AxiosResponse,
+  async (error: AxiosError) => {
+    const status = error.response?.status ?? 500;
 
-//     if (status === 500) Logs.captureException(error);
-//     if (status === 401) {
-//       await firebase.logout();
-//       localStorage.clear();
-//       window.location.href = '/login';
-//     }
+    if (status === 500) console.error(error);
+    if (status === 401) await AuthService.logout();
 
-//     throw error;
-//   },
-// );
+    throw error;
+  },
+);
