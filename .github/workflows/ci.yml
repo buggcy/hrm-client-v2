@@ -9,7 +9,8 @@ on:
       - '**'
 
 jobs:
-  build:
+  lint-and-test:
+    environment: dev
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:

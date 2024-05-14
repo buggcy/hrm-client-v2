@@ -51,6 +51,7 @@ jobs:
 
   deploy-dev-portal:
     if: ${{ github.event_name == 'push' }}
+    environment: dev
     name: build-and-test-portal
     runs-on: ubuntu-latest
     needs: [DeployCloudFormation]
