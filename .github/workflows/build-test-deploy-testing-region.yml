@@ -61,6 +61,8 @@ jobs:
     env:
       NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
       NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+      NEXT_PUBLIC_LOG_ROCKET_ID: ${{ secrets.NEXT_PUBLIC_LOG_ROCKET_ID }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -95,6 +97,8 @@ jobs:
           touch .env
           echo NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }} >> .env
           echo NEXT_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }} >> .env
+          echo NEXT_PUBLIC_LOG_ROCKET_ID=${{ secrets.NEXT_PUBLIC_LOG_ROCKET_ID }} >> .env
+          echo NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }} >> .env
           npm run build
       - name: Deploy Build to dev S3
         run: |

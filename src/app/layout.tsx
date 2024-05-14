@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 
+import '@/libs/analytics';
+
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider, QueryClientProvider } from '@/providers';
 
