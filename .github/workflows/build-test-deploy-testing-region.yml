@@ -3,6 +3,7 @@ name: Build/Test/Deploy to Testing Region
 #### 1. Cloudfront distribution integration (dev)
 #### 2. Only the latest workflow will run
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -56,6 +57,9 @@ jobs:
     defaults:
       run:
         working-directory: ./
+    env:
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
         with:
