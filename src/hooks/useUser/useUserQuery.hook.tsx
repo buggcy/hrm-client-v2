@@ -3,16 +3,10 @@ import {
   UseQueryOptions,
   UseQueryResult,
 } from '@tanstack/react-query';
-import { z } from 'zod';
 
-import { HttpService } from '@/utils';
+import { HttpService, schemaParse } from '@/utils';
 
-const IUser = z.object({
-  id: z.string(),
-  email: z.string(),
-});
-
-type IUser = z.infer<typeof IUser>;
+import { IUser } from '@/types';
 
 export const useUserQuery = (
   config: Omit<UseQueryOptions, 'queryKey' | 'queryFn'> = {},
@@ -21,5 +15,5 @@ export const useUserQuery = (
     ...config,
     queryKey: ['user'],
     queryFn: (): Promise<IUser> =>
-      HttpService.get('/v3/users/me').then(IUser.parse),
+      HttpService.get('/v3/users/me').then(schemaParse(IUser)),
   }) as UseQueryResult<IUser, Error>;
