@@ -19,6 +19,11 @@ export const metadata: Metadata = {
   description: 'Developer portal',
 };
 
+export const viewport = {
+  // TODO: change to variable
+  themeColor: '#F230AB',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
