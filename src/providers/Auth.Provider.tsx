@@ -23,8 +23,9 @@ export const AuthProvider = ({ children }: ParentReactNode) => {
     });
   }, []);
 
-  if (!isAuthenticated && !isLoading && pathname !== '/sign-in')
+  if (!isAuthenticated && !isLoading && !pathname.startsWith('/auth')) {
     return <SignIn />;
+  }
 
   return isLoading ? null : children;
 };

@@ -76,6 +76,11 @@ const config = {
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],
       },
+      spacing: {
+        'w-sidebar': '4.5rem',
+        'w-sidebar-open': '15rem',
+        'w-sidebar-item': '13rem',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

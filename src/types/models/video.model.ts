@@ -8,8 +8,8 @@ export enum VideoStatus {
 }
 
 export const IVideo = z.object({
-  video_id: z.string().uuid(),
-  video_name: z.string(),
+  video_id: z.string(),
+  video_name: z.string().nullable(),
   status: z.nativeEnum(VideoStatus),
   data: z.object({
     script: z.string().optional(),

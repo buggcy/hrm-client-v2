@@ -11,7 +11,7 @@ import { IReplica } from '@/types';
 
 const IReplicasResponse = z.object({
   data: z.array(IReplica),
-  total_count: z.number(),
+  // total_count: z.number(), NOT IMPLEMENTED YET
 });
 type IReplicasResponse = z.infer<typeof IReplicasResponse>;
 
@@ -19,7 +19,7 @@ export const getReplicas = () =>
   rqhApi.get('/v2/replicas').then(schemaParse(IReplicasResponse));
 
 export const useReplicasQuery = (
-  options?: UseQueryOptions<IReplicasResponse>,
+  options?: Omit<UseQueryOptions<IReplicasResponse>, 'queryKey' | 'queryFn'>,
 ): UseQueryResult<IReplicasResponse> => {
   return useQuery<IReplicasResponse>({
     queryKey: ['replicas'],

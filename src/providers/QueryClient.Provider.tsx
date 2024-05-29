@@ -4,7 +4,6 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 
 import { QueryClientProvider as TanstackQueryClientProvider } from '@tanstack/react-query';
 
-import { isProd } from '@/constants';
 import { queryClient } from '@/libs';
 
 import { ParentReactNode } from '@/types';
@@ -16,7 +15,7 @@ const ReactQueryDevtools = lazy(() =>
 );
 
 export const QueryClientProvider = ({ children }: ParentReactNode) => {
-  const [showDevtools, setShowDevtools] = useState(!isProd);
+  const [showDevtools, setShowDevtools] = useState(false);
 
   useEffect(() => {
     window.toggleDevtools = () => setShowDevtools(old => !old);

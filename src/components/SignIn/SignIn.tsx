@@ -59,7 +59,7 @@ const SignIn: FC = () => {
       </div>
       <div className="hidden bg-muted lg:block">
         <Image
-          src="/placeholder.svg"
+          src="/images/placeholder.svg"
           alt="Image"
           width="1920"
           height="1080"
