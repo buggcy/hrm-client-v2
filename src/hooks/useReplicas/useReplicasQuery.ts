@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query';
 import { z } from 'zod';
 
-import { HttpService, schemaParse } from '@/utils';
+import { rqhApi, schemaParse } from '@/utils';
 
 import { IReplica } from '@/types';
 
@@ -16,9 +16,7 @@ const IReplicasResponse = z.object({
 type IReplicasResponse = z.infer<typeof IReplicasResponse>;
 
 export const getReplicas = () =>
-  HttpService.get('/proxy/rqh/v2/replicas').then(
-    schemaParse(IReplicasResponse),
-  );
+  rqhApi.get('/v2/replicas').then(schemaParse(IReplicasResponse));
 
 export const useReplicasQuery = (
   options?: UseQueryOptions<IReplicasResponse>,

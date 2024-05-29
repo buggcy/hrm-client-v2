@@ -20,7 +20,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
-import { AuthService } from '@/services';
+import { signInWithEmailAndPassword } from '@/services';
 
 const FormSchema = z.object({
   email: z.string().email({
@@ -33,7 +33,7 @@ const FormSchema = z.object({
 
 export function SignInForm() {
   const { mutate, isPending } = useMutation({
-    mutationFn: AuthService.signInWithEmailAndPassword,
+    mutationFn: signInWithEmailAndPassword,
     onError: () => {
       toast({
         title: 'Wrong email or password.',

@@ -1,41 +1,47 @@
-import { QueryClient } from '@tanstack/react-query';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 
-import { API_BASE_URL } from '@/constants';
-import { AuthService } from '@/services';
+import { PORTAL_API_BASE_URL, RQH_API_BASE_URL } from '@/constants';
+import { getToken, logout } from '@/services';
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 2,
-      retryDelay: 5000,
-      refetchOnMount: true,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const defaultHeaders = {
+  'Content-Type': 'application/json',
+};
 
-export const HttpService = axios.create({
-  baseURL: API_BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
-});
-
-HttpService.interceptors.request.use(async config => {
-  const token = await AuthService.getToken();
+const onRequestFulfilled = async (config: InternalAxiosRequestConfig) => {
+  const token = await getToken();
 
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
 
   return config;
+};
+
+const onResponseFulfilled = (res: AxiosResponse) => res.data as AxiosResponse;
+
+const onResponseRejected = async (error: AxiosError) => {
+  const status = error.response?.status ?? 500;
+
+  if (status === 500) console.error(error);
+  if (status === 401) await logout();
+
+  throw error;
+};
+
+export const portalApi = axios.create({
+  baseURL: PORTAL_API_BASE_URL,
+  headers: defaultHeaders,
 });
 
-HttpService.interceptors.response.use(
-  res => res.data as AxiosResponse,
-  async (error: AxiosError) => {
-    const status = error.response?.status ?? 500;
+portalApi.interceptors.request.use(onRequestFulfilled);
+portalApi.interceptors.response.use(onResponseFulfilled, onResponseRejected);
 
-    if (status === 500) console.error(error);
-    if (status === 401) await AuthService.logout();
+export const rqhApi = axios.create({
+  baseURL: RQH_API_BASE_URL,
+  headers: defaultHeaders,
+});
 
-    throw error;
-  },
-);
+rqhApi.interceptors.request.use(onRequestFulfilled);
+rqhApi.interceptors.response.use(onResponseFulfilled, onResponseRejected);

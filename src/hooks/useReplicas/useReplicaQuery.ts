@@ -1,11 +1,11 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { HttpService, schemaParse } from '@/utils';
+import { rqhApi, schemaParse } from '@/utils';
 
 import { IReplica } from '@/types';
 
 export const getReplica = (id: IReplica['replica_id']) =>
-  HttpService.get(`/proxy/rqh/v2/replicas/${id}`).then(schemaParse(IReplica));
+  rqhApi.get(`/v2/replicas/${id}`).then(schemaParse(IReplica));
 
 export const useReplicaQuery = (
   id: IReplica['replica_id'],

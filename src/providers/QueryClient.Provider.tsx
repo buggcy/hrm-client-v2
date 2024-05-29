@@ -5,7 +5,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { QueryClientProvider as TanstackQueryClientProvider } from '@tanstack/react-query';
 
 import { isProd } from '@/constants';
-import { queryClient } from '@/utils';
+import { queryClient } from '@/libs';
 
 import { ParentReactNode } from '@/types';
 

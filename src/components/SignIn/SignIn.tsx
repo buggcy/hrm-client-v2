@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 
-import { AuthService } from '@/services';
+import { signInWithGoogle } from '@/services';
 
 import { SignInForm } from './components/Form';
 import { toast } from '../ui/use-toast';
@@ -16,7 +16,7 @@ const SignIn: FC = () => {
   const handleSignInWithGoogle = async (): Promise<void> => {
     try {
       setLoading(true);
-      await AuthService.signInWithGoogle();
+      await signInWithGoogle();
     } catch {
       toast({
         title: 'An error occurred while signing in with Google.',

@@ -1,9 +1,9 @@
 import { http, HttpResponse } from 'msw';
 
-import { API_BASE_URL } from '../../src/constants';
+import { PORTAL_API_BASE_URL, RQH_API_BASE_URL } from '../../src/constants';
 
 export const handlers = [
-  http.get(API_BASE_URL + '/v3/users/me', () =>
+  http.get(PORTAL_API_BASE_URL + '/v3/users/me', () =>
     HttpResponse.json({
       id: 1,
       uuid: 'a787b1be-6fca-49ee-b67e-a548304aa5fd',
@@ -16,7 +16,7 @@ export const handlers = [
       updated_at: '2021-09-01T00:00:00Z',
     }),
   ),
-  http.get(API_BASE_URL + '/proxy/rqh/v2/videos', () =>
+  http.get(RQH_API_BASE_URL + '/v2/videos', () =>
     HttpResponse.json({
       data: [
         {
@@ -55,7 +55,7 @@ export const handlers = [
       total_count: 40,
     }),
   ),
-  http.get(API_BASE_URL + '/proxy/rqh/v2/videos/:id', ({ params }) =>
+  http.get(RQH_API_BASE_URL + '/v2/videos/:id', ({ params }) =>
     HttpResponse.json({
       video_id: params.id,
       video_name: 'test_value',

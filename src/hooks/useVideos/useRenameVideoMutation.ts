@@ -1,6 +1,6 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-import { HttpService } from '@/utils';
+import { rqhApi } from '@/utils';
 
 import { IVideo } from '@/types';
 
@@ -12,7 +12,7 @@ export const useRenameVideoMutation = (
   useMutation<void, Error, RenameVideoDto>({
     mutationKey: ['rename-video'],
     mutationFn: ({ video_id, video_name }: RenameVideoDto) =>
-      HttpService.patch(`/proxy/rqh/v2/videos/${video_id}/name`, {
+      rqhApi.patch(`/v2/videos/${video_id}/name`, {
         video_name,
       }),
     // TODO: add cache invalidation

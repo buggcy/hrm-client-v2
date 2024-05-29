@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { HttpService, schemaParse } from '@/utils';
+import { rqhApi, schemaParse } from '@/utils';
 
 import { IVideo } from '@/types';
 
@@ -10,7 +10,6 @@ export const useVideoQuery = (
 ) =>
   useQuery<IVideo, Error>({
     queryKey: ['video', id],
-    queryFn: () =>
-      HttpService.get(`/proxy/rqh/v2/videos/${id}`).then(schemaParse(IVideo)),
+    queryFn: () => rqhApi.get(`/v2/videos/${id}`).then(schemaParse(IVideo)),
     ...config,
   });

@@ -4,7 +4,7 @@ import {
   UseMutationOptions,
 } from '@tanstack/react-query';
 
-import { HttpService } from '@/utils';
+import { rqhApi } from '@/utils';
 
 import { IReplica, IVideo } from '@/types';
 
@@ -27,7 +27,7 @@ export type CreateVideoResponse = Pick<
 const createVideo: MutationFunction<
   CreateVideoResponse,
   CreateVideoDto
-> = data => HttpService.post('/proxy/rqh/v2/videos/', data);
+> = data => rqhApi.post('/v2/videos/', data);
 
 export const useCreateVideoMutation = (
   options?: UseMutationOptions<CreateVideoResponse, Error, CreateVideoDto>,
