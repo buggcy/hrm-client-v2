@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 
 import { ArrowRightIcon, MonitorIcon, MoonIcon, SunIcon } from 'lucide-react';
 
@@ -16,6 +17,7 @@ import { logout } from '@/services';
 
 export const UserPopover = () => {
   const { data: user } = useUserQuery();
+  const { setTheme } = useTheme();
 
   const handleLogout = async () => {
     await logout();
@@ -85,13 +87,25 @@ export const UserPopover = () => {
             <div className="flex items-center justify-between">
               <p className="text-lg">Theme</p>
               <div className="flex space-x-2">
-                <Button className="p-2" variant="ghost">
+                <Button
+                  className="p-2"
+                  variant="ghost"
+                  onClick={() => setTheme('light')}
+                >
                   <SunIcon className="size-5 text-gray-500" />
                 </Button>
-                <Button className="p-2" variant="ghost">
+                <Button
+                  className="p-2"
+                  variant="ghost"
+                  onClick={() => setTheme('dark')}
+                >
                   <MoonIcon className="size-5 text-gray-500" />
                 </Button>
-                <Button className="p-2" variant="ghost">
+                <Button
+                  className="p-2"
+                  variant="ghost"
+                  onClick={() => setTheme('system')}
+                >
                   <MonitorIcon className="size-5 text-gray-500" />
                 </Button>
               </div>

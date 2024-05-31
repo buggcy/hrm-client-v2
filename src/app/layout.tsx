@@ -4,7 +4,7 @@ import { Inter as FontSans } from 'next/font/google';
 import '@/libs/analytics';
 
 import { Toaster } from '@/components/ui/toaster';
-import { AuthProvider, QueryClientProvider } from '@/providers';
+import { AuthProvider, QueryClientProvider, ThemeProvider } from '@/providers';
 
 import { cn } from '@/utils';
 
@@ -38,7 +38,14 @@ export default function RootLayout({
         )}
       >
         <QueryClientProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthProvider>{children}</AuthProvider>
+          </ThemeProvider>
         </QueryClientProvider>
         <Toaster />
       </body>
