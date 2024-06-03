@@ -1,6 +1,8 @@
+'use client';
 import Link from 'next/link';
 
 import { ArrowRight, List, SmilePlus, Users, Video } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -33,10 +35,12 @@ const ROUTES_CONFIG = [
   },
 ];
 export default function Home() {
+  const { t } = useTranslation();
+
   return (
     <div>
       <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
-        Welcome to Tavus
+        {t('general.title')} {t('general.description')}
       </h1>
       <div className="mt-8 grid grid-cols-2 gap-4">
         {ROUTES_CONFIG.map(({ title, description, icon: Icon, href }) => (
