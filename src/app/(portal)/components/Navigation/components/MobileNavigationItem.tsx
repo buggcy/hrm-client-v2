@@ -22,7 +22,10 @@ export const MobileNavigationItem: FC<{
     <Button
       asChild
       variant="ghost"
-      className={cn('w-full justify-start pl-2.5', active && 'bg-secondary')}
+      className={cn('w-full justify-start pl-2.5 text-muted-foreground', {
+        'bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary':
+          active,
+      })}
     >
       <Link
         href={href}

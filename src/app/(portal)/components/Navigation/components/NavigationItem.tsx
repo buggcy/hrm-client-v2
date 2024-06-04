@@ -18,8 +18,11 @@ export const NavigationItem: FC<{
       asChild
       variant="ghost"
       className={cn(
-        'justify-start overflow-hidden pl-2.5',
-        active && 'bg-secondary',
+        'justify-start overflow-hidden pl-2.5 text-muted-foreground',
+        {
+          'bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary':
+            active,
+        },
       )}
     >
       <Link href={href}>

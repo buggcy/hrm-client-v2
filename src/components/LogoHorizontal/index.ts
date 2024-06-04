@@ -1,0 +1,1 @@
+export { LogoHorizontal } from './LogoHorizontal';

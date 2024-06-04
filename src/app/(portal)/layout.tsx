@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { Sidebar } from '@/app/(portal)/components/Sidebar';
+import { Navigation } from '@/app/(portal)/components/Navigation';
 
 export const metadata: Metadata = {
   title: 'Tavus',
@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <main>
-      <Sidebar />
+      <Navigation />
       <div className="min-h-screen p-5 sm:ml-w-sidebar sm:p-8">{children}</div>
     </main>
   );

@@ -17,7 +17,7 @@ export const SupportPopover = () => {
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          className="justify-start overflow-hidden pl-2.5 transition-all duration-200 group-hover:w-52 sm:size-10"
+          className="h-10 w-full justify-start overflow-hidden pl-2.5 text-muted-foreground transition-all duration-200 group-hover:w-52 sm:size-10"
         >
           <div className="flex w-52 items-center gap-2">
             <CircleHelp className="size-5" />
@@ -27,7 +27,7 @@ export const SupportPopover = () => {
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[13.5rem] p-2">
+      <PopoverContent className="w-[13.5rem] p-2" align="start">
         <ul className="flex flex-col gap-1">
           <li className="flex">
             <Button
