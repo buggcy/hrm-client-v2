@@ -1,11 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState } from 'react';
-import Link from 'next/link';
 
 import { keepPreviousData } from '@tanstack/react-query';
-import { MoreHorizontal, Video } from 'lucide-react';
+import { MoveRight, Video } from 'lucide-react';
 
+import { CopyApiUrl } from '@/components/CopyApiUrl';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutHeaderButtonsBlock,
+  LayoutWrapper,
+} from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -15,13 +21,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   Pagination,
   PaginationContent,
@@ -53,146 +52,137 @@ export default function VideosPage() {
   });
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Videos</CardTitle>
-        <CardDescription>Bla Bla Bla</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {isPending ? (
-          <div>Loader...</div>
-        ) : (
-          <>
-            {videos ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>
-                      <span className="sr-only">Thumbnail</span>
-                    </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Request ID</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>
-                      <span className="sr-only">Actions</span>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {videos.data.map(
-                    ({
-                      video_id,
-                      video_name,
-                      status,
-                      still_image_thumbnail_url,
-                      created_at,
-                      data,
-                    }) => (
-                      <TableRow key={video_id}>
-                        <TableCell>
-                          {still_image_thumbnail_url ? (
-                            <img
-                              src={still_image_thumbnail_url}
-                              alt={video_name || 'Video thumbnail'}
-                              className="w-16 object-contain"
-                            />
-                          ) : (
-                            <Video className="w-16" />
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div className="max-w-[25ch]">
-                            <p className="truncate">{video_name}</p>
-                            <p className="truncate">{data?.script}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell>{video_id}</TableCell>
-                        <TableCell>{status}</TableCell>
-                        <TableCell>
-                          {created_at.toLocaleString('default', {
-                            month: 'long',
-                          })}{' '}
-                          {created_at.getDate()},{' '}
-                          {created_at.toLocaleTimeString('en-US', {
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            hour12: true,
-                          })}
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="size-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>
-                                <Button
-                                  asChild
-                                  variant="ghost"
-                                  className="w-full"
-                                >
-                                  <Link href={`/videos/details?id=${video_id}`}>
-                                    Details
-                                  </Link>
-                                </Button>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Button variant="ghost" className="w-full">
-                                  Delete
-                                </Button>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ),
-                  )}
-                </TableBody>
-              </Table>
+    <Layout>
+      <LayoutHeader title={'Video Library'}>
+        <CopyApiUrl type="GET" url="/v2/videos" />
+        <LayoutHeaderButtonsBlock>
+          <Button className="ml-auto" variant="outline">
+            Read Docs
+          </Button>
+          <Button>Create Video</Button>
+        </LayoutHeaderButtonsBlock>
+      </LayoutHeader>
+      <LayoutWrapper>
+        <Card>
+          <CardHeader>
+            <CardTitle>Videos</CardTitle>
+            <CardDescription>Bla Bla Bla</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isPending ? (
+              <div>Loader...</div>
             ) : (
-              <div>Empty</div>
+              <>
+                {videos ? (
+                  <Table>
+                    <TableHeader>
+                      <tr>
+                        <TableHead>
+                          <span className="sr-only">Thumbnail</span>
+                        </TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Request ID</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>
+                          <span className="sr-only">Actions</span>
+                        </TableHead>
+                      </tr>
+                    </TableHeader>
+                    <TableBody>
+                      {videos.data.map(
+                        ({
+                          video_id,
+                          video_name,
+                          status,
+                          still_image_thumbnail_url,
+                          created_at,
+                          data,
+                        }) => (
+                          <TableRow
+                            key={video_id}
+                            className="group hover:bg-inherit"
+                            onClick={() => {
+                              console.log('Clicked');
+                            }}
+                          >
+                            <TableCell>
+                              {still_image_thumbnail_url ? (
+                                <img
+                                  src={still_image_thumbnail_url}
+                                  alt={video_name || 'Video thumbnail'}
+                                  className="w-16 object-contain"
+                                />
+                              ) : (
+                                <Video className="w-16" />
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <div className="max-w-[25ch]">
+                                <p className="truncate">{video_name}</p>
+                                <p className="truncate">{data?.script}</p>
+                              </div>
+                            </TableCell>
+                            <TableCell>{video_id}</TableCell>
+                            <TableCell>{status}</TableCell>
+                            <TableCell>
+                              {created_at.toLocaleString('default', {
+                                month: 'long',
+                              })}{' '}
+                              {created_at.getDate()},{' '}
+                              {created_at.toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                hour12: true,
+                              })}
+                            </TableCell>
+                            <TableCell>
+                              <MoveRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                            </TableCell>
+                          </TableRow>
+                        ),
+                      )}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div>Empty</div>
+                )}
+              </>
             )}
-          </>
-        )}
-      </CardContent>
-      <CardFooter className="flex items-center justify-between">
-        <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> videos
-        </div>
-        <div>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious onClick={() => setPage(prev => prev - 1)} />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink isActive>1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink>2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink>3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext onClick={() => setPage(prev => prev + 1)} />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      </CardFooter>
-    </Card>
+          </CardContent>
+          <CardFooter className="flex items-center justify-between">
+            <div className="text-xs text-muted-foreground">
+              Showing <strong>1-10</strong> of <strong>32</strong> videos
+            </div>
+            <div>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setPage(prev => prev - 1)}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink isActive>1</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink>2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink>3</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext onClick={() => setPage(prev => prev + 1)} />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </CardFooter>
+        </Card>
+      </LayoutWrapper>
+    </Layout>
   );
 }

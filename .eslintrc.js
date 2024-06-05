@@ -69,6 +69,12 @@ module.exports = {
       },
       rules: {
         '@typescript-eslint/unbound-method': 'off',
+        '@typescript-eslint/no-misused-promises': [
+          'error',
+          {
+            checksVoidReturn: false,
+          },
+        ],
       },
     },
     {

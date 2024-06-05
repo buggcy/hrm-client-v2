@@ -28,6 +28,12 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
+    --success: 127 41% 49%;
+    --success-foreground: 128 38% 92%;
+
+    --aqua: 213 86% 60%;
+    --aqua-foreground: 214 85% 92%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 322 88.2% 56.9%;
@@ -59,6 +65,12 @@
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
+
+    --success: 127 41% 49%;
+    --success-foreground: 128 38% 92%;
+
+    --aqua: 213 86% 60%;
+    --aqua-foreground: 214 85% 92%;
 
     --border: 240 6% 26.3%;
     --input: 240 6% 26.3%;

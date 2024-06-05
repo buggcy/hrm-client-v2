@@ -1,0 +1,57 @@
+import { FC } from 'react';
+
+import { cn } from '@/utils';
+
+import { LayoutBaseProps, LayoutHeaderProps } from './types';
+
+const Layout: FC<LayoutBaseProps> = ({ children, className }) => {
+  return (
+    <div data-testid="layout" className={cn('min-h-screen', className)}>
+      {children}
+    </div>
+  );
+};
+
+const LayoutHeader: FC<LayoutHeaderProps> = ({
+  title,
+  children,
+  className,
+}) => {
+  return (
+    <header
+      className={cn(
+        'sticky top-0 z-10 flex items-center bg-background p-3 sm:px-8',
+        className,
+      )}
+    >
+      <h1 className="mr-5 hidden text-xl font-semibold sm:block">{title}</h1>
+      {children}
+    </header>
+  );
+};
+
+const LayoutHeaderButtonsBlock: FC<LayoutBaseProps> = ({
+  children,
+  className,
+}) => {
+  return (
+    <div className={cn('ml-auto flex items-center gap-2', className)}>
+      {children}
+    </div>
+  );
+};
+
+const LayoutWrapper: FC<LayoutBaseProps> = ({ children, className }) => {
+  return (
+    <div className="p-5 sm:p-8">
+      <div
+        data-testid="layout-wrapper"
+        className={cn('mx-auto w-full max-w-screen-xl', className)}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export { Layout, LayoutHeader, LayoutWrapper, LayoutHeaderButtonsBlock };

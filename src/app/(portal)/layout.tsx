@@ -15,7 +15,9 @@ export default function RootLayout({
   return (
     <main>
       <Navigation />
-      <div className="min-h-screen p-5 sm:ml-w-sidebar sm:p-8">{children}</div>
+      <div className="min-h-screen bg-secondary sm:ml-w-sidebar">
+        {children}
+      </div>
     </main>
   );
 }
