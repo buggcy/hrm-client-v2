@@ -2,7 +2,27 @@
   "translation": {
     "general": {
       "title": "Tavus",
-      "description": "Developer portal"
+      "description": "Developer portal",
+      "statusBadge": {
+        "ready": "Ready",
+        "error": "Error",
+        "generating": "Generating...",
+        "completed": "Completed",
+        "training": "Training",
+        "deleted": "Deleted"
+      },
+      "status": {
+        "ready": "Ready",
+        "error": "Error",
+        "generating": "Generating",
+        "completed": "Completed",
+        "training": "Training",
+        "deleted": "Deleted"
+      },
+      "share": {
+        "copy_link": "Copy link",
+        "download": "Download"
+      }
     }
   }
 }

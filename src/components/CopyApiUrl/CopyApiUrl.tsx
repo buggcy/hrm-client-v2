@@ -17,12 +17,17 @@ import { cn } from '@/utils';
 
 import { CopyApiUrlProps } from './types';
 
+const URLS = {
+  video: '/v2/videos',
+  replica: '/v2/replicas',
+};
+
 const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id }) => {
+  const URL = URLS[url];
   const { isCopied, copyToClipboard } = useCopyToClipboard({
-    textToCopy: `${RQH_API_BASE_URL}${url}${id ? `/${id}` : ''}`,
-    toastText: 'Code copied!',
+    textToCopy: `${RQH_API_BASE_URL}${URL}${id ? `/${id}` : ''}`,
   });
-  const urlArr = url.split('/').filter(Boolean);
+  const urlArr = URL.split('/').filter(Boolean);
 
   return (
     <div className="flex items-center gap-2 rounded-md border py-0.5 pl-2 pr-0.5">

@@ -55,11 +55,15 @@ const config = {
         },
         success: {
           DEFAULT: 'hsl(var(--success))',
-          foreground: 'hsl(var(--success-foreground))',
+          foreground: 'hsla(var(--success) / 0.15)',
         },
-        aqua: {
-          DEFAULT: 'hsl(var(--aqua))',
-          foreground: 'hsl(var(--aqua-foreground))',
+        progress: {
+          DEFAULT: 'hsl(var(--progress))',
+          foreground: 'hsla(var(--progress) / 0.15)',
+        },
+        error: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsla(var(--destructive) / 0.15)',
         },
       },
       borderRadius: {
@@ -88,6 +92,13 @@ const config = {
         'w-sidebar': '4.5rem',
         'w-sidebar-open': '15rem',
         'w-sidebar-item': '13rem',
+        13: '3.25rem',
+        13.5: '3.375rem',
+        38.5: '9.625rem',
+        78.5: '19.625rem',
+      },
+      screens: {
+        xl: '1304px',
       },
     },
   },

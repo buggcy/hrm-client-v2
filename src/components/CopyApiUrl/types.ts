@@ -1,5 +1,5 @@
 export interface CopyApiUrlProps {
   type: 'GET' | 'POST' | 'PATCH' | 'DELETE';
-  url: string;
+  url: 'video' | 'replica';
   id?: string;
 }

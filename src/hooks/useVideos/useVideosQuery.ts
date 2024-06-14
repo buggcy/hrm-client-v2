@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { z } from 'zod';
 
+import { queryClient } from '@/libs';
 import { rqhApi, schemaParse } from '@/utils';
 
 import { IVideo } from '@/types';
@@ -25,6 +26,12 @@ export const useVideosQuery = ({
     queryFn: () =>
       rqhApi
         .get('/v2/videos', { params: queryParams })
-        .then(schemaParse(IVideosResponse)),
+        .then(schemaParse(IVideosResponse))
+        .then(data => {
+          data.data.forEach(video => {
+            queryClient.setQueryData(['video', video.video_id], video);
+          });
+          return data;
+        }),
     ...config,
   });

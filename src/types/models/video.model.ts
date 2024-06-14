@@ -5,6 +5,7 @@ export enum VideoStatus {
   READY = 'ready',
   QUEUED = 'queued',
   GENERATING = 'generating',
+  DELETED = 'deleted',
 }
 
 export const IVideo = z.object({

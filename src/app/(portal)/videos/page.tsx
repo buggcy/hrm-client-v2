@@ -3,7 +3,14 @@
 import { useState } from 'react';
 
 import { keepPreviousData } from '@tanstack/react-query';
-import { MoveRight, Video } from 'lucide-react';
+import {
+  Loader,
+  LoaderCircle,
+  MoveRight,
+  Trash2,
+  TriangleAlert,
+  Video,
+} from 'lucide-react';
 
 import { CopyApiUrl } from '@/components/CopyApiUrl';
 import {
@@ -12,24 +19,17 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
+import { Pagination } from '@/components/Pagination';
+import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -39,22 +39,73 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import {
+  useVideoDetailsSheet,
+  VideoDetailsSheet,
+} from '@/app/(portal)/videos/components/VideoDetailsSheet';
 import { useVideosQuery } from '@/hooks';
 
-const LIMIT = 5;
-// DUMMY CONTENT, GENERATED FOR TEST PURPOSES / DO NOT SPEND YOUR TIME FOR REVIEW
-// WILL BE REMOVED
+import { CopyRequestID } from './components/CopyRequestID/CopyRequestID';
+import { GetVideoByIdInput } from './components/GetVideoByIdInput';
+
+import { VideoStatus } from '@/types';
+
+const LIMIT = 10;
+
 export default function VideosPage() {
+  const { video_id, onOpenChange } = useVideoDetailsSheet();
   const [page, setPage] = useState(1);
-  const { data: videos, isPending } = useVideosQuery({
-    queryParams: { page, limit: LIMIT },
+
+  const {
+    data: videos,
+    isLoading,
+    isRefetching,
+    isPlaceholderData,
+  } = useVideosQuery({
+    queryParams: {
+      page: page - 1,
+      limit: LIMIT,
+      filter_out_status: [VideoStatus.QUEUED, VideoStatus.DELETED].join(','),
+    },
     placeholderData: keepPreviousData,
+    refetchInterval(query) {
+      if (
+        query.state.data?.data?.some(
+          ({ status }) => status === VideoStatus.GENERATING,
+        )
+      ) {
+        return 10 * 1000;
+      }
+      // to keep the data up to date
+      return 5 * 60 * 1000;
+    },
+    refetchOnWindowFocus: true,
   });
+
+  const getIcon = (status: VideoStatus) => {
+    switch (status) {
+      case VideoStatus.GENERATING:
+      case VideoStatus.QUEUED:
+        return <Loader className="size-6 text-progress" />;
+      case VideoStatus.ERROR:
+        return <TriangleAlert className="size-6 text-destructive" />;
+      case VideoStatus.READY:
+        return <Video className="size-6" />;
+      case VideoStatus.DELETED:
+        return <Trash2 className="size-6 text-destructive" />;
+      default:
+        return <Video className="size-6" />;
+    }
+  };
+
+  const initialLoading = isLoading;
+  const backgroundRefetching = !isPlaceholderData && isRefetching && !isLoading;
+  const manualRefetching = isPlaceholderData && isRefetching && !isLoading;
 
   return (
     <Layout>
       <LayoutHeader title={'Video Library'}>
-        <CopyApiUrl type="GET" url="/v2/videos" />
+        <CopyApiUrl type="GET" url="video" />
         <LayoutHeaderButtonsBlock>
           <Button className="ml-auto" variant="outline">
             Read Docs
@@ -63,122 +114,155 @@ export default function VideosPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper>
+        <VideoDetailsSheet id={video_id} onOpenChange={onOpenChange} />
+
         <Card>
           <CardHeader>
-            <CardTitle>Videos</CardTitle>
-            <CardDescription>Bla Bla Bla</CardDescription>
+            <CardTitle>My Videos</CardTitle>
           </CardHeader>
           <CardContent>
-            {isPending ? (
-              <div>Loader...</div>
-            ) : (
-              <>
-                {videos ? (
-                  <Table>
-                    <TableHeader>
-                      <tr>
-                        <TableHead>
-                          <span className="sr-only">Thumbnail</span>
-                        </TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Request ID</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>
-                          <span className="sr-only">Actions</span>
-                        </TableHead>
-                      </tr>
-                    </TableHeader>
-                    <TableBody>
-                      {videos.data.map(
-                        ({
-                          video_id,
-                          video_name,
-                          status,
-                          still_image_thumbnail_url,
-                          created_at,
-                          data,
-                        }) => (
-                          <TableRow
-                            key={video_id}
-                            className="group hover:bg-inherit"
-                            onClick={() => {
-                              console.log('Clicked');
-                            }}
-                          >
-                            <TableCell>
+            <GetVideoByIdInput />
+            <div className="relative">
+              {manualRefetching && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-muted opacity-50">
+                  <LoaderCircle className="size-10 animate-spin" />
+                </div>
+              )}
+              {initialLoading && (
+                <div className="z-10 mt-2.5 space-y-2">
+                  <Skeleton className="h-8 w-full rounded-md" />
+                  <Skeleton className="h-16 w-full rounded-md" />
+                  <Skeleton className="h-16 w-full rounded-md" />
+                  <Skeleton className="h-16 w-full rounded-md" />
+                </div>
+              )}
+              {backgroundRefetching && (
+                <div className="absolute right-5 top-3">
+                  <Loader className="size-6 animate-spin" />
+                </div>
+              )}
+              {videos?.data && (
+                <Table>
+                  <TableHeader className="[&_tr]:border-none">
+                    <tr>
+                      <TableHead className="hidden lg:table-cell">
+                        <span className="sr-only">Thumbnail</span>
+                      </TableHead>
+                      <TableHead className="text-left">Name</TableHead>
+                      <TableHead>Request ID</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="hidden lg:table-cell">
+                        Date
+                      </TableHead>
+                      <TableHead className="text-right">
+                        <span className="sr-only">Actions</span>
+                      </TableHead>
+                    </tr>
+                  </TableHeader>
+                  <TableBody>
+                    {videos.data.map(
+                      ({
+                        video_id,
+                        video_name,
+                        status,
+                        still_image_thumbnail_url,
+                        created_at,
+                        data,
+                      }) => (
+                        <TableRow
+                          tabIndex={0}
+                          onKeyDown={e => {
+                            // @ts-expect-error tagName is in the type
+                            if (e.target.tagName === 'TR') {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                onOpenChange(video_id);
+                              }
+                            }
+                          }}
+                          key={video_id}
+                          className="group rounded-lg border-none outline-offset-[-1px] outline-border hover:bg-transparent hover:outline"
+                          onClick={() => onOpenChange(video_id)}
+                        >
+                          <TableCell className="hidden p-2 lg:table-cell">
+                            <div className="flex h-13.5 w-24 items-center justify-center overflow-hidden rounded border bg-secondary">
                               {still_image_thumbnail_url ? (
                                 <img
                                   src={still_image_thumbnail_url}
                                   alt={video_name || 'Video thumbnail'}
-                                  className="w-16 object-contain"
+                                  className="max-h-13.5 object-contain"
                                 />
                               ) : (
-                                <Video className="w-16" />
+                                getIcon(status)
                               )}
-                            </TableCell>
-                            <TableCell>
-                              <div className="max-w-[25ch]">
-                                <p className="truncate">{video_name}</p>
-                                <p className="truncate">{data?.script}</p>
-                              </div>
-                            </TableCell>
-                            <TableCell>{video_id}</TableCell>
-                            <TableCell>{status}</TableCell>
-                            <TableCell>
-                              {created_at.toLocaleString('default', {
-                                month: 'long',
-                              })}{' '}
-                              {created_at.getDate()},{' '}
-                              {created_at.toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: 'numeric',
-                                hour12: true,
-                              })}
-                            </TableCell>
-                            <TableCell>
-                              <MoveRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
-                            </TableCell>
-                          </TableRow>
-                        ),
-                      )}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <div>Empty</div>
-                )}
-              </>
-            )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="p-2 text-left">
+                            <div className="max-w-[25ch] md:max-w-[40ch] lg:max-w-[35ch] xl:max-w-[60ch] 2xl:max-w-[80ch]">
+                              <p className="mt-1 truncate font-semibold">
+                                {video_name}
+                              </p>
+                              {data?.script && (
+                                <p className="truncate font-medium text-muted-foreground">
+                                  {data.script}
+                                </p>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="p-2">
+                            <CopyRequestID id={video_id} />
+                          </TableCell>
+                          <TableCell className="p-2">
+                            <StatusBadge status={status} />
+                          </TableCell>
+                          <TableCell className="hidden p-2 font-medium lg:table-cell">
+                            {created_at.toLocaleString('default', {
+                              month: 'long',
+                            })}{' '}
+                            {created_at.getDate()},{' '}
+                            {created_at.toLocaleTimeString('en-US', {
+                              hour: 'numeric',
+                              minute: 'numeric',
+                              hour12: true,
+                            })}
+                          </TableCell>
+                          <TableCell className="p-2">
+                            <MoveRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
+                  </TableBody>
+                </Table>
+              )}
+              {videos?.data?.length === 0 && (
+                <div className="flex h-40 flex-col items-center justify-center gap-4 text-muted-foreground">
+                  {/* TODO: Change this when design will be ready*/}
+                  <Button className="ml-2"> Create your first video</Button>
+                </div>
+              )}
+            </div>
           </CardContent>
           <CardFooter className="flex items-center justify-between">
             <div className="text-xs text-muted-foreground">
-              Showing <strong>1-10</strong> of <strong>32</strong> videos
+              {videos?.total_count && (
+                <>
+                  Showing{' '}
+                  <strong>
+                    {(page - 1) * LIMIT + 1} -{' '}
+                    {Math.min(videos.total_count, (page - 1) * LIMIT + LIMIT)}
+                  </strong>{' '}
+                  of <strong>{videos.total_count}</strong> videos
+                </>
+              )}
             </div>
             <div>
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() => setPage(prev => prev - 1)}
-                    />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink isActive>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext onClick={() => setPage(prev => prev + 1)} />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              <Pagination
+                total={videos?.total_count || 0}
+                currentPage={page}
+                perPage={LIMIT}
+                onPageChange={setPage}
+              />
             </div>
           </CardFooter>
         </Card>
