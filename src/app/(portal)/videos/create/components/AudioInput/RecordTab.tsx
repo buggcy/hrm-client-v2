@@ -95,6 +95,7 @@ export const RecordTab = () => {
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue
+              // TODO: add placeholder when we don't have devices list
               placeholder={t('portal.videos.create.audio.select.placeholder')}
             />
           </SelectTrigger>

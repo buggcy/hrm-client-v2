@@ -1,6 +1,6 @@
+import { AudioCard } from '@/components/AudioCard';
 import { Input } from '@/components/ui/input';
 
-import { AudioPreview } from './AudioPreview';
 import { RecordTab } from './RecordTab';
 import { UploadTab } from './UploadTab';
 import {
@@ -10,16 +10,30 @@ import {
 import { AudioTab } from '../../types';
 
 export const AudioInput = () => {
-  const [audioTab, audio] = useVideoGenerateMetadataStore(store => [
-    store.audioTab,
-    store.audio,
+  const [audioUrl, setForm] = useVideoGenerateFormStore(store => [
+    store.audioUrl,
+    store.set,
   ]);
-  const audioUrl = useVideoGenerateFormStore(store => store.audioUrl);
+  const [audioTab, audio, setMetadata] = useVideoGenerateMetadataStore(
+    store => [store.audioTab, store.audio, store.set],
+  );
+
+  const handleDeleteClick = () => {
+    setForm({ audioUrl: '' });
+    setMetadata({ audio: null });
+  };
 
   return (
     <>
-      {audio ? (
-        <AudioPreview />
+      {audio || audioUrl ? (
+        <AudioCard
+          url={audio?.url || audioUrl!}
+          duration={audio?.duration}
+          // TODO: add function to extract filename from url
+          name={audio?.file?.name}
+          size={audio?.file?.size}
+          onDeleteClick={handleDeleteClick}
+        />
       ) : audioTab === AudioTab.RECORD ? (
         <RecordTab />
       ) : (
