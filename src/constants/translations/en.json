@@ -23,6 +23,56 @@
         "copy_link": "Copy link",
         "download": "Download"
       }
+    },
+    "portal": {
+      "videos": {
+        "create": {
+          "tabs": {
+            "audio": "Audio to Video",
+            "script": "Script to Video"
+          },
+          "audio": {
+            "input": {
+              "title": "Drag and drop an audio file",
+              "description": "Audio file up to {{size}}",
+              "error": {
+                "large": {
+                  "description": "Audio file must be less than {{size}}"
+                },
+                "short": {
+                  "title": "Audio file is too short",
+                  "description": "Audio file must be at least {{duration}} seconds long"
+                },
+                "permission": "Please allow microphone access to record audio and reload the page"
+              }
+            },
+            "button": {
+              "upload": "Upload audio",
+              "record": "Record audio"
+            },
+            "select": {
+              "placeholder": "Select microphone"
+            }
+          },
+          "script": {
+            "placeholder": "Type your text here"
+          }
+        }
+      }
+    },
+    "ui": {
+      "button": {
+        "next": "Next",
+        "cancel": "Cancel",
+        "back": "Back"
+      },
+      "toast": {
+        "title": {
+          "error": "Error",
+          "success": "Success",
+          "somethingWentWrong": "Something went wrong"
+        }
+      }
     }
   }
 }

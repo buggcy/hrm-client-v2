@@ -66,6 +66,9 @@ const config = {
           foreground: 'hsla(var(--destructive) / 0.15)',
         },
       },
+      boxShadow: {
+        'icon-button': '0px 6px 25px -2px rgba(242, 48, 170, 0.31)',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

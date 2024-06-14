@@ -42,7 +42,13 @@ const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id }) => {
           },
         )}
       >
-        <span className="text-xs text-green-600">{type}</span>
+        <span
+          className={cn('text-green fond-semibold text-xs', {
+            'text-text': type === 'POST',
+          })}
+        >
+          {type}
+        </span>
       </div>
       <code className="inline-flex text-sm text-muted-foreground sm:gap-1">
         {urlArr.map(part => (

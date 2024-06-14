@@ -36,12 +36,10 @@ export function SignInForm() {
     mutationFn: signInWithEmailAndPassword,
     onError: () => {
       toast({
+        // TODO: show correct error message
         title: 'Wrong email or password.',
         variant: 'destructive',
       });
-    },
-    onSuccess: () => {
-      console.log('TBD');
     },
   });
 
@@ -56,6 +54,7 @@ export function SignInForm() {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     mutate(data);
   }
+
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}

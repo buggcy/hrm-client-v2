@@ -19,6 +19,8 @@ const badgeVariants = cva(
         success: 'border-transparent bg-success-foreground text-success',
         progress: 'border-transparent bg-progress-foreground text-progress',
         error: 'border-transparent bg-error-foreground text-error',
+        label:
+          'rounded border-transparent bg-accent font-medium text-muted-foreground',
       },
     },
     defaultVariants: {

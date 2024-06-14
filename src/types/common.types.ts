@@ -3,6 +3,7 @@ declare global {
     toggleDevtools: () => void;
   }
 }
-export interface ParentReactNode {
+
+export interface ParentReactNode extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }

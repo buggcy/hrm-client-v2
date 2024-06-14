@@ -41,9 +41,13 @@ const LayoutHeaderButtonsBlock: FC<LayoutBaseProps> = ({
   );
 };
 
-const LayoutWrapper: FC<LayoutBaseProps> = ({ children, className }) => {
+const LayoutWrapper: FC<LayoutBaseProps> = ({
+  children,
+  className,
+  wrapperClassName,
+}) => {
   return (
-    <div className="p-5 sm:p-8">
+    <div className={cn('p-5 sm:p-8', wrapperClassName)}>
       <div
         data-testid="layout-wrapper"
         className={cn('mx-auto w-full max-w-screen-xl', className)}
