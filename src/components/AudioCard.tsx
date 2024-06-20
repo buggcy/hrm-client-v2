@@ -33,7 +33,7 @@ export const AudioCard = ({
       <div className="rounded-full bg-primary-foreground p-2">
         <Volume2 className="text-primary" size={16} />
       </div>
-      <div className="ml-3 flex  flex-col overflow-hidden">
+      <div className="ml-3 flex flex-col overflow-hidden">
         <span className="max-w-full truncate font-medium">{name || url}</span>
         <span className="text-sm text-gray-500">
           {duration ? `${formatTime(duration)} | ` : ''}
@@ -44,7 +44,7 @@ export const AudioCard = ({
         <Button
           type="button"
           variant="ghost"
-          className="size-10 rounded-full border-DEFAULT  p-2 text-foreground hover:border-transparent hover:bg-primary-foreground hover:text-primary"
+          className="size-10 rounded-full border-DEFAULT p-2 text-foreground hover:border-transparent hover:bg-primary-foreground hover:text-primary"
           onClick={toggle}
         >
           {isPlaying ? (
@@ -70,7 +70,7 @@ export const AudioCard = ({
             className="size-10 p-2 text-muted-foreground hover:bg-transparent hover:text-destructive"
             onClick={onDeleteClick}
           >
-            <Trash2 className="size-5 " />
+            <Trash2 className="size-5" />
           </Button>
         )}
       </div>

@@ -25,7 +25,7 @@ export const CopyRequestID = ({ id }: { id?: IVideo['video_id'] }) => {
     >
       {id}
       {isCopied ? (
-        <Check className="size-3.5 " />
+        <Check className="size-3.5" />
       ) : (
         <Copy className="size-3.5 opacity-0 group-hover/btn:opacity-100" />
       )}

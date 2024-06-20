@@ -19,7 +19,7 @@ export const Sidebar = () => {
 
   return (
     <aside className="fixed inset-y-0 left-0 z-20 hidden overflow-hidden border-r bg-background sm:flex">
-      <div className="group relative flex size-full w-w-sidebar flex-col gap-2 overflow-x-hidden px-4 pb-8  pt-6 transition-all duration-300 hover:w-w-sidebar-open">
+      <div className="group relative flex size-full w-w-sidebar flex-col gap-2 overflow-x-hidden px-4 pb-8 pt-6 transition-all duration-300 hover:w-w-sidebar-open">
         <nav className="flex size-full flex-col gap-2">
           <Button
             asChild

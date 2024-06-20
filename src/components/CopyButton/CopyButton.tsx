@@ -28,7 +28,7 @@ const CopyButton: FC<CopyButtonProps> = ({ textToCopy, icon, label }) => {
       onClick={handleCopy}
     >
       {isCopied ? (
-        <Check className="size-3.5 " />
+        <Check className="size-3.5" />
       ) : (
         <Icon className="size-3.5 opacity-0 group-hover/btn:opacity-100" />
       )}

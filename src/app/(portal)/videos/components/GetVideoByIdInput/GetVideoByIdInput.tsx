@@ -71,7 +71,7 @@ export const GetVideoByIdInput = () => {
             maxLength={10}
             type="text"
             placeholder="{enter video ID here}"
-            className="h-5 w-full rounded-md border border-none bg-accent p-0 text-muted-foreground  focus:outline-none focus:ring-0"
+            className="h-5 w-full rounded-md border border-none bg-accent p-0 text-muted-foreground focus:outline-none focus:ring-0"
           />
         </div>
         <Button

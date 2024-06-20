@@ -18,7 +18,7 @@ export const VideoDataBlock: FC<{
 
   if (!script) return null;
 
-  // TODO Add audio player
+  // TODO: Add audio player
   return (
     <div className="h-[15.375rem] rounded-md border bg-secondary">
       <div className="flex items-center justify-between px-4 pb-2 pt-4">
@@ -37,7 +37,7 @@ export const VideoDataBlock: FC<{
         </Button>
       </div>
       <textarea
-        className=" h-48 w-full resize-none rounded-md bg-secondary px-4 pb-4 text-sm font-normal text-muted-foreground outline-none"
+        className="h-48 w-full resize-none rounded-md bg-secondary px-4 pb-4 text-sm font-normal text-muted-foreground outline-none"
         value={script}
         readOnly
       ></textarea>

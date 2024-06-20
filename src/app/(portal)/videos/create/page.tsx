@@ -7,7 +7,8 @@ import { AxiosProgressEvent } from 'axios';
 import { ArrowRight, FileText, Headphones } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { CopyApiUrl } from '@/components/CopyApiUrl';
+import { ApiCode, HttpMethods } from '@/components/Code';
+import { CopyApiUrl, URLS } from '@/components/CopyApiUrl';
 import { Layout, LayoutHeader, LayoutWrapper } from '@/components/Layout';
 import {
   Accordion,
@@ -25,9 +26,12 @@ import { useToast } from '@/components/ui/use-toast';
 
 import { ReplicaSelect } from '@/app/(portal)/videos/create/components/ReplicaSelect';
 import {
+  IVideoGenerateFormStore,
   useVideoGenerateFormStore,
   useVideoGenerateFormUndoHistory,
 } from '@/app/(portal)/videos/create/hooks/useVideoGenerateStore.hook';
+import { RQH_API_BASE_URL } from '@/constants';
+import { CreateVideoDto } from '@/hooks';
 import { useProgress } from '@/hooks/useProgress.hook';
 import { portalApi } from '@/utils';
 
@@ -53,13 +57,13 @@ const ScriptAndAudioInputsTab = () => {
       onValueChange={handleTypeChange}
       className="flex flex-1 flex-col"
     >
-      <TabsList className="mb-4 inline-flex  h-9 w-full justify-start space-x-4  rounded-none border-b bg-transparent p-0 text-muted-foreground ">
+      <TabsList className="mb-4 inline-flex h-9 w-full justify-start space-x-4 rounded-none border-b bg-transparent p-0 text-muted-foreground">
         <TabsTrigger
           className={tabsTriggerClassName}
           asChild
           value={VideoGenerationType.SCRIPT}
         >
-          <Button className=" flex space-x-1 px-0">
+          <Button className="flex space-x-1 px-0">
             <FileText size={16} />
             <span>{t('portal.videos.create.tabs.script')}</span>
           </Button>
@@ -196,6 +200,37 @@ const AdvancedInputs = () => {
   );
 };
 
+const getCreateVideoRequestBody = (
+  formState: IVideoGenerateFormStore,
+): CreateVideoDto => {
+  const result: Partial<CreateVideoDto> = {
+    replica_id: formState.replicaId,
+  };
+
+  if (formState.type === VideoGenerationType.AUDIO)
+    result.audio_url = formState.audioUrl || 'audio_url_link';
+  else if (formState.type === VideoGenerationType.SCRIPT)
+    result.script = formState.script;
+
+  if (formState.name) result.video_name = formState.name;
+
+  return result as CreateVideoDto;
+};
+
+const Code = () => {
+  const store = useVideoGenerateFormStore();
+  const body = getCreateVideoRequestBody(store);
+
+  return (
+    <ApiCode
+      className=""
+      url={`${RQH_API_BASE_URL}${URLS.video}`}
+      method={HttpMethods.POST}
+      body={body}
+    />
+  );
+};
+
 const reurl =
   /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\\.\\-]+\.[a-zA-Z]{2,5}[\\.]{0,1}/;
 
@@ -252,18 +287,18 @@ export default function VideoCreatePage() {
   };
 
   return (
-    <Layout className="flex flex-col">
+    <Layout className="flex max-h-screen flex-col">
       <LayoutHeader title="Video Generation">
         <CopyApiUrl type="POST" url="video" />
       </LayoutHeader>
       <LayoutWrapper
         onKeyDown={handleKeyDown}
-        wrapperClassName="flex flex-1 h-auto"
-        className="flex h-auto flex-1 gap-6"
+        wrapperClassName="flex flex-1 h-[calc(100vh-62px)] "
+        className="grid grid-cols-2 grid-rows-2 gap-6"
       >
         <form
           onSubmit={handleSubmit}
-          className="flex flex-1 flex-col gap-6 rounded-md border border-border bg-background p-4"
+          className="col-span-1 row-span-2 flex flex-col gap-6 rounded-md border border-border bg-background p-4"
         >
           <Badge variant="label" className="w-fit text-sm">
             Input
@@ -279,7 +314,37 @@ export default function VideoCreatePage() {
             </Button>
           </footer>
         </form>
-        <div className="flex flex-1  rounded-md border border-border bg-background p-4"></div>
+        <div className="col-span-1 row-span-1 flex w-full rounded-md border border-border bg-background p-4">
+          <Tabs
+            defaultValue="preview"
+            className="flex w-full flex-col gap-4 overflow-hidden"
+          >
+            <div className="flex justify-between">
+              <Badge variant="label" className="w-fit text-sm">
+                Preview
+              </Badge>
+
+              <TabsList>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+                <TabsTrigger value="code">Code</TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="preview" className="mt-0">
+              Preview
+            </TabsContent>
+            <TabsContent
+              value="code"
+              asChild
+              className="mt-0 flex h-full flex-col overflow-hidden"
+            >
+              <Code />
+            </TabsContent>
+          </Tabs>
+        </div>
+        {/*<div className="col-span-1 row-span-1 rounded-md border border-border bg-background p-4">*/}
+        {/*  /!*videos*!/*/}
+        {/*</div>*/}
       </LayoutWrapper>
     </Layout>
   );

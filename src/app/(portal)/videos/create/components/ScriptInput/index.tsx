@@ -53,7 +53,7 @@ export const ScriptInput = () => {
       />
       <Button
         variant="ghostSecondary"
-        className="size-10 rounded-full p-1"
+        className="size-10 min-w-10 rounded-full p-1"
         onClick={handleRandomScript}
         disabled={!randomScripts}
       >

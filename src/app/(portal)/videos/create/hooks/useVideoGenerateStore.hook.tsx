@@ -5,6 +5,8 @@ import { useStoreWithEqualityFn } from 'zustand/traditional';
 
 import { AudioTab, VideoGenerationType } from '../types';
 
+import { IReplica } from '@/types';
+
 export interface IVideoGenerateStore {
   audioTab: AudioTab;
   audio: {
@@ -24,6 +26,7 @@ export type Require<T> = {
 };
 
 export interface IVideoGenerateFormStore {
+  replicaId: IReplica['replica_id'];
   script?: string;
   audioUrl?: string;
   name?: string;
@@ -36,6 +39,7 @@ export const useVideoGenerateFormStore = create<IVideoGenerateFormStore>()(
   persist(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
     temporal(set => ({
+      replicaId: '1',
       type: VideoGenerationType.SCRIPT,
       set,
     })),

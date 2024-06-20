@@ -1,32 +1,20 @@
 'use client';
 import { FC, Fragment } from 'react';
 
-import { Check, Copy } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
 
 import { RQH_API_BASE_URL } from '@/constants';
-import { useCopyToClipboard } from '@/hooks';
 import { cn } from '@/utils';
 
 import { CopyApiUrlProps } from './types';
 
-const URLS = {
+export const URLS = {
   video: '/v2/videos',
   replica: '/v2/replicas',
 };
 
 const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id }) => {
   const URL = URLS[url];
-  const { isCopied, copyToClipboard } = useCopyToClipboard({
-    textToCopy: `${RQH_API_BASE_URL}${URL}${id ? `/${id}` : ''}`,
-  });
   const urlArr = URL.split('/').filter(Boolean);
 
   return (
@@ -36,14 +24,14 @@ const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id }) => {
           'flex items-center justify-center rounded px-2 py-0.5 font-medium',
           {
             'bg-success-foreground text-success': type === 'GET',
-            'bg-aqua-foreground text-aqua': type === 'POST',
+            'bg-progress-foreground text-progress': type === 'POST',
             'bg-destructive-foreground text-destructive': type === 'DELETE',
             'bg-secondary-foreground text-secondary': type === 'PATCH',
           },
         )}
       >
         <span
-          className={cn('text-green fond-semibold text-xs', {
+          className={cn('fond-semibold text-xs text-success', {
             'text-text': type === 'POST',
           })}
         >
@@ -66,27 +54,10 @@ const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id }) => {
           </>
         )}
       </code>
-      <TooltipProvider>
-        <Tooltip delayDuration={200}>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              className="ml-2 size-8 p-2 sm:ml-6"
-              onClick={copyToClipboard}
-            >
-              <span className="sr-only">Copy</span>
-              {isCopied ? (
-                <Check className="size-4" />
-              ) : (
-                <Copy className="size-4" />
-              )}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Copy</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <CopyToClipboardButton
+        className="ml-2 sm:ml-6"
+        textToCopy={`${RQH_API_BASE_URL}${URL}${id ? `/${id}` : ''}`}
+      />
     </div>
   );
 };

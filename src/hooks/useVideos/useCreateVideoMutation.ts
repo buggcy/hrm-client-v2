@@ -13,6 +13,7 @@ export type CreateVideoDto = {
   video_name?: IVideo['video_name'];
   background_url?: string;
   background_source_url?: string;
+  callback_url?: string;
 } & (
   | { script: IVideo['data']['script']; audio_url?: never }
   | { script?: never; audio_url: IVideo['data']['audio_url'] }

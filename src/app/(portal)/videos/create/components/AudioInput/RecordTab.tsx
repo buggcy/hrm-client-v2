@@ -73,7 +73,7 @@ export const RecordTab = () => {
   };
 
   return (
-    <div className="flex  flex-col items-center justify-center gap-6 pt-4">
+    <div className="flex flex-col items-center justify-center gap-6 pt-4">
       <Button
         type="button"
         className="size-16 rounded-full p-3 text-white shadow-icon-button"

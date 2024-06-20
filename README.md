@@ -84,7 +84,7 @@ Our project uses a structured directory layout to organize the various parts of 
         │   │   │   ├───index.ts
         │   │   │   ├───SharedComponent.tsx
         │   │   │   └───SharedComponent.test.tsx
-        │   │   │   └───types.tsx
+        │   │   │   └───types.ts
         │   ├───constants/
         |   │   ├───index.ts
         │   ├───services

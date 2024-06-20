@@ -73,7 +73,7 @@ export const UploadTab = () => {
         /*NOTE: video type added because recorded audio saves as video format*/
         accept="audio/mp4, audio/webm, video/mp4, video/webm"
       >
-        <div className="flex flex-1 flex-col items-center justify-center gap-y-4 ">
+        <div className="flex flex-1 flex-col items-center justify-center gap-y-4">
           <div
             className="cursor-pointer rounded-full bg-primary-foreground p-2"
             onClick={handleClickUpload}
