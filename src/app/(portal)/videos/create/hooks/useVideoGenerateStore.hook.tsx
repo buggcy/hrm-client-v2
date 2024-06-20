@@ -27,6 +27,7 @@ export interface IVideoGenerateFormStore {
   script?: string;
   audioUrl?: string;
   name?: string;
+  callbackUrl?: string;
   type: VideoGenerationType;
   set: StoreApi<IVideoGenerateFormStore>['setState'];
 }

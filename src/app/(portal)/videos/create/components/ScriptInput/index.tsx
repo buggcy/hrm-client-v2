@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import { WandSparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +29,12 @@ export const ScriptInput = () => {
     set({ script: e.target.value });
   };
 
+  const handleBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
+    set({
+      script: event.target.value?.trim() || '',
+    });
+  };
+
   const handleRandomScript = () => {
     set({
       script: randomScripts![Math.floor(Math.random() * randomScripts!.length)],
@@ -39,6 +47,7 @@ export const ScriptInput = () => {
         value={script}
         onChange={handleChange}
         required
+        onBlur={handleBlur}
         placeholder={t('portal.videos.create.script.placeholder')}
         className="h-full resize-none border-none p-0"
       />

@@ -13,10 +13,12 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTriggerLeftArrow,
+  AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
@@ -140,17 +142,66 @@ const KeyPressService = {
 //   );
 // };
 const AdvancedInputs = () => {
+  const [name, callbackUrl, set] = useVideoGenerateFormStore(store => [
+    store.name,
+    store.callbackUrl,
+    store.set,
+  ]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    set({ [event.target.name]: event.target.value });
+  };
+
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    set({
+      [event.target.name]: event.target.value?.trim() || '',
+    });
+  };
+
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="true" className="rounded border">
-        <AccordionTriggerLeftArrow>Advanced settings</AccordionTriggerLeftArrow>
-        <AccordionContent className="p-4 pt-0">
-          Yes. It adheres to the WAI-ARIA design pattern.
+        <AccordionTrigger className="p-4 hover:text-primary hover:no-underline">
+          Advanced settings
+        </AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 p-4 pt-0">
+          <div>
+            <Label className="mb-2 inline-block" htmlFor="name">
+              Video Name
+            </Label>
+            <Input
+              name="name"
+              value={name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder={'Test Video'}
+            />
+          </div>
+          <div>
+            <Label className="mb-2 inline-block" htmlFor="callbackUrl">
+              Callback URL
+            </Label>
+            <Input
+              name="callbackUrl"
+              value={callbackUrl}
+              type="url"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder="https://webhook.com/callback/12345"
+            />
+          </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
   );
 };
+
+const reurl =
+  /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\\.\\-]+\.[a-zA-Z]{2,5}[\\.]{0,1}/;
+
+function validateURL(url: string) {
+  return reurl.test(url);
+}
 
 export default function VideoCreatePage() {
   const { t } = useTranslation();
@@ -174,6 +225,8 @@ export default function VideoCreatePage() {
     event.preventDefault();
 
     const formState = useVideoGenerateFormStore.getState();
+    if (formState.callbackUrl && !validateURL(formState.callbackUrl))
+      console.log('open accardion');
     const metadataState = useVideoGenerateMetadataStore.getState();
 
     console.log('SUBMIT', { formState, metadataState });
