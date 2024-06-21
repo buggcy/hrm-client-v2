@@ -81,19 +81,44 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
       <DialogTrigger asChild onClick={handleOpen}>
         {children}
       </DialogTrigger>
-      <DialogContent className="flex size-full max-h-[80vh] max-w-screen-lg flex-col overflow-auto pb-0">
-        <DialogHeader className="border-b pb-4">
-          <h3 className="text-xl font-semibold">Pick a Replica</h3>
-        </DialogHeader>
-        <div className="relative">
-          <Tabs defaultValue="all" className="size-full">
-            <TabsList className="mb-6">
-              <TabsTrigger value="all">All Replicas</TabsTrigger>
-              <TabsTrigger value="personal">Personal</TabsTrigger>
-              <TabsTrigger value="studio">Studio</TabsTrigger>
-            </TabsList>
-            <TabsContent value="all">
-              <div className="space-y-8">
+      <DialogContent className="h-[80vh] max-w-screen-lg p-0">
+        <div className="relative inset-0 overflow-hidden">
+          <div className="flex size-full flex-col gap-6 overflow-auto p-6 pb-20">
+            <DialogHeader className="border-b pb-4">
+              <h3 className="text-xl font-semibold">Pick a Replica</h3>
+            </DialogHeader>
+            <Tabs defaultValue="all">
+              <TabsList className="mb-6">
+                <TabsTrigger value="all">All Replicas</TabsTrigger>
+                <TabsTrigger value="personal">Personal</TabsTrigger>
+                <TabsTrigger value="studio">Studio</TabsTrigger>
+              </TabsList>
+              <TabsContent value="all" tabIndex={-1}>
+                <div className="space-y-8">
+                  <SelectReplicaBlock
+                    title="Personal Replicas"
+                    replicas={personalReplicas}
+                    isLoading={isLoading}
+                    isPersonalReplicas
+                    isMuted={isMuted}
+                    toggleMute={toggleMute}
+                    onMuteChange={onMuteChange}
+                    onSelect={handleSelect}
+                    selectedReplica={selectedReplica}
+                  />
+                  <SelectReplicaBlock
+                    title="Studio Replicas"
+                    replicas={studioReplicas}
+                    isLoading={isLoading}
+                    isMuted={isMuted}
+                    toggleMute={toggleMute}
+                    onMuteChange={onMuteChange}
+                    onSelect={handleSelect}
+                    selectedReplica={selectedReplica}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="personal" tabIndex={-1}>
                 <SelectReplicaBlock
                   title="Personal Replicas"
                   replicas={personalReplicas}
@@ -105,6 +130,8 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
                   onSelect={handleSelect}
                   selectedReplica={selectedReplica}
                 />
+              </TabsContent>
+              <TabsContent value="studio" tabIndex={-1}>
                 <SelectReplicaBlock
                   title="Studio Replicas"
                   replicas={studioReplicas}
@@ -115,36 +142,10 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
                   onSelect={handleSelect}
                   selectedReplica={selectedReplica}
                 />
-              </div>
-            </TabsContent>
-            <TabsContent value="personal">
-              <SelectReplicaBlock
-                title="Personal Replicas"
-                replicas={personalReplicas}
-                isLoading={isLoading}
-                isPersonalReplicas
-                isMuted={isMuted}
-                toggleMute={toggleMute}
-                onMuteChange={onMuteChange}
-                onSelect={handleSelect}
-                selectedReplica={selectedReplica}
-              />
-            </TabsContent>
-            <TabsContent value="studio">
-              <SelectReplicaBlock
-                title="Studio Replicas"
-                replicas={studioReplicas}
-                isLoading={isLoading}
-                isMuted={isMuted}
-                toggleMute={toggleMute}
-                onMuteChange={onMuteChange}
-                onSelect={handleSelect}
-                selectedReplica={selectedReplica}
-              />
-            </TabsContent>
-          </Tabs>
-
-          <DialogFooter className="sticky bottom-0 -ml-6 mt-auto w-[calc(100%+3rem)] justify-end border-t bg-background py-3 pr-6">
+              </TabsContent>
+            </Tabs>
+          </div>
+          <DialogFooter className="sticky bottom-0 justify-end border-t bg-background py-3 pr-6">
             <Button onClick={handleSubmit}>Select</Button>
           </DialogFooter>
         </div>

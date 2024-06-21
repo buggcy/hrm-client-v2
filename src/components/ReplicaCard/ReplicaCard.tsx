@@ -87,8 +87,7 @@ const useReplicasVideoMute = () => {
 
 // TODO: add delete functionality
 // TODO: add rename functionality
-// TODO: disable create video button
-// TODO: modify this card for select replica modal
+// TODO: add keyboard support
 
 const ReplicaCard = ({
   replica,
@@ -149,7 +148,9 @@ const ReplicaCard = ({
     videoRef.current?.pause();
   };
 
-  const handleFullScreen = () => {
+  const handleFullScreen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     const video = videoRef.current;
     if (video?.requestFullscreen) {
       void video.requestFullscreen();
@@ -160,9 +161,15 @@ const ReplicaCard = ({
     onSelect?.(replica);
   };
 
+  const handleToggleMute = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleMute();
+  };
+
   return (
     <Card
-      className={cn('group rounded-md hover:shadow', {
+      className={cn('group rounded-md outline-primary hover:shadow', {
         'ring ring-primary': selected,
         'cursor-pointer': isSelectable,
       })}
@@ -216,26 +223,46 @@ const ReplicaCard = ({
           </div>
           {thumbnail_video_url && (
             <div className="absolute right-2 top-2 hidden flex-col gap-2 group-hover:flex">
-              <Button
-                variant="card"
-                size="icon"
-                onClick={toggleMute}
-                className="size-8 rounded-full"
-              >
-                {isMuted ? (
-                  <VolumeX className="size-5" />
-                ) : (
-                  <Volume2Icon className="size-5" />
-                )}
-              </Button>
-              <Button
-                variant="card"
-                size="icon"
-                onClick={handleFullScreen}
-                className="size-8 rounded-full"
-              >
-                <Scaling className="size-5" />
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="card"
+                      size="icon"
+                      onClick={handleToggleMute}
+                      className="size-8 rounded-full"
+                    >
+                      {isMuted ? (
+                        <VolumeX className="size-5" />
+                      ) : (
+                        <Volume2Icon className="size-5" />
+                      )}
+                      <span className="sr-only">Toggle Mute</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p className="max-w-[40ch]">Toggle Mute</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="card"
+                      size="icon"
+                      onClick={handleFullScreen}
+                      className="size-8 rounded-full"
+                    >
+                      <Scaling className="size-5" />
+                      <span className="sr-only">Toggle Fullscreen</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p className="max-w-[40ch]">Toggle Fullscreen</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           )}
         </div>
@@ -282,22 +309,24 @@ const ReplicaCard = ({
             </Popover>
           )}
         </div>
-        {!isSelectable && (
-          <Button
-            disabled={status !== ReplicaStatus.COMPLETED}
-            asChild
-            variant="link"
-            className="mt-2.5 h-5 p-0 text-primary"
-          >
-            <Link
-              aria-disabled={status !== ReplicaStatus.COMPLETED}
-              href={`/videos/create/replica=${replica_id}`}
+        {!isSelectable &&
+          (status === ReplicaStatus.COMPLETED ? (
+            <Button asChild variant="link" className="mt-2.5 h-5 p-0">
+              <Link href={`/videos/create/replica=${replica_id}`}>
+                Create Video
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          ) : (
+            <Button
+              disabled
+              variant="link"
+              className="mt-2.5 h-5 p-0 text-muted-foreground"
             >
               Create Video
               <ArrowRight className="size-4" />
-            </Link>
-          </Button>
-        )}
+            </Button>
+          ))}
       </CardFooter>
     </Card>
   );

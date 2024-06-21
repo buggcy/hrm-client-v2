@@ -85,7 +85,7 @@ export default function ReplicasPage() {
               <Loader className="size-6 animate-spin" />
             </div>
           )}
-          <TabsContent value="all">
+          <TabsContent value="all" tabIndex={-1}>
             <div className="space-y-10">
               <ReplicaBlock
                 title="Personal Replicas"
@@ -106,7 +106,7 @@ export default function ReplicasPage() {
               />
             </div>
           </TabsContent>
-          <TabsContent value="personal">
+          <TabsContent value="personal" tabIndex={-1}>
             <ReplicaBlock
               title="Personal Replicas"
               replicas={personalReplicas}
@@ -117,7 +117,7 @@ export default function ReplicasPage() {
               onMuteChange={onMuteChange}
             />
           </TabsContent>
-          <TabsContent value="studio">
+          <TabsContent value="studio" tabIndex={-1}>
             <ReplicaBlock
               title="Studio Replicas"
               replicas={studioReplicas}

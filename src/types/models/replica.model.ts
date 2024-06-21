@@ -20,7 +20,7 @@ export const IReplica = z.object({
   error_message: z.string().nullable().optional(),
   created_at: z.string().transform(str => new Date(str)),
   updated_at: z.string().transform(str => new Date(str)),
-  replica_type: z.nativeEnum(ReplicaType),
+  replica_type: z.nativeEnum(ReplicaType).default(ReplicaType.STUDIO),
 });
 
 export type IReplica = z.infer<typeof IReplica>;
