@@ -1,5 +1,6 @@
 import { FC } from 'react';
 
+import { InfoIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Badge, BadgeProps } from '@/components/ui/badge';
@@ -32,7 +33,10 @@ const StatusBadge: FC<StatusBadgeProps> = ({ status }) => {
   const { t } = useTranslation();
   return (
     <Badge variant={badgeVariantMap[status] as BadgeProps['variant']}>
-      {t(statusTextMap[status])}
+      {t(statusTextMap[status])}{' '}
+      {(status === VideoStatus.ERROR || status === ReplicaStatus.ERROR) && (
+        <InfoIcon className="ml-1 size-4 text-destructive" />
+      )}
     </Badge>
   );
 };

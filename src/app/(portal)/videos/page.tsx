@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { keepPreviousData } from '@tanstack/react-query';
 import {
@@ -20,6 +21,7 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Pagination } from '@/components/Pagination';
+import { SelectReplicaDialog } from '@/components/SelectReplicaDialog';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
 import {
@@ -48,13 +50,14 @@ import { useVideosQuery } from '@/hooks';
 import { CopyRequestID } from './components/CopyRequestID/CopyRequestID';
 import { GetVideoByIdInput } from './components/GetVideoByIdInput';
 
-import { VideoStatus } from '@/types';
+import { IReplica, VideoStatus } from '@/types';
 
 const LIMIT = 10;
 
 export default function VideosPage() {
   const { video_id, onOpenChange } = useVideoDetailsSheet();
   const [page, setPage] = useState(1);
+  const router = useRouter();
 
   const {
     data: videos,
@@ -102,6 +105,10 @@ export default function VideosPage() {
   const backgroundRefetching = !isPlaceholderData && isRefetching && !isLoading;
   const manualRefetching = isPlaceholderData && isRefetching && !isLoading;
 
+  const handleCreateVideo = (replica: IReplica) => {
+    router.push(`/videos/create?replica_id=${replica.replica_id}`);
+  };
+
   return (
     <Layout>
       <LayoutHeader title={'Video Library'}>
@@ -110,7 +117,9 @@ export default function VideosPage() {
           <Button className="ml-auto" variant="outline">
             Read Docs
           </Button>
-          <Button>Create Video</Button>
+          <SelectReplicaDialog onSubmit={handleCreateVideo}>
+            <Button>Create Video</Button>
+          </SelectReplicaDialog>
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper>

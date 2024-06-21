@@ -6,6 +6,11 @@ export enum ReplicaStatus {
   COMPLETED = 'completed',
 }
 
+export enum ReplicaType {
+  STUDIO = 'system',
+  PERSONAL = 'user',
+}
+
 export const IReplica = z.object({
   replica_id: z.string(),
   replica_name: z.string(),
@@ -15,6 +20,7 @@ export const IReplica = z.object({
   error_message: z.string().nullable().optional(),
   created_at: z.string().transform(str => new Date(str)),
   updated_at: z.string().transform(str => new Date(str)),
+  replica_type: z.nativeEnum(ReplicaType),
 });
 
 export type IReplica = z.infer<typeof IReplica>;

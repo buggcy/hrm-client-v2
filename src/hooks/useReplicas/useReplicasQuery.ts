@@ -16,7 +16,7 @@ const IReplicasResponse = z.object({
 type IReplicasResponse = z.infer<typeof IReplicasResponse>;
 
 export const getReplicas = () =>
-  rqhApi.get('/v2/replicas').then(schemaParse(IReplicasResponse));
+  rqhApi.get('/v2/replicas?verbose=true').then(schemaParse(IReplicasResponse));
 
 export const useReplicasQuery = (
   options?: Omit<UseQueryOptions<IReplicasResponse>, 'queryKey' | 'queryFn'>,

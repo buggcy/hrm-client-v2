@@ -1,0 +1,102 @@
+import Link from 'next/link';
+
+import { ArrowRightIcon, UserPlusIcon } from 'lucide-react';
+
+import { ReplicaCard } from '@/components/ReplicaCard';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+import { IReplica } from '@/types';
+
+const ReplicaBlock = ({
+  title,
+  isMuted,
+  replicas,
+  isLoading,
+  isPersonalReplicas,
+  toggleMute,
+  onMuteChange,
+}: {
+  title: string;
+  isMuted: boolean;
+  replicas?: IReplica[];
+  isLoading: boolean;
+  isPersonalReplicas?: boolean;
+  toggleMute: () => void;
+  onMuteChange: (isMuted: boolean) => void;
+}) => {
+  return (
+    <div className="space-y-4">
+      <h3 className="font-semibold">
+        {title}{' '}
+        {!!replicas?.length && (
+          <span className="text-muted-foreground">({replicas?.length})</span>
+        )}
+      </h3>
+      {isLoading && (
+        <div className="grid grid-cols-[repeat(auto-fill,_minmax(276px,_1fr))] gap-6">
+          <Card className="rounded-md">
+            <CardContent className="aspect-video p-4">
+              <Skeleton className="size-full rounded-md" />
+            </CardContent>
+          </Card>
+          <Card className="rounded-md">
+            <CardContent className="aspect-video p-4">
+              <Skeleton className="size-full rounded-md" />
+            </CardContent>
+          </Card>
+          <Card className="rounded-md">
+            <CardContent className="aspect-video p-4">
+              <Skeleton className="size-full rounded-md" />
+            </CardContent>
+          </Card>
+          <Card className="rounded-md">
+            <CardContent className="aspect-video p-4">
+              <Skeleton className="size-full rounded-md" />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+      {replicas?.length === 0 && isPersonalReplicas && (
+        <Card>
+          <CardContent>
+            <div className="flex flex-col items-center gap-4 py-14 text-center">
+              <div className="flex size-8 items-center justify-center rounded-full bg-primary-foreground">
+                <UserPlusIcon className="size-4 text-primary" />
+              </div>
+              <p className="max-w-[30ch] text-muted-foreground">
+                Create your first personal replica with
+                <span className="font-medium text-foreground">
+                  {' '}
+                  just 2 minutes{' '}
+                </span>
+                of recording!
+              </p>
+              <Button variant="link" asChild size="sm">
+                <Link href="/replicas/create">
+                  Create Replica <ArrowRightIcon className="inline size-4" />
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      {!!replicas?.length && (
+        <div className="mb-6 grid grid-cols-[repeat(auto-fill,_minmax(276px,_1fr))] gap-6">
+          {replicas.map(replica => (
+            <ReplicaCard
+              isMuted={isMuted}
+              toggleMute={toggleMute}
+              onMuteChange={onMuteChange}
+              key={replica.replica_id}
+              replica={replica}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export { ReplicaBlock };
