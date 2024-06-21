@@ -51,14 +51,18 @@ export const ScriptInput = () => {
         placeholder={t('portal.videos.create.script.placeholder')}
         className="h-full resize-none border-none p-0"
       />
-      <Button
-        variant="ghostSecondary"
-        className="size-10 min-w-10 rounded-full p-1"
-        onClick={handleRandomScript}
-        disabled={!randomScripts}
-      >
-        <WandSparkles size={16} />
-      </Button>
+      <div>
+        <span className="sr-only">Random script</span>
+        <Button
+          type="button"
+          variant="ghostSecondary"
+          className="size-10 min-w-10 rounded-full p-1"
+          onClick={handleRandomScript}
+          disabled={!randomScripts}
+        >
+          <WandSparkles size={16} />
+        </Button>
+      </div>
     </div>
   );
 };

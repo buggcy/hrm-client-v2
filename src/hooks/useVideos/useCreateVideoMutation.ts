@@ -3,10 +3,48 @@ import {
   useMutation,
   UseMutationOptions,
 } from '@tanstack/react-query';
+import { z } from 'zod';
 
 import { rqhApi } from '@/utils';
 
 import { IReplica, IVideo } from '@/types';
+
+//
+export const CreateVideoSchema = z.object({
+  replica_id: z.string(),
+  // Either script or audio_url is required
+  script: z.string().optional(),
+  audio_url: z
+    .string()
+    .url({
+      message: 'Audio URL must be a valid URL',
+    })
+    .optional(),
+  // Optional fields
+  video_name: z.string().optional(),
+  background_url: z
+    .string()
+    .url({
+      message: 'Background URL must be a valid URL',
+    })
+    .optional(),
+  background_source_url: z
+    .string()
+    .url({
+      message: 'Background source URL must be a valid URL',
+    })
+    .optional(),
+  callback_url: z
+    .string()
+    .url({
+      message: 'Callback URL must be a valid URL',
+    })
+    .optional(),
+});
+// .refine(data => data.script || data.audio_url, {
+//   message: 'Either script or audio_url is required',
+// }) as unknown as z.AnyZodObject;
+export type CreateVideoSchema = z.infer<typeof CreateVideoSchema>;
 
 export type CreateVideoDto = {
   replica_id: IReplica['replica_id'];

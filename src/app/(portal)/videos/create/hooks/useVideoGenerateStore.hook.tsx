@@ -3,6 +3,8 @@ import { create, StoreApi } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
+import { DEFAULT_REPLICA } from '@/app/(portal)/videos/create/components/ReplicaSelect';
+
 import { AudioTab, VideoGenerationType } from '../types';
 
 import { IReplica } from '@/types';
@@ -18,6 +20,7 @@ export interface IVideoGenerateStore {
     file?: File;
     url: string;
   } | null;
+  isAdvancedSettingsAccordionOpen: boolean;
   set: StoreApi<IVideoGenerateStore>['setState'];
 }
 
@@ -31,6 +34,8 @@ export interface IVideoGenerateFormStore {
   audioUrl?: string;
   name?: string;
   callbackUrl?: string;
+  backgroundUrl?: string;
+  backgroundSourceUrl?: string;
   type: VideoGenerationType;
   set: StoreApi<IVideoGenerateFormStore>['setState'];
 }
@@ -39,7 +44,7 @@ export const useVideoGenerateFormStore = create<IVideoGenerateFormStore>()(
   persist(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
     temporal(set => ({
-      replicaId: '1',
+      replicaId: DEFAULT_REPLICA.replica_id,
       type: VideoGenerationType.SCRIPT,
       set,
     })),
@@ -59,8 +64,7 @@ export const useVideoGenerateFormUndoHistory = <T,>(
 
 export const useVideoGenerateMetadataStore = create<IVideoGenerateStore>(
   set => ({
-    isValid: false,
-
+    isAdvancedSettingsAccordionOpen: false,
     audioTab: AudioTab.UPLOAD,
     audio: null,
     background: null,

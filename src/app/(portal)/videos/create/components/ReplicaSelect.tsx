@@ -10,9 +10,9 @@ import { isProd } from '@/constants';
 
 import { IReplica, ReplicaStatus } from '@/types';
 
-const DEFAULT_REPLICA: IReplica = {
+export const DEFAULT_REPLICA: IReplica = {
   // TODO: replace with actual data
-  replica_id: isProd ? '1' : '0',
+  replica_id: isProd ? '1' : 'r2a0fd8fc8',
   replica_name: 'Bailey',
   status: ReplicaStatus.COMPLETED,
   created_at: new Date(),

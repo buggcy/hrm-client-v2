@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosProgressEvent } from 'axios';
 import { ArrowRight, FileText, Headphones } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 import { ApiCode, HttpMethods } from '@/components/Code';
 import { CopyApiUrl, URLS } from '@/components/CopyApiUrl';
@@ -31,9 +32,14 @@ import {
   useVideoGenerateFormUndoHistory,
 } from '@/app/(portal)/videos/create/hooks/useVideoGenerateStore.hook';
 import { RQH_API_BASE_URL } from '@/constants';
-import { CreateVideoDto } from '@/hooks';
+import {
+  CreateVideoDto,
+  CreateVideoSchema,
+  useCreateVideoMutation,
+  useReplicaQuery,
+} from '@/hooks';
 import { useProgress } from '@/hooks/useProgress.hook';
-import { portalApi } from '@/utils';
+import { portalApi, schemaParse } from '@/utils';
 
 import { AudioInput } from './components/AudioInput';
 import { ScriptInput } from './components/ScriptInput';
@@ -93,19 +99,6 @@ const ScriptAndAudioInputsTab = () => {
   );
 };
 
-// const formSchema = z.object({
-//   replicaId: z.string(),
-//   name: z.string().trim().min(1).optional(),
-// });
-
-// export const scriptFormSchema = formSchema.extend({
-//   script: z.string().trim().min(1),
-// });
-//
-// export const audioFormSchema = formSchema.extend({
-//   audioUrl: z.string(),
-// });
-
 type onUploadProgress = (progress: AxiosProgressEvent) => void;
 
 const uploadAudio = ({
@@ -151,7 +144,11 @@ const AdvancedInputs = () => {
     store.callbackUrl,
     store.set,
   ]);
-
+  const [isAdvancedSettingsAccordionOpen, setMetadata] =
+    useVideoGenerateMetadataStore(store => [
+      store.isAdvancedSettingsAccordionOpen,
+      store.set,
+    ]);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     set({ [event.target.name]: event.target.value });
   };
@@ -161,9 +158,17 @@ const AdvancedInputs = () => {
       [event.target.name]: event.target.value?.trim() || '',
     });
   };
+  const handleAccordionValueChange = (value: string) => {
+    setMetadata({ isAdvancedSettingsAccordionOpen: value === 'true' });
+  };
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion
+      type="single"
+      collapsible
+      value={isAdvancedSettingsAccordionOpen ? 'true' : ''}
+      onValueChange={handleAccordionValueChange}
+    >
       <AccordionItem value="true" className="rounded border">
         <AccordionTrigger className="p-4 hover:text-primary hover:no-underline">
           Advanced settings
@@ -213,6 +218,10 @@ const getCreateVideoRequestBody = (
     result.script = formState.script;
 
   if (formState.name) result.video_name = formState.name;
+  if (formState.callbackUrl) result.callback_url = formState.callbackUrl;
+  if (formState.backgroundUrl) result.background_url = formState.backgroundUrl;
+  if (formState.backgroundSourceUrl)
+    result.background_source_url = formState.backgroundSourceUrl;
 
   return result as CreateVideoDto;
 };
@@ -231,12 +240,24 @@ const Code = () => {
   );
 };
 
-const reurl =
-  /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\\.\\-]+\.[a-zA-Z]{2,5}[\\.]{0,1}/;
+const Preview = () => {
+  const replicaId = useVideoGenerateFormStore(state => state.replicaId);
+  const { data } = useReplicaQuery(replicaId);
 
-function validateURL(url: string) {
-  return reurl.test(url);
-}
+  return (
+    <div className="pointer-events-none relative size-full overflow-hidden rounded">
+      {/*TODO: remove on video loaded*/}
+      <div className="animate-fadeIn absolute -top-6 mb-10 flex size-full items-center justify-center">
+        Loading...
+      </div>
+      <video
+        className="absolute size-full rounded object-cover"
+        preload="auto"
+        src={data?.thumbnail_video_url as string}
+      />
+    </div>
+  );
+};
 
 export default function VideoCreatePage() {
   const { t } = useTranslation();
@@ -245,7 +266,8 @@ export default function VideoCreatePage() {
   const { onUploadProgress, progress, reset } = useProgress();
   const { mutateAsync: uploadAudio, isPending: isUploadingAudio } =
     useUploadAudioMutation();
-
+  const { mutateAsync: createVideo, isPending: isSumbiting } =
+    useCreateVideoMutation();
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (KeyPressService.isUndo(event)) {
       event.preventDefault();
@@ -260,30 +282,52 @@ export default function VideoCreatePage() {
     event.preventDefault();
 
     const formState = useVideoGenerateFormStore.getState();
-    if (formState.callbackUrl && !validateURL(formState.callbackUrl))
-      console.log('open accardion');
     const metadataState = useVideoGenerateMetadataStore.getState();
 
-    console.log('SUBMIT', { formState, metadataState });
+    const data = getCreateVideoRequestBody(formState);
 
     try {
-      if (formState.type === VideoGenerationType.AUDIO) {
-        if (!formState.audioUrl) {
-          if (metadataState.audio?.file)
-            await uploadAudio({
+      schemaParse(CreateVideoSchema)(data);
+
+      try {
+        if (formState.type === VideoGenerationType.AUDIO) {
+          if (!formState.audioUrl && metadataState.audio?.file) {
+            const url = await uploadAudio({
               file: metadataState.audio.file,
               onUploadProgress,
-            }).then(reset);
-          // NEVER REACH: audio input is required
-          else throw new Error('Audio is required');
+            });
+            reset();
+            formState.set({ audioUrl: url });
+            data.audio_url = url;
+          }
         }
+
+        // TODO: throw 18n error
+        await createVideo(data);
+      } catch (error) {
+        toast({
+          title: t('portal.videos.create.error'),
+          description: (error as Error).message,
+        });
       }
-    } catch (error) {
+    } catch (_error) {
+      const { issues } = _error as z.ZodError<CreateVideoSchema>;
+      const message = issues.map(issue => issue.message).join(',');
+      const paths = issues.flatMap(issue => issue.path[0]);
+
       toast({
-        title: t('portal.videos.create.error'),
-        description: (error as Error).message,
+        title: 'Error',
+        description: message,
       });
+
+      if (paths.some(path => path === 'callback_url'))
+        //   // TODO: focus on input
+        metadataState.set({
+          isAdvancedSettingsAccordionOpen: true,
+        });
     }
+
+    console.log('SUBMIT', { formState, metadataState });
   };
 
   return (
@@ -309,6 +353,7 @@ export default function VideoCreatePage() {
           <footer className="flex flex-col items-end">
             <Separator className="mb-4" />
             {isUploadingAudio && `Uploading audio ${progress}%`}
+            {isSumbiting && 'Submitting...'}
             <Button type="submit">
               Generate <ArrowRight size={16} className="ml-1" />
             </Button>
@@ -317,9 +362,9 @@ export default function VideoCreatePage() {
         <div className="col-span-1 row-span-1 flex w-full rounded-md border border-border bg-background p-4">
           <Tabs
             defaultValue="preview"
-            className="flex w-full flex-col gap-4 overflow-hidden"
+            className="flex w-full flex-col overflow-hidden rounded"
           >
-            <div className="flex justify-between">
+            <div className="mb-4 flex justify-between">
               <Badge variant="label" className="w-fit text-sm">
                 Preview
               </Badge>
@@ -330,8 +375,12 @@ export default function VideoCreatePage() {
               </TabsList>
             </div>
 
-            <TabsContent value="preview" className="mt-0">
-              Preview
+            <TabsContent
+              value="preview"
+              asChild
+              className="mt-0 flex size-full overflow-hidden"
+            >
+              <Preview />
             </TabsContent>
             <TabsContent
               value="code"
