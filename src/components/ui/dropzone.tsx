@@ -66,9 +66,9 @@ export const Dropzone = React.forwardRef<HTMLInputElement, DropzoneProps>(
     return (
       <div
         className={cn(
-          'border border-transparent p-4',
+          'h-full rounded border border-dashed',
           {
-            'rounded-md border-dashed border-primary': isDragging,
+            'border-primary': isDragging,
           },
           className,
         )}

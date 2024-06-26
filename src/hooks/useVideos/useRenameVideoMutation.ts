@@ -10,7 +10,6 @@ export const useRenameVideoMutation = (
   options?: UseMutationOptions<void, Error, RenameVideoDto>,
 ) =>
   useMutation<void, Error, RenameVideoDto>({
-    mutationKey: ['rename-video'],
     mutationFn: ({ video_id, video_name }: RenameVideoDto) =>
       rqhApi.patch(`/v2/videos/${video_id}/name`, {
         video_name,

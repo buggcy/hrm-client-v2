@@ -73,13 +73,13 @@ export const RecordTab = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6 pt-4">
+    <div className="flex h-full flex-col items-center justify-center gap-6 pt-4">
       <Button
         type="button"
         className="size-16 rounded-full p-3 text-white shadow-icon-button"
         onClick={handleClick}
       >
-        {isRecording ? <Square size={32} /> : <Mic size={32} />}
+        {isRecording ? <Square fill="white" size={32} /> : <Mic size={32} />}
       </Button>
 
       {isRecording && <p className="py-2">{formatTime(duration)}</p>}

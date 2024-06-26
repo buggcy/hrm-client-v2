@@ -18,7 +18,7 @@ export const ShareFooterButtons: FC<{
 }> = ({ className, status, downloadUrl, hostedUrl }) => {
   const { t } = useTranslation();
   const { isCopied, copyToClipboard } = useCopyToClipboard({
-    textToCopy: hostedUrl,
+    textToCopy: hostedUrl as string,
   });
 
   const handleDownload = () => {

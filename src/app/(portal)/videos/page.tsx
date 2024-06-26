@@ -53,6 +53,22 @@ import { VideoStatus } from '@/types';
 
 const LIMIT = 10;
 
+const getIcon = (status: VideoStatus) => {
+  switch (status) {
+    case VideoStatus.GENERATING:
+    case VideoStatus.QUEUED:
+      return <Loader className="size-6 text-progress" />;
+    case VideoStatus.ERROR:
+      return <TriangleAlert className="size-6 text-destructive" />;
+    case VideoStatus.READY:
+      return <Video className="size-6" />;
+    case VideoStatus.DELETED:
+      return <Trash2 className="size-6 text-destructive" />;
+    default:
+      return <Video className="size-6" />;
+  }
+};
+
 export default function VideosPage() {
   const { video_id, onOpenChange } = useVideoDetailsSheet();
   const [page, setPage] = useState(1);
@@ -66,7 +82,7 @@ export default function VideosPage() {
     queryParams: {
       page: page - 1,
       limit: LIMIT,
-      filter_out_status: [VideoStatus.QUEUED, VideoStatus.DELETED].join(','),
+      filter_out_status: VideoStatus.DELETED,
     },
     placeholderData: keepPreviousData,
     refetchInterval(query) {
@@ -82,22 +98,6 @@ export default function VideosPage() {
     },
     refetchOnWindowFocus: true,
   });
-
-  const getIcon = (status: VideoStatus) => {
-    switch (status) {
-      case VideoStatus.GENERATING:
-      case VideoStatus.QUEUED:
-        return <Loader className="size-6 text-progress" />;
-      case VideoStatus.ERROR:
-        return <TriangleAlert className="size-6 text-destructive" />;
-      case VideoStatus.READY:
-        return <Video className="size-6" />;
-      case VideoStatus.DELETED:
-        return <Trash2 className="size-6 text-destructive" />;
-      default:
-        return <Video className="size-6" />;
-    }
-  };
 
   const initialLoading = isLoading;
   const backgroundRefetching = !isPlaceholderData && isRefetching && !isLoading;

@@ -179,7 +179,7 @@ export const ApiCode = ({
           <CopyToClipboardButton textToCopy={code} />
         </header>
         <Code
-          className="overflow-hidden"
+          className="h-full overflow-hidden"
           value={code}
           language={language}
           theme={resolvedTheme}

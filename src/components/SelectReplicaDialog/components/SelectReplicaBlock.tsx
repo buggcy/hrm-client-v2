@@ -14,7 +14,7 @@ const SelectReplicaBlock = ({
   isMuted,
   replicas,
   isLoading,
-  selectedReplica,
+  selectedReplicaId,
   onSelect,
   isPersonalReplicas,
   toggleMute,
@@ -24,7 +24,7 @@ const SelectReplicaBlock = ({
   isMuted: boolean;
   replicas?: IReplica[];
   isLoading: boolean;
-  selectedReplica?: IReplica | null;
+  selectedReplicaId?: IReplica['replica_id'];
   onSelect: (replica: IReplica) => void;
   isPersonalReplicas?: boolean;
   toggleMute: () => void;
@@ -89,7 +89,7 @@ const SelectReplicaBlock = ({
               key={replica.replica_id}
               replica={replica}
               onSelect={onSelect}
-              selected={selectedReplica?.replica_id === replica.replica_id}
+              selected={selectedReplicaId === replica.replica_id}
             />
           ))}
       </div>

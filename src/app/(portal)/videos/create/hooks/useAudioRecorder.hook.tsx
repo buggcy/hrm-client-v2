@@ -6,6 +6,7 @@ interface IAudioRecordingStore {
   file: Blob | null;
   duration: number;
   isRecording: boolean;
+  isInitializing: boolean;
   isCanceled: boolean;
   set: StoreApi<IAudioRecordingStore>['setState'];
   incrementDuration: () => void;
@@ -16,11 +17,18 @@ const useAudioRecordingStore = create<IAudioRecordingStore>(set => ({
   file: null,
   duration: 0,
   isRecording: false,
+  isInitializing: false,
   isCanceled: false,
   set,
   incrementDuration: () => set(({ duration }) => ({ duration: duration + 1 })),
   reset: () =>
-    set({ file: null, duration: 0, isRecording: false, isCanceled: false }),
+    set({
+      file: null,
+      duration: 0,
+      isRecording: false,
+      isCanceled: false,
+      isInitializing: false,
+    }),
 }));
 
 const AUDIO_TYPES = [
@@ -43,8 +51,15 @@ const getSupportedAudioTypeAndExtension = () => {
 export function useAudioRecorder(deviceId?: MediaDeviceInfo['deviceId']) {
   const mediaRecorder = useRef<MediaRecorder>();
   const timerInterval = useRef<NodeJS.Timeout>();
-  const { file, duration, isRecording, set, incrementDuration, reset } =
-    useAudioRecordingStore();
+  const {
+    file,
+    duration,
+    isRecording,
+    set,
+    incrementDuration,
+    reset,
+    isInitializing,
+  } = useAudioRecordingStore();
 
   const _startTimer = () => {
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
@@ -56,11 +71,19 @@ export function useAudioRecorder(deviceId?: MediaDeviceInfo['deviceId']) {
   };
 
   const record = () => {
+    if (isInitializing || isRecording)
+      return new Promise<{
+        file: File;
+        duration: number;
+      } | null>((_, reject) => {
+        reject(new Error('Recording is in progress'));
+      });
+
     return new Promise<{
       file: File;
       duration: number;
     } | null>((resolve, reject) => {
-      if (isRecording) reject(new Error('Recording is in progress'));
+      set({ isInitializing: true });
 
       reset();
       _stopTimer();
@@ -98,7 +121,7 @@ export function useAudioRecorder(deviceId?: MediaDeviceInfo['deviceId']) {
             set({ isRecording: false });
           });
 
-          set({ isRecording: true });
+          set({ isRecording: true, isInitializing: false });
           recorder.start();
           _startTimer();
         })

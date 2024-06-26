@@ -38,20 +38,22 @@ export const Code: React.FC<SyntaxHighlighterProps> = ({
   theme,
   ...props
 }) => (
-  <div className={className}>
-    <_SyntaxHighlighter
-      customStyle={{
-        marginTop: 0,
-        height: '100%',
-        overflow: 'scroll',
-        position: 'relative',
-        scrollbarWidth: 'none',
-      }}
-      // showLineNumbers
-      {...props}
-      style={theme === 'dark' ? darkTheme : lightTheme}
-    >
-      {value}
-    </_SyntaxHighlighter>
-  </div>
+  <>
+    <div className={className}>
+      <_SyntaxHighlighter
+        customStyle={{
+          marginTop: 0,
+          height: '100%',
+          overflow: 'scroll',
+          position: 'relative',
+          scrollbarWidth: 'none',
+        }}
+        // showLineNumbers
+        {...props}
+        style={theme === 'dark' ? darkTheme : lightTheme}
+      >
+        {value}
+      </_SyntaxHighlighter>
+    </div>
+  </>
 );

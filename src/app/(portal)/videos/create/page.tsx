@@ -1,16 +1,31 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import Link from 'next/link';
 
-import { useMutation } from '@tanstack/react-query';
+import { Query, useMutation } from '@tanstack/react-query';
 import { AxiosProgressEvent } from 'axios';
-import { ArrowRight, FileText, Headphones } from 'lucide-react';
+import {
+  ArrowRight,
+  ChevronRight,
+  FileText,
+  Headphones,
+  Loader,
+  Trash2,
+  TriangleAlert,
+  Video,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { ApiCode, HttpMethods } from '@/components/Code';
 import { CopyApiUrl, URLS } from '@/components/CopyApiUrl';
-import { Layout, LayoutHeader, LayoutWrapper } from '@/components/Layout';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutHeaderButtonsBlock,
+  LayoutWrapper,
+} from '@/components/Layout';
 import {
   Accordion,
   AccordionContent,
@@ -22,9 +37,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/components/ui/use-toast';
 
+import {
+  useVideoDetailsSheet,
+  VideoDetailsSheet,
+} from '@/app/(portal)/videos/components/VideoDetailsSheet';
 import { ReplicaSelect } from '@/app/(portal)/videos/create/components/ReplicaSelect';
 import {
   IVideoGenerateFormStore,
@@ -35,16 +56,21 @@ import { RQH_API_BASE_URL } from '@/constants';
 import {
   CreateVideoDto,
   CreateVideoSchema,
+  IVideosResponse,
   useCreateVideoMutation,
   useReplicaQuery,
+  useVideosQuery,
 } from '@/hooks';
 import { useProgress } from '@/hooks/useProgress.hook';
-import { portalApi, schemaParse } from '@/utils';
+import { queryClient } from '@/libs';
+import { cn, portalApi, schemaParse } from '@/utils';
 
 import { AudioInput } from './components/AudioInput';
 import { ScriptInput } from './components/ScriptInput';
 import { useVideoGenerateMetadataStore } from './hooks';
-import { VideoGenerationType } from './types';
+import { VideoBackgroundType, VideoGenerationType } from './types';
+
+import { IVideo, VideoStatus } from '@/types';
 
 const tabsTriggerClassName =
   'inline-flex items-center  justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50  relative h-9 rounded-none border-b-2 border-b-transparent !bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none  data-[state=active]:border-b-black data-[state=active]:focus:border-b-primary data-[state=active]:hover:border-b-primary focus:!text-primary hover:!text-primary data-[state=active]:text-foreground data-[state=active]:border-foreground data-[state=active]:shadow-none';
@@ -63,7 +89,7 @@ const ScriptAndAudioInputsTab = () => {
       onValueChange={handleTypeChange}
       className="flex flex-1 flex-col"
     >
-      <TabsList className="mb-4 inline-flex h-9 w-full justify-start space-x-4 rounded-none border-b bg-transparent p-0 text-muted-foreground">
+      <TabsList className="no-scrollbar inline-flex max-h-9 min-h-9 w-full justify-start space-x-4 overflow-x-scroll rounded-none border-b bg-transparent p-0 text-muted-foreground">
         <TabsTrigger
           className={tabsTriggerClassName}
           asChild
@@ -110,11 +136,23 @@ const uploadAudio = ({
 }) => {
   const formData = new FormData();
 
-  formData.append('audio', file);
+  const extStartsFromIndex = file.name.lastIndexOf('.');
+  const [fileName, extension] = [
+    file.name.slice(0, extStartsFromIndex),
+    file.name.slice(extStartsFromIndex + 1),
+  ];
+  const newName = `${fileName}-${new Date().toISOString()}.${extension}`;
+  const _file = new File([file], newName, { type: file.type });
 
-  return portalApi.post<unknown, string>(`/upload/audio`, formData, {
-    onUploadProgress,
-  });
+  formData.append('file', _file);
+
+  return portalApi.post<unknown, string>(
+    `/v1/uploads/file/developer-portal-audio`,
+    formData,
+    {
+      onUploadProgress,
+    },
+  );
 };
 
 const useUploadAudioMutation = () =>
@@ -130,23 +168,80 @@ const KeyPressService = {
     (event.ctrlKey || event.metaKey) && event.key === 'z' && event.shiftKey,
 };
 
-// const CustomAccordion = ({ open = true, onChange, children }) => {
-//   return (
-//     <div className="rounded border border-border">
-//       <Button>{open ? 'Close' : 'Open'}</Button>
-//       {open && children}
-//     </div>
-//   );
-// };
+const BackgroundInput = () => {
+  const [withBackground, backgroundType, set] = useVideoGenerateFormStore(
+    store => [store.withBackground, store.backgroundType, store.set],
+  );
+
+  const handleCheckedChange = (checked: boolean) => {
+    set({ withBackground: checked });
+  };
+  const handleChange = (value: string) => {
+    set({ backgroundType: value as VideoBackgroundType });
+  };
+
+  return (
+    <div className="flex flex-col gap-4 rounded border p-4">
+      <div className="flex items-center space-x-2">
+        <Switch
+          checked={withBackground}
+          id="background"
+          onCheckedChange={handleCheckedChange}
+        />
+        <Label htmlFor="background" className="cursor-pointer">
+          Background
+        </Label>
+      </div>
+      {withBackground && (
+        <Tabs
+          value={backgroundType}
+          onValueChange={handleChange}
+          className="w-full"
+        >
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value={VideoBackgroundType.UPLOAD_FILE}>
+              Upload File
+            </TabsTrigger>
+            <TabsTrigger value={VideoBackgroundType.WEBSITE_URL}>
+              Website URL
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value={VideoBackgroundType.UPLOAD_FILE} className="mt-4">
+            <div>
+              <Label className="mb-2 inline-block" htmlFor="backgroundUrl">
+                Background URL
+              </Label>
+              <Input
+                name="backgroundUrl"
+                placeholder="https://storage.com/background.mp4"
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value={VideoBackgroundType.WEBSITE_URL} className="mt-4">
+            <div>
+              <Label
+                className="mb-2 inline-block"
+                htmlFor="backgroundSourceUrl"
+              >
+                Website URL
+              </Label>
+              <Input
+                name="backgroundSourceUrl"
+                placeholder="https://www.tavus.io/"
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+      )}
+    </div>
+  );
+};
 const AdvancedInputs = () => {
-  const [name, callbackUrl, set] = useVideoGenerateFormStore(store => [
-    store.name,
-    store.callbackUrl,
-    store.set,
-  ]);
-  const [isAdvancedSettingsAccordionOpen, setMetadata] =
-    useVideoGenerateMetadataStore(store => [
-      store.isAdvancedSettingsAccordionOpen,
+  const [name, callbackUrl, isAdvancedSettingsOpen, set] =
+    useVideoGenerateFormStore(store => [
+      store.name,
+      store.callbackUrl,
+      store.isAdvancedSettingsOpen,
       store.set,
     ]);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,21 +254,25 @@ const AdvancedInputs = () => {
     });
   };
   const handleAccordionValueChange = (value: string) => {
-    setMetadata({ isAdvancedSettingsAccordionOpen: value === 'true' });
+    set({ isAdvancedSettingsOpen: value === 'true' });
   };
 
   return (
     <Accordion
       type="single"
       collapsible
-      value={isAdvancedSettingsAccordionOpen ? 'true' : ''}
+      value={isAdvancedSettingsOpen ? 'true' : ''}
       onValueChange={handleAccordionValueChange}
+      className="overflow-hidden"
     >
-      <AccordionItem value="true" className="rounded border">
+      <AccordionItem value="true" className="h-full rounded border">
         <AccordionTrigger className="p-4 hover:text-primary hover:no-underline">
           Advanced settings
         </AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 p-4 pt-0">
+        <AccordionContent
+          wrapperClassName="overflow-scroll h-full"
+          className="flex h-full flex-col gap-4 p-4 pt-0"
+        >
           <div>
             <Label className="mb-2 inline-block" htmlFor="name">
               Video Name
@@ -199,11 +298,15 @@ const AdvancedInputs = () => {
               placeholder="https://webhook.com/callback/12345"
             />
           </div>
+          <BackgroundInput />
         </AccordionContent>
       </AccordionItem>
     </Accordion>
   );
 };
+
+const DEFAULT_BACKGROUND_URL = 'https://storage.com/background.mp4';
+const DEFAULT_BACKGROUND_SOURCE_URL = 'https://www.tavus.io/';
 
 const getCreateVideoRequestBody = (
   formState: IVideoGenerateFormStore,
@@ -212,27 +315,38 @@ const getCreateVideoRequestBody = (
     replica_id: formState.replicaId,
   };
 
-  if (formState.type === VideoGenerationType.AUDIO)
-    result.audio_url = formState.audioUrl || 'audio_url_link';
+  if (formState.type === VideoGenerationType.AUDIO && formState.audioUrl)
+    result.audio_url = formState.audioUrl;
   else if (formState.type === VideoGenerationType.SCRIPT)
     result.script = formState.script;
 
   if (formState.name) result.video_name = formState.name;
   if (formState.callbackUrl) result.callback_url = formState.callbackUrl;
-  if (formState.backgroundUrl) result.background_url = formState.backgroundUrl;
-  if (formState.backgroundSourceUrl)
-    result.background_source_url = formState.backgroundSourceUrl;
 
+  if (formState.withBackground) {
+    if (formState.backgroundType === VideoBackgroundType.WEBSITE_URL)
+      result.background_url = formState.backgroundUrl || DEFAULT_BACKGROUND_URL;
+    else if (formState.backgroundType === VideoBackgroundType.UPLOAD_FILE)
+      result.background_source_url =
+        formState.backgroundSourceUrl || DEFAULT_BACKGROUND_SOURCE_URL;
+  }
   return result as CreateVideoDto;
 };
 
 const Code = () => {
   const store = useVideoGenerateFormStore();
-  const body = getCreateVideoRequestBody(store);
+  const body = useMemo(() => {
+    const result = getCreateVideoRequestBody(store);
+
+    if (store.type === VideoGenerationType.AUDIO) {
+      result.audio_url ??= '<audio_url>';
+    }
+
+    return result;
+  }, [store]);
 
   return (
     <ApiCode
-      className=""
       url={`${RQH_API_BASE_URL}${URLS.video}`}
       method={HttpMethods.POST}
       body={body}
@@ -248,26 +362,221 @@ const Preview = () => {
     <div className="pointer-events-none relative size-full overflow-hidden rounded">
       {/*TODO: remove on video loaded*/}
       <div className="animate-fadeIn absolute -top-6 mb-10 flex size-full items-center justify-center">
-        Loading...
+        Loading ...
       </div>
       <video
         className="absolute size-full rounded object-cover"
         preload="auto"
         src={data?.thumbnail_video_url as string}
       />
+      {/*  TODO: Add preview label*/}
     </div>
   );
 };
 
+const getIcon = (status: VideoStatus) => {
+  switch (status) {
+    case VideoStatus.GENERATING:
+    case VideoStatus.QUEUED:
+      return <Loader className="size-6 text-progress" />;
+    case VideoStatus.ERROR:
+      return <TriangleAlert className="size-6 text-destructive" />;
+    case VideoStatus.READY:
+      return <Video className="size-6" />;
+    case VideoStatus.DELETED:
+      return <Trash2 className="size-6 text-destructive" />;
+    default:
+      return <Video className="size-6" />;
+  }
+};
+
+const videoListRefetchIntervalFn = (query: Query<IVideosResponse>) => {
+  if (
+    query.state.data?.data?.some(
+      ({ status }) => status === VideoStatus.GENERATING,
+    )
+  ) {
+    return 10 * 1000;
+  }
+
+  return 5 * 60 * 1000;
+};
+
+const PreviewAndCode = () => (
+  <div className="col-span-1 row-span-1 flex w-full rounded-md border border-border bg-background p-4">
+    <Tabs
+      defaultValue="preview"
+      className="flex w-full flex-col overflow-hidden rounded"
+    >
+      <div className="mb-4 flex justify-between">
+        <Badge variant="label" className="w-fit text-sm">
+          Preview
+        </Badge>
+        <TabsList>
+          <TabsTrigger value="preview">Preview</TabsTrigger>
+          <TabsTrigger value="code">Code</TabsTrigger>
+        </TabsList>
+      </div>
+
+      <TabsContent
+        value="preview"
+        asChild
+        className="mt-0 flex size-full overflow-hidden"
+      >
+        <Preview />
+      </TabsContent>
+      <TabsContent
+        value="code"
+        asChild
+        className="mt-0 flex h-full overflow-hidden"
+      >
+        <Code />
+      </TabsContent>
+    </Tabs>
+  </div>
+);
+
+const SkeletonVideoList = () => (
+  <>
+    <Skeleton className="m-2 min-h-16 w-full rounded-md" />
+    <Skeleton className="m-2 min-h-16 w-full rounded-md" />
+    <Skeleton className="m-2 min-h-16 w-full rounded-md" />
+    <Skeleton className="m-2 min-h-16 w-full rounded-md" />
+  </>
+);
+
+const NoVideos = () => (
+  <div className="flex h-full flex-col content-center items-center justify-center gap-4 p-5">
+    <div className="flex items-center justify-center rounded-full bg-accent p-3 text-muted-foreground">
+      <Video size={16} />
+    </div>
+    <p className="text-center text-sm font-medium text-muted-foreground">
+      Your generated videos will appear here
+    </p>
+  </div>
+);
+
+const LIMIT = 10;
+
+const queryParams = {
+  page: 0,
+  limit: LIMIT,
+  filter_out_status: VideoStatus.DELETED,
+};
+const queryKey = ['videos', queryParams];
+
+const VideoList = () => {
+  const { video_id, onOpenChange } = useVideoDetailsSheet();
+  // TODO: change loading
+  const { data: videos, isPending } = useVideosQuery({
+    queryKey,
+    queryParams,
+    refetchInterval: videoListRefetchIntervalFn,
+  });
+
+  return (
+    <div className="col-span-1 row-span-1 flex flex-col gap-1 rounded-md border border-border bg-background p-4">
+      <header className="flex items-center justify-between">
+        <b>Generated Videos</b>
+        <Button variant="link" asChild className="p-1 text-muted-foreground">
+          <Link href="/videos/">
+            All Videos
+            <ChevronRight className="size-4" />
+          </Link>
+        </Button>
+      </header>
+      <Separator />
+      <ul className="-ml-2.5 flex h-full flex-col gap-1 overflow-y-scroll">
+        {videos ? (
+          videos.data.map(
+            ({
+              video_id,
+              video_name,
+              status,
+              still_image_thumbnail_url,
+              data,
+            }) => (
+              <li
+                key={video_id}
+                onClick={() => onOpenChange(video_id)}
+                className={cn(
+                  'flex cursor-pointer gap-4 rounded border-2 border-transparent p-2 focus:border-border',
+                  {
+                    'pointer-events-none opacity-50 hover:border-transparent':
+                      video_id === OPTIMISTIC_VIDEO_ID,
+                  },
+                )}
+              >
+                <div className="flex min-h-14 min-w-24 items-center justify-center overflow-hidden rounded border bg-secondary">
+                  {still_image_thumbnail_url ? (
+                    <img
+                      src={still_image_thumbnail_url}
+                      alt={video_name || 'Video thumbnail'}
+                      className="max-h-13.5 object-contain"
+                    />
+                  ) : (
+                    getIcon(status)
+                  )}
+                </div>
+                <div className="grid w-full">
+                  <p className="truncate">{data.script || data.audio_url}</p>
+                  <p className="text-muted-foreground">{video_id}</p>
+                </div>
+              </li>
+            ),
+          )
+        ) : isPending ? (
+          // TODO: ADD Empty state
+          <SkeletonVideoList />
+        ) : (
+          <NoVideos />
+        )}
+      </ul>
+      <VideoDetailsSheet id={video_id} onOpenChange={onOpenChange} />
+    </div>
+  );
+};
+
+const OPTIMISTIC_VIDEO_ID = '...';
+
 export default function VideoCreatePage() {
   const { t } = useTranslation();
-  const { toast } = useToast();
   const { undo, redo } = useVideoGenerateFormUndoHistory(state => state);
-  const { onUploadProgress, progress, reset } = useProgress();
-  const { mutateAsync: uploadAudio, isPending: isUploadingAudio } =
-    useUploadAudioMutation();
-  const { mutateAsync: createVideo, isPending: isSumbiting } =
-    useCreateVideoMutation();
+  const { onUploadProgress, reset } = useProgress();
+  const { mutateAsync: uploadAudio } = useUploadAudioMutation();
+  const { mutateAsync: createVideo } = useCreateVideoMutation({
+    onMutate: async body => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const prevData = queryClient.getQueryData(queryKey) as IVideosResponse;
+      const newVideo: IVideo = {
+        data: {
+          script: body.script,
+          audio_url: body.audio_url,
+        },
+        status: VideoStatus.GENERATING,
+        video_id: OPTIMISTIC_VIDEO_ID,
+        video_name: body.video_name,
+        created_at: new Date(),
+        updated_at: new Date(),
+        status_details: '',
+      };
+
+      queryClient.setQueryData(queryKey, (prev: IVideosResponse) => ({
+        data: [newVideo, ...prev.data],
+        total_count: prev?.total_count + 1,
+      }));
+
+      return prevData;
+    },
+    onError: (_, __, prevData) => {
+      queryClient.setQueryData(queryKey, prevData as IVideosResponse);
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey });
+    },
+  });
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (KeyPressService.isUndo(event)) {
       event.preventDefault();
@@ -284,26 +593,27 @@ export default function VideoCreatePage() {
     const formState = useVideoGenerateFormStore.getState();
     const metadataState = useVideoGenerateMetadataStore.getState();
 
-    const data = getCreateVideoRequestBody(formState);
+    const createVideoBody = getCreateVideoRequestBody(formState);
 
     try {
-      schemaParse(CreateVideoSchema)(data);
+      schemaParse(CreateVideoSchema)(createVideoBody);
 
       try {
         if (formState.type === VideoGenerationType.AUDIO) {
           if (!formState.audioUrl && metadataState.audio?.file) {
+            // TODO: move to all settled
             const url = await uploadAudio({
               file: metadataState.audio.file,
               onUploadProgress,
             });
             reset();
             formState.set({ audioUrl: url });
-            data.audio_url = url;
+            createVideoBody.audio_url = url;
           }
         }
 
         // TODO: throw 18n error
-        await createVideo(data);
+        await createVideo(createVideoBody);
       } catch (error) {
         toast({
           title: t('portal.videos.create.error'),
@@ -321,9 +631,8 @@ export default function VideoCreatePage() {
       });
 
       if (paths.some(path => path === 'callback_url'))
-        //   // TODO: focus on input
-        metadataState.set({
-          isAdvancedSettingsAccordionOpen: true,
+        formState.set({
+          isAdvancedSettingsOpen: true,
         });
     }
 
@@ -334,10 +643,20 @@ export default function VideoCreatePage() {
     <Layout className="flex max-h-screen flex-col">
       <LayoutHeader title="Video Generation">
         <CopyApiUrl type="POST" url="video" />
+        <LayoutHeaderButtonsBlock>
+          <Button className="ml-auto" variant="outline" asChild>
+            <Link
+              target="_blank"
+              href="https://docs.tavusapi.com/api-reference/video-request/create-video"
+            >
+              Read Docs
+            </Link>
+          </Button>
+        </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper
         onKeyDown={handleKeyDown}
-        wrapperClassName="flex flex-1 h-[calc(100vh-62px)] "
+        wrapperClassName="flex flex-1 h-[calc(100vh-64px)] "
         className="grid grid-cols-2 grid-rows-2 gap-6"
       >
         <form
@@ -352,48 +671,15 @@ export default function VideoCreatePage() {
           <AdvancedInputs />
           <footer className="flex flex-col items-end">
             <Separator className="mb-4" />
-            {isUploadingAudio && `Uploading audio ${progress}%`}
-            {isSumbiting && 'Submitting...'}
+            {/*{isUploadingAudio && `Uploading audio ${progress}%`}*/}
+            {/*{isSumbiting && 'Submitting...'}*/}
             <Button type="submit">
               Generate <ArrowRight size={16} className="ml-1" />
             </Button>
           </footer>
         </form>
-        <div className="col-span-1 row-span-1 flex w-full rounded-md border border-border bg-background p-4">
-          <Tabs
-            defaultValue="preview"
-            className="flex w-full flex-col overflow-hidden rounded"
-          >
-            <div className="mb-4 flex justify-between">
-              <Badge variant="label" className="w-fit text-sm">
-                Preview
-              </Badge>
-
-              <TabsList>
-                <TabsTrigger value="preview">Preview</TabsTrigger>
-                <TabsTrigger value="code">Code</TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent
-              value="preview"
-              asChild
-              className="mt-0 flex size-full overflow-hidden"
-            >
-              <Preview />
-            </TabsContent>
-            <TabsContent
-              value="code"
-              asChild
-              className="mt-0 flex h-full flex-col overflow-hidden"
-            >
-              <Code />
-            </TabsContent>
-          </Tabs>
-        </div>
-        {/*<div className="col-span-1 row-span-1 rounded-md border border-border bg-background p-4">*/}
-        {/*  /!*videos*!/*/}
-        {/*</div>*/}
+        <PreviewAndCode />
+        <VideoList />
       </LayoutWrapper>
     </Layout>
   );

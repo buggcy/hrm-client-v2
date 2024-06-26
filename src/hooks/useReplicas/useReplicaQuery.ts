@@ -9,11 +9,10 @@ export const getReplica = (id: IReplica['replica_id']) =>
 
 export const useReplicaQuery = (
   id: IReplica['replica_id'],
-  options?: UseQueryOptions<IReplica>,
-) => {
-  return useQuery<IReplica>({
+  options?: Omit<UseQueryOptions<IReplica>, 'queryKey'>,
+) =>
+  useQuery<IReplica>({
     queryKey: ['replica', id],
     queryFn: () => getReplica(id),
     ...options,
   });
-};

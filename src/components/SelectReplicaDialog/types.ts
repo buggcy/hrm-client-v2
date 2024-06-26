@@ -2,6 +2,7 @@ import { IReplica } from '@/types';
 
 export interface SelectReplicaDialogProps {
   children: React.ReactNode;
-  onSubmit: (replica: IReplica) => void;
-  defaultReplica?: IReplica;
+  onChange: (replicaId: IReplica['replica_id']) => void;
+  value?: IReplica['replica_id'];
+  defaultValue?: IReplica['replica_id'];
 }

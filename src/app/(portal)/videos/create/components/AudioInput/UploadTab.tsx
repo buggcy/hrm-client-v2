@@ -1,19 +1,84 @@
+'use client';
+
 import React, { useRef } from 'react';
 
-import { UploadIcon } from 'lucide-react';
+import { ArrowRight, UploadIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Dropzone } from '@/components/ui/dropzone';
-import { useToast } from '@/components/ui/use-toast';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { toast, useToast } from '@/components/ui/use-toast';
 
+import { usePersistentState } from '@/hooks';
 import { getVideoDuration } from '@/utils';
 
-import { useVideoGenerateMetadataStore } from '../../hooks';
+import {
+  useVideoGenerateFormStore,
+  useVideoGenerateMetadataStore,
+} from '../../hooks';
 import { AudioTab } from '../../types';
 
 const MAX_AUDIO_SIZE = 50 * 1024 * 1024;
 const MAX_AUDIO_SIZE_MB = `${MAX_AUDIO_SIZE / 1024 / 1024} MB`;
+
+const isValidUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const AudioUrlInput = () => {
+  const [value, setValue] = usePersistentState('createVideoAudioUrl', '');
+  const [set] = useVideoGenerateFormStore(store => [store.set]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
+
+  const handleClick = () => {
+    if (!isValidUrl(value))
+      return toast({
+        title: 'Invalid URL',
+        description: 'Please enter a valid URL',
+      });
+    set({ audioUrl: value });
+    setValue('');
+  };
+
+  /*TODO: move to secondary foreground*/
+  return (
+    <div className="w-full rounded border border-transparent bg-[#F8FAFC] p-4 dark:border-border dark:bg-transparent">
+      <Label className="mb-2 inline-block" htmlFor="audioUrl">
+        Audio URL
+      </Label>
+      <div className="relative w-full">
+        <Input
+          type="url"
+          value={value}
+          onChange={handleChange}
+          placeholder="https://storage.com/audio.mp3"
+          name="audioUrl"
+          className="w-full pr-10"
+        />
+        {value && (
+          <Button
+            type="button"
+            onClick={handleClick}
+            className="absolute right-1 top-1/2 size-8 -translate-y-1/2 p-0"
+            form="audioUrlForm"
+          >
+            <ArrowRight size={16} />
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const UploadTab = () => {
   const { t } = useTranslation();
@@ -63,7 +128,7 @@ export const UploadTab = () => {
   };
 
   return (
-    <div>
+    <div className="mt-4 h-full">
       <Dropzone
         ref={inputRef}
         /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
@@ -73,14 +138,14 @@ export const UploadTab = () => {
         /*NOTE: video type added because recorded audio saves as video format*/
         accept="audio/mp4, audio/webm, video/mp4, video/webm"
       >
-        <div className="flex flex-1 flex-col items-center justify-center gap-y-4">
+        <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
           <div
-            className="cursor-pointer rounded-full bg-primary-foreground p-2"
+            className="mb-4 cursor-pointer rounded-full bg-primary-foreground p-2"
             onClick={handleClickUpload}
           >
             <UploadIcon className="text-primary" size={16} />
           </div>
-          <div className="text-center">
+          <div className="mb-4 text-center">
             <p className="text-lg font-semibold">
               {t('portal.videos.create.audio.input.title')}
             </p>
@@ -90,7 +155,7 @@ export const UploadTab = () => {
               })}
             </p>{' '}
           </div>
-          <div className="flex space-x-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <Button type="button" variant="outline" onClick={handleClickUpload}>
               {t('portal.videos.create.audio.button.upload')}
             </Button>
@@ -98,6 +163,8 @@ export const UploadTab = () => {
               {t('portal.videos.create.audio.button.record')}
             </Button>
           </div>
+          <div className="flex h-full max-h-10 min-h-4"></div>
+          <AudioUrlInput />
         </div>
       </Dropzone>
     </div>

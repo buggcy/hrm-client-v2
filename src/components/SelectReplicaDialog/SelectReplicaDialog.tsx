@@ -19,62 +19,57 @@ import { Button } from '../ui/button';
 import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
 
 const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
+  defaultValue = '',
+  value = '',
   children,
-  defaultReplica,
-  onSubmit,
+  onChange,
 }) => {
   const { data: replicas, isLoading } = useReplicasQuery();
+  const { isMuted, toggleMute, onMuteChange } = useReplicasVideoMute();
   const [open, setOpen] = useState(false);
-  const [selectedReplica, setSelectedReplica] = useState<IReplica | null>(
-    defaultReplica ?? null,
-  );
+  const [selectedReplicaId, setSelectedReplicaId] = useState<
+    IReplica['replica_id']
+  >(defaultValue || value);
 
   useEffect(() => {
-    if (defaultReplica && open) {
-      setSelectedReplica(defaultReplica);
-    }
-  }, [defaultReplica, open]);
+    if (value) setSelectedReplicaId(value);
+  }, [value]);
 
-  const { isMuted, toggleMute, onMuteChange } = useReplicasVideoMute();
   const handleOpen = () => setOpen(true);
 
+  const handleOpenChange = (open: boolean) => {
+    setOpen(open);
+    if (!open && selectedReplicaId !== value) setSelectedReplicaId(value);
+  };
+
   const handleSelect = (replica: IReplica) => {
-    setSelectedReplica(replica);
+    setSelectedReplicaId(replica?.replica_id);
   };
 
   const handleSubmit = () => {
-    if (!selectedReplica) return;
-    onSubmit(selectedReplica);
-    selectedReplica && setSelectedReplica(null);
+    if (selectedReplicaId !== value) onChange(selectedReplicaId);
     setOpen(false);
   };
 
-  const studioReplicas = useMemo(() => {
-    return (
+  const studioReplicas = useMemo(
+    () =>
       replicas?.data?.filter(
         replica =>
           replica.replica_type === ReplicaType.STUDIO &&
           replica.status === ReplicaStatus.COMPLETED,
-      ) ?? []
-    );
-  }, [replicas?.data]);
+      ) ?? [],
+    [replicas?.data],
+  );
 
-  const personalReplicas = useMemo(() => {
-    return (
+  const personalReplicas = useMemo(
+    () =>
       replicas?.data?.filter(
         replica =>
           replica.replica_type === ReplicaType.PERSONAL &&
           replica.status === ReplicaStatus.COMPLETED,
-      ) ?? []
-    );
-  }, [replicas?.data]);
-
-  const handleOpenChange = (isOpen: boolean) => {
-    if (!isOpen) {
-      setSelectedReplica(null);
-    }
-    setOpen(isOpen);
-  };
+      ) ?? [],
+    [replicas?.data],
+  );
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -104,7 +99,7 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
                     toggleMute={toggleMute}
                     onMuteChange={onMuteChange}
                     onSelect={handleSelect}
-                    selectedReplica={selectedReplica}
+                    selectedReplicaId={selectedReplicaId}
                   />
                   <SelectReplicaBlock
                     title="Studio Replicas"
@@ -114,7 +109,7 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
                     toggleMute={toggleMute}
                     onMuteChange={onMuteChange}
                     onSelect={handleSelect}
-                    selectedReplica={selectedReplica}
+                    selectedReplicaId={selectedReplicaId}
                   />
                 </div>
               </TabsContent>
@@ -128,7 +123,7 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
                   toggleMute={toggleMute}
                   onMuteChange={onMuteChange}
                   onSelect={handleSelect}
-                  selectedReplica={selectedReplica}
+                  selectedReplicaId={selectedReplicaId}
                 />
               </TabsContent>
               <TabsContent value="studio" tabIndex={-1}>
@@ -140,7 +135,7 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
                   toggleMute={toggleMute}
                   onMuteChange={onMuteChange}
                   onSelect={handleSelect}
-                  selectedReplica={selectedReplica}
+                  selectedReplicaId={selectedReplicaId}
                 />
               </TabsContent>
             </Tabs>

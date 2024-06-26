@@ -42,14 +42,14 @@ export const ScriptInput = () => {
   };
 
   return (
-    <div className="flex h-full gap-2">
+    <div className="mt-4 flex h-full gap-2">
       <Textarea
         value={script}
         onChange={handleChange}
         required
         onBlur={handleBlur}
         placeholder={t('portal.videos.create.script.placeholder')}
-        className="h-full resize-none border-none p-0"
+        className="h-full resize-none border-none p-0.5"
       />
       <div>
         <span className="sr-only">Random script</span>

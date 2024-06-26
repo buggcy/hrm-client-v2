@@ -13,7 +13,12 @@ import { IReplica, IVideo } from '@/types';
 export const CreateVideoSchema = z.object({
   replica_id: z.string(),
   // Either script or audio_url is required
-  script: z.string().optional(),
+  script: z
+    .string()
+    .max(20000, {
+      message: 'Script must be less than 20000 characters',
+    })
+    .optional(),
   audio_url: z
     .string()
     .url({
@@ -72,7 +77,6 @@ export const useCreateVideoMutation = (
   options?: UseMutationOptions<CreateVideoResponse, Error, CreateVideoDto>,
 ) =>
   useMutation<CreateVideoResponse, Error, CreateVideoDto>({
-    mutationKey: ['generate-video'],
     mutationFn: createVideo,
     // TODO: add cache invalidation
     ...options,

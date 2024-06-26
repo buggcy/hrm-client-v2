@@ -25,6 +25,12 @@ export const AudioInput = () => {
 
   return (
     <>
+      <Input
+        required={!audio && !audioUrl}
+        type="file"
+        tabIndex={-1}
+        className="mx-auto size-0 p-0 opacity-0"
+      />
       {audio || audioUrl ? (
         <AudioCard
           url={audio?.url || audioUrl!}
@@ -39,12 +45,6 @@ export const AudioInput = () => {
       ) : (
         <UploadTab />
       )}
-      <Input
-        required={!audio && !audioUrl}
-        type="file"
-        tabIndex={-1}
-        className="mx-auto size-0 p-0 opacity-0"
-      />
     </>
   );
 };

@@ -17,6 +17,7 @@ module.exports = {
   ],
   plugins: ['tailwindcss', 'unused-imports', 'simple-import-sort'],
   rules: {
+    '@next/next/no-img-element': 'off',
     //*=========== Import Sort ===========
     'simple-import-sort/imports': [
       'error',
