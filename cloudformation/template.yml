@@ -127,7 +127,17 @@ Resources:
       FunctionCode: |
         function handler(event) {
           var request = event.request;
-          var uri = request.uri;
+          var uri = request.uri
+
+          // Don't rewrite paths for static assets in _next folder
+          if (uri.startsWith('/_next/')) {
+            return request;
+          }
+
+          // Don't rewrite paths for other common static assets
+          if (uri.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|mp4)$/)) {
+            return request;
+          }
           
           // Remove trailing slash except for the root
           if (uri.length > 1 && uri.endsWith('/')) {
