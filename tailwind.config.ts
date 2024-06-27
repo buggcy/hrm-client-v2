@@ -66,6 +66,9 @@ const config = {
           foreground: 'hsla(var(--destructive) / 0.15)',
         },
       },
+      ringColor: {
+        DEFAULT: 'hsl(var(--primary))',
+      },
       boxShadow: {
         'icon-button': '0px 6px 25px -2px rgba(242, 48, 170, 0.31)',
       },

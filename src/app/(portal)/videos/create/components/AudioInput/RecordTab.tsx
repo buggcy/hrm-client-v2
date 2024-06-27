@@ -17,7 +17,8 @@ import { formatTime } from '@/utils';
 import {
   useAudioRecorder,
   useMicrophones,
-  useVideoGenerateMetadataStore,
+  useVideoGenerateFilesStore,
+  useVideoGenerateFormStore,
 } from '../../hooks';
 import { AudioTab } from '../../types';
 
@@ -31,7 +32,8 @@ export const RecordTab = () => {
   const { isRecording, record, stop, duration, cancel } = useAudioRecorder(
     selectedMicrophone?.deviceId,
   );
-  const set = useVideoGenerateMetadataStore(store => store.set);
+  const setForm = useVideoGenerateFormStore(store => store.set);
+  const setFormFiles = useVideoGenerateFilesStore(store => store.set);
 
   const handleClick = () => {
     if (isRecording) stop();
@@ -52,7 +54,7 @@ export const RecordTab = () => {
             });
           // TODO: add validation for audio length
           else
-            set({
+            setFormFiles({
               audio: {
                 file: result.file,
                 duration: result.duration,
@@ -69,11 +71,11 @@ export const RecordTab = () => {
   };
 
   const handleBack = () => {
-    set({ audioTab: AudioTab.UPLOAD });
+    setForm({ audioTab: AudioTab.UPLOAD });
   };
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-6 pt-4">
+    <div className="flex h-full flex-col items-center justify-center gap-6 pt-6">
       <Button
         type="button"
         className="size-16 rounded-full p-3 text-white shadow-icon-button"

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { ArrowRight, UploadIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -11,12 +11,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast, useToast } from '@/components/ui/use-toast';
 
-import { usePersistentState } from '@/hooks';
 import { getVideoDuration } from '@/utils';
 
 import {
+  useVideoGenerateFilesStore,
   useVideoGenerateFormStore,
-  useVideoGenerateMetadataStore,
 } from '../../hooks';
 import { AudioTab } from '../../types';
 
@@ -33,8 +32,8 @@ const isValidUrl = (url: string) => {
 };
 
 const AudioUrlInput = () => {
-  const [value, setValue] = usePersistentState('createVideoAudioUrl', '');
-  const [set] = useVideoGenerateFormStore(store => [store.set]);
+  const [value, setValue] = useState('');
+  const set = useVideoGenerateFormStore(store => store.set);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -53,7 +52,7 @@ const AudioUrlInput = () => {
   /*TODO: move to secondary foreground*/
   return (
     <div className="w-full rounded border border-transparent bg-[#F8FAFC] p-4 dark:border-border dark:bg-transparent">
-      <Label className="mb-2 inline-block" htmlFor="audioUrl">
+      <Label className="mb-2 inline-block cursor-pointer" htmlFor="audioUrl">
         Audio URL
       </Label>
       <div className="relative w-full">
@@ -70,7 +69,6 @@ const AudioUrlInput = () => {
             type="button"
             onClick={handleClick}
             className="absolute right-1 top-1/2 size-8 -translate-y-1/2 p-0"
-            form="audioUrlForm"
           >
             <ArrowRight size={16} />
           </Button>
@@ -85,7 +83,8 @@ export const UploadTab = () => {
   const errorIdRef = useRef<string>();
   const { toast, dismiss } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
-  const set = useVideoGenerateMetadataStore(store => store.set);
+  const setForm = useVideoGenerateFormStore(store => store.set);
+  const setFormFiles = useVideoGenerateFilesStore(store => store.set);
 
   const handleClickUpload = () => {
     dismiss(errorIdRef.current);
@@ -93,7 +92,7 @@ export const UploadTab = () => {
   };
   const handleClickRecord = (e: React.MouseEvent) => {
     e.stopPropagation();
-    set({ audioTab: AudioTab.RECORD });
+    setForm({ audioTab: AudioTab.RECORD });
   };
   const handleChange = async (files: FileList | null) => {
     dismiss(errorIdRef.current);
@@ -108,14 +107,14 @@ export const UploadTab = () => {
           }),
         );
 
-      const data: Parameters<typeof set>[0] = {
+      const data: Parameters<typeof setFormFiles>[0] = {
         audio: { file, url: URL.createObjectURL(file) },
       };
       const duration = await getVideoDuration(file).catch(() => null);
 
       if (duration) data.audio!.duration = Math.round(duration);
 
-      set(data);
+      setFormFiles(data);
     }
   };
   const handleError = (message: string) => {
@@ -128,7 +127,7 @@ export const UploadTab = () => {
   };
 
   return (
-    <div className="mt-4 h-full">
+    <div className="my-4 h-full">
       <Dropzone
         ref={inputRef}
         /* eslint-disable-next-line @typescript-eslint/no-misused-promises */

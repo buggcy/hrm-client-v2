@@ -3,9 +3,11 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { WandSparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { SimpleTooltip } from '@/components/ui/tooltip';
 
 import { useVideoGenerateFormStore } from '@/app/(portal)/videos/create/hooks';
 
@@ -20,10 +22,9 @@ const useRandomScriptsQuery = () =>
 export const ScriptInput = () => {
   const { t } = useTranslation();
   const { data: randomScripts } = useRandomScriptsQuery();
-  const [script, set] = useVideoGenerateFormStore(store => [
-    store.script,
-    store.set,
-  ]);
+  const [script, set] = useVideoGenerateFormStore(
+    useShallow(store => [store.script, store.set]),
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     set({ script: e.target.value });
@@ -49,20 +50,20 @@ export const ScriptInput = () => {
         required
         onBlur={handleBlur}
         placeholder={t('portal.videos.create.script.placeholder')}
-        className="h-full resize-none border-none p-0.5"
+        className="h-full resize-none border-none p-0.5 focus-visible:ring-transparent"
       />
-      <div>
-        <span className="sr-only">Random script</span>
+      <SimpleTooltip tooltipContent="Random script">
         <Button
           type="button"
           variant="ghostSecondary"
-          className="size-10 min-w-10 rounded-full p-1"
+          className="mr-1 size-10 min-w-10 rounded-full p-1"
           onClick={handleRandomScript}
           disabled={!randomScripts}
         >
+          <span className="sr-only">Random script</span>
           <WandSparkles size={16} />
         </Button>
-      </div>
+      </SimpleTooltip>
     </div>
   );
 };

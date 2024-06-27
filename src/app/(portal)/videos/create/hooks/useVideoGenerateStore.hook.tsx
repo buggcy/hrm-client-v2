@@ -1,6 +1,6 @@
 import { temporal, TemporalState } from 'zundo';
 import { create, StoreApi } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
 import { DEFAULT_REPLICA } from '../constnats';
@@ -8,8 +8,7 @@ import { AudioTab, VideoBackgroundType, VideoGenerationType } from '../types';
 
 import { IReplica } from '@/types';
 
-export interface IVideoGenerateStore {
-  audioTab: AudioTab;
+export interface IVideoGenerateFilesStore {
   audio: {
     file?: File;
     url: string;
@@ -18,8 +17,9 @@ export interface IVideoGenerateStore {
   background: {
     file?: File;
     url: string;
+    duration?: number;
   } | null;
-  set: StoreApi<IVideoGenerateStore>['setState'];
+  set: StoreApi<IVideoGenerateFilesStore>['setState'];
 }
 
 export type Require<T> = {
@@ -28,6 +28,7 @@ export type Require<T> = {
 
 export interface IVideoGenerateFormStore {
   replicaId: IReplica['replica_id'];
+  audioTab: AudioTab;
   script?: string;
   audioUrl?: string;
   name?: string;
@@ -49,10 +50,14 @@ export const useVideoGenerateFormStore = create<IVideoGenerateFormStore>()(
       type: VideoGenerationType.SCRIPT,
       isAdvancedSettingsOpen: false,
       withBackground: false,
+      audioTab: AudioTab.UPLOAD,
       backgroundType: VideoBackgroundType.UPLOAD_FILE,
       set,
     })),
-    { name: 'useVideoFormStore' },
+    {
+      name: 'useVideoFormStore',
+      storage: createJSONStorage(() => sessionStorage),
+    },
   ),
 );
 
@@ -66,9 +71,8 @@ export const useVideoGenerateFormUndoHistory = <T,>(
     equality,
   );
 
-export const useVideoGenerateMetadataStore = create<IVideoGenerateStore>(
+export const useVideoGenerateFilesStore = create<IVideoGenerateFilesStore>(
   set => ({
-    audioTab: AudioTab.UPLOAD,
     audio: null,
     background: null,
     set,

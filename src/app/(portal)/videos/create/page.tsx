@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
+import { useShallow } from 'zustand/react/shallow';
 
 import { ApiCode, HttpMethods } from '@/components/Code';
 import { CopyApiUrl, URLS } from '@/components/CopyApiUrl';
@@ -47,7 +48,9 @@ import {
   VideoDetailsSheet,
 } from '@/app/(portal)/videos/components/VideoDetailsSheet';
 import { ReplicaSelect } from '@/app/(portal)/videos/create/components/ReplicaSelect';
+import { UploadBackgroundTab } from '@/app/(portal)/videos/create/components/UploadBackground';
 import {
+  IVideoGenerateFilesStore,
   IVideoGenerateFormStore,
   useVideoGenerateFormStore,
   useVideoGenerateFormUndoHistory,
@@ -61,13 +64,12 @@ import {
   useReplicaQuery,
   useVideosQuery,
 } from '@/hooks';
-import { useProgress } from '@/hooks/useProgress.hook';
 import { queryClient } from '@/libs';
 import { cn, portalApi, schemaParse } from '@/utils';
 
 import { AudioInput } from './components/AudioInput';
 import { ScriptInput } from './components/ScriptInput';
-import { useVideoGenerateMetadataStore } from './hooks';
+import { useVideoGenerateFilesStore } from './hooks';
 import { VideoBackgroundType, VideoGenerationType } from './types';
 
 import { IVideo, VideoStatus } from '@/types';
@@ -77,7 +79,9 @@ const tabsTriggerClassName =
 
 const ScriptAndAudioInputsTab = () => {
   const { t } = useTranslation();
-  const { type, set } = useVideoGenerateFormStore();
+  const [type, set] = useVideoGenerateFormStore(
+    useShallow(store => [store.type, store.set]),
+  );
 
   const handleTypeChange = (value: string) => {
     set({ type: value as VideoGenerationType });
@@ -89,7 +93,7 @@ const ScriptAndAudioInputsTab = () => {
       onValueChange={handleTypeChange}
       className="flex flex-1 flex-col"
     >
-      <TabsList className="no-scrollbar inline-flex max-h-9 min-h-9 w-full justify-start space-x-4 overflow-x-scroll rounded-none border-b bg-transparent p-0 text-muted-foreground">
+      <TabsList className="no-scrollbar inline-flex max-h-9 min-h-9 w-full justify-start space-x-4 overflow-y-hidden overflow-x-scroll rounded-none border-b bg-transparent p-0 text-muted-foreground">
         <TabsTrigger
           className={tabsTriggerClassName}
           asChild
@@ -155,9 +159,21 @@ const uploadAudio = ({
   );
 };
 
+const useUploadBackground = ({ file }: { file: File }) => {
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  return portalApi.post<unknown, string>(
+    `/v1/uploads/file/developer-portal-audio`,
+    // `/v1/uploads/file/developer-portal-background`,
+    formData,
+  );
+};
+
 const useUploadAudioMutation = () =>
   useMutation({
-    mutationKey: ['audio'],
+    mutationKey: ['uploadAudio'],
     mutationFn: uploadAudio,
   });
 
@@ -168,9 +184,45 @@ const KeyPressService = {
     (event.ctrlKey || event.metaKey) && event.key === 'z' && event.shiftKey,
 };
 
+const WebsiteUrlTab = () => {
+  const [backgroundUrl, set] = useVideoGenerateFormStore(
+    useShallow(store => [store.backgroundUrl, store.set]),
+  );
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    set({ backgroundUrl: event.target.value });
+  };
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    set({
+      backgroundUrl: event.target.value?.trim() || '',
+    });
+  };
+
+  return (
+    <div className="mt-4">
+      <Label className="mb-2 inline-block" htmlFor="backgroundUrl">
+        Website URL
+      </Label>
+      <Input
+        type="url"
+        required={!!backgroundUrl}
+        value={backgroundUrl}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        name="backgroundUrl"
+        placeholder="https://www.tavus.io/"
+      />
+    </div>
+  );
+};
+
 const BackgroundInput = () => {
   const [withBackground, backgroundType, set] = useVideoGenerateFormStore(
-    store => [store.withBackground, store.backgroundType, store.set],
+    useShallow(store => [
+      store.withBackground,
+      store.backgroundType,
+      store.set,
+    ]),
   );
 
   const handleCheckedChange = (checked: boolean) => {
@@ -206,44 +258,27 @@ const BackgroundInput = () => {
               Website URL
             </TabsTrigger>
           </TabsList>
-          <TabsContent value={VideoBackgroundType.UPLOAD_FILE} className="mt-4">
-            <div>
-              <Label className="mb-2 inline-block" htmlFor="backgroundUrl">
-                Background URL
-              </Label>
-              <Input
-                name="backgroundUrl"
-                placeholder="https://storage.com/background.mp4"
-              />
-            </div>
+          <TabsContent value={VideoBackgroundType.UPLOAD_FILE} asChild>
+            <UploadBackgroundTab />
           </TabsContent>
-          <TabsContent value={VideoBackgroundType.WEBSITE_URL} className="mt-4">
-            <div>
-              <Label
-                className="mb-2 inline-block"
-                htmlFor="backgroundSourceUrl"
-              >
-                Website URL
-              </Label>
-              <Input
-                name="backgroundSourceUrl"
-                placeholder="https://www.tavus.io/"
-              />
-            </div>
+          <TabsContent value={VideoBackgroundType.WEBSITE_URL} asChild>
+            <WebsiteUrlTab />
           </TabsContent>
         </Tabs>
       )}
     </div>
   );
 };
-const AdvancedInputs = () => {
+const AdvancedSettingsInputs = () => {
   const [name, callbackUrl, isAdvancedSettingsOpen, set] =
-    useVideoGenerateFormStore(store => [
-      store.name,
-      store.callbackUrl,
-      store.isAdvancedSettingsOpen,
-      store.set,
-    ]);
+    useVideoGenerateFormStore(
+      useShallow(store => [
+        store.name,
+        store.callbackUrl,
+        store.isAdvancedSettingsOpen,
+        store.set,
+      ]),
+    );
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     set({ [event.target.name]: event.target.value });
   };
@@ -263,16 +298,13 @@ const AdvancedInputs = () => {
       collapsible
       value={isAdvancedSettingsOpen ? 'true' : ''}
       onValueChange={handleAccordionValueChange}
-      className="overflow-hidden"
+      className="mt-2"
     >
       <AccordionItem value="true" className="h-full rounded border">
-        <AccordionTrigger className="p-4 hover:text-primary hover:no-underline">
+        <AccordionTrigger className="p-4 !ring-primary hover:text-primary hover:no-underline">
           Advanced settings
         </AccordionTrigger>
-        <AccordionContent
-          wrapperClassName="overflow-scroll h-full"
-          className="flex h-full flex-col gap-4 p-4 pt-0"
-        >
+        <AccordionContent className="flex h-full flex-col gap-4 p-4 pt-0">
           <div>
             <Label className="mb-2 inline-block" htmlFor="name">
               Video Name
@@ -305,11 +337,12 @@ const AdvancedInputs = () => {
   );
 };
 
-const DEFAULT_BACKGROUND_URL = 'https://storage.com/background.mp4';
-const DEFAULT_BACKGROUND_SOURCE_URL = 'https://www.tavus.io/';
+const DEFAULT_BACKGROUND_URL = 'https://www.tavus.io/';
+const DEFAULT_BACKGROUND_SOURCE_URL = 'https://storage.com/background.mp4';
 
 const getCreateVideoRequestBody = (
   formState: IVideoGenerateFormStore,
+  formFileState: IVideoGenerateFilesStore,
 ): CreateVideoDto => {
   const result: Partial<CreateVideoDto> = {
     replica_id: formState.replicaId,
@@ -326,7 +359,11 @@ const getCreateVideoRequestBody = (
   if (formState.withBackground) {
     if (formState.backgroundType === VideoBackgroundType.WEBSITE_URL)
       result.background_url = formState.backgroundUrl || DEFAULT_BACKGROUND_URL;
-    else if (formState.backgroundType === VideoBackgroundType.UPLOAD_FILE)
+    else if (
+      (formState.backgroundType === VideoBackgroundType.UPLOAD_FILE &&
+        formState.backgroundSourceUrl) ||
+      !formFileState.background?.file
+    )
       result.background_source_url =
         formState.backgroundSourceUrl || DEFAULT_BACKGROUND_SOURCE_URL;
   }
@@ -334,16 +371,23 @@ const getCreateVideoRequestBody = (
 };
 
 const Code = () => {
-  const store = useVideoGenerateFormStore();
+  const formStore = useVideoGenerateFormStore();
+  const formFileStore = useVideoGenerateFilesStore();
   const body = useMemo(() => {
-    const result = getCreateVideoRequestBody(store);
+    const result = getCreateVideoRequestBody(formStore, formFileStore);
 
-    if (store.type === VideoGenerationType.AUDIO) {
+    if (formStore.type === VideoGenerationType.AUDIO) {
       result.audio_url ??= '<audio_url>';
     }
+    if (
+      formStore.backgroundType === VideoBackgroundType.UPLOAD_FILE &&
+      formFileStore.background?.file &&
+      !formStore.backgroundSourceUrl
+    )
+      result.background_source_url = '<background_source_url>';
 
     return result;
-  }, [store]);
+  }, [formStore, formFileStore]);
 
   return (
     <ApiCode
@@ -413,7 +457,7 @@ const PreviewAndCode = () => (
           Preview
         </Badge>
         <TabsList>
-          <TabsTrigger value="preview">Preview</TabsTrigger>
+          <TabsTrigger value="preview">Video</TabsTrigger>
           <TabsTrigger value="code">Code</TabsTrigger>
         </TabsList>
       </div>
@@ -537,45 +581,54 @@ const VideoList = () => {
   );
 };
 
+const useUploadBackgroundMutation = () =>
+  useMutation({
+    mutationKey: ['uploadBackground'],
+    mutationFn: useUploadBackground,
+  });
+
 const OPTIMISTIC_VIDEO_ID = '...';
 
 export default function VideoCreatePage() {
   const { t } = useTranslation();
   const { undo, redo } = useVideoGenerateFormUndoHistory(state => state);
-  const { onUploadProgress, reset } = useProgress();
-  const { mutateAsync: uploadAudio } = useUploadAudioMutation();
-  const { mutateAsync: createVideo } = useCreateVideoMutation({
-    onMutate: async body => {
-      await queryClient.cancelQueries({ queryKey });
+  const { mutateAsync: uploadAudio, isPending: isUploadingAudio } =
+    useUploadAudioMutation();
+  const { mutateAsync: uploadBackground, isPending: isUploadingBackground } =
+    useUploadBackgroundMutation();
+  const { mutateAsync: createVideo, isPending: isSubmitting } =
+    useCreateVideoMutation({
+      onMutate: async (body: CreateVideoDto) => {
+        await queryClient.cancelQueries({ queryKey });
 
-      const prevData = queryClient.getQueryData(queryKey) as IVideosResponse;
-      const newVideo: IVideo = {
-        data: {
-          script: body.script,
-          audio_url: body.audio_url,
-        },
-        status: VideoStatus.GENERATING,
-        video_id: OPTIMISTIC_VIDEO_ID,
-        video_name: body.video_name,
-        created_at: new Date(),
-        updated_at: new Date(),
-        status_details: '',
-      };
+        const prevData = queryClient.getQueryData(queryKey) as IVideosResponse;
+        const newVideo: IVideo = {
+          data: {
+            script: body.script,
+            audio_url: body.audio_url,
+          },
+          status: VideoStatus.GENERATING,
+          video_id: OPTIMISTIC_VIDEO_ID,
+          video_name: body.video_name,
+          created_at: new Date(),
+          updated_at: new Date(),
+          status_details: '',
+        };
 
-      queryClient.setQueryData(queryKey, (prev: IVideosResponse) => ({
-        data: [newVideo, ...prev.data],
-        total_count: prev?.total_count + 1,
-      }));
+        queryClient.setQueryData(queryKey, (prev: IVideosResponse) => ({
+          data: [newVideo, ...prev.data],
+          total_count: prev?.total_count + 1,
+        }));
 
-      return prevData;
-    },
-    onError: (_, __, prevData) => {
-      queryClient.setQueryData(queryKey, prevData as IVideosResponse);
-    },
-    onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey });
-    },
-  });
+        return prevData;
+      },
+      onError: (_, __, prevData) => {
+        queryClient.setQueryData(queryKey, prevData as IVideosResponse);
+      },
+      onSettled: () => {
+        void queryClient.invalidateQueries({ queryKey });
+      },
+    });
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (KeyPressService.isUndo(event)) {
@@ -591,26 +644,68 @@ export default function VideoCreatePage() {
     event.preventDefault();
 
     const formState = useVideoGenerateFormStore.getState();
-    const metadataState = useVideoGenerateMetadataStore.getState();
+    const formFileState = useVideoGenerateFilesStore.getState();
 
-    const createVideoBody = getCreateVideoRequestBody(formState);
+    const createVideoBody = getCreateVideoRequestBody(formState, formFileState);
 
     try {
       schemaParse(CreateVideoSchema)(createVideoBody);
 
       try {
+        const promises = [];
+
         if (formState.type === VideoGenerationType.AUDIO) {
-          if (!formState.audioUrl && metadataState.audio?.file) {
+          if (!formState.audioUrl && formFileState.audio?.file) {
             // TODO: move to all settled
-            const url = await uploadAudio({
-              file: metadataState.audio.file,
-              onUploadProgress,
-            });
-            reset();
-            formState.set({ audioUrl: url });
-            createVideoBody.audio_url = url;
+            promises.push(() =>
+              uploadAudio({
+                file: formFileState.audio!.file!,
+              })
+                .then(url => {
+                  formState.set({ audioUrl: url });
+                  createVideoBody.audio_url = url;
+                })
+                .catch(e => {
+                  toast({
+                    title: 'Error',
+                    description: "Couldn't upload audio",
+                  });
+                  throw e;
+                }),
+            );
           }
         }
+        console.log(formState);
+        if (formState.withBackground) {
+          if (formState.backgroundType === VideoBackgroundType.UPLOAD_FILE) {
+            if (
+              !formState.backgroundSourceUrl &&
+              formFileState.background?.file
+            ) {
+              promises.push(() =>
+                uploadBackground({
+                  file: formFileState.background!.file!,
+                })
+                  .then(url => {
+                    formState.set({ backgroundSourceUrl: url });
+                    createVideoBody.background_source_url = url;
+                  })
+                  .catch(e => {
+                    toast({
+                      title: 'Error',
+                      description: "Couldn't upload background",
+                    });
+                    throw e;
+                  }),
+              );
+            }
+          }
+        }
+
+        const results = await Promise.allSettled(
+          promises.map(promise => promise()),
+        );
+        if (results.some(result => result.status === 'rejected')) return;
 
         // TODO: throw 18n error
         await createVideo(createVideoBody);
@@ -630,13 +725,13 @@ export default function VideoCreatePage() {
         description: message,
       });
 
-      if (paths.some(path => path === 'callback_url'))
+      if (
+        paths.some(path => path === 'callback_url' || path === 'background_url')
+      )
         formState.set({
           isAdvancedSettingsOpen: true,
         });
     }
-
-    console.log('SUBMIT', { formState, metadataState });
   };
 
   return (
@@ -659,25 +754,41 @@ export default function VideoCreatePage() {
         wrapperClassName="flex flex-1 h-[calc(100vh-64px)] "
         className="grid grid-cols-2 grid-rows-2 gap-6"
       >
-        <form
-          onSubmit={handleSubmit}
-          className="col-span-1 row-span-2 flex flex-col gap-6 rounded-md border border-border bg-background p-4"
-        >
+        <div className="col-span-1 row-span-2 flex flex-col gap-4 rounded-md border border-border bg-background p-4">
           <Badge variant="label" className="w-fit text-sm">
             Input
           </Badge>
-          <ReplicaSelect />
-          <ScriptAndAudioInputsTab />
-          <AdvancedInputs />
+          <form
+            id="createVideoForm"
+            onSubmit={handleSubmit}
+            className="flex flex-1 flex-col gap-4 overflow-scroll"
+          >
+            <ReplicaSelect />
+            <ScriptAndAudioInputsTab />
+            <AdvancedSettingsInputs />
+          </form>
           <footer className="flex flex-col items-end">
             <Separator className="mb-4" />
-            {/*{isUploadingAudio && `Uploading audio ${progress}%`}*/}
-            {/*{isSumbiting && 'Submitting...'}*/}
-            <Button type="submit">
-              Generate <ArrowRight size={16} className="ml-1" />
-            </Button>
+            <div className="flex w-full items-center justify-end gap-2 overflow-hidden">
+              <span className="truncate">
+                {isUploadingAudio
+                  ? 'Uploading audio...'
+                  : isUploadingBackground
+                    ? 'Uploading background...'
+                    : ''}
+              </span>
+              <Button
+                type="submit"
+                form="createVideoForm"
+                disabled={
+                  isSubmitting || isUploadingAudio || isUploadingBackground
+                }
+              >
+                Generate <ArrowRight size={16} className="ml-1" />
+              </Button>
+            </div>
           </footer>
-        </form>
+        </div>
         <PreviewAndCode />
         <VideoList />
       </LayoutWrapper>

@@ -1,4 +1,5 @@
 import { ChevronDown } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { SelectReplicaDialog } from '@/components/SelectReplicaDialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,10 +13,9 @@ import { DEFAULT_REPLICA } from '../constnats';
 import { IReplica } from '@/types';
 
 export const ReplicaSelect = () => {
-  const [replicaId, set] = useVideoGenerateFormStore(store => [
-    store.replicaId,
-    store.set,
-  ]);
+  const [replicaId, set] = useVideoGenerateFormStore(
+    useShallow(store => [store.replicaId, store.set]),
+  );
   const { data: selectedReplica } = useReplicaQuery(replicaId, {
     placeholderData:
       replicaId === DEFAULT_REPLICA.replica_id ? DEFAULT_REPLICA : undefined,

@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { TooltipProps } from '@radix-ui/react-tooltip';
 
 import { cn } from '@/utils';
 
@@ -28,4 +29,26 @@ const TooltipContent = React.forwardRef<
 ));
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
+const SimpleTooltip = ({
+  children,
+  tooltipContent,
+  ...props
+}: TooltipProps & {
+  children: React.ReactNode;
+  tooltipContent: React.ReactNode;
+}) => (
+  <TooltipProvider>
+    <Tooltip delayDuration={200} {...props}>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent>{tooltipContent}</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+);
+
+export {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+  SimpleTooltip,
+};

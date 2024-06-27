@@ -82,6 +82,7 @@
 
 @layer base {
   * {
+    @apply outline-primary;
     @apply border-border;
   }
   body {
