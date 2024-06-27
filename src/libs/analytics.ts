@@ -6,9 +6,9 @@ import setupLogRocketReact from 'logrocket-react';
 
 import { isProd, LOG_ROCKET_ID, SENTRY_DSN } from '@/constants';
 
-import { version } from '../../package.json';
+import packageJson from '../../package.json';
 
-console.info(`v:${version}`);
+console.info(`v:${packageJson.version}`);
 
 if (isProd && LOG_ROCKET_ID) {
   LogRocket.init(LOG_ROCKET_ID);
