@@ -15,6 +15,7 @@ concurrency:
 env:
   AWS_REGION: us-east-1
   BUCKET: tavus-developer-portal-dev
+  NODE_ENV: development
 
 permissions:
   id-token: write

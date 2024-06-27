@@ -351,7 +351,7 @@ const getCreateVideoRequestBody = (
   if (formState.type === VideoGenerationType.AUDIO && formState.audioUrl)
     result.audio_url = formState.audioUrl;
   else if (formState.type === VideoGenerationType.SCRIPT)
-    result.script = formState.script;
+    result.script = formState.script || '';
 
   if (formState.name) result.video_name = formState.name;
   if (formState.callbackUrl) result.callback_url = formState.callbackUrl;
