@@ -44,6 +44,9 @@ Resources:
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: _not-found.html
     DependsOn:
       - "Certificate"
 
@@ -69,20 +72,6 @@ Resources:
         DefaultCacheBehavior:
           Compress: true
           DefaultTTL: 86400
-        CustomErrorResponses:
-          - ErrorCachingMinTTL: 10
-            ErrorCode: 403
-            ResponseCode: 200
-            ResponsePagePath: '/index.html'                  
-        Origins:
-          - DomainName: !Sub ${StaticResourcesBucket}.s3.${AWS::Region}.amazonaws.com
-            Id: !Sub S3OriginPortal${Env}
-            S3OriginConfig:
-              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${OriginAccessIdentity}
-        Enabled: true
-        HttpVersion: 'http2'
-        DefaultRootObject: index.html
-        DefaultCacheBehavior:
           AllowedMethods:
             - DELETE
             - GET
@@ -98,6 +87,25 @@ Resources:
               Forward: none
           ViewerProtocolPolicy: redirect-to-https
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt URLRewriteFunction.FunctionARN
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 10
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
+          - ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: '/_not-found.html'
+        Origins:
+          - DomainName: !Sub ${StaticResourcesBucket}.s3.${AWS::Region}.amazonaws.com
+            Id: !Sub S3OriginPortal${Env}
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${OriginAccessIdentity}
+        Enabled: true
+        HttpVersion: 'http2'
+        DefaultRootObject: index.html
         PriceClass: PriceClass_All
         ViewerCertificate:
           AcmCertificateArn: !Ref Certificate
@@ -107,6 +115,39 @@ Resources:
           Value: newdeveloperportal
     DependsOn:
       - "StaticResourcesBucket"
+
+  URLRewriteFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub ${AWS::StackName}-url-rewrite
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Rewrite URLs for Next.js static export
+        Runtime: cloudfront-js-1.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          var uri = request.uri;
+          
+          // Remove trailing slash except for the root
+          if (uri.length > 1 && uri.endsWith('/')) {
+            uri = uri.slice(0, -1);
+          }
+
+          // Handle root path
+          if (uri === '' || uri === '/') {
+            request.uri = '/index.html';
+            return request;
+          }
+
+          // Check if the URI ends with .html
+          if (!uri.endsWith('.html')) {
+            // If it doesn't end with .html, append .html
+            request.uri = uri + '.html';
+          }
+
+          return request;
+        }
 
   HostedZoneRecordSetGroup:
     Type: AWS::Route53::RecordSetGroup
@@ -126,4 +167,10 @@ Resources:
     DependsOn:
       - "Distribution"
 
- 
+Outputs:
+  WebsiteURL:
+    Value: !Sub 'https://${DomainName}'
+    Description: URL for website hosted on S3
+  CloudFrontDistributionId:
+    Value: !Ref Distribution
+    Description: CloudFront Distribution ID
