@@ -12,14 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 import { useAudio } from '@/hooks';
-import { formatBytes, formatTime } from '@/utils';
-
-function getFilenameFromUrl(url: string) {
-  const cleanUrl = url?.split('?')[0].split('#')[0] || '';
-  const filename = cleanUrl.split('/').pop() || '';
-
-  return decodeURIComponent(filename);
-}
+import { formatBytes, formatTime, getFilenameFromUrl } from '@/utils';
 
 export const AudioCard = ({
   url = '',

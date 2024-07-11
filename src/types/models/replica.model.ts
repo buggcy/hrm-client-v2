@@ -18,8 +18,8 @@ export const IReplica = z.object({
   training_progress: z.string(),
   thumbnail_video_url: z.string().url().nullable(),
   error_message: z.string().nullable().optional(),
-  created_at: z.string().transform(str => new Date(str)),
-  updated_at: z.string().transform(str => new Date(str)),
+  created_at: z.string(),
+  updated_at: z.string(),
   replica_type: z.nativeEnum(ReplicaType).default(ReplicaType.STUDIO),
 });
 

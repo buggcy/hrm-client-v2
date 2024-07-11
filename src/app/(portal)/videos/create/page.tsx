@@ -65,7 +65,7 @@ import {
   useVideosQuery,
 } from '@/hooks';
 import { queryClient } from '@/libs';
-import { cn, portalApi, schemaParse } from '@/utils';
+import { cn, getFilenameFromUrl, portalApi, schemaParse } from '@/utils';
 
 import { AudioInput } from './components/AudioInput';
 import { ScriptInput } from './components/ScriptInput';
@@ -409,7 +409,7 @@ const Preview = () => {
         Loading ...
       </div>
       <video
-        className="absolute size-full rounded object-cover"
+        className="absolute size-full rounded"
         preload="auto"
         src={data?.thumbnail_video_url as string}
       />
@@ -521,7 +521,7 @@ const VideoList = () => {
   return (
     <div className="col-span-1 row-span-1 flex flex-col gap-1 rounded-md border border-border bg-background p-4">
       <header className="flex items-center justify-between">
-        <b>Generated Videos</b>
+        <p className="font-medium">Generated Videos</p>
         <Button variant="link" asChild className="p-1 text-muted-foreground">
           <Link href="/videos/">
             All Videos
@@ -530,8 +530,8 @@ const VideoList = () => {
         </Button>
       </header>
       <Separator />
-      <ul className="-ml-2.5 flex h-full flex-col gap-1 overflow-y-scroll">
-        {videos ? (
+      <ul className="-ml-2.5 flex h-full flex-col gap-1 overflow-y-auto overflow-x-hidden">
+        {videos?.data?.length ? (
           videos.data.map(
             ({
               video_id,
@@ -563,7 +563,11 @@ const VideoList = () => {
                   )}
                 </div>
                 <div className="grid w-full">
-                  <p className="truncate">{data.script || data.audio_url}</p>
+                  <p className="truncate">
+                    {data.script ||
+                      getFilenameFromUrl(data.audio_url!) ||
+                      data.audio_url}
+                  </p>
                   <p className="text-muted-foreground">{video_id}</p>
                 </div>
               </li>
@@ -610,8 +614,8 @@ export default function VideoCreatePage() {
           status: VideoStatus.GENERATING,
           video_id: OPTIMISTIC_VIDEO_ID,
           video_name: body.video_name,
-          created_at: new Date(),
-          updated_at: new Date(),
+          created_at: '',
+          updated_at: '',
           status_details: '',
         };
 
@@ -751,7 +755,7 @@ export default function VideoCreatePage() {
       </LayoutHeader>
       <LayoutWrapper
         onKeyDown={handleKeyDown}
-        wrapperClassName="flex flex-1 h-[calc(100vh-64px)] "
+        wrapperClassName="flex flex-1 h-[calc(100vh-64px)]"
         className="grid grid-cols-2 grid-rows-2 gap-6"
       >
         <div className="col-span-1 row-span-2 flex flex-col gap-4 rounded-md border border-border bg-background p-4">
@@ -761,7 +765,7 @@ export default function VideoCreatePage() {
           <form
             id="createVideoForm"
             onSubmit={handleSubmit}
-            className="flex flex-1 flex-col gap-4 overflow-scroll"
+            className="no-scrollbar flex flex-1 flex-col gap-4 overflow-y-scroll"
           >
             <ReplicaSelect />
             <ScriptAndAudioInputsTab />

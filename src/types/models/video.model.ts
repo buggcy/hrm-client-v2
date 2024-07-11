@@ -22,8 +22,8 @@ export const IVideo = z.object({
   download_url: z.string().url().nullable().optional(),
   gif_thumbnail_url: z.string().url().nullable().optional(),
   still_image_thumbnail_url: z.string().url().nullable().optional(),
-  created_at: z.string().transform(str => new Date(str)),
-  updated_at: z.string().transform(str => new Date(str)),
+  created_at: z.string(),
+  updated_at: z.string(),
 });
 
 export type IVideo = z.infer<typeof IVideo>;

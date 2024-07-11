@@ -1,8 +1,4 @@
-export const formatDateToDayMonthYear = (date: Date) => {
-  return `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.toLocaleString(
-    'default',
-    {
-      year: 'numeric',
-    },
-  )}`;
-};
+import { format } from 'date-fns';
+
+export const formatDateToDayMonthYear = (date: string | number | Date) =>
+  format(date, 'd MMMM yyyy');

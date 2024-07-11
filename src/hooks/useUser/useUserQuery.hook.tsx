@@ -12,8 +12,11 @@ export const useUserQuery = (
   config: Omit<UseQueryOptions, 'queryKey' | 'queryFn'> = {},
 ) =>
   useQuery({
-    ...config,
     queryKey: ['user'],
     queryFn: (): Promise<IUser> =>
       portalApi.get('/v3/users/me').then(schemaParse(IUser)),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
   }) as UseQueryResult<IUser, Error>;

@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
+import { format } from 'date-fns';
+
 import { cn } from '@/utils';
 
 import { CopyRequestID } from '../CopyRequestID/CopyRequestID';
@@ -34,15 +36,7 @@ export const VideoInfoBlock: FC<{
           </div>
           <div>
             <p className="text-sm font-medium">
-              {created_at?.toLocaleString('default', {
-                month: 'long',
-              })}{' '}
-              {created_at?.getDate()},{' '}
-              {created_at?.toLocaleTimeString('en-US', {
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true,
-              })}
+              {created_at && format(created_at, 'MMMM d, h:mm aaa')}
             </p>
           </div>
         </div>

@@ -37,7 +37,8 @@ export function SignInForm() {
     onError: () => {
       toast({
         // TODO: show correct error message
-        title: 'Wrong email or password.',
+        title:
+          'Sign-in unsuccessful. Please verify your username and password. If the issue persists, try resetting your password or contact our support team at support@example.com for assistance.',
         variant: 'destructive',
       });
     },
@@ -94,7 +95,9 @@ export function SignInForm() {
               <FormMessage />
               <FormDescription>
                 <Button asChild variant="link" className="p-0">
-                  <Link href="/forgot-password">Forgot your password?</Link>
+                  <Link href="/auth/forgot-password">
+                    Forgot your password?
+                  </Link>
                 </Button>
               </FormDescription>
             </FormItem>

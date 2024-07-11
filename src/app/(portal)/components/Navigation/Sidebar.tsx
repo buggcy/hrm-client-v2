@@ -9,6 +9,8 @@ import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
+import QuotasCard from '@/app/(portal)/components/Navigation/components/QuotasCard';
+
 import { NavigationItem } from './components/NavigationItem';
 import { NavSection } from './components/NavSection';
 import { SupportPopover } from './components/SupportPopover';
@@ -94,6 +96,9 @@ export const Sidebar = () => {
           </NavSection>
         </nav>
         <ul className="mt-auto flex flex-col gap-3">
+          <li>
+            <QuotasCard className="hidden group-hover:flex" />
+          </li>
           <li>
             <SupportPopover />
           </li>

@@ -1,3 +1,5 @@
+export const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_URL;
+
 export const RQH_API_BASE_URL = process.env.NEXT_PUBLIC_RQH_API_BASE_URL;
 export const PORTAL_API_BASE_URL = process.env.NEXT_PUBLIC_PORTAL_API_BASE_URL;
 

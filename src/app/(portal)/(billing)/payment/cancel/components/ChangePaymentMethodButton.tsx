@@ -1,0 +1,28 @@
+'use client';
+
+import { LoadingButton } from '@/components/LoadingButton';
+import { toast } from '@/components/ui/use-toast';
+
+import { useCreateStripeCheckoutSessionUrlMutation } from '@/hooks/useBilling';
+
+export const ChangePaymentMethodButton = () => {
+  const { isPending, mutateAsync } =
+    useCreateStripeCheckoutSessionUrlMutation();
+
+  const handleClick = async () => {
+    try {
+      window.location.href = await mutateAsync();
+    } catch (error) {
+      toast({
+        description:
+          'Failed to create a new payment session. Please try again later or contact support.',
+      });
+    }
+  };
+
+  return (
+    <LoadingButton loading={isPending} onClick={handleClick}>
+      Change Payment Method
+    </LoadingButton>
+  );
+};

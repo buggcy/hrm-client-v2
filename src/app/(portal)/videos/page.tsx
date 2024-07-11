@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 import { keepPreviousData } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import {
   Loader,
   LoaderCircle,
@@ -219,15 +220,8 @@ export default function VideosPage() {
                             <StatusBadge status={status} />
                           </TableCell>
                           <TableCell className="hidden p-2 font-medium lg:table-cell">
-                            {created_at.toLocaleString('default', {
-                              month: 'long',
-                            })}{' '}
-                            {created_at.getDate()},{' '}
-                            {created_at.toLocaleTimeString('en-US', {
-                              hour: 'numeric',
-                              minute: 'numeric',
-                              hour12: true,
-                            })}
+                            {created_at &&
+                              format(created_at, 'MMMM d, h:mm aaa')}
                           </TableCell>
                           <TableCell className="p-2">
                             <MoveRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100" />

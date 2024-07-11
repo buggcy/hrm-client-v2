@@ -17,3 +17,10 @@ export const schemaParse =
       throw error;
     }
   };
+
+export function getFilenameFromUrl(url: string) {
+  const cleanUrl = url?.split('?')[0].split('#')[0] || '';
+  const filename = cleanUrl.split('/').pop() || '';
+
+  return decodeURIComponent(filename);
+}

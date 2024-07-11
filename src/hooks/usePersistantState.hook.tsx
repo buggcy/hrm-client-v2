@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 
-export function usePersistentState<T>(key: string, initialState?: T) {
+export function usePersistentState<T>(
+  key: string,
+  initialState?: T | (() => T),
+) {
   const prefixedKey = 'use-persistent-state-' + key;
   const [value, setValue] = useState<T>(() => {
     const storedValue = localStorage.getItem(prefixedKey);
     try {
       if (storedValue === null || storedValue === 'undefined') {
         if (typeof initialState === 'function') {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/ban-ts-comment
+          // @ts-expect-error
           return initialState();
         } else {
           return initialState;

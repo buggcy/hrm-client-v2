@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 
 import { Layout, LayoutHeader, LayoutWrapper } from './Layout';
 
-test('Component Layout to be rendered', () => {
+test('Component LayoutComponent to be rendered', () => {
   render(
     <Layout>
       <LayoutHeader title="Hello" />

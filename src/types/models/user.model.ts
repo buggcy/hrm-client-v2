@@ -14,8 +14,18 @@ export const IUser = z.object({
   email: z.string().email(),
   role: z.nativeEnum(UserRole),
   billing_account_id: z.number().int().optional(),
-  created_at: z.string().transform(str => new Date(str)),
-  updated_at: z.string().transform(str => new Date(str)),
+  billingAccount: z
+    .object({
+      id: z.number().int(),
+      // TODO: add enum
+      status: z.string().nullable(),
+      plan_id: z.string().nullable(),
+      subscription_id: z.string().nullable(),
+    })
+    .nullable()
+    .optional(),
+  created_at: z.string(),
+  updated_at: z.string(),
 });
 
 export type IUser = z.infer<typeof IUser>;
