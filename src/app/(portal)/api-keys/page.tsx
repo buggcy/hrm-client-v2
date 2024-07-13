@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { keepPreviousData } from '@tanstack/react-query';
-import { Loader, LoaderCircle, PlusIcon, TrashIcon } from 'lucide-react';
+import { Loader, LoaderCircle, PlusIcon, Trash2Icon } from 'lucide-react';
 
 import {
   Layout,
@@ -146,7 +146,7 @@ export default function ApiKeysPage() {
                             size="icon"
                             className="size-8"
                           >
-                            <TrashIcon className="size-4" />
+                            <Trash2Icon className="size-4" />
                           </Button>
                         </TableCell>
                       </TableRow>

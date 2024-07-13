@@ -61,6 +61,7 @@ export default function VideoDetailsPage() {
                 video_id={video?.video_id}
                 created_at={video?.created_at}
                 status={video?.status}
+                withDelete
               />
               <VideoDataBlock data={video?.data} />
             </CardContent>

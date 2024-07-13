@@ -48,8 +48,8 @@ export default function QuotasCard({ className }: { className?: string }) {
                 quotas?.video.planLimit &&
                 (quotas?.video.currentUsage / quotas?.video.planLimit) * 100
               }
-              className="h-1 w-full bg-border"
-              indicatorClassName="bg-white"
+              className="h-1 w-full"
+              variant="white"
             />
           </div>
           <div className="space-y-1.5">
@@ -71,8 +71,8 @@ export default function QuotasCard({ className }: { className?: string }) {
                 quotas?.replica.planLimit &&
                 (quotas?.replica.currentUsage / quotas?.replica.planLimit) * 100
               }
-              className="h-1 w-full bg-border"
-              indicatorClassName="bg-white"
+              className="h-1 w-full"
+              variant="white"
             />
           </div>
         </CardContent>

@@ -38,10 +38,10 @@ const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id }) => {
           {type}
         </span>
       </div>
-      <code className="inline-flex text-sm text-muted-foreground sm:gap-1">
+      <code className="inline-flex text-sm text-foreground sm:gap-1">
         {urlArr.map(part => (
           <Fragment key={part}>
-            <span>/</span>
+            <span className="text-muted-foreground">/</span>
             <span>
               <span>{part}</span>
             </span>

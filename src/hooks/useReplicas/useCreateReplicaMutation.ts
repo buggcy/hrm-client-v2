@@ -9,7 +9,7 @@ import { rqhApi } from '@/utils';
 import { IReplica } from '@/types';
 
 export type CreateReplicaDto = {
-  replica_name: IReplica['replica_name'];
+  replica_name?: IReplica['replica_name'];
   consent_video_url: string;
   train_video_url: string;
 };

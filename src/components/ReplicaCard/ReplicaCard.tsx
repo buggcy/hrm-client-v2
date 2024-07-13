@@ -21,9 +21,10 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-import { useCopyToClipboard } from '@/hooks';
+import { useCopyToClipboard, useDeleteReplicaMutation } from '@/hooks';
 import { cn } from '@/utils';
 
+import { DeleteDialog } from '../DeleteDialog';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardFooter } from '../ui/card';
@@ -85,7 +86,6 @@ const useReplicasVideoMute = () => {
   return { isMuted, toggleMute, onMuteChange };
 };
 
-// TODO: add delete functionality
 // TODO: add rename functionality
 // TODO: add keyboard support
 
@@ -119,6 +119,13 @@ const ReplicaCard = ({
   const { isCopied, copyToClipboard } = useCopyToClipboard({
     textToCopy: replica_id,
   });
+  const [error, setError] = useState(false);
+
+  const {
+    mutate: deleteReplica,
+    isPending,
+    isSuccess,
+  } = useDeleteReplicaMutation();
 
   const isUserReplica = replica_type === ReplicaType.PERSONAL;
 
@@ -170,6 +177,10 @@ const ReplicaCard = ({
     toggleMute();
   };
 
+  const handleDelete = () => {
+    void deleteReplica(replica_id);
+  };
+
   return (
     <Card
       className={cn('group rounded-md outline-primary hover:shadow', {
@@ -179,18 +190,29 @@ const ReplicaCard = ({
       onClick={handleSelect}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onBlur={handleMouseLeave}
     >
       <CardContent className="p-2.5 pb-4">
         <div className="relative overflow-hidden rounded-md border bg-secondary">
-          {thumbnail_video_url && status === ReplicaStatus.COMPLETED && (
-            <video
-              ref={videoRef}
-              src={thumbnail_video_url}
-              className="aspect-video size-full rounded-md bg-black object-contain"
-              muted={isMuted}
-              loop
-              preload="metadata"
-            />
+          {!error &&
+            thumbnail_video_url &&
+            status === ReplicaStatus.COMPLETED && (
+              <video
+                ref={videoRef}
+                src={thumbnail_video_url}
+                className="aspect-video size-full rounded-md bg-black object-contain"
+                muted={isMuted}
+                loop
+                preload="metadata"
+                onError={() => setError(true)}
+              />
+            )}
+          {error && (
+            <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
+              <p className="text-sm text-destructive/80">
+                Error loading preview
+              </p>
+            </div>
           )}
           {status === ReplicaStatus.STARTED && (
             <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
@@ -302,12 +324,19 @@ const ReplicaCard = ({
                     Copy Replica ID
                   </Button>
                   {isUserReplica && (
-                    <Button
-                      variant="destructive-inverted"
-                      className="justify-start gap-3"
+                    <DeleteDialog
+                      isLoading={isPending}
+                      isSuccess={isSuccess}
+                      onDelete={handleDelete}
+                      description="This action cannot be undone. This will permanently delete your replica."
                     >
-                      <Trash2 className="size-4" /> Delete
-                    </Button>
+                      <Button
+                        variant="destructive-inverted"
+                        className="justify-start gap-3"
+                      >
+                        <Trash2 className="size-4" /> Delete
+                      </Button>
+                    </DeleteDialog>
                   )}
                 </div>
               </PopoverContent>

@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { keepPreviousData } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import {
+  ArrowRight,
   Loader,
   LoaderCircle,
-  MoveRight,
   Trash2,
   TriangleAlert,
   Video,
@@ -135,7 +135,7 @@ export default function VideosPage() {
                   <Loader className="size-6 animate-spin" />
                 </div>
               )}
-              {videos?.data && (
+              {!!videos?.data?.length && (
                 <Table>
                   <TableHeader className="[&_tr]:border-none">
                     <tr>
@@ -214,7 +214,7 @@ export default function VideosPage() {
                               format(created_at, 'MMMM d, h:mm aaa')}
                           </TableCell>
                           <TableCell className="p-2">
-                            <MoveRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                            <ArrowRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
                           </TableCell>
                         </TableRow>
                       ),
@@ -223,35 +223,45 @@ export default function VideosPage() {
                 </Table>
               )}
               {videos?.data?.length === 0 && (
-                <div className="flex h-40 flex-col items-center justify-center gap-4 text-muted-foreground">
-                  {/* TODO: Change this when design will be ready*/}
-                  <Button className="ml-2"> Create your first video</Button>
+                <div className="my-20 flex flex-1 flex-col items-center justify-center gap-4">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-primary-foreground">
+                    <span>
+                      <Video className="size-4 text-primary" />
+                    </span>
+                  </div>
+                  <p className="font-medium">
+                    Create your first video with your own replica or using stock
+                    replicas!
+                  </p>
+                  <Button variant="link" asChild>
+                    <Link href="/videos/create">
+                      Create your first video <ArrowRight className="size-4" />
+                    </Link>
+                  </Button>
                 </div>
               )}
             </div>
           </CardContent>
-          <CardFooter className="flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">
-              {videos?.total_count && (
-                <>
-                  Showing{' '}
-                  <strong>
-                    {(page - 1) * LIMIT + 1} -{' '}
-                    {Math.min(videos.total_count, (page - 1) * LIMIT + LIMIT)}
-                  </strong>{' '}
-                  of <strong>{videos.total_count}</strong> videos
-                </>
-              )}
-            </div>
-            <div>
-              <Pagination
-                total={videos?.total_count || 0}
-                currentPage={page}
-                perPage={LIMIT}
-                onPageChange={setPage}
-              />
-            </div>
-          </CardFooter>
+          {!!videos?.total_count && (
+            <CardFooter className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">
+                Showing{' '}
+                <strong>
+                  {(page - 1) * LIMIT + 1} -{' '}
+                  {Math.min(videos.total_count, (page - 1) * LIMIT + LIMIT)}
+                </strong>{' '}
+                of <strong>{videos.total_count}</strong> videos
+              </div>
+              <div>
+                <Pagination
+                  total={videos?.total_count || 0}
+                  currentPage={page}
+                  perPage={LIMIT}
+                  onPageChange={setPage}
+                />
+              </div>
+            </CardFooter>
+          )}
         </Card>
       </LayoutWrapper>
     </Layout>

@@ -1,10 +1,12 @@
 import { FC } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { format } from 'date-fns';
 
 import { cn } from '@/utils';
 
 import { CopyRequestID } from '../CopyRequestID/CopyRequestID';
+import { DeleteVideoBtn } from '../DeleteVideoBtn';
 import { EditableTitle } from '../EditableTitle';
 
 import { IVideo, VideoStatus } from '@/types';
@@ -14,11 +16,21 @@ export const VideoInfoBlock: FC<{
   created_at?: IVideo['created_at'];
   status?: IVideo['status'];
   video_name?: IVideo['video_name'];
-}> = ({ video_id, created_at, status, video_name }) => {
+  withDelete?: boolean;
+}> = ({ video_id, created_at, status, video_name, withDelete }) => {
+  const router = useRouter();
   return (
     <div>
-      <div className="mb-4">
+      <div className="mb-4 flex items-center gap-2">
         <EditableTitle video_name={video_name} status={status} />
+        {withDelete && (
+          <DeleteVideoBtn
+            id={video_id!}
+            onDeleted={() => {
+              router.push('/videos');
+            }}
+          />
+        )}
       </div>
 
       <div className="space-y-4">

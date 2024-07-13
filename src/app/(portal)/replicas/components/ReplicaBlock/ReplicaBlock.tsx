@@ -9,6 +9,18 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import { IReplica } from '@/types';
 
+const SkeletonReplicaCard = () => (
+  <Card className="rounded-md">
+    <CardContent className="p-4">
+      <Skeleton className="aspect-video size-full rounded-md" />
+    </CardContent>
+    <div className="flex flex-col gap-3 px-2.5 pb-4">
+      <Skeleton className="h-8 w-full rounded-md" />
+      <Skeleton className="h-5 w-full rounded-md" />
+    </div>
+  </Card>
+);
+
 const ReplicaBlock = ({
   title,
   isMuted,
@@ -36,26 +48,10 @@ const ReplicaBlock = ({
       </h3>
       {isLoading && (
         <div className="grid grid-cols-[repeat(auto-fill,_minmax(276px,_1fr))] gap-6">
-          <Card className="rounded-md">
-            <CardContent className="aspect-video p-4">
-              <Skeleton className="size-full rounded-md" />
-            </CardContent>
-          </Card>
-          <Card className="rounded-md">
-            <CardContent className="aspect-video p-4">
-              <Skeleton className="size-full rounded-md" />
-            </CardContent>
-          </Card>
-          <Card className="rounded-md">
-            <CardContent className="aspect-video p-4">
-              <Skeleton className="size-full rounded-md" />
-            </CardContent>
-          </Card>
-          <Card className="rounded-md">
-            <CardContent className="aspect-video p-4">
-              <Skeleton className="size-full rounded-md" />
-            </CardContent>
-          </Card>
+          <SkeletonReplicaCard />
+          <SkeletonReplicaCard />
+          <SkeletonReplicaCard />
+          <SkeletonReplicaCard />
         </div>
       )}
       {replicas?.length === 0 && isPersonalReplicas && (

@@ -57,3 +57,35 @@ export const useVideosQuery = ({
         }),
     ...config,
   });
+
+export const prefetchVideos = () => {
+  return queryClient.prefetchQuery({
+    queryKey: [
+      'videos',
+      {
+        page: 0,
+        limit: 10,
+        filter_out_status: [VideoStatus.QUEUED, VideoStatus.DELETED].join(','),
+      },
+    ],
+    retry: 0,
+    queryFn: () =>
+      rqhApi
+        .get('/v2/videos', {
+          params: {
+            page: 0,
+            limit: 10,
+            filter_out_status: [VideoStatus.QUEUED, VideoStatus.DELETED].join(
+              ',',
+            ),
+          },
+        })
+        .then(schemaParse(IVideosResponse))
+        .then(data => {
+          data.data.forEach(video => {
+            queryClient.setQueryData(['video', video.video_id], video);
+          });
+          return data;
+        }),
+  });
+};

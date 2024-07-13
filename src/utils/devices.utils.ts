@@ -17,7 +17,7 @@ export function formatBytes(bytes: number, decimals = 2) {
   );
 }
 
-export const getVideoDuration = (file: File): Promise<number> =>
+export const getVideoDuration = (file: File | string): Promise<number> =>
   new Promise((resolve, reject) => {
     const video = document.createElement('video');
     video.preload = 'metadata';
@@ -32,7 +32,7 @@ export const getVideoDuration = (file: File): Promise<number> =>
       reject(new Error('Failed to load video metadata'));
       URL.revokeObjectURL(video.src);
     };
-    video.src = URL.createObjectURL(file);
+    video.src = typeof file === 'string' ? file : URL.createObjectURL(file);
   });
 
 export const formatTime = (duration: number) => {
