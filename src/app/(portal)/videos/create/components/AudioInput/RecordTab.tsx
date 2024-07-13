@@ -81,7 +81,7 @@ export const RecordTab = () => {
         className="size-16 rounded-full p-3 text-white shadow-icon-button"
         onClick={handleClick}
       >
-        {isRecording ? <Square fill="white" size={32} /> : <Mic size={32} />}
+        {isRecording ? <Square fill="white" size={24} /> : <Mic size={32} />}
       </Button>
 
       {isRecording && <p className="py-2">{formatTime(duration)}</p>}

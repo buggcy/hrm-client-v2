@@ -32,15 +32,17 @@ TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 const SimpleTooltip = ({
   children,
   tooltipContent,
+  disabled = false,
   ...props
 }: TooltipProps & {
   children: React.ReactNode;
   tooltipContent: React.ReactNode;
+  disabled?: boolean;
 }) => (
   <TooltipProvider>
     <Tooltip delayDuration={200} {...props}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent>{tooltipContent}</TooltipContent>
+      {!disabled && <TooltipContent>{tooltipContent}</TooltipContent>}
     </Tooltip>
   </TooltipProvider>
 );

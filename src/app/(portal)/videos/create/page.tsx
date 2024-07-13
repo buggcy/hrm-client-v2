@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 
-import { Query, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { AxiosProgressEvent } from 'axios';
 import {
   ArrowRight,
@@ -41,6 +41,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SimpleTooltip } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 
 import {
@@ -63,6 +64,7 @@ import {
   useCreateVideoMutation,
   useReplicaQuery,
   useVideosQuery,
+  useVideosQueryRefetchInterval,
 } from '@/hooks';
 import { queryClient } from '@/libs';
 import { cn, getFilenameFromUrl, portalApi, schemaParse } from '@/utils';
@@ -72,16 +74,25 @@ import { ScriptInput } from './components/ScriptInput';
 import { useVideoGenerateFilesStore } from './hooks';
 import { VideoBackgroundType, VideoGenerationType } from './types';
 
-import { IVideo, VideoStatus } from '@/types';
+import { IVideo, ReplicaType, VideoStatus } from '@/types';
 
 const tabsTriggerClassName =
   'inline-flex items-center  justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50  relative h-9 rounded-none border-b-2 border-b-transparent !bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none  data-[state=active]:border-b-black data-[state=active]:focus:border-b-primary data-[state=active]:hover:border-b-primary focus:!text-primary hover:!text-primary data-[state=active]:text-foreground data-[state=active]:border-foreground data-[state=active]:shadow-none';
 
 const ScriptAndAudioInputsTab = () => {
   const { t } = useTranslation();
-  const [type, set] = useVideoGenerateFormStore(
-    useShallow(store => [store.type, store.set]),
+  const [type, set, replicaId] = useVideoGenerateFormStore(
+    useShallow(store => [store.type, store.set, store.replicaId]),
   );
+  const { data: replica } = useReplicaQuery(replicaId);
+  const isStockReplica = replica?.replica_type === ReplicaType.STUDIO;
+
+  useEffect(() => {
+    if (isStockReplica && type === VideoGenerationType.AUDIO) {
+      set({ type: VideoGenerationType.SCRIPT });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isStockReplica]);
 
   const handleTypeChange = (value: string) => {
     set({ type: value as VideoGenerationType });
@@ -104,16 +115,26 @@ const ScriptAndAudioInputsTab = () => {
             <span>{t('portal.videos.create.tabs.script')}</span>
           </Button>
         </TabsTrigger>
-        <TabsTrigger
-          className={tabsTriggerClassName}
-          asChild
-          value={VideoGenerationType.AUDIO}
+        <SimpleTooltip
+          disabled={!isStockReplica}
+          tooltipContent={
+            'Audio generation is not available for stock replicas'
+          }
         >
-          <Button className="flex items-center space-x-1 px-0">
-            <Headphones size={16} />
-            <span>{t('portal.videos.create.tabs.audio')}</span>
-          </Button>
-        </TabsTrigger>
+          <div>
+            <TabsTrigger
+              disabled={isStockReplica}
+              className={tabsTriggerClassName}
+              asChild
+              value={VideoGenerationType.AUDIO}
+            >
+              <Button className="flex items-center space-x-1 px-0">
+                <Headphones size={16} />
+                <span>{t('portal.videos.create.tabs.audio')}</span>
+              </Button>
+            </TabsTrigger>
+          </div>
+        </SimpleTooltip>
       </TabsList>
       <TabsContent
         value={VideoGenerationType.SCRIPT}
@@ -434,18 +455,6 @@ const getIcon = (status: VideoStatus) => {
   }
 };
 
-const videoListRefetchIntervalFn = (query: Query<IVideosResponse>) => {
-  if (
-    query.state.data?.data?.some(
-      ({ status }) => status === VideoStatus.GENERATING,
-    )
-  ) {
-    return 10 * 1000;
-  }
-
-  return 5 * 60 * 1000;
-};
-
 const PreviewAndCode = () => (
   <div className="col-span-1 row-span-1 flex w-full rounded-md border border-border bg-background p-4">
     <Tabs
@@ -512,16 +521,27 @@ const queryKey = ['videos', queryParams];
 const VideoList = () => {
   const { video_id, onOpenChange } = useVideoDetailsSheet();
   // TODO: change loading
-  const { data: videos, isPending } = useVideosQuery({
+  const {
+    data: videos,
+    isPending,
+    isLoading,
+    isFetching,
+  } = useVideosQuery({
     queryKey,
     queryParams,
-    refetchInterval: videoListRefetchIntervalFn,
+    refetchInterval: useVideosQueryRefetchInterval,
+    refetchOnWindowFocus: true,
   });
 
   return (
     <div className="col-span-1 row-span-1 flex flex-col gap-1 rounded-md border border-border bg-background p-4">
       <header className="flex items-center justify-between">
-        <p className="font-medium">Generated Videos</p>
+        <p className="font-medium">
+          Generated Videos
+          {isFetching && !isLoading && (
+            <Loader className="ml-2 inline size-5 animate-spin" />
+          )}
+        </p>
         <Button variant="link" asChild className="p-1 text-muted-foreground">
           <Link href="/videos/">
             All Videos
@@ -655,6 +675,10 @@ export default function VideoCreatePage() {
     try {
       schemaParse(CreateVideoSchema)(createVideoBody);
 
+      toast({
+        title: 'Start video processing   🚀',
+      });
+
       try {
         const promises = [];
 
@@ -679,7 +703,7 @@ export default function VideoCreatePage() {
             );
           }
         }
-        console.log(formState);
+
         if (formState.withBackground) {
           if (formState.backgroundType === VideoBackgroundType.UPLOAD_FILE) {
             if (
@@ -713,6 +737,11 @@ export default function VideoCreatePage() {
 
         // TODO: throw 18n error
         await createVideo(createVideoBody);
+        toast({
+          title: 'Start video generation 🚀',
+          description:
+            'Your video is being processed. You can check the status in the list below.',
+        });
       } catch (error) {
         toast({
           title: t('portal.videos.create.error'),

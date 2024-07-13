@@ -45,7 +45,7 @@ import {
   useVideoDetailsSheet,
   VideoDetailsSheet,
 } from '@/app/(portal)/videos/components/VideoDetailsSheet';
-import { useVideosQuery } from '@/hooks';
+import { useVideosQuery, useVideosQueryRefetchInterval } from '@/hooks';
 
 import { CopyRequestID } from './components/CopyRequestID/CopyRequestID';
 import { GetVideoByIdInput } from './components/GetVideoByIdInput';
@@ -86,17 +86,7 @@ export default function VideosPage() {
       filter_out_status: VideoStatus.DELETED,
     },
     placeholderData: keepPreviousData,
-    refetchInterval(query) {
-      if (
-        query.state.data?.data?.some(
-          ({ status }) => status === VideoStatus.GENERATING,
-        )
-      ) {
-        return 10 * 1000;
-      }
-      // to keep the data up to date
-      return 5 * 60 * 1000;
-    },
+    refetchInterval: useVideosQueryRefetchInterval,
     refetchOnWindowFocus: true,
   });
 

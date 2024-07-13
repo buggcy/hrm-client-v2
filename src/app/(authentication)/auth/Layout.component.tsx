@@ -8,7 +8,7 @@ export function AuthLayout({
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid max-w-sm gap-6">{children}</div>
       </div>
-      <div className="hidden h-full bg-muted lg:block">
+      <div className="hidden h-screen bg-muted lg:block">
         <img
           src="/images/bcg_auth_page.png"
           alt="Image"

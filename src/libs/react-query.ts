@@ -24,8 +24,6 @@ if (typeof window !== 'undefined') {
   });
 
   void persistQueryClient({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     queryClient,
     persister,
     maxAge: 1000 * 60 * 60 * 24,
