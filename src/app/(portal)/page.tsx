@@ -10,6 +10,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
+import { StockReplicaCarousel } from '@/components/StockReplicaCarousel';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -44,6 +45,7 @@ const ROUTES_CONFIG = [
     href: '/api-keys',
   },
 ];
+
 export default function Home() {
   // const { t } = useTranslation();
 
@@ -83,6 +85,7 @@ export default function Home() {
             </Card>
           ))}
         </div>
+        <StockReplicaCarousel />
       </LayoutWrapper>
     </Layout>
   );

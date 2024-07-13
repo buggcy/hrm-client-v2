@@ -29,7 +29,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardFooter } from '../ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
-import { IReplica, ReplicaStatus } from '@/types';
+import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
 
 export const CopyReplicaID = ({
   id,
@@ -113,11 +113,14 @@ const ReplicaCard = ({
     status,
     training_progress,
     error_message,
+    replica_type,
   } = replica;
   const videoRef = useRef<HTMLVideoElement>(null);
   const { isCopied, copyToClipboard } = useCopyToClipboard({
     textToCopy: replica_id,
   });
+
+  const isUserReplica = replica_type === ReplicaType.PERSONAL;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -298,12 +301,14 @@ const ReplicaCard = ({
                     )}
                     Copy Replica ID
                   </Button>
-                  <Button
-                    variant="destructive-inverted"
-                    className="justify-start gap-3"
-                  >
-                    <Trash2 className="size-4" /> Delete
-                  </Button>
+                  {isUserReplica && (
+                    <Button
+                      variant="destructive-inverted"
+                      className="justify-start gap-3"
+                    >
+                      <Trash2 className="size-4" /> Delete
+                    </Button>
+                  )}
                 </div>
               </PopoverContent>
             </Popover>
@@ -312,7 +317,7 @@ const ReplicaCard = ({
         {!isSelectable &&
           (status === ReplicaStatus.COMPLETED ? (
             <Button asChild variant="link" className="mt-2.5 h-5 p-0">
-              <Link href={`/videos/create/replica=${replica_id}`}>
+              <Link href={`/videos/create/?replica=${replica_id}`}>
                 Create Video
                 <ArrowRight className="size-4" />
               </Link>
