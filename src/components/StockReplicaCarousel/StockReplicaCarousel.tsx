@@ -1,3 +1,4 @@
+'use client';
 import { useMemo } from 'react';
 
 import { ChevronRight } from 'lucide-react';
@@ -32,7 +33,7 @@ export const StockReplicaCarousel: React.FC = () => {
   }, [replicas?.data]);
 
   return (
-    <div className="mt-8 w-full rounded-md bg-background p-6">
+    <div className="mt-8 w-full rounded-md">
       <h2 className="mb-4 flex items-center text-lg font-semibold">
         Try stock replica <ChevronRight className="ml-0.5 size-5" />
       </h2>

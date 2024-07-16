@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import { Intercom } from '@/components/Intercom';
+
 import { Navigation } from '@/app/(portal)/components/Navigation';
 
 export const metadata: Metadata = {
@@ -18,6 +20,7 @@ export default function RootLayout({
       <div className="min-h-screen bg-secondary sm:ml-w-sidebar">
         {children}
       </div>
+      <Intercom />
     </main>
   );
 }

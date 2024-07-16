@@ -12,7 +12,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import { MobileNavigationItem } from './components/MobileNavigationItem';
 import { NavSection } from './components/NavSection';
-import { SupportPopover } from './components/SupportPopover';
+import QuotasCard from './components/QuotasCard';
+import { SupportBtn } from './components/SupportBtn';
 import { UserPopover } from './components/UserPopover';
 
 export const MobileHeader = () => {
@@ -120,7 +121,10 @@ export const MobileHeader = () => {
           </nav>
           <ul className="mt-auto flex flex-col gap-3">
             <li>
-              <SupportPopover />
+              <QuotasCard className="w-full" />
+            </li>
+            <li>
+              <SupportBtn />
             </li>
             <li>
               <Separator />
