@@ -87,6 +87,11 @@ export const VideoRecord = ({
             {formatTime(recordingTime)}
           </div>
         )}
+        {hasAccess && !isRecording && (
+          <div className="absolute left-4 top-4 flex items-center gap-1.5 rounded-md bg-white/25 p-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+            Preview
+          </div>
+        )}
         {hasAccess && (
           <div className="absolute inset-x-4 bottom-3.5 flex items-center justify-between gap-2">
             <VoiceLevelIndicator voiceLevel={voiceLevel} />
