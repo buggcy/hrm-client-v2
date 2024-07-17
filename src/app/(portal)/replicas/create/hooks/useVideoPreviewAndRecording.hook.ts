@@ -96,11 +96,7 @@ export const useVideoPreviewAndRecording = ({
 
   // Function to set up video stream
   const setupVideoStream = useCallback(async (): Promise<void> => {
-    if (
-      selectedVideoDevice?.deviceId &&
-      selectedAudioDevice?.deviceId &&
-      !stream
-    ) {
+    if (selectedVideoDevice?.deviceId && selectedAudioDevice?.deviceId) {
       try {
         const newStream = await navigator.mediaDevices.getUserMedia({
           video: { deviceId: selectedVideoDevice.deviceId },
@@ -111,7 +107,7 @@ export const useVideoPreviewAndRecording = ({
         console.error('Error setting up video stream:', error);
       }
     }
-  }, [selectedVideoDevice?.deviceId, selectedAudioDevice?.deviceId, stream]);
+  }, [selectedVideoDevice?.deviceId, selectedAudioDevice?.deviceId]);
 
   // Set up stream when permissions and devices are available
   useEffect(() => {

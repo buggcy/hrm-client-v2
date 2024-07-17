@@ -50,7 +50,7 @@ export const CTACards = () => {
             alt=""
           />
           <Link href={href}>
-            <CardContent className="flex flex-col items-start gap-8 p-6">
+            <CardContent className="relative flex flex-col items-start gap-8 p-6">
               <div className="flex">
                 <div
                   className={`flex size-9 items-center justify-center rounded-full ${bg}`}

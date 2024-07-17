@@ -3,7 +3,7 @@ import { create, StoreApi } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
-import { DEFAULT_REPLICA } from '../constnats';
+import { DEFAULT_REPLICA } from '../constants';
 import { AudioTab, VideoBackgroundType, VideoGenerationType } from '../types';
 
 import { IReplica } from '@/types';

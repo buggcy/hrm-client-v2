@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useVideoGenerateFormStore } from '@/app/(portal)/videos/create/hooks';
 import { useReplicaQuery } from '@/hooks';
 
-import { DEFAULT_REPLICA } from '../constnats';
+import { DEFAULT_REPLICA } from '../constants';
 
 import { IReplica } from '@/types';
 

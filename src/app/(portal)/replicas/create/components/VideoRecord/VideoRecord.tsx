@@ -9,6 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select';
+import { SimpleTooltip } from '@/components/ui/tooltip';
 
 import { formatTime } from '@/utils';
 
@@ -151,12 +152,19 @@ export const VideoRecord = ({
         {isRecording && (
           <div className="flex gap-4">
             <Button onClick={cancelRecording}>Cancel Recording</Button>
-            <Button
-              onClick={stopRecording}
-              disabled={recordingTime < minimumRecordTime}
+            <SimpleTooltip
+              disabled={recordingTime > minimumRecordTime}
+              tooltipContent={`Video must be at least ${minimumRecordTime} seconds long to submit`}
             >
-              <StopCircle /> Stop Recording
-            </Button>
+              <div>
+                <Button
+                  onClick={stopRecording}
+                  disabled={recordingTime < minimumRecordTime}
+                >
+                  <StopCircle /> Stop Recording
+                </Button>
+              </div>
+            </SimpleTooltip>
           </div>
         )}
       </div>
