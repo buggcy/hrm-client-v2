@@ -1,8 +1,8 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Loader } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { SelectReplicaDialog } from '@/components/SelectReplicaDialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
 import { useVideoGenerateFormStore } from '@/app/(portal)/videos/create/hooks';
@@ -34,9 +34,12 @@ export const ReplicaSelect = () => {
           type="button"
           className="group h-auto w-full items-center rounded-md border border-border bg-background px-3 py-2 hover:border-primary hover:bg-background"
         >
-          <Avatar className="mr-2 size-8">
-            <AvatarImage src={selectedReplica?.thumbnail_video_url as string} />
-            <AvatarFallback>R</AvatarFallback>
+          <Avatar className="mr-2 flex size-8 items-center justify-center overflow-hidden text-center">
+            <video
+              src={selectedReplica?.thumbnail_video_url as string}
+              className="absolute z-20 aspect-square size-full object-cover"
+            />
+            <Loader className="absolute z-10 size-5 animate-spin" />
           </Avatar>
           <p className="mr-1 text-sm font-medium">
             <span>{selectedReplica?.replica_name || 'Loading...'}</span>

@@ -2,6 +2,7 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
+  UseQueryOptions,
 } from '@tanstack/react-query';
 
 import {
@@ -49,12 +50,18 @@ export const useCreateSubscriptionMutation = () =>
     mutationFn: BillingService.createSubscription,
   });
 
-export const useUserQuotasQuery = () =>
+export const useUserQuotasQuery = (
+  options?: Omit<
+    UseQueryOptions<ProductsUsageAndLimits>,
+    'queryKey' | 'queryFn'
+  >,
+) =>
   useQuery({
     queryKey: ['user', 'quotas'],
     queryFn: BillingService.fetchQuotas,
     refetchInterval: 1000 * 60,
     refetchOnWindowFocus: true,
+    ...options,
   });
 
 export const useUpdateSubscriptionMutation = ({

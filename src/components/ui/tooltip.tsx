@@ -41,7 +41,9 @@ const SimpleTooltip = ({
 }) => (
   <TooltipProvider>
     <Tooltip delayDuration={200} {...props}>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipTrigger asChild>
+        <div>{children}</div>
+      </TooltipTrigger>
       {!disabled && <TooltipContent>{tooltipContent}</TooltipContent>}
     </Tooltip>
   </TooltipProvider>

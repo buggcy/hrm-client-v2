@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 
 import { useMutation } from '@tanstack/react-query';
@@ -10,7 +10,9 @@ import {
   ChevronRight,
   FileText,
   Headphones,
+  Info,
   Loader,
+  Loader2,
   Trash2,
   TriangleAlert,
   Video,
@@ -51,7 +53,6 @@ import {
 import { ReplicaSelect } from '@/app/(portal)/videos/create/components/ReplicaSelect';
 import { UploadBackgroundTab } from '@/app/(portal)/videos/create/components/UploadBackground';
 import {
-  IVideoGenerateFilesStore,
   IVideoGenerateFormStore,
   useVideoGenerateFormStore,
   useVideoGenerateFormUndoHistory,
@@ -66,6 +67,7 @@ import {
   useVideosQuery,
   useVideosQueryRefetchInterval,
 } from '@/hooks';
+import { useUserQuotasQuery } from '@/hooks/useBilling';
 import { queryClient } from '@/libs';
 import { cn, getFilenameFromUrl, portalApi, schemaParse } from '@/utils';
 
@@ -358,12 +360,8 @@ const AdvancedSettingsInputs = () => {
   );
 };
 
-const DEFAULT_BACKGROUND_URL = 'https://www.tavus.io/';
-const DEFAULT_BACKGROUND_SOURCE_URL = 'https://storage.com/background.mp4';
-
 const getCreateVideoRequestBody = (
   formState: IVideoGenerateFormStore,
-  formFileState: IVideoGenerateFilesStore,
 ): CreateVideoDto => {
   const result: Partial<CreateVideoDto> = {
     replica_id: formState.replicaId,
@@ -378,15 +376,17 @@ const getCreateVideoRequestBody = (
   if (formState.callbackUrl) result.callback_url = formState.callbackUrl;
 
   if (formState.withBackground) {
-    if (formState.backgroundType === VideoBackgroundType.WEBSITE_URL)
-      result.background_url = formState.backgroundUrl || DEFAULT_BACKGROUND_URL;
-    else if (
-      (formState.backgroundType === VideoBackgroundType.UPLOAD_FILE &&
-        formState.backgroundSourceUrl) ||
-      !formFileState.background?.file
+    if (
+      formState.backgroundType === VideoBackgroundType.WEBSITE_URL &&
+      formState.backgroundUrl
     )
-      result.background_source_url =
-        formState.backgroundSourceUrl || DEFAULT_BACKGROUND_SOURCE_URL;
+      result.background_url = formState.backgroundUrl;
+    else if (
+      formState.backgroundType === VideoBackgroundType.UPLOAD_FILE &&
+      formState.backgroundSourceUrl
+    ) {
+      result.background_source_url = formState.backgroundSourceUrl;
+    }
   }
   return result as CreateVideoDto;
 };
@@ -395,17 +395,16 @@ const Code = () => {
   const formStore = useVideoGenerateFormStore();
   const formFileStore = useVideoGenerateFilesStore();
   const body = useMemo(() => {
-    const result = getCreateVideoRequestBody(formStore, formFileStore);
+    const result = getCreateVideoRequestBody(formStore);
 
     if (formStore.type === VideoGenerationType.AUDIO) {
       result.audio_url ??= '<audio_url>';
     }
     if (
       formStore.backgroundType === VideoBackgroundType.UPLOAD_FILE &&
-      formFileStore.background?.file &&
-      !formStore.backgroundSourceUrl
+      formFileStore.background?.file
     )
-      result.background_source_url = '<background_source_url>';
+      result.background_source_url ??= '<background_source_url>';
 
     return result;
   }, [formStore, formFileStore]);
@@ -419,22 +418,131 @@ const Code = () => {
   );
 };
 
+// TODO: add mock url
+const MOCK_WEBSITE_URL_PREVIEW_SRC = 'https://www.tavus.io/';
+
 const Preview = () => {
-  const replicaId = useVideoGenerateFormStore(state => state.replicaId);
+  const [
+    replicaId,
+    backgroundSourceUrl,
+    backgroundUrl,
+    backgroundType,
+    withBackground,
+  ] = useVideoGenerateFormStore(
+    useShallow(state => [
+      state.replicaId,
+      state.backgroundSourceUrl,
+      state.backgroundUrl,
+      state.backgroundType,
+      state.withBackground,
+    ]),
+  );
+  const background = useVideoGenerateFilesStore(state => state.background);
   const { data } = useReplicaQuery(replicaId);
 
+  const hasBackgroundPreview =
+    withBackground &&
+    !!(backgroundType === VideoBackgroundType.WEBSITE_URL
+      ? backgroundUrl
+      : backgroundSourceUrl || background?.url);
+  const backgroundSrc =
+    backgroundType === VideoBackgroundType.WEBSITE_URL
+      ? MOCK_WEBSITE_URL_PREVIEW_SRC
+      : backgroundSourceUrl || background?.url;
+
   return (
-    <div className="pointer-events-none relative size-full overflow-hidden rounded">
-      {/*TODO: remove on video loaded*/}
-      <div className="animate-fadeIn absolute -top-6 mb-10 flex size-full items-center justify-center">
-        Loading ...
+    <div className="pointer-events-none relative flex h-full items-center justify-center overflow-hidden rounded">
+      {hasBackgroundPreview ? (
+        <VideoWithBackground
+          src={data?.thumbnail_video_url as string}
+          backgroundSrc={backgroundSrc as string}
+          noBackgroundContent={
+            backgroundType === VideoBackgroundType.WEBSITE_URL
+              ? 'Website Preview not available'
+              : 'Background preview not available'
+          }
+        />
+      ) : (
+        <>
+          <Loader className="absolute z-0 mb-6 size-8 animate-spin" />
+          <div className="relative z-10 h-full">
+            <video
+              className="aspect-video h-[inherit] rounded"
+              preload="auto"
+              src={data?.thumbnail_video_url as string}
+            />
+          </div>
+        </>
+      )}
+      <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center space-x-2 rounded-md bg-white/10 px-4 py-2 backdrop-blur-sm">
+        <span className="whitespace-nowrap text-sm font-medium text-white text-opacity-80">
+          Video Preview
+        </span>
+        <Info size={16} className="text-white text-opacity-80" />
       </div>
-      <video
-        className="absolute size-full rounded"
-        preload="auto"
-        src={data?.thumbnail_video_url as string}
-      />
-      {/*  TODO: Add preview label*/}
+    </div>
+  );
+};
+
+const VideoWithBackground = ({
+  src,
+  backgroundSrc,
+  noBackgroundContent,
+}: {
+  src: string;
+  backgroundSrc: string;
+  noBackgroundContent?: string;
+}) => {
+  const [bgLoading, setBgLoading] = useState(true);
+  const [bgError, setBgError] = useState(false);
+
+  useEffect(() => {
+    setBgLoading(true);
+    setBgError(false);
+  }, [backgroundSrc]);
+
+  return (
+    <div className="relative z-10 flex size-full overflow-hidden rounded">
+      {/* Background Video or Fallback */}
+      {!bgError ? (
+        <video
+          src={backgroundSrc}
+          autoPlay
+          loop
+          muted
+          className={`inset-0 aspect-video size-full bg-black ${bgLoading ? 'hidden' : ''}`}
+          onLoadedData={() => setBgLoading(false)}
+          onError={() => setBgError(true)}
+        />
+      ) : (
+        <div className="absolute inset-0 flex h-full items-center justify-center bg-border">
+          <p>{noBackgroundContent || 'Background preview not available'}</p>
+        </div>
+      )}
+
+      {bgLoading && !bgError && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          <Loader className="size-6 animate-spin" />
+        </div>
+      )}
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/30" />
+
+      {/* Circular Video */}
+      <div className="absolute bottom-2 left-2 aspect-square w-1/5 overflow-hidden rounded-full bg-border shadow-lg">
+        <video
+          src={src}
+          autoPlay
+          loop
+          muted
+          className={`relative z-20 aspect-video size-full object-cover`}
+        />
+        {/* Circular Video Loader */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          <Loader className="size-6 animate-spin" />
+        </div>
+      </div>
     </div>
   );
 };
@@ -611,10 +719,32 @@ const useUploadBackgroundMutation = () =>
     mutationFn: useUploadBackground,
   });
 
+const noQuotasTooltipContent = (
+  <p>
+    {"You don't have enough quotas. Please "}
+    <Button asChild variant="link" className="p-0">
+      <Link href="/billing">upgrade your plan</Link>
+    </Button>{' '}
+    to continue.
+  </p>
+);
+
+// TODO: add payment required case
+// const paymentRequiredTooltipContent = (
+//   <p>
+//     Your payment is required to continue. Please{' '}
+//     <Button asChild variant="link" className="p-0">
+//       <Link href="/billing">upgrade your plan</Link>
+//     </Button>{' '}
+//     to continue.
+//   </p>
+// );
+
 const OPTIMISTIC_VIDEO_ID = '...';
 
 export default function VideoCreatePage() {
   const { t } = useTranslation();
+  const { data: quotas, isError } = useUserQuotasQuery();
   const { undo, redo } = useVideoGenerateFormUndoHistory(state => state);
   const { mutateAsync: uploadAudio, isPending: isUploadingAudio } =
     useUploadAudioMutation();
@@ -640,17 +770,29 @@ export default function VideoCreatePage() {
         };
 
         queryClient.setQueryData(queryKey, (prev: IVideosResponse) => ({
-          data: [newVideo, ...prev.data],
-          total_count: prev?.total_count + 1,
+          data: [newVideo, ...(prev?.data || [])],
+          total_count: (prev?.total_count || 0) + 1,
         }));
 
         return prevData;
       },
-      onError: (_, __, prevData) => {
-        queryClient.setQueryData(queryKey, prevData as IVideosResponse);
+      onError: (error, __, prevData) => {
+        queryClient.setQueryData(queryKey, prevData || null);
+        // TODO: show dialog on 402
+        toast({
+          title: t('portal.videos.create.error'),
+          description: error.message,
+        });
       },
       onSettled: () => {
         void queryClient.invalidateQueries({ queryKey });
+      },
+      onSuccess: () => {
+        toast({
+          title: 'Start video generation 🚀',
+          description:
+            'Your video is being processed. You can check the status in the list below.',
+        });
       },
     });
 
@@ -669,107 +811,113 @@ export default function VideoCreatePage() {
 
     const formState = useVideoGenerateFormStore.getState();
     const formFileState = useVideoGenerateFilesStore.getState();
-
-    const createVideoBody = getCreateVideoRequestBody(formState, formFileState);
+    const createVideoBody = getCreateVideoRequestBody(formState);
 
     try {
-      schemaParse(CreateVideoSchema)(createVideoBody);
+      validateVideoBody();
 
-      toast({
-        title: 'Start video processing   🚀',
-      });
+      toast({ title: 'Start video processing 🚀' });
 
+      await uploadFilesAndReplaceFormUrls();
+      await createVideo(createVideoBody);
+    } catch (e) {
+      console.error(e);
+    }
+
+    function validateVideoBody() {
       try {
-        const promises = [];
+        schemaParse(CreateVideoSchema)(createVideoBody);
+      } catch (_error) {
+        const { issues } = _error as z.ZodError<CreateVideoSchema>;
+        const message = issues.map(issue => issue.message).join(',');
+        const paths = issues.flatMap(issue => issue.path[0]);
 
-        if (formState.type === VideoGenerationType.AUDIO) {
-          if (!formState.audioUrl && formFileState.audio?.file) {
-            // TODO: move to all settled
+        toast({
+          title: 'Error',
+          description: message,
+        });
+
+        if (
+          paths.some(
+            path => path === 'callback_url' || path === 'background_url',
+          )
+        )
+          formState.set({
+            isAdvancedSettingsOpen: true,
+          });
+
+        throw new Error('Invalid form data');
+      }
+    }
+
+    async function uploadFilesAndReplaceFormUrls() {
+      const promises = [];
+
+      if (formState.type === VideoGenerationType.AUDIO) {
+        if (!formState.audioUrl && formFileState.audio?.file) {
+          // TODO: move to all settled
+          promises.push(() =>
+            uploadAudio({
+              file: formFileState.audio!.file!,
+            })
+              .then(url => {
+                formState.set({ audioUrl: url });
+                createVideoBody.audio_url = url;
+              })
+              .catch(e => {
+                toast({
+                  title: 'Error',
+                  description: "Couldn't upload audio",
+                });
+                throw e;
+              }),
+          );
+        }
+      }
+
+      if (formState.withBackground) {
+        if (formState.backgroundType === VideoBackgroundType.UPLOAD_FILE) {
+          if (
+            !formState.backgroundSourceUrl &&
+            formFileState.background?.file
+          ) {
             promises.push(() =>
-              uploadAudio({
-                file: formFileState.audio!.file!,
+              uploadBackground({
+                file: formFileState.background!.file!,
               })
                 .then(url => {
-                  formState.set({ audioUrl: url });
-                  createVideoBody.audio_url = url;
+                  formState.set({ backgroundSourceUrl: url });
+                  createVideoBody.background_source_url = url;
                 })
                 .catch(e => {
                   toast({
                     title: 'Error',
-                    description: "Couldn't upload audio",
+                    description: "Couldn't upload background",
                   });
                   throw e;
                 }),
             );
           }
         }
-
-        if (formState.withBackground) {
-          if (formState.backgroundType === VideoBackgroundType.UPLOAD_FILE) {
-            if (
-              !formState.backgroundSourceUrl &&
-              formFileState.background?.file
-            ) {
-              promises.push(() =>
-                uploadBackground({
-                  file: formFileState.background!.file!,
-                })
-                  .then(url => {
-                    formState.set({ backgroundSourceUrl: url });
-                    createVideoBody.background_source_url = url;
-                  })
-                  .catch(e => {
-                    toast({
-                      title: 'Error',
-                      description: "Couldn't upload background",
-                    });
-                    throw e;
-                  }),
-              );
-            }
-          }
-        }
-
-        const results = await Promise.allSettled(
-          promises.map(promise => promise()),
-        );
-        if (results.some(result => result.status === 'rejected')) return;
-
-        // TODO: throw 18n error
-        await createVideo(createVideoBody);
-        toast({
-          title: 'Start video generation 🚀',
-          description:
-            'Your video is being processed. You can check the status in the list below.',
-        });
-      } catch (error) {
-        toast({
-          title: t('portal.videos.create.error'),
-          description: (error as Error).message,
-        });
       }
-    } catch (_error) {
-      const { issues } = _error as z.ZodError<CreateVideoSchema>;
-      const message = issues.map(issue => issue.message).join(',');
-      const paths = issues.flatMap(issue => issue.path[0]);
 
-      toast({
-        title: 'Error',
-        description: message,
-      });
+      const results = await Promise.allSettled(
+        promises.map(promise => promise()),
+      );
 
-      if (
-        paths.some(path => path === 'callback_url' || path === 'background_url')
-      )
-        formState.set({
-          isAdvancedSettingsOpen: true,
-        });
+      if (results.some(result => result.status === 'rejected'))
+        throw new Error('Failed to upload files');
     }
   };
+  const isOutOfVideoQuotas = isError
+    ? false
+    : !(quotas ? quotas.video?.isAllowed : true);
+  const isGenerating =
+    isSubmitting || isUploadingAudio || isUploadingBackground;
 
   return (
     <Layout className="flex max-h-screen flex-col">
-      <LayoutHeader title="Video Generation">
+      <LayoutHeader title="Video Generation" className="hidden sm:flex">
         <CopyApiUrl type="POST" url="video" />
         <LayoutHeaderButtonsBlock>
           <Button className="ml-auto" variant="outline" asChild>
@@ -785,9 +933,9 @@ export default function VideoCreatePage() {
       <LayoutWrapper
         onKeyDown={handleKeyDown}
         wrapperClassName="flex flex-1 h-[calc(100vh-64px)]"
-        className="grid grid-cols-2 grid-rows-2 gap-6"
+        className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:grid-rows-2"
       >
-        <div className="col-span-1 row-span-2 flex flex-col gap-4 rounded-md border border-border bg-background p-4">
+        <div className="col-span-1 row-span-2 flex h-[calc(100svh-100px)] flex-col gap-4 rounded-md border border-border bg-background p-4 sm:h-[initial]">
           <Badge variant="label" className="w-fit text-sm">
             Input
           </Badge>
@@ -810,15 +958,31 @@ export default function VideoCreatePage() {
                     ? 'Uploading background...'
                     : ''}
               </span>
-              <Button
-                type="submit"
-                form="createVideoForm"
-                disabled={
-                  isSubmitting || isUploadingAudio || isUploadingBackground
+              <SimpleTooltip
+                disabled={!isOutOfVideoQuotas && !isGenerating}
+                tooltipContent={
+                  isGenerating
+                    ? 'Generating'
+                    : isOutOfVideoQuotas
+                      ? noQuotasTooltipContent
+                      : ''
                 }
               >
-                Generate <ArrowRight size={16} className="ml-1" />
-              </Button>
+                <Button
+                  type="submit"
+                  form="createVideoForm"
+                  disabled={isGenerating || isOutOfVideoQuotas}
+                >
+                  Generate{' '}
+                  <span className="size-4">
+                    {isGenerating ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <ArrowRight size={16} />
+                    )}
+                  </span>
+                </Button>
+              </SimpleTooltip>
             </div>
           </footer>
         </div>
