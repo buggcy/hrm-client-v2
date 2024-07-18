@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { sendGTMEvent } from '@next/third-parties/google';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -44,6 +45,12 @@ const FormSchema = z.object({
 export function SignUpForm() {
   const { mutate, isPending } = useMutation({
     mutationFn: signUpWithEmailAndPassword,
+    onSuccess: () => {
+      sendGTMEvent({
+        event: 'signup',
+        method: 'email',
+      });
+    },
     onError: () => {
       toast({
         title: 'An error occurred while signing up.',

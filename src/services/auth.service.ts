@@ -1,3 +1,4 @@
+import { sendGTMEvent } from '@next/third-parties/google';
 import {
   createUserWithEmailAndPassword,
   getAdditionalUserInfo,
@@ -66,7 +67,14 @@ export const signInWithGoogle = async (isNewUser = false): Promise<IUser> => {
     await signUp({
       ...getUserDataFromCredentials(userCredential),
       signupType: 'google',
-    }).catch();
+    })
+      .then(() => {
+        sendGTMEvent({
+          event: 'signup',
+          method: 'google',
+        });
+      })
+      .catch();
 
   return queryClient.fetchQuery({ queryKey: ['user'] });
 };

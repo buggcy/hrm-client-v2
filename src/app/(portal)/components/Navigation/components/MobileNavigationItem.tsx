@@ -11,7 +11,7 @@ import { cn } from '@/utils';
 
 export const MobileNavigationItem: FC<{
   title: string;
-  icon: LucideIcon;
+  icon: LucideIcon | FC<{ className?: string }>;
   href: string;
   active: boolean;
   onClick?: () => void;

@@ -13,6 +13,7 @@ import QuotasCard from '@/app/(portal)/components/Navigation/components/QuotasCa
 
 import { NavigationItem } from './components/NavigationItem';
 import { NavSection } from './components/NavSection';
+import { ReplicaIcon } from './components/ReplicaIcon';
 import { SupportBtn } from './components/SupportBtn';
 import { UserPopover } from './components/UserPopover';
 
@@ -78,7 +79,7 @@ export const Sidebar = () => {
             <li className="flex">
               <NavigationItem
                 title="Replica Library"
-                icon={Home}
+                icon={ReplicaIcon}
                 href="/replicas"
                 active={pathname === '/replicas'}
               />
@@ -87,7 +88,7 @@ export const Sidebar = () => {
           <NavSection>
             <li className="flex">
               <NavigationItem
-                title="Api Keys"
+                title="API Keys"
                 icon={Key}
                 href="/api-keys"
                 active={pathname === '/api-keys'}

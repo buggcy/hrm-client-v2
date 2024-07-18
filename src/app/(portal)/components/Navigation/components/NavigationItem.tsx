@@ -9,7 +9,7 @@ import { cn } from '@/utils';
 
 export const NavigationItem: FC<{
   title: string;
-  icon: LucideIcon;
+  icon: LucideIcon | FC<{ className?: string }>;
   href: string;
   active: boolean;
 }> = memo(({ title, icon: Icon, href, active }) => {

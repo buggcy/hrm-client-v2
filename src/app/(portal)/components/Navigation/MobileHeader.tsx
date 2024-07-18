@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { MobileNavigationItem } from './components/MobileNavigationItem';
 import { NavSection } from './components/NavSection';
 import QuotasCard from './components/QuotasCard';
+import { ReplicaIcon } from './components/ReplicaIcon';
 import { SupportBtn } from './components/SupportBtn';
 import { UserPopover } from './components/UserPopover';
 
@@ -99,7 +100,7 @@ export const MobileHeader = () => {
               <li className="flex">
                 <MobileNavigationItem
                   title="Replica Library"
-                  icon={Home}
+                  icon={ReplicaIcon}
                   href="/replicas"
                   active={pathname === '/replicas'}
                   onClick={onClose}
@@ -110,7 +111,7 @@ export const MobileHeader = () => {
             <NavSection>
               <li className="flex">
                 <MobileNavigationItem
-                  title="Api Keys"
+                  title="API Keys"
                   icon={Key}
                   href="/api-keys"
                   active={pathname === '/api-keys'}
