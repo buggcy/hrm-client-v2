@@ -1,0 +1,104 @@
+name: Build/Deploy to Prod Region
+################################################
+#### 1. Cloudfront distribution integration (prod)
+#### 2. Only the latest workflow will run
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - releases/**
+
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: us-east-1
+  BUCKET: tavus-developer-portal-prod
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  DeployCloudFormation:
+    if: ${{ github.event_name == 'push' }}
+    name: DeployCloudFormation
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get changed files for cloudformation
+        id: CloudformationFilesChanged
+        uses: tj-actions/changed-files@v41
+        with:
+            files: |
+                cloudformation/template.yml
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: github-pipeline-execution
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Deploy to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: developer-portal-prod
+          template: ./cloudformation/template.yml
+          no-fail-on-empty-changeset: "1"
+          parameter-overrides: "DomainName=platform.tavus.io,Env=prod,HostedZoneId=Z027842721IVDRCU6X37I"
+
+  deploy-prod-portal:
+    if: ${{ github.event_name == 'push' }}
+    environment: prod
+    name: deploy-prod-portal
+    runs-on: ubuntu-latest
+    needs: [DeployCloudFormation]
+    defaults:
+      run:
+        working-directory: ./
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.REGISTRY_PACKAGES_INSTALL }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+      NEXT_PUBLIC_APP_BASE_URL: ${{ secrets.NEXT_PUBLIC_APP_BASE_URL }}
+      NEXT_PUBLIC_LOG_ROCKET_ID: ${{ secrets.NEXT_PUBLIC_LOG_ROCKET_ID }}
+      NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
+      NEXT_PUBLIC_RQH_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_RQH_API_BASE_URL }}
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+      NEXT_PUBLIC_PORTAL_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_PORTAL_API_BASE_URL }}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+      NEXT_PUBLIC_INTERCOM_APP_ID: ${{ secrets.NEXT_PUBLIC_INTERCOM_APP_ID }}
+      NEXT_PUBLIC_INTERCOM_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_INTERCOM_API_BASE_URL }}
+      NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
+      APP_ENV: prod
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@tavus-engineering'
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Run test
+        run: npm test
+      - name: Make build
+        run: npm run build
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: github-pipeline-execution
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Deploy Build to dev S3
+        run: |
+              aws s3 sync build/ s3://${{ env.BUCKET }} --delete
+      - name: Copy files to the dev website with the AWS CLI
+        run: |
+              DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Aliases.Items[0]=='platform.tavus.io'].{id:Id}" --output text)
+              aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*" --output text
