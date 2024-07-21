@@ -14,7 +14,7 @@ import QuotasCard from '@/app/(portal)/components/Navigation/components/QuotasCa
 import { NavigationItem } from './components/NavigationItem';
 import { NavSection } from './components/NavSection';
 import { ReplicaIcon } from './components/ReplicaIcon';
-import { SupportBtn } from './components/SupportBtn';
+import { NavigationSupportBtn } from './components/SupportButton';
 import { UserPopover } from './components/UserPopover';
 
 export const Sidebar = () => {
@@ -101,7 +101,7 @@ export const Sidebar = () => {
             <QuotasCard className="hidden group-hover:flex" />
           </li>
           <li>
-            <SupportBtn />
+            <NavigationSupportBtn />
           </li>
           <li>
             <Separator />

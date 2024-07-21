@@ -15,7 +15,7 @@ import { queryClient } from '@/libs';
 import { portalApi } from '@/utils';
 
 const successUrl = `${APP_BASE_URL}/payment/success`;
-const cancelUrl = `${APP_BASE_URL}/payment/cancel`;
+const cancelUrl = `${APP_BASE_URL}/`;
 
 interface StripeSession {
   url: string;
@@ -61,6 +61,7 @@ export const useUserQuotasQuery = (
     queryFn: BillingService.fetchQuotas,
     refetchInterval: 1000 * 60,
     refetchOnWindowFocus: true,
+    refetchOnMount: true,
     ...options,
   });
 

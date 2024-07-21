@@ -1,4 +1,4 @@
-import { IUser, UserRole } from '@/types';
+import { BillingAccountStatus, IUser } from '@/types';
 
 export enum PlanPrefixIds {
   STARTER = 'starter',
@@ -41,10 +41,9 @@ export const getPlanPrefixId = (planId: string): PlanPrefixIds => {
 };
 
 export const isEnterprisePlan = (user: IUser): boolean =>
-  user?.role !== UserRole.DEVELOPER ||
-  (user?.billingAccount?.status === 'active' &&
-    getPlanPrefixId(user?.billingAccount?.plan_id as PlanIds) ===
-      PlanPrefixIds.ENTERPRISE);
+  user?.billingAccount?.status === BillingAccountStatus.ACTIVE &&
+  getPlanPrefixId(user?.billingAccount?.plan_id as PlanIds) ===
+    PlanPrefixIds.ENTERPRISE;
 
 export enum SubscriptionChangeOption {
   END_OF_SUB_TERM = 'end_of_subscription_term',

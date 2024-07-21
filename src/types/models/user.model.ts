@@ -6,6 +6,14 @@ export enum UserRole {
   DEVELOPER = 'developer',
 }
 
+export enum BillingAccountStatus {
+  ACTIVE = 'active',
+  IN_PROGRESS = 'in_progress',
+  INACTIVE = 'inactive',
+  PAYMENT_FAILED = 'payment_failed',
+  ERROR = 'error',
+}
+
 export const IUser = z.object({
   id: z.number().int(),
   last_name: z.string(),
@@ -18,7 +26,7 @@ export const IUser = z.object({
     .object({
       id: z.number().int(),
       // TODO: add enum
-      status: z.string().nullable(),
+      status: z.nativeEnum(BillingAccountStatus).nullable(),
       plan_id: z.string().nullable(),
       subscription_id: z.string().nullable(),
     })

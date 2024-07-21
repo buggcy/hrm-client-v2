@@ -14,7 +14,7 @@ import { MobileNavigationItem } from './components/MobileNavigationItem';
 import { NavSection } from './components/NavSection';
 import QuotasCard from './components/QuotasCard';
 import { ReplicaIcon } from './components/ReplicaIcon';
-import { SupportBtn } from './components/SupportBtn';
+import { NavigationSupportBtn } from './components/SupportButton';
 import { UserPopover } from './components/UserPopover';
 
 export const MobileHeader = () => {
@@ -125,7 +125,7 @@ export const MobileHeader = () => {
               <QuotasCard className="w-full" />
             </li>
             <li>
-              <SupportBtn />
+              <NavigationSupportBtn />
             </li>
             <li>
               <Separator />

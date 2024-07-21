@@ -31,21 +31,24 @@ const SignUp: FC = () => {
   return (
     <AuthLayout>
       <div className="grid gap-2 text-center">
-        <h1 className="text-3xl font-bold">Create Developer Account</h1>
+        <h1 className="text-3xl font-bold">Create developer account</h1>
         <p className="text-balance text-muted-foreground">
-          Enter your information to create an account
+          Enter your information to create an account.
         </p>
       </div>
-      <SignUpForm />
-      <LoadingButton
-        variant="outline"
-        className="w-full"
-        disabled={isPending}
-        loading={isPending}
-        onClick={handleSignUpWithGoogle as () => void}
-      >
-        Sign Up with Google
-      </LoadingButton>
+      <div className="space-y-4">
+        <SignUpForm />
+        <LoadingButton
+          variant="outline"
+          className="w-full"
+          disabled={isPending}
+          loading={isPending}
+          onClick={handleSignUpWithGoogle as () => void}
+        >
+          <img src="/images/icon_google.svg" alt="google icon" />
+          Sign Up with Google
+        </LoadingButton>
+      </div>
       <div className="text-center text-sm">
         Already have an account?{' '}
         <Button asChild variant="link" className="p-0">

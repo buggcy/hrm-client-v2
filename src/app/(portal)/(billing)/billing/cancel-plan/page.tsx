@@ -5,13 +5,14 @@ import Link from 'next/link';
 
 import { Query } from '@tanstack/react-query';
 import { CheckIcon, Loader2 } from 'lucide-react';
-import Confetti from 'react-confetti';
 
 import { Button } from '@/components/ui/button';
 
-import { LayoutCenter } from '@/app/(portal)/(billing)/components/Layout';
+import { SupportButton } from '@/app/(portal)/components/Navigation/components/SupportButton';
 import { useUserQuery } from '@/hooks';
 import { queryClient } from '@/libs';
+
+import { LayoutCenter } from '../../components/Layout';
 
 import { BillingAccountStatus, IUser } from '@/types';
 
@@ -21,7 +22,7 @@ export default function Page() {
     // @ts-expect-error
     refetchInterval(query: Query<IUser>) {
       if (
-        query.state.data?.billingAccount?.status !== BillingAccountStatus.ACTIVE
+        query.state.data?.billingAccount?.status === BillingAccountStatus.ACTIVE
       ) {
         return 3 * 1000;
       }
@@ -31,37 +32,38 @@ export default function Page() {
   });
 
   useEffect(() => {
-    if (user?.billingAccount?.status === BillingAccountStatus.ACTIVE) {
+    if (user?.billingAccount?.status !== BillingAccountStatus.ACTIVE) {
       void queryClient.refetchQueries({ queryKey: ['user', 'quotas'] });
     }
   }, [user]);
 
   return (
     <LayoutCenter className="flex-col">
-      <Confetti recycle={false} numberOfPieces={600} />
       <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-primary-foreground">
         {user?.billingAccount?.status === BillingAccountStatus.ACTIVE ? (
-          <CheckIcon className="size-6 text-primary" />
-        ) : (
           <Loader2 className="size-6 animate-spin text-primary" />
+        ) : (
+          <CheckIcon className="size-6 text-primary" />
         )}
       </div>
       <div className="flex w-full max-w-lg flex-col items-center justify-center text-center">
         <h1 className="mb-4 text-2xl font-bold">
           {user?.billingAccount?.status === BillingAccountStatus.ACTIVE
-            ? 'Your subscription is active'
-            : 'Your subscription is almost ready'}
+            ? "We're processing your cancellation request"
+            : 'Your subscription has been terminated'}
         </h1>
-        <p className="mb-6 text-sm font-medium text-muted-foreground">
+        <p className="mb-8 text-sm font-medium text-muted-foreground">
+          {user?.billingAccount?.status === BillingAccountStatus.ACTIVE &&
+            'Your subscription will be terminated shortly. '}
           {/* eslint-disable-next-line react/no-unescaped-entities */}
-          Thank you for subscribing!
-          {user?.billingAccount?.status === BillingAccountStatus.ACTIVE
-            ? ' You can now access all premium features.'
-            : " We're putting the finishing touches on your account. You'll be able to access your new features in just a moment."}
+          You'll retain access to premium features until the end of your current
+          billing period. If you change your mind, you can reactivate your
+          subscription at any time.
         </p>
         <div className="flex items-center justify-center gap-4">
+          <SupportButton>Contact Support</SupportButton>
           <Button asChild>
-            <Link href="/">Get Started</Link>
+            <Link href="/">Back to Home</Link>
           </Button>
         </div>
       </div>

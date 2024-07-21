@@ -8,7 +8,7 @@ import { isPast, isYesterday } from 'date-fns';
 import BillingPlansPage from '@/app/(portal)/(billing)/billing/page';
 import { usePersistentState, useUserQuery } from '@/hooks';
 
-import { ParentReactNode } from '@/types';
+import { BillingAccountStatus, ParentReactNode } from '@/types';
 
 function isYesterdayOrEarlier(date: Date) {
   return isYesterday(date) || isPast(date);
@@ -25,7 +25,7 @@ export const BillingProvider = ({ children }: ParentReactNode) => {
 
   useEffect(() => {
     if (
-      user?.billingAccount?.status === 'payment_failed' &&
+      user?.billingAccount?.status === BillingAccountStatus.PAYMENT_FAILED &&
       !pathname.startsWith('/billing') &&
       isYesterdayOrEarlier(new Date(dateHasBeenRedirected || 0))
     ) {
@@ -36,7 +36,7 @@ export const BillingProvider = ({ children }: ParentReactNode) => {
   }, [user]);
 
   if (isPending) return null;
-  // NOTE: If the user has never been fulfill his billing info, redirect to the billing plans page
+  // NOTE: If the user has never been fulfilled his billing info, redirect to the billing plans page
   if (user?.billingAccount?.status === null) return <BillingPlansPage />;
 
   return children;

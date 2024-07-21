@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 
 import { useMutation } from '@tanstack/react-query';
-import { AxiosProgressEvent } from 'axios';
+import { AxiosError, AxiosProgressEvent } from 'axios';
 import {
   ArrowRight,
   ChevronRight,
@@ -15,6 +15,7 @@ import {
   Loader2,
   Trash2,
   TriangleAlert,
+  Undo2,
   Video,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +34,7 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
+  AccordionTriggerLeftArrow,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -293,15 +294,17 @@ const BackgroundInput = () => {
   );
 };
 const AdvancedSettingsInputs = () => {
-  const [name, callbackUrl, isAdvancedSettingsOpen, set] =
+  const [name, callbackUrl, isAdvancedSettingsOpen, set, withBackground] =
     useVideoGenerateFormStore(
       useShallow(store => [
         store.name,
         store.callbackUrl,
         store.isAdvancedSettingsOpen,
         store.set,
+        store.withBackground,
       ]),
     );
+  const setFiles = useVideoGenerateFilesStore(state => state.set);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     set({ [event.target.name]: event.target.value });
   };
@@ -315,6 +318,23 @@ const AdvancedSettingsInputs = () => {
     set({ isAdvancedSettingsOpen: value === 'true' });
   };
 
+  const isAdvanceFormDirty = name || callbackUrl || withBackground;
+
+  const onClickClearForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    set({
+      name: '',
+      callbackUrl: '',
+      withBackground: false,
+      backgroundType: VideoBackgroundType.WEBSITE_URL,
+      backgroundUrl: '',
+      backgroundSourceUrl: '',
+    });
+    setFiles({
+      background: null,
+    });
+  };
+
   return (
     <Accordion
       type="single"
@@ -324,9 +344,21 @@ const AdvancedSettingsInputs = () => {
       className="mt-2"
     >
       <AccordionItem value="true" className="h-full rounded border">
-        <AccordionTrigger className="p-4 !ring-primary hover:text-primary hover:no-underline">
+        <AccordionTriggerLeftArrow className="h-16 p-4 !ring-primary hover:text-primary hover:no-underline">
           Advanced settings
-        </AccordionTrigger>
+          {isAdvancedSettingsOpen && isAdvanceFormDirty && (
+            <SimpleTooltip tooltipContent="Clear Form">
+              <Button
+                variant="ghost"
+                type="button"
+                className="-mr-2 ml-auto"
+                onClick={onClickClearForm}
+              >
+                <Undo2 className="size-4" />
+              </Button>
+            </SimpleTooltip>
+          )}
+        </AccordionTriggerLeftArrow>
         <AccordionContent className="flex h-full flex-col gap-4 p-4 pt-0">
           <div>
             <Label className="mb-2 inline-block" htmlFor="name">
@@ -743,7 +775,6 @@ const noQuotasTooltipContent = (
 const OPTIMISTIC_VIDEO_ID = '...';
 
 export default function VideoCreatePage() {
-  const { t } = useTranslation();
   const { data: quotas, isError } = useUserQuotasQuery();
   const { undo, redo } = useVideoGenerateFormUndoHistory(state => state);
   const { mutateAsync: uploadAudio, isPending: isUploadingAudio } =
@@ -778,17 +809,30 @@ export default function VideoCreatePage() {
       },
       onError: (error, __, prevData) => {
         queryClient.setQueryData(queryKey, prevData || null);
-        // TODO: show dialog on 402
-        toast({
-          title: t('portal.videos.create.error'),
-          description: error.message,
-        });
+
+        if ((error as unknown as AxiosError)?.response?.status === 402) {
+          // TODO: show dialog on 402
+          toast({
+            variant: 'error',
+            title: 'Out of Quotas (402)',
+            description:
+              "You don't have enough quotas. Please check your billing account. If problem persists, please contact support.",
+          });
+        } else {
+          toast({
+            variant: 'error',
+            title:
+              "Error while creating video. Couldn't start video generation",
+            description: error.message,
+          });
+        }
       },
       onSettled: () => {
         void queryClient.invalidateQueries({ queryKey });
       },
       onSuccess: () => {
         toast({
+          variant: 'success',
           title: 'Start video generation 🚀',
           description:
             'Your video is being processed. You can check the status in the list below.',
@@ -816,7 +860,10 @@ export default function VideoCreatePage() {
     try {
       validateVideoBody();
 
-      toast({ title: 'Start video processing 🚀' });
+      toast({
+        variant: 'progress',
+        title: 'Processing video creation request 🎞️',
+      });
 
       await uploadFilesAndReplaceFormUrls();
       await createVideo(createVideoBody);
@@ -866,8 +913,9 @@ export default function VideoCreatePage() {
               })
               .catch(e => {
                 toast({
-                  title: 'Error',
-                  description: "Couldn't upload audio",
+                  variant: 'error',
+                  title: 'Error while uploading audio',
+                  description: 'Try again or use a different audio file',
                 });
                 throw e;
               }),
@@ -891,8 +939,9 @@ export default function VideoCreatePage() {
                 })
                 .catch(e => {
                   toast({
-                    title: 'Error',
-                    description: "Couldn't upload background",
+                    variant: 'error',
+                    title: "Couldn't upload background",
+                    description: 'Try again or use a different background file',
                   });
                   throw e;
                 }),
@@ -968,20 +1017,22 @@ export default function VideoCreatePage() {
                       : ''
                 }
               >
-                <Button
-                  type="submit"
-                  form="createVideoForm"
-                  disabled={isGenerating || isOutOfVideoQuotas}
-                >
-                  Generate{' '}
-                  <span className="size-4">
-                    {isGenerating ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <ArrowRight size={16} />
-                    )}
-                  </span>
-                </Button>
+                <div>
+                  <Button
+                    type="submit"
+                    form="createVideoForm"
+                    disabled={isGenerating || isOutOfVideoQuotas}
+                  >
+                    Generate{' '}
+                    <span className="size-4">
+                      {isGenerating ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <ArrowRight size={16} />
+                      )}
+                    </span>
+                  </Button>
+                </div>
               </SimpleTooltip>
             </div>
           </footer>

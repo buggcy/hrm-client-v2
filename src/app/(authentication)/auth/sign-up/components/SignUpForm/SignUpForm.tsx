@@ -19,6 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
+import { PasswordInput } from '@/app/(authentication)/auth/components/PasswordInput';
 import { signUpWithEmailAndPassword } from '@/services';
 
 const FormSchema = z.object({
@@ -139,8 +140,7 @@ export function SignUpForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
+                <PasswordInput
                   autoComplete="new-password"
                   placeholder="Enter password"
                   {...field}

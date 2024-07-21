@@ -11,13 +11,13 @@ import { useUserQuery } from '@/hooks';
 import { useUserQuotasQuery } from '@/hooks/useBilling';
 import { cn } from '@/utils';
 
+import { BillingAccountStatus } from '@/types';
+
 const INFINITY_QUOTAS_VALUE = 99999999;
 
 export default function QuotasCard({ className }: { className?: string }) {
   const { data: user } = useUserQuery();
   const { data: quotas, isLoading } = useUserQuotasQuery();
-
-  const hasActiveBillingAccount = user?.billingAccount?.status === 'active';
 
   if (!user) return null;
 
@@ -28,7 +28,7 @@ export default function QuotasCard({ className }: { className?: string }) {
         className,
       )}
     >
-      {hasActiveBillingAccount && (
+      {user?.billingAccount?.status === BillingAccountStatus.ACTIVE && (
         <CardContent className="space-y-4 p-0">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
@@ -81,7 +81,12 @@ export default function QuotasCard({ className }: { className?: string }) {
         <CardFooter className="p-0">
           <Button variant="outline" className="w-full bg-transparent" asChild>
             <Link href="/billing">
-              {hasActiveBillingAccount ? 'Upgrade Plan' : 'Buy Plan'}
+              {user?.billingAccount?.status === BillingAccountStatus.ACTIVE
+                ? 'Upgrade Plan'
+                : user?.billingAccount?.status ===
+                    BillingAccountStatus.PAYMENT_FAILED
+                  ? 'Update payment method'
+                  : 'Buy Plan'}
             </Link>
           </Button>
         </CardFooter>

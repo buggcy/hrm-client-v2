@@ -2,10 +2,18 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { AxiosError } from 'axios';
-import { CheckIcon, XIcon } from 'lucide-react';
+import { ArrowUpRight, CheckIcon, XIcon } from 'lucide-react';
 
+import {
+  Layout,
+  LayoutHeader,
+  LayoutHeaderButtonsBlock,
+  LayoutWrapper,
+} from '@/components/Layout';
+import { LoadingButton } from '@/components/LoadingButton';
 import { Badge } from '@/components/ui/badge';
 import { Button, ButtonProps } from '@/components/ui/button';
 import {
@@ -15,6 +23,16 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 
@@ -26,6 +44,8 @@ import {
 } from '@/hooks/useBilling';
 
 import { getPlanPrefixId, PlanIds, PlanPrefixIds } from './types';
+
+import { BillingAccountStatus } from '@/types';
 
 const PlanPrefixIdsLevels = {
   [PlanPrefixIds.STARTER]: 1,
@@ -61,7 +81,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
   item,
 }) => (
   <Card
-    className={`flex min-w-[270px] max-w-[400px] flex-col ${isSelected ? 'border-[#F562BF] bg-[#FEF7FC]' : 'border-[#DDDEE3] bg-white'}`}
+    className={`flex min-w-[270px] max-w-[350px] flex-1 flex-col ${isSelected ? 'border-primary bg-primary/10' : 'border-border'}`}
   >
     <CardHeader>
       <CardTitle className="flex items-center text-xl font-bold">
@@ -69,13 +89,13 @@ const PlanCard: React.FC<PlanCardProps> = ({
         {badge && (
           <Badge
             variant="secondary"
-            className="ml-3 bg-[rgba(242,48,170,0.18)] text-[#F230AA]"
+            className="ml-3 !bg-primary/10 text-primary"
           >
             {badge}
           </Badge>
         )}
       </CardTitle>
-      <p className="text-sm text-[#6F7897]">{item.subTitle}</p>
+      <p className="text-sm">{item.subTitle}</p>
     </CardHeader>
     <CardContent>
       <div className="mb-5 flex items-end gap-1.5">
@@ -131,7 +151,25 @@ const PlanCard: React.FC<PlanCardProps> = ({
 );
 
 const CardsList: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ul className="mb-20 flex flex-wrap justify-evenly gap-6">{children}</ul>
+  <div>
+    <div className="mb-4">
+      <h1 className="text-2xl font-bold">All Plans</h1>
+      <Button
+        variant="link"
+        asChild
+        className="h-auto p-0 text-muted-foreground"
+      >
+        <Link
+          href="https://www.tavus.io/developer#pricing"
+          className="flex items-center !gap-1 text-sm"
+        >
+          Learn more about packages and features
+          <ArrowUpRight className="size-4" />
+        </Link>
+      </Button>
+    </div>
+    <ul className="flex flex-wrap justify-evenly gap-6">{children}</ul>
+  </div>
 );
 
 const PlanItemsConfig: Record<
@@ -244,14 +282,7 @@ const BillingPlansCardsList: React.FC = () => {
       />
       <PlanCard
         isSelected
-        badge={
-          <Badge
-            variant="secondary"
-            className="ml-3 bg-[rgba(242,48,170,0.18)] text-[#F230AA]"
-          >
-            RECOMMENDED
-          </Badge>
-        }
+        badge="Recommended"
         buttonProps={buttonProps}
         item={PlanItemsConfig[PlanPrefixIds.BUSINESS]}
       />
@@ -307,14 +338,7 @@ const UpdateBillingPlansList: React.FC = () => {
         if (planPrefixId === currentPlanPrefixId) {
           props = {
             isSelected: true,
-            badge: (
-              <Badge
-                variant="secondary"
-                className="ml-3 bg-[rgba(242,48,170,0.18)] text-[#F230AA]"
-              >
-                YOUR PLAN
-              </Badge>
-            ),
+            badge: 'YOUR PLAN',
             buttonProps: { disabled: true, children: 'Current' },
           };
         } else if (
@@ -342,13 +366,67 @@ const UpdateBillingPlansList: React.FC = () => {
 
 export default function BillingPlansPage() {
   const { data: user, isLoading } = useUserQuery();
-  const { mutate } = useCancelSubscriptionMutation({
+
+  const hasActiveSubscription =
+    user?.billingAccount?.status === BillingAccountStatus.ACTIVE;
+
+  if (isLoading) return null;
+
+  return (
+    <Layout>
+      <LayoutHeader title="Billing">
+        <LayoutHeaderButtonsBlock>
+          <Button className="ml-auto" variant="outline" asChild>
+            <Link target="_blank" href="https://docs.tavusapi.com">
+              Read Docs
+            </Link>
+          </Button>
+        </LayoutHeaderButtonsBlock>
+      </LayoutHeader>
+      <LayoutWrapper>
+        <div className="flex flex-col gap-10">
+          {hasActiveSubscription ? (
+            <UpdateBillingPlansList />
+          ) : (
+            <BillingPlansCardsList />
+          )}
+          <div className="rounded-md border bg-background p-6 shadow-sm">
+            <div className="flex flex-col md:flex-row">
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold">How do tokens work?</h2>
+                <p className="mt-2 text-muted-foreground">
+                  Each plan includes a set amount of tokens per month. You can
+                  use those tokens to create replicas, or generate videos. Some
+                  plans have Personal Replicas included already.
+                </p>
+              </div>
+              <div className="mx-6 hidden border-l md:block" />
+              <div className="mt-4 flex flex-1 flex-col items-center justify-evenly space-y-4 md:mt-0 md:flex-row md:space-x-8 md:space-y-0">
+                <div>
+                  <h3 className="font-semibold">Personal Replicas</h3>
+                  <p className="text-muted-foreground">5000 tokens/Replica</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold">Text to video</h3>
+                  <p className="text-muted-foreground">100 tokens/min</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {hasActiveSubscription && <CancelButton />}
+        </div>
+      </LayoutWrapper>
+    </Layout>
+  );
+}
+
+const CancelButton = () => {
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const { mutate, isPending } = useCancelSubscriptionMutation({
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description:
-          'We are processing your cancellation request. Your subscription will be terminated shortly.',
-      });
+      router.push('/billing/cancel-plan');
+      setOpen(false);
     },
     onError: () => {
       toast({
@@ -360,23 +438,45 @@ export default function BillingPlansPage() {
     },
   });
 
-  const hasActiveSubscription = user?.billingAccount?.status === 'active';
-
-  if (isLoading) return null;
-
   return (
-    <div className="flex flex-col gap-10">
-      {hasActiveSubscription ? (
-        <UpdateBillingPlansList />
-      ) : (
-        <BillingPlansCardsList />
-      )}
-      {/*TODO: clarify are u sure*/}
-      {hasActiveSubscription && (
-        <Button variant="destructive" onClick={() => mutate()}>
-          Cancel Subscription
-        </Button>
-      )}
-    </div>
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger>
+          <Button variant="destructive">Cancel Subscription</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="mb-2 inline-flex items-center gap-2">
+              We’re sorry to see you go
+            </DialogTitle>
+            <DialogDescription className="font-medium">
+              After canceling your subscription, you will retain access to your
+              generated videos, but you will lose access to key features.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogDescription className="font-medium">
+            Your credits will remain active until the end of this billing cycle.
+            <br />
+            <b className="text-foreground">
+              Payment and credit renewals will no longer occur.
+            </b>
+          </DialogDescription>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Not Now</Button>
+            </DialogClose>
+
+            <LoadingButton
+              variant="destructiveOutline"
+              onClick={() => mutate()}
+              disabled={isPending}
+              loading={isPending}
+            >
+              Confirm Cancellation
+            </LoadingButton>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
-}
+};

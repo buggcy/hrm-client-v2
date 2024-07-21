@@ -20,6 +20,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
+import { PasswordInput } from '@/app/(authentication)/auth/components/PasswordInput';
 import { signInWithEmailAndPassword } from '@/services';
 
 const FormSchema = z.object({
@@ -85,8 +86,7 @@ export function SignInForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
+                <PasswordInput
                   autoComplete="current-password"
                   placeholder="Enter password"
                   {...field}
@@ -105,7 +105,7 @@ export function SignInForm() {
         />
         <FormMessage />
         <Button className="w-full" type="submit" disabled={isPending}>
-          Sign in {isPending && '...'}
+          Sign In {isPending && '...'}
         </Button>
       </form>
     </Form>
