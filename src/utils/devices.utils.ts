@@ -19,6 +19,8 @@ export function formatBytes(bytes: number, decimals = 2) {
 
 export const getVideoDuration = (file: File | string): Promise<number> =>
   new Promise((resolve, reject) => {
+    if (!document) reject(new Error('Server-side rendering is not supported'));
+
     const video = document.createElement('video');
     video.preload = 'metadata';
     video.onloadedmetadata = () => {
