@@ -31,6 +31,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
+import { ReadDocsButton } from '@/components/ReadDocsButton';
 import {
   Accordion,
   AccordionContent,
@@ -986,14 +987,7 @@ export default function VideoCreatePage() {
       <LayoutHeader title="Video Generation" className="hidden sm:flex">
         <CopyApiUrl type="POST" url="video" />
         <LayoutHeaderButtonsBlock>
-          <Button className="ml-auto" variant="outline" asChild>
-            <Link
-              target="_blank"
-              href="https://docs.tavusapi.com/api-reference/video-request/create-video"
-            >
-              Read Docs
-            </Link>
-          </Button>
+          <ReadDocsButton to="videoCreate" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper

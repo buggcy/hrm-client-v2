@@ -8,7 +8,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { Button } from '@/components/ui/button';
+import { ReadDocsButton } from '@/components/ReadDocsButton';
 import { Card } from '@/components/ui/card';
 
 import { Consent } from './components/Consent';
@@ -33,9 +33,7 @@ export default function ReplicaCreatePage() {
       <LayoutHeader title={'Replica Generation'}>
         <CopyApiUrl type="POST" url="replica" />
         <LayoutHeaderButtonsBlock>
-          <Button className="ml-auto" variant="outline">
-            Read Docs
-          </Button>
+          <ReadDocsButton to="replicaCreate" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1" className="max-w-full">

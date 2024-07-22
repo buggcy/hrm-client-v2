@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 import { fontFamily } from 'tailwindcss/defaultTheme';
+import plugin from 'tailwindcss/plugin';
 
 const config = {
   darkMode: ['class'],
@@ -42,6 +43,11 @@ const config = {
           foreground: 'hsl(var(--muted-foreground))',
         },
         accent: {
+          contentVisibility: {
+            auto: 'auto',
+            hidden: 'hidden',
+            visible: 'visible',
+          },
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
         },
@@ -116,9 +122,30 @@ const config = {
       screens: {
         xl: '1304px',
       },
+      'content-visibility': {
+        auto: 'auto',
+        hidden: 'hidden',
+        visible: 'visible',
+      },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    plugin(function ({ addUtilities, theme }) {
+      const newUtilities = {
+        '.content-visibility-auto': {
+          'content-visibility': theme('content-visibility.auto', 'auto'),
+        },
+        '.content-visibility-hidden': {
+          'content-visibility': theme('content-visibility.hidden', 'hidden'),
+        },
+        '.content-visibility-visible': {
+          'content-visibility': theme('content-visibility.visible', 'visible'),
+        },
+      };
+      addUtilities(newUtilities);
+    }),
+  ],
 } satisfies Config;
 
 export default config;

@@ -181,6 +181,24 @@ const ReplicaCard = ({
     void deleteReplica(replica_id);
   };
 
+  const [preload, setPreload] = useState<'none' | 'metadata'>('none');
+  useEffect(() => {
+    if (!videoRef.current) return;
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setPreload('metadata');
+          }
+        });
+      },
+      {
+        rootMargin: '150px',
+      },
+    );
+    observer.observe(videoRef.current as Element);
+  }, []);
+
   return (
     <Card
       className={cn('group rounded-md outline-primary hover:shadow', {
@@ -194,51 +212,53 @@ const ReplicaCard = ({
     >
       <CardContent className="p-2.5 pb-4">
         <div className="relative overflow-hidden rounded-md border bg-secondary">
-          {!error &&
-            thumbnail_video_url &&
-            status === ReplicaStatus.COMPLETED && (
-              <video
-                ref={videoRef}
-                src={thumbnail_video_url}
-                className="aspect-video size-full rounded-md bg-black object-contain"
-                muted={isMuted}
-                loop
-                preload="metadata"
-                onError={() => setError(true)}
-              />
+          <div className="aspect-video size-full">
+            {!error &&
+              thumbnail_video_url &&
+              status === ReplicaStatus.COMPLETED && (
+                <video
+                  ref={videoRef}
+                  src={thumbnail_video_url}
+                  className="aspect-video size-full rounded-md bg-black object-contain content-visibility-auto"
+                  muted={isMuted}
+                  loop
+                  preload={preload}
+                  onError={() => setError(true)}
+                />
+              )}
+            {error && (
+              <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
+                <p className="text-sm text-destructive/80">
+                  Error loading preview
+                </p>
+              </div>
             )}
-          {error && (
-            <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
-              <p className="text-sm text-destructive/80">
-                Error loading preview
-              </p>
-            </div>
-          )}
-          {status === ReplicaStatus.STARTED && (
-            <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
-              <p className="text-xs font-semibold text-progress">
-                {training_progress.split('/')[0]}%
-              </p>
-              <Progress value={33} className="h-2 max-w-40" />
-            </div>
-          )}
-          {status === ReplicaStatus.ERROR && (
-            <div className="flex aspect-video size-full items-center justify-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Badge variant="label-error">
-                      Error
-                      <InfoIcon className="ml-1 size-4 text-destructive" />
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-[40ch]">{error_message}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          )}
+            {status === ReplicaStatus.STARTED && (
+              <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
+                <p className="text-xs font-semibold text-progress">
+                  {training_progress.split('/')[0]}%
+                </p>
+                <Progress value={33} className="h-2 max-w-40" />
+              </div>
+            )}
+            {status === ReplicaStatus.ERROR && (
+              <div className="flex aspect-video size-full items-center justify-center">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Badge variant="label-error">
+                        Error
+                        <InfoIcon className="ml-1 size-4 text-destructive" />
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-[40ch]">{error_message}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            )}
+          </div>
           <div className="absolute bottom-2 left-2">
             <CopyReplicaID
               id={replica_id}
@@ -346,7 +366,10 @@ const ReplicaCard = ({
         {!isSelectable &&
           (status === ReplicaStatus.COMPLETED ? (
             <Button asChild variant="link" className="mt-2.5 h-5 p-0">
-              <Link href={`/videos/create/?replica=${replica_id}`}>
+              <Link
+                href={`/videos/create/?replica=${replica_id}`}
+                prefetch={false}
+              >
                 Create Video
                 <ArrowRight className="size-4" />
               </Link>

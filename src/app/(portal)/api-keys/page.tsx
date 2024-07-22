@@ -12,6 +12,7 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Pagination } from '@/components/Pagination';
+import { ReadDocsButton } from '@/components/ReadDocsButton';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -73,9 +74,7 @@ export default function ApiKeysPage() {
     <Layout>
       <LayoutHeader title="API Keys">
         <LayoutHeaderButtonsBlock>
-          <Button className="ml-auto" variant="outline">
-            Read Docs
-          </Button>
+          <ReadDocsButton to="apiReference" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper>

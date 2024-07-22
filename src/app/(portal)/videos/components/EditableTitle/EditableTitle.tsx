@@ -3,12 +3,10 @@
 import React from 'react';
 
 // import { zodResolver } from '@hookform/resolvers/zod';
-import { Pencil } from 'lucide-react';
-
+// import { Pencil } from 'lucide-react';
 // import { useForm } from 'react-hook-form';
 // import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-
+// import { Button } from '@/components/ui/button';
 // import {
 //   Form,
 //   FormControl,
@@ -161,9 +159,9 @@ const EditableTitle: React.FC<EditableTitleProps> = ({
     // </div>
     <div className="flex w-full items-start">
       <p className="font-semibold text-foreground">{video_name}</p>
-      <Button variant="ghost" size="icon" className="ml-2.5 size-6 p-0">
+      {/* <Button variant="ghost" size="icon" className="ml-2.5 size-6 p-0">
         <Pencil className="size-3.5" />
-      </Button>
+      </Button> */}
     </div>
   );
 };

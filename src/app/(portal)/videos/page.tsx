@@ -22,6 +22,7 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Pagination } from '@/components/Pagination';
+import { ReadDocsButton } from '@/components/ReadDocsButton';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
 import {
@@ -99,9 +100,7 @@ export default function VideosPage() {
       <LayoutHeader title={'Video Library'}>
         <CopyApiUrl type="GET" url="video" />
         <LayoutHeaderButtonsBlock>
-          <Button className="ml-auto" variant="outline">
-            Read Docs
-          </Button>
+          <ReadDocsButton to="videoLibrary" />
           <Button asChild>
             <Link href="/videos/create">Create Video</Link>
           </Button>

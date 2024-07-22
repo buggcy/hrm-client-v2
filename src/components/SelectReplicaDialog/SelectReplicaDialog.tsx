@@ -16,7 +16,8 @@ import { SelectReplicaDialogProps } from './types';
 import { useReplicasVideoMute } from '../ReplicaCard';
 import { Button } from '../ui/button';
 
-import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
+import { IReplica, ReplicaType } from '@/types';
+const LIMIT = 10;
 
 const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
   defaultValue = '',
@@ -24,7 +25,32 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
   children,
   onChange,
 }) => {
-  const { data: replicas, isLoading } = useReplicasQuery();
+  const {
+    data: stockReplicas,
+    isLoading: stockReplicasIsLoading,
+    fetchNextPage: fetchNextPageStock,
+    hasNextPage: hasNextPageStock,
+    isFetchingNextPage: isFetchingNextPageStock,
+  } = useReplicasQuery({
+    refetchInterval: false,
+    queryParams: {
+      limit: LIMIT,
+      replica_type: ReplicaType.STUDIO,
+    },
+  });
+
+  const {
+    data: personalReplicas,
+    isLoading: personalReplicasIsLoading,
+    fetchNextPage: fetchNextPagePersonal,
+    hasNextPage: hasNextPagePersonal,
+    isFetchingNextPage: isFetchingNextPagePersonal,
+  } = useReplicasQuery({
+    queryParams: {
+      limit: LIMIT,
+      replica_type: ReplicaType.PERSONAL,
+    },
+  });
   const { isMuted, toggleMute, onMuteChange } = useReplicasVideoMute();
   const [open, setOpen] = useState(false);
   const [selectedReplicaId, setSelectedReplicaId] = useState<
@@ -51,25 +77,23 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
     setOpen(false);
   };
 
-  const studioReplicas = useMemo(
-    () =>
-      replicas?.data?.filter(
-        replica =>
-          replica.replica_type === ReplicaType.STUDIO &&
-          replica.status === ReplicaStatus.COMPLETED,
-      ) ?? [],
-    [replicas?.data],
-  );
+  const stockReplicasData = useMemo(() => {
+    // @ts-expect-error
+    return stockReplicas?.pages?.map(page => page.data).flat();
+  }, [stockReplicas]);
 
-  const personalReplicas = useMemo(
-    () =>
-      replicas?.data?.filter(
-        replica =>
-          replica.replica_type === ReplicaType.PERSONAL &&
-          replica.status === ReplicaStatus.COMPLETED,
-      ) ?? [],
-    [replicas?.data],
-  );
+  const personalReplicasData = useMemo(() => {
+    // @ts-expect-error
+    return personalReplicas?.pages?.map(page => page.data).flat();
+  }, [personalReplicas]);
+
+  const handleLoadMoreStock = () => {
+    void fetchNextPageStock();
+  };
+
+  const handleLoadMorePersonal = () => {
+    void fetchNextPagePersonal();
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -86,56 +110,72 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
               <TabsList className="mb-6">
                 <TabsTrigger value="all">All Replicas</TabsTrigger>
                 <TabsTrigger value="personal">Personal</TabsTrigger>
-                <TabsTrigger value="studio">Studio</TabsTrigger>
+                <TabsTrigger value="studio">Stock</TabsTrigger>
               </TabsList>
               <TabsContent value="all" tabIndex={-1}>
                 <div className="space-y-8">
                   <SelectReplicaBlock
                     title="Personal Replicas"
-                    replicas={personalReplicas}
-                    isLoading={isLoading}
+                    replicas={personalReplicasData}
+                    isLoading={personalReplicasIsLoading}
                     isPersonalReplicas
                     isMuted={isMuted}
                     toggleMute={toggleMute}
                     onMuteChange={onMuteChange}
                     onSelect={handleSelect}
                     selectedReplicaId={selectedReplicaId}
+                    onLoadMore={
+                      hasNextPagePersonal ? handleLoadMorePersonal : undefined
+                    }
+                    isFetchingNextPage={isFetchingNextPagePersonal}
                   />
                   <SelectReplicaBlock
-                    title="Studio Replicas"
-                    replicas={studioReplicas}
-                    isLoading={isLoading}
+                    title="Stock Replicas"
+                    replicas={stockReplicasData}
+                    isLoading={stockReplicasIsLoading}
                     isMuted={isMuted}
                     toggleMute={toggleMute}
                     onMuteChange={onMuteChange}
                     onSelect={handleSelect}
                     selectedReplicaId={selectedReplicaId}
+                    onLoadMore={
+                      hasNextPageStock ? handleLoadMoreStock : undefined
+                    }
+                    isFetchingNextPage={isFetchingNextPageStock}
                   />
                 </div>
               </TabsContent>
               <TabsContent value="personal" tabIndex={-1}>
                 <SelectReplicaBlock
                   title="Personal Replicas"
-                  replicas={personalReplicas}
-                  isLoading={isLoading}
+                  replicas={personalReplicasData}
+                  isLoading={personalReplicasIsLoading}
                   isPersonalReplicas
                   isMuted={isMuted}
                   toggleMute={toggleMute}
                   onMuteChange={onMuteChange}
                   onSelect={handleSelect}
                   selectedReplicaId={selectedReplicaId}
+                  onLoadMore={
+                    hasNextPagePersonal ? handleLoadMorePersonal : undefined
+                  }
+                  isFetchingNextPage={isFetchingNextPagePersonal}
                 />
               </TabsContent>
               <TabsContent value="studio" tabIndex={-1}>
                 <SelectReplicaBlock
-                  title="Studio Replicas"
-                  replicas={studioReplicas}
-                  isLoading={isLoading}
+                  title="Stock Replicas"
+                  replicas={stockReplicasData}
+                  isLoading={stockReplicasIsLoading}
                   isMuted={isMuted}
                   toggleMute={toggleMute}
                   onMuteChange={onMuteChange}
                   onSelect={handleSelect}
                   selectedReplicaId={selectedReplicaId}
+                  onLoadMore={
+                    hasNextPageStock ? handleLoadMoreStock : undefined
+                  }
+                  isFetchingNextPage={isFetchingNextPageStock}
                 />
               </TabsContent>
             </Tabs>

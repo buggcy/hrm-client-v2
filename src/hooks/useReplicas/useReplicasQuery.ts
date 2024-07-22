@@ -1,7 +1,6 @@
 import {
-  useQuery,
-  UseQueryOptions,
-  UseQueryResult,
+  useInfiniteQuery,
+  UseInfiniteQueryOptions,
 } from '@tanstack/react-query';
 import { z } from 'zod';
 
@@ -16,21 +15,44 @@ const IReplicasResponse = z.object({
 });
 type IReplicasResponse = z.infer<typeof IReplicasResponse>;
 
-export const getReplicas = () =>
-  // TODO: filter by schemaParse
-  rqhApi.get('/v2/replicas?verbose=true').then(schemaParse(IReplicasResponse));
+type UseReplicaQueryParams = {
+  // TODO: Define the type of the queryParams like in API
+  queryParams?: Record<string, unknown>;
+} & Omit<
+  UseInfiniteQueryOptions<IReplicasResponse>,
+  | 'queryKey'
+  | 'queryFn'
+  | 'initialPageParam'
+  | 'getPreviousPageParam'
+  | 'getNextPageParam'
+>;
 
-export const useReplicasQuery = (
-  options?: Omit<UseQueryOptions<IReplicasResponse>, 'queryKey' | 'queryFn'>,
-): UseQueryResult<IReplicasResponse> =>
-  useQuery<IReplicasResponse>({
-    queryKey: ['replicas'],
-    queryFn: () =>
-      getReplicas().then(data => {
+export const getReplicas = (queryParams?: Record<string, unknown>) =>
+  // TODO: filter by schemaParse
+  rqhApi
+    .get('/v2/replicas?verbose=true', { params: queryParams })
+    .then(schemaParse(IReplicasResponse));
+
+export const useReplicasQuery = ({
+  queryParams,
+  ...config
+}: UseReplicaQueryParams = {}) =>
+  useInfiniteQuery({
+    queryKey: ['replicas', queryParams],
+    queryFn: ({ pageParam }) =>
+      getReplicas({ ...queryParams, page: pageParam }).then(data => {
         data.data.forEach(replica => {
           queryClient.setQueryData(['replica', replica.replica_id], replica);
         });
         return data;
       }),
-    ...options,
+    initialPageParam: 1,
+    getNextPageParam: (data, _, lastPageParam) => {
+      if (data?.data?.length) {
+        const last = typeof lastPageParam === 'number' ? lastPageParam : 1;
+        return last + 1;
+      }
+      return undefined;
+    },
+    ...config,
   });

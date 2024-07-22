@@ -21,16 +21,26 @@ import { ReplicaStatus, ReplicaType } from '@/types';
 
 export const StockReplicaCarousel: React.FC = () => {
   // TODO: ADD query param when it will be implemented and remove useMemo
-  const { data: replicas, isLoading } = useReplicasQuery();
+  const { data: replicas, isLoading } = useReplicasQuery({
+    queryParams: {
+      limit: 10,
+      replica_type: ReplicaType.STUDIO,
+    },
+    refetchInterval: false,
+  });
   const { isMuted, toggleMute, onMuteChange } = useReplicasVideoMute();
 
   const studioReplicas = useMemo(() => {
-    return replicas?.data?.filter(
-      replica =>
-        replica.replica_type === ReplicaType.STUDIO &&
-        replica.status === ReplicaStatus.COMPLETED,
+    return (
+      // @ts-expect-error
+      replicas?.pages
+        // @ts-expect-error
+        ?.map(page => page.data)
+        ?.flat()
+        // @ts-expect-error
+        ?.filter(replica => replica.status === ReplicaStatus.COMPLETED)
     );
-  }, [replicas?.data]);
+  }, [replicas]);
 
   return (
     <div className="mt-8 w-full rounded-md">

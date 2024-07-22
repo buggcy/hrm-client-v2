@@ -16,7 +16,12 @@ import {
 
 import { useUserQuery } from '@/hooks';
 
-import { DEFAULT_SCRIPT, IMPROVISATION_SCRIPT } from './constants';
+import {
+  COMFORTABLE_SCRIPT,
+  DEFAULT_SCRIPT,
+  IMPROVISATION_SCRIPT,
+  UPBEAT_SCRIPT,
+} from './constants';
 
 type Topic = 'Narrator' | 'Upbeat' | 'Comfortable' | 'Improvisation';
 
@@ -65,14 +70,14 @@ const topics = [
     description:
       'Read an exciting story and express the full range of emotions',
     icon: <Rocket size={24} />,
-    text: DEFAULT_SCRIPT,
+    text: UPBEAT_SCRIPT,
     title: 'Upbeat Script',
   },
   {
     topic: 'Comfortable',
     description: 'Read about a relaxing summer weekend',
     icon: <Palmtree size={24} />,
-    text: DEFAULT_SCRIPT,
+    text: COMFORTABLE_SCRIPT,
     title: 'Comfortable Script',
   },
   {

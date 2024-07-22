@@ -11,6 +11,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
+import { ReadDocsButton } from '@/components/ReadDocsButton';
 import { useReplicasVideoMute } from '@/components/ReplicaCard';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -21,18 +22,41 @@ import { ReplicaBlock } from './components/ReplicaBlock';
 
 import { ReplicaStatus, ReplicaType } from '@/types';
 
+const LIMIT = 10;
+
 export default function ReplicasPage() {
   const {
-    data: replicas,
-    isLoading,
+    data: stockReplicas,
+    isLoading: stockReplicasIsLoading,
+    isRefetching: stockReplicasIsRefetching,
+    isPlaceholderData: stockReplicasIsPlaceholderData,
+    fetchNextPage: fetchNextPageStock,
+    hasNextPage: hasNextPageStock,
+    isFetchingNextPage: isFetchingNextPageStock,
+  } = useReplicasQuery({
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    queryParams: {
+      limit: LIMIT,
+      replica_type: ReplicaType.STUDIO,
+    },
+  });
+
+  const {
+    data: personalReplicas,
+    isLoading: personalReplicasIsLoading,
     isRefetching,
     isPlaceholderData,
+    fetchNextPage: fetchNextPagePersonal,
+    hasNextPage: hasNextPagePersonal,
+    isFetchingNextPage: isFetchingNextPagePersonal,
   } = useReplicasQuery({
     refetchInterval(query) {
       if (
-        query.state.data?.data?.some(
-          ({ status }) => status === ReplicaStatus.STARTED,
-        )
+        query.state.data?.pages
+          ?.map(page => page.data)
+          ?.flat()
+          ?.some(({ status }) => status === ReplicaStatus.STARTED)
       ) {
         return 30 * 1000;
       }
@@ -40,34 +64,43 @@ export default function ReplicasPage() {
       return 5 * 60 * 1000;
     },
     refetchOnWindowFocus: true,
+    queryParams: {
+      limit: LIMIT,
+      replica_type: ReplicaType.PERSONAL,
+    },
   });
   const { isMuted, toggleMute, onMuteChange } = useReplicasVideoMute();
 
-  const studioReplicas = useMemo(() => {
-    return replicas?.data?.filter(
-      replica =>
-        replica.replica_type === ReplicaType.STUDIO &&
-        replica.status === ReplicaStatus.COMPLETED,
-    );
-  }, [replicas?.data]);
+  const handleLoadMoreStock = () => {
+    void fetchNextPageStock();
+  };
 
-  const personalReplicas = useMemo(() => {
-    return replicas?.data?.filter(
-      replica => replica.replica_type === ReplicaType.PERSONAL,
-    );
-  }, [replicas?.data]);
+  const handleLoadMorePersonal = () => {
+    void fetchNextPagePersonal();
+  };
 
-  const initialLoading = isLoading;
-  const backgroundRefetching = !isPlaceholderData && isRefetching && !isLoading;
+  const stockReplicasData = useMemo(() => {
+    // @ts-expect-error
+    return stockReplicas?.pages?.map(page => page.data).flat();
+  }, [stockReplicas]);
+
+  const personalReplicasData = useMemo(() => {
+    // @ts-expect-error
+    return personalReplicas?.pages?.map(page => page.data).flat();
+  }, [personalReplicas]);
+
+  const backgroundRefetching =
+    (!isPlaceholderData && isRefetching && !personalReplicasIsLoading) ||
+    (!stockReplicasIsPlaceholderData &&
+      stockReplicasIsRefetching &&
+      !stockReplicasIsLoading);
 
   return (
     <Layout>
       <LayoutHeader title={'Replica Library'}>
         <CopyApiUrl type="GET" url="replica" />
         <LayoutHeaderButtonsBlock>
-          <Button className="ml-auto" variant="outline">
-            Read Docs
-          </Button>
+          <ReadDocsButton to="replicaLibrary" />
           <Button asChild>
             <Link href="/replicas/create">Create Replica</Link>
           </Button>
@@ -78,7 +111,7 @@ export default function ReplicasPage() {
           <TabsList className="mb-6 border">
             <TabsTrigger value="all">All Replicas</TabsTrigger>
             <TabsTrigger value="personal">Personal</TabsTrigger>
-            <TabsTrigger value="studio">Studio</TabsTrigger>
+            <TabsTrigger value="studio">Stock</TabsTrigger>
           </TabsList>
           {backgroundRefetching && (
             <div className="absolute right-2 top-2">
@@ -89,42 +122,54 @@ export default function ReplicasPage() {
             <div className="space-y-10">
               <ReplicaBlock
                 title="Personal Replicas"
-                replicas={personalReplicas}
-                isLoading={initialLoading}
+                replicas={personalReplicasData}
+                isLoading={stockReplicasIsLoading}
                 isPersonalReplicas
                 isMuted={isMuted}
                 toggleMute={toggleMute}
                 onMuteChange={onMuteChange}
+                onLoadMore={
+                  hasNextPagePersonal ? handleLoadMorePersonal : undefined
+                }
+                isFetchingNextPage={isFetchingNextPagePersonal}
               />
               <ReplicaBlock
-                title="Studio Replicas"
-                replicas={studioReplicas}
-                isLoading={initialLoading}
+                title="Stock Replicas"
+                replicas={stockReplicasData}
+                isLoading={stockReplicasIsLoading}
                 isMuted={isMuted}
                 toggleMute={toggleMute}
                 onMuteChange={onMuteChange}
+                onLoadMore={hasNextPageStock ? handleLoadMoreStock : undefined}
+                isFetchingNextPage={isFetchingNextPageStock}
               />
             </div>
           </TabsContent>
           <TabsContent value="personal" tabIndex={-1}>
             <ReplicaBlock
               title="Personal Replicas"
-              replicas={personalReplicas}
-              isLoading={initialLoading}
+              replicas={personalReplicasData}
+              isLoading={stockReplicasIsLoading}
               isPersonalReplicas
               isMuted={isMuted}
               toggleMute={toggleMute}
               onMuteChange={onMuteChange}
+              onLoadMore={
+                hasNextPagePersonal ? handleLoadMorePersonal : undefined
+              }
+              isFetchingNextPage={isFetchingNextPagePersonal}
             />
           </TabsContent>
           <TabsContent value="studio" tabIndex={-1}>
             <ReplicaBlock
-              title="Studio Replicas"
-              replicas={studioReplicas}
-              isLoading={initialLoading}
+              title="Stock Replicas"
+              replicas={stockReplicasData}
+              isLoading={stockReplicasIsLoading}
               isMuted={isMuted}
               toggleMute={toggleMute}
               onMuteChange={onMuteChange}
+              onLoadMore={hasNextPageStock ? handleLoadMoreStock : undefined}
+              isFetchingNextPage={isFetchingNextPageStock}
             />
           </TabsContent>
         </Tabs>

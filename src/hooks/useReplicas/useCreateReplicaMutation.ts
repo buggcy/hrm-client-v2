@@ -8,10 +8,16 @@ import { rqhApi } from '@/utils';
 
 import { IReplica } from '@/types';
 
+export enum ReplicaModel {
+  PHOENIX_1 = 'phoenix-1',
+  PHOENIX_2 = 'phoenix-2',
+}
+
 export type CreateReplicaDto = {
   replica_name?: IReplica['replica_name'];
   consent_video_url: string;
   train_video_url: string;
+  model_name: ReplicaModel;
 };
 
 export const createReplica: MutationFunction<void, CreateReplicaDto> = (

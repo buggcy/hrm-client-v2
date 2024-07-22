@@ -36,7 +36,7 @@ const FormSchema = z.object({
 
 import { AxiosProgressEvent } from 'axios';
 
-import { useCreateReplicaMutation } from '@/hooks';
+import { ReplicaModel, useCreateReplicaMutation } from '@/hooks';
 
 import { LoaderBlock } from '../LoaderBlock';
 import { ReplicaCreated } from '../ReplicaCreated';
@@ -83,8 +83,6 @@ const useUploadVideo = (key: string) => {
 };
 const useSubmitReplica = () => {
   // TODO: add error handling
-  //
-  // const store = useReplicaStore();
   const [
     consentMethod,
     consentFile,
@@ -148,6 +146,7 @@ const useSubmitReplica = () => {
     const data = {
       consent_video_url: '',
       train_video_url: '',
+      model_name: ReplicaModel.PHOENIX_2,
     };
 
     if (consentFileValue) {

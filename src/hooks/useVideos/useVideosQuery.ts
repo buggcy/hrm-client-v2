@@ -38,6 +38,15 @@ export const useVideosQueryRefetchInterval = (
   return 5 * 60 * 1000;
 };
 
+export const useVideoQueryRefetchInterval = (query: Query<IVideo>) => {
+  const status = query.state.data?.status;
+  if (status === VideoStatus.GENERATING || status === VideoStatus.QUEUED) {
+    return 10 * 1000;
+  }
+
+  return 5 * 60 * 1000;
+};
+
 export const useVideosQuery = ({
   queryKey,
   queryParams,

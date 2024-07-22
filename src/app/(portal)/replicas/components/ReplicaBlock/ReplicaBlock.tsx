@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { ArrowRightIcon, UserPlusIcon } from 'lucide-react';
 
+import { LoadingButton } from '@/components/LoadingButton';
 import { ReplicaCard } from '@/components/ReplicaCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,6 +28,8 @@ const ReplicaBlock = ({
   replicas,
   isLoading,
   isPersonalReplicas,
+  isFetchingNextPage,
+  onLoadMore,
   toggleMute,
   onMuteChange,
 }: {
@@ -35,6 +38,8 @@ const ReplicaBlock = ({
   replicas?: IReplica[];
   isLoading: boolean;
   isPersonalReplicas?: boolean;
+  isFetchingNextPage?: boolean;
+  onLoadMore?: () => void;
   toggleMute: () => void;
   onMuteChange: (isMuted: boolean) => void;
 }) => {
@@ -89,6 +94,13 @@ const ReplicaBlock = ({
               replica={replica}
             />
           ))}
+        </div>
+      )}
+      {replicas?.length && onLoadMore && (
+        <div className="flex justify-center">
+          <LoadingButton loading={!!isFetchingNextPage} onClick={onLoadMore}>
+            Load More
+          </LoadingButton>
         </div>
       )}
     </div>

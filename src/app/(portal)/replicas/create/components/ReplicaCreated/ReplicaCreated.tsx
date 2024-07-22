@@ -5,6 +5,8 @@ import Confetti from 'react-confetti';
 
 import { Button } from '@/components/ui/button';
 
+import { CodeDialog } from '../CodeDialog';
+
 export const ReplicaCreated = () => {
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-8">
@@ -25,12 +27,9 @@ export const ReplicaCreated = () => {
           .
         </p>
         <div className="flex items-center justify-center gap-4">
-          <Button
-            variant="outline"
-            onClick={() => console.log('View Code clicked')}
-          >
-            View Code
-          </Button>
+          <CodeDialog>
+            <Button variant="outline">View Code</Button>
+          </CodeDialog>
           <Button asChild>
             <Link href="/replicas">Finish</Link>
           </Button>
