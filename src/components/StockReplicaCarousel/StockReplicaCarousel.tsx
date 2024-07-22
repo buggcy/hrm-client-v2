@@ -17,7 +17,7 @@ import { ReplicaCard, useReplicasVideoMute } from '../ReplicaCard';
 import { Card, CardContent } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
 
-import { ReplicaStatus, ReplicaType } from '@/types';
+import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
 
 export const StockReplicaCarousel: React.FC = () => {
   // TODO: ADD query param when it will be implemented and remove useMemo
@@ -30,7 +30,7 @@ export const StockReplicaCarousel: React.FC = () => {
   });
   const { isMuted, toggleMute, onMuteChange } = useReplicasVideoMute();
 
-  const studioReplicas = useMemo(() => {
+  const studioReplicas: IReplica[] | undefined = useMemo(() => {
     return (
       // @ts-expect-error
       replicas?.pages
