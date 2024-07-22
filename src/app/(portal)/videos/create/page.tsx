@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError, AxiosProgressEvent } from 'axios';
@@ -775,6 +776,9 @@ const noQuotasTooltipContent = (
 const OPTIMISTIC_VIDEO_ID = '...';
 
 export default function VideoCreatePage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { data: quotas, isError } = useUserQuotasQuery();
   const { undo, redo } = useVideoGenerateFormUndoHistory(state => state);
   const { mutateAsync: uploadAudio, isPending: isUploadingAudio } =
@@ -840,6 +844,20 @@ export default function VideoCreatePage() {
       },
     });
 
+  useEffect(() => {
+    const replicaId = searchParams.get('replica');
+
+    if (replicaId) {
+      useVideoGenerateFormStore.setState({ replicaId });
+
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete('replica');
+      const paramsString = params.toString();
+      router.push(pathname + (paramsString ? `?${paramsString}` : ''));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (KeyPressService.isUndo(event)) {
       event.preventDefault();
@@ -902,7 +920,6 @@ export default function VideoCreatePage() {
 
       if (formState.type === VideoGenerationType.AUDIO) {
         if (!formState.audioUrl && formFileState.audio?.file) {
-          // TODO: move to all settled
           promises.push(() =>
             uploadAudio({
               file: formFileState.audio!.file!,

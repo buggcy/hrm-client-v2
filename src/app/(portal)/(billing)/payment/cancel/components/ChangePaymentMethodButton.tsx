@@ -1,11 +1,15 @@
 'use client';
 
 import { LoadingButton } from '@/components/LoadingButton';
+import { ButtonProps } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 
 import { useCreateStripeCheckoutSessionUrlMutation } from '@/hooks/useBilling';
 
-export const ChangePaymentMethodButton = () => {
+export const ChangePaymentMethodButton = ({
+  children,
+  ...props
+}: ButtonProps) => {
   const { isPending, mutateAsync } =
     useCreateStripeCheckoutSessionUrlMutation();
 
@@ -21,8 +25,8 @@ export const ChangePaymentMethodButton = () => {
   };
 
   return (
-    <LoadingButton loading={isPending} onClick={handleClick}>
-      Change Payment Method
+    <LoadingButton {...props} loading={isPending} onClick={handleClick}>
+      {children || 'Change Payment Method'}
     </LoadingButton>
   );
 };

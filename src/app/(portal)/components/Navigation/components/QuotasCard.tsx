@@ -16,10 +16,10 @@ import { BillingAccountStatus } from '@/types';
 const INFINITY_QUOTAS_VALUE = 99999999;
 
 export default function QuotasCard({ className }: { className?: string }) {
-  const { data: user } = useUserQuery();
+  const { data: user, isError } = useUserQuery();
   const { data: quotas, isLoading } = useUserQuotasQuery();
 
-  if (!user) return null;
+  if (!user || isError) return null;
 
   return (
     <Card

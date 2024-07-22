@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { AxiosError } from 'axios';
-import { ArrowUpRight, CheckIcon, XIcon } from 'lucide-react';
+import { ArrowUpRight, CheckIcon, TriangleAlert, XIcon } from 'lucide-react';
 
 import {
   Layout,
@@ -36,6 +36,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 
+import { ChangePaymentMethodButton } from '@/app/(portal)/(billing)/payment/cancel/components/ChangePaymentMethodButton';
 import { useUserQuery } from '@/hooks';
 import {
   useCancelSubscriptionMutation,
@@ -242,6 +243,7 @@ const ENTERPRISE_BUTTON_PROPS: PlanCardProps['buttonProps'] = {
 };
 
 const BillingPlansCardsList: React.FC = () => {
+  const { data: user } = useUserQuery();
   const { isPending, mutateAsync } = useCreateSubscriptionMutation();
 
   const handleSubmit = async (planId: PlanIds) => {
@@ -268,6 +270,9 @@ const BillingPlansCardsList: React.FC = () => {
     isLoading: isPending,
     onClick: handleClick,
     children: 'Get Started',
+    disabled:
+      isPending ||
+      user?.billingAccount?.status === BillingAccountStatus.PAYMENT_FAILED,
   };
 
   return (
@@ -364,6 +369,26 @@ const UpdateBillingPlansList: React.FC = () => {
   );
 };
 
+const PaymentFailedBanner = () => {
+  return (
+    <div className="flex items-center justify-between rounded-md border bg-amber-100 p-4">
+      <div className="flex items-center">
+        <TriangleAlert className="mr-2 size-6 text-amber-600" />
+        <span className="font-semibold text-amber-600">Payment Failed.</span>
+        <span className="ml-2 text-amber-600">
+          Please update your card details to continue using our services.
+        </span>
+      </div>
+      <ChangePaymentMethodButton
+        variant="outline"
+        className="border-amber-600 bg-amber-100 text-amber-600 hover:bg-amber-200 hover:text-amber-800"
+      >
+        Manage Payment Method
+      </ChangePaymentMethodButton>
+    </div>
+  );
+};
+
 export default function BillingPlansPage() {
   const { data: user, isLoading } = useUserQuery();
 
@@ -385,6 +410,8 @@ export default function BillingPlansPage() {
       </LayoutHeader>
       <LayoutWrapper>
         <div className="flex flex-col gap-10">
+          {user?.billingAccount?.status ===
+            BillingAccountStatus.PAYMENT_FAILED && <PaymentFailedBanner />}
           {hasActiveSubscription ? (
             <UpdateBillingPlansList />
           ) : (
@@ -468,7 +495,8 @@ const CancelButton = () => {
 
             <LoadingButton
               variant="destructiveOutline"
-              onClick={() => mutate()}
+              // @ts-ignore
+              onClick={mutate}
               disabled={isPending}
               loading={isPending}
             >

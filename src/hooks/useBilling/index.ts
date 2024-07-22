@@ -14,8 +14,7 @@ import { APP_BASE_URL } from '@/constants';
 import { queryClient } from '@/libs';
 import { portalApi } from '@/utils';
 
-const successUrl = `${APP_BASE_URL}/payment/success`;
-const cancelUrl = `${APP_BASE_URL}/`;
+const cancelUrl = `${APP_BASE_URL}/billing`;
 
 interface StripeSession {
   url: string;
@@ -26,7 +25,7 @@ export const BillingService = {
     portalApi.post('/v2/billing/subscriptions', {
       planId,
       cancelUrl,
-      successUrl,
+      successUrl: `${APP_BASE_URL}/payment/success`,
     }),
   updateSubscription: (planId: PlanIds): Promise<void> =>
     portalApi.patch('/v2/billing/subscriptions', {
@@ -35,8 +34,8 @@ export const BillingService = {
     }),
   createStripeCheckoutSession: (): Promise<string> =>
     portalApi.post('/v2/billing/v2/subscriptions/checkoutSession', {
-      successUrl,
       cancelUrl,
+      successUrl: `${APP_BASE_URL}/payment/update/success`,
     }),
   cancelSubscription: (): Promise<void> =>
     portalApi.post('/v2/billing/subscriptions/cancel'),
@@ -70,7 +69,6 @@ export const useUpdateSubscriptionMutation = ({
   ...options
 }: UseMutationOptions<void, Error, PlanIds> = {}) =>
   useMutation({
-    mutationKey: ['billingPaymentSession'],
     mutationFn: BillingService.updateSubscription,
     onMutate: (...args) => {
       setTimeout(
@@ -84,7 +82,6 @@ export const useUpdateSubscriptionMutation = ({
 
 export const useCreateStripeCheckoutSessionUrlMutation = () =>
   useMutation({
-    mutationKey: ['billingPaymentSession'],
     mutationFn: BillingService.createStripeCheckoutSession,
   });
 
@@ -93,7 +90,6 @@ export const useCancelSubscriptionMutation = ({
   ...options
 }: UseMutationOptions<void, Error> = {}) =>
   useMutation({
-    mutationKey: ['billingPaymentSession'],
     mutationFn: BillingService.cancelSubscription,
     onSettled: (...args) => {
       setTimeout(

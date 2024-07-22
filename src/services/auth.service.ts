@@ -56,10 +56,6 @@ const getUserDataFromCredentials = (
 
 export const signInWithGoogle = async (isNewUser = false): Promise<IUser> => {
   const provider = new GoogleAuthProvider();
-  // TODO: Confirm the scope
-  provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-  provider.setCustomParameters({ login_hint: 'user@example.com' });
-
   const userCredential = await signInWithPopup(firebaseAuth, provider);
   const additionalUserInfo = getAdditionalUserInfo(userCredential);
 
