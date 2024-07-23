@@ -197,14 +197,14 @@ const ReplicaCard = ({
     void deleteReplica(replica_id);
   };
 
-  const [preload, setPreload] = useState<'none' | 'metadata'>('none');
+  const [preload, setPreload] = useState<'none' | 'auto'>('none');
   useEffect(() => {
     if (!videoRef.current) return;
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            setPreload('metadata');
+            setPreload('auto');
           }
         });
       },
