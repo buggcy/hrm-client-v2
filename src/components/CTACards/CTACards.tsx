@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { ArrowRight, Key, MessageSquare, UserPlus, Video } from 'lucide-react';
+import { ArrowRight, Key, UserPlus, Video } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -21,17 +21,17 @@ const CTA_CONFIG = [
     href: '/replicas/create',
     hover: '/images/createReplica.svg',
   },
-  {
-    title: 'Create Conversation',
-    description: 'Converse with replica in real-time',
-    icon: MessageSquare,
-    bg: 'bg-[linear-gradient(15deg,_#CBA9EE_0%,_#8650F8_144.57%)]',
-    href: '/conversations/create',
-    hover: '/images/createConv.svg',
-  },
+  // {
+  //   title: 'Create Conversation',
+  //   description: 'Converse with replica in real-time',
+  //   icon: MessageSquare,
+  //   bg: 'bg-[linear-gradient(15deg,_#CBA9EE_0%,_#8650F8_144.57%)]',
+  //   href: '/conversations/create',
+  //   hover: '/images/createConv.svg',
+  // },
   {
     title: 'Create API Key',
-    description: 'Star building with an API Key',
+    description: 'Start building with an API Key',
     icon: Key,
     bg: 'bg-[linear-gradient(219deg,_#9887FF_0%,_#80CEF9_100%)]',
     href: '/api-keys',

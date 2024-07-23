@@ -1,4 +1,6 @@
 'use client';
+import Link from 'next/link';
+
 import { Check, Leaf, Video } from 'lucide-react';
 
 import {
@@ -7,8 +9,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { SimpleTooltip } from '@/components/ui/tooltip';
 
+import { useUserQuotasQuery } from '@/hooks/useBilling';
 import { cn } from '@/utils';
 
 import { State, useReplicaStore } from '../../hooks';
@@ -54,6 +59,8 @@ const Separator = () => (
 );
 
 export const StepList = () => {
+  const { data: quotas, isError } = useUserQuotasQuery();
+
   const activeStep = useReplicaStore(state => state.activeStep);
   const completedStep = useReplicaStore(state => state.completedSteps);
   const setActiveStep = useReplicaStore(state => state.setActiveStep);
@@ -75,6 +82,20 @@ export const StepList = () => {
   const isCompletedTraining = completedStep.training;
 
   const isDisabledTraining = !isCompletedConsent;
+
+  const isOutOfReplicaQuotas = isError
+    ? false
+    : !(quotas ? quotas.replica?.isAllowed : true);
+
+  const noQuotasTooltipContent = (
+    <p>
+      {"You don't have enough quotas. Please "}
+      <Button asChild variant="link" className="p-0">
+        <Link href="/billing">upgrade your plan</Link>
+      </Button>{' '}
+      to continue.
+    </p>
+  );
 
   return (
     <Card className="flex rounded-md p-6">
@@ -107,15 +128,23 @@ export const StepList = () => {
             className="relative rounded-md border data-[state=open]:bg-secondary"
           >
             <Separator />
-            <AccordionTrigger className="relative p-4">
-              <ItemDot
-                active={isActiveConsent}
-                completed={isCompletedConsent}
-                disabled={false}
-                number={2}
-              />
-              Consent Video
-            </AccordionTrigger>
+            <SimpleTooltip
+              disabled={!isOutOfReplicaQuotas}
+              tooltipContent={noQuotasTooltipContent}
+            >
+              <AccordionTrigger
+                className="relative p-4"
+                disabled={isOutOfReplicaQuotas}
+              >
+                <ItemDot
+                  active={isActiveConsent}
+                  completed={isCompletedConsent}
+                  disabled={false}
+                  number={2}
+                />
+                Consent Video
+              </AccordionTrigger>
+            </SimpleTooltip>
             <AccordionContent className="p-4 pt-0 text-muted-foreground">
               Record or upload your consent video by reading the provided scrip.
               {/* <div className="mt-4 flex gap-2">

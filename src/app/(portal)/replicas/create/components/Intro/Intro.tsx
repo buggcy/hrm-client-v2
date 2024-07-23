@@ -1,6 +1,11 @@
+import Link from 'next/link';
+
 import { Info, MoveRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { SimpleTooltip } from '@/components/ui/tooltip';
+
+import { useUserQuotasQuery } from '@/hooks/useBilling';
 
 import { RecordingTips } from '../RecordingTips';
 import { useReplicaStore } from '../../hooks';
@@ -8,11 +13,27 @@ import { useReplicaStore } from '../../hooks';
 export const Intro = () => {
   const setActiveStep = useReplicaStore(state => state.setActiveStep);
   const completeStep = useReplicaStore(state => state.completeStep);
+  const { data: quotas, isError } = useUserQuotasQuery();
 
   const handleStart = () => {
     completeStep('intro');
     setActiveStep('consent');
   };
+
+  const isOutOfReplicaQuotas = isError
+    ? false
+    : !(quotas ? quotas.replica?.isAllowed : true);
+
+  const noQuotasTooltipContent = (
+    <p>
+      {"You don't have enough quotas. Please "}
+      <Button asChild variant="link" className="p-0">
+        <Link href="/billing">upgrade your plan</Link>
+      </Button>{' '}
+      to continue.
+    </p>
+  );
+
   return (
     <>
       <div className="relative flex flex-col items-center rounded-md bg-secondary px-13 pb-8 pt-11">
@@ -82,7 +103,16 @@ export const Intro = () => {
 
       <div className="mb-6 mt-auto flex justify-center gap-2">
         <RecordingTips />
-        <Button onClick={handleStart}>Get Started</Button>
+        <SimpleTooltip
+          disabled={!isOutOfReplicaQuotas}
+          tooltipContent={noQuotasTooltipContent}
+        >
+          <div>
+            <Button disabled={isOutOfReplicaQuotas} onClick={handleStart}>
+              Get Started
+            </Button>
+          </div>
+        </SimpleTooltip>
       </div>
     </>
   );

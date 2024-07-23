@@ -13,9 +13,11 @@ import {
 
 import { useReplicasQuery } from '@/hooks';
 
-import { ReplicaCard, useReplicasVideoMute } from '../ReplicaCard';
-import { Card, CardContent } from '../ui/card';
-import { Skeleton } from '../ui/skeleton';
+import {
+  ReplicaCard,
+  SkeletonReplicaCard,
+  useReplicasVideoMute,
+} from '../ReplicaCard';
 
 import { ReplicaStatus, ReplicaType } from '@/types';
 
@@ -55,26 +57,16 @@ export const StockReplicaCarousel: React.FC = () => {
             {isLoading && (
               <>
                 <CarouselItem className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <Card className="rounded-md">
-                    <CardContent className="p-4">
-                      <Skeleton className="aspect-video size-full rounded-md" />
-                    </CardContent>
-                    <div className="flex flex-col gap-3 px-2.5 pb-4">
-                      <Skeleton className="h-8 w-full rounded-md" />
-                      <Skeleton className="h-5 w-full rounded-md" />
-                    </div>
-                  </Card>
+                  <SkeletonReplicaCard />
                 </CarouselItem>
                 <CarouselItem className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <Card className="rounded-md">
-                    <CardContent className="p-4">
-                      <Skeleton className="aspect-video size-full rounded-md" />
-                    </CardContent>
-                    <div className="flex flex-col gap-3 px-2.5 pb-4">
-                      <Skeleton className="h-8 w-full rounded-md" />
-                      <Skeleton className="h-5 w-full rounded-md" />
-                    </div>
-                  </Card>
+                  <SkeletonReplicaCard />
+                </CarouselItem>
+                <CarouselItem className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                  <SkeletonReplicaCard />
+                </CarouselItem>
+                <CarouselItem className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                  <SkeletonReplicaCard />
                 </CarouselItem>
               </>
             )}

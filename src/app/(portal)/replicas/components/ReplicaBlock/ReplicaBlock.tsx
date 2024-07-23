@@ -3,24 +3,11 @@ import Link from 'next/link';
 import { ArrowRightIcon, UserPlusIcon } from 'lucide-react';
 
 import { LoadingButton } from '@/components/LoadingButton';
-import { ReplicaCard } from '@/components/ReplicaCard';
+import { ReplicaCard, SkeletonReplicaCard } from '@/components/ReplicaCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 
 import { IReplica } from '@/types';
-
-const SkeletonReplicaCard = () => (
-  <Card className="rounded-md">
-    <CardContent className="p-4">
-      <Skeleton className="aspect-video size-full rounded-md" />
-    </CardContent>
-    <div className="flex flex-col gap-3 px-2.5 pb-4">
-      <Skeleton className="h-8 w-full rounded-md" />
-      <Skeleton className="h-5 w-full rounded-md" />
-    </div>
-  </Card>
-);
 
 const ReplicaBlock = ({
   title,
@@ -96,7 +83,7 @@ const ReplicaBlock = ({
           ))}
         </div>
       )}
-      {replicas?.length && onLoadMore && (
+      {!!replicas?.length && onLoadMore && (
         <div className="flex justify-center">
           <LoadingButton loading={!!isFetchingNextPage} onClick={onLoadMore}>
             Load More

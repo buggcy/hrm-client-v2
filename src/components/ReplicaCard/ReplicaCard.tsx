@@ -30,6 +30,7 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardFooter } from '../ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Skeleton } from '../ui/skeleton';
 
 import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
 
@@ -89,6 +90,20 @@ const useReplicasVideoMute = () => {
 
 // TODO: add rename functionality
 // TODO: add keyboard support
+
+const SkeletonReplicaCard: React.FC<{ className?: string }> = ({
+  className,
+}) => (
+  <Card className={cn('rounded-md', className)}>
+    <CardContent className="p-4">
+      <Skeleton className="aspect-video size-full rounded-md" />
+    </CardContent>
+    <div className="flex flex-col gap-3 px-2.5 pb-4">
+      <Skeleton className="h-8 w-full rounded-md" />
+      <Skeleton className="h-5 w-full rounded-md" />
+    </div>
+  </Card>
+);
 
 const ReplicaCard = ({
   replica,
@@ -215,7 +230,7 @@ const ReplicaCard = ({
         <div className="relative overflow-hidden rounded-md border bg-secondary">
           <div className="aspect-video size-full">
             {thumbnail_video_url && bgLoading && !error && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center">
                 <Loader className="size-8 animate-spin text-primary" />
               </div>
             )}
@@ -397,4 +412,4 @@ const ReplicaCard = ({
   );
 };
 
-export { ReplicaCard, useReplicasVideoMute };
+export { ReplicaCard, useReplicasVideoMute, SkeletonReplicaCard };

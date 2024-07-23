@@ -98,7 +98,7 @@ const SelectReplicaBlock = ({
             />
           ))}
       </div>
-      {replicas?.length && onLoadMore && (
+      {!!replicas?.length && onLoadMore && (
         <div className="flex justify-center">
           <LoadingButton loading={!!isFetchingNextPage} onClick={onLoadMore}>
             Load More
