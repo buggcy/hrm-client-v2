@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { ApiCode, HttpMethods } from '@/components/Code';
+import { URLS } from '@/components/CopyApiUrl';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -12,6 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+
+import { RQH_API_BASE_URL } from '@/constants';
 
 import { useReplicaStore, VideoMethod } from '../../hooks';
 
@@ -58,7 +61,7 @@ export const CodeDialog: React.FC<{ children: React.ReactNode }> = ({
         </DialogHeader>
         <div className="flex w-full">
           <ApiCode
-            url={'test'}
+            url={`${RQH_API_BASE_URL}${URLS.replica}`}
             method={HttpMethods.POST}
             body={body}
             className="w-full"

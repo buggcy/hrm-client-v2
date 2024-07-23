@@ -197,14 +197,14 @@ const ReplicaCard = ({
     void deleteReplica(replica_id);
   };
 
-  const [preload, setPreload] = useState<'none' | 'auto'>('none');
+  const [preload, setPreload] = useState<'none' | 'metadata'>('none');
   useEffect(() => {
     if (!videoRef.current) return;
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            setPreload('auto');
+            setPreload('metadata');
           }
         });
       },
@@ -230,7 +230,7 @@ const ReplicaCard = ({
         <div className="relative overflow-hidden rounded-md border bg-secondary">
           <div className="aspect-video size-full">
             {thumbnail_video_url && bgLoading && !error && (
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-secondary">
                 <Loader className="size-8 animate-spin text-primary" />
               </div>
             )}
@@ -239,7 +239,6 @@ const ReplicaCard = ({
               status === ReplicaStatus.COMPLETED && (
                 <video
                   ref={videoRef}
-                  src={thumbnail_video_url}
                   className="aspect-video size-full rounded-md bg-black object-contain"
                   muted={isMuted}
                   loop
@@ -247,7 +246,9 @@ const ReplicaCard = ({
                   onError={() => setError(true)}
                   onLoadedData={() => setBgLoading(false)}
                   crossOrigin="anonymous"
-                />
+                >
+                  <source src={thumbnail_video_url} type="video/mp4" />
+                </video>
               )}
 
             {error && (

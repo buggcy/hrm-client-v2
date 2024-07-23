@@ -9,6 +9,15 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Dropzone } from '@/components/ui/dropzone';
 import {
   Form,
@@ -20,7 +29,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/components/ui/use-toast';
+import { toast, useToast } from '@/components/ui/use-toast';
 
 import { getVideoDuration, portalApi } from '@/utils';
 
@@ -34,7 +43,7 @@ const FormSchema = z.object({
   urlValue: z.string().url({ message: 'Enter a valid URL' }),
 });
 
-import { AxiosProgressEvent } from 'axios';
+import { AxiosError, AxiosProgressEvent } from 'axios';
 
 import { ReplicaModel, useCreateReplicaMutation } from '@/hooks';
 
@@ -120,7 +129,25 @@ const useSubmitReplica = () => {
     data: createdReplica,
     mutate: createReplica,
     isPending: isSubmitLoading,
-  } = useCreateReplicaMutation();
+  } = useCreateReplicaMutation({
+    onError: error => {
+      if ((error as unknown as AxiosError)?.response?.status === 402) {
+        // TODO: show dialog on 402
+        toast({
+          variant: 'error',
+          title: 'Out of Quotas (402)',
+          description:
+            "You don't have enough quotas. Please check your billing account. If problem persists, please contact support.",
+        });
+      } else {
+        toast({
+          variant: 'error',
+          title: "Error while creating replica. Couldn't start train replica",
+          description: error.message,
+        });
+      }
+    },
+  });
 
   const consentFileValue = useMemo(() => {
     if (consentMethod === VideoMethod.UPLOAD && consentFile?.file) {
@@ -190,6 +217,7 @@ const Upload = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
   const errorIdRef = useRef<string>();
   const { toast, dismiss } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -255,6 +283,7 @@ const Upload = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
   };
 
   const handleConfirm = () => {
+    setOpen(false);
     completeStep('training');
     void onSubmit();
   };
@@ -279,12 +308,32 @@ const Upload = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
 
   return (
     <div className="size-full flex-1">
+      {/*  TODO: move to the separate component */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold">
+              Ready to Submit Your Replica?
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Please review your video before submitting. Once submitted, you
+              won’t be able to make any changes.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-end">
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button onClick={handleConfirm}>Submit</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {url || trainingURL ? (
         <VideoPreview
           url={url || trainingURL!}
           onDelete={handleDelete}
           checkTitle="Confirm these training video requirements"
-          onConfirm={handleConfirm}
+          onConfirm={() => setOpen(true)}
         />
       ) : (
         <Dropzone
