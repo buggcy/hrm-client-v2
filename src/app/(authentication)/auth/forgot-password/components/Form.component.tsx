@@ -1,5 +1,7 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -38,11 +40,12 @@ const useResetPasswordMutation = () =>
   });
 
 export function ResetPasswordForm() {
+  const searchParams = useSearchParams();
   const { mutate, isPending } = useResetPasswordMutation();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: '',
+      email: searchParams.get('email') ?? '',
     },
   });
 

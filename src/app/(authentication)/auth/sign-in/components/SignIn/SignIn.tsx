@@ -41,7 +41,6 @@ const SignIn: FC = () => {
           variant="outline"
           className="w-full"
           disabled={isPending}
-          /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
           // @ts-expect-error
           onClick={handleSignInWithGoogle}
         >

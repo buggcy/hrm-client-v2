@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -20,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
-import { PasswordInput } from '@/app/(authentication)/auth/components/PasswordInput';
+import { PasswordInput } from '@/app/(authentication)/auth/sign-in/components/PasswordInput';
 import { signInWithEmailAndPassword } from '@/services';
 
 const FormSchema = z.object({
@@ -33,6 +34,7 @@ const FormSchema = z.object({
 });
 
 export function SignInForm() {
+  const searchParams = useSearchParams();
   const { mutate, isPending } = useMutation({
     mutationFn: signInWithEmailAndPassword,
     onError: () => {
@@ -48,7 +50,7 @@ export function SignInForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: '',
+      email: searchParams.get('email') ?? '',
       password: '',
     },
   });

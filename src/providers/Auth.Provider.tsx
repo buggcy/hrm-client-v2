@@ -5,9 +5,8 @@ import { usePathname } from 'next/navigation';
 
 import { onAuthStateChanged } from 'firebase/auth';
 
+import { SignIn } from '@/app/(authentication)/auth/sign-in/components/SignIn';
 import { firebaseAuth } from '@/libs';
-
-import { SignIn } from '../app/(authentication)/auth/components/SignIn';
 
 import { ParentReactNode } from '@/types';
 

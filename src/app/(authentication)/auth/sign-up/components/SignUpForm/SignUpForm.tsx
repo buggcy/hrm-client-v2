@@ -1,5 +1,7 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { useMutation } from '@tanstack/react-query';
@@ -19,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
-import { PasswordInput } from '@/app/(authentication)/auth/components/PasswordInput';
+import { PasswordInput } from '@/app/(authentication)/auth/sign-in/components/PasswordInput';
 import { signUpWithEmailAndPassword } from '@/services';
 
 const FormSchema = z.object({
@@ -44,6 +46,7 @@ const FormSchema = z.object({
 });
 
 export function SignUpForm() {
+  const searchParams = useSearchParams();
   const { mutate, isPending } = useMutation({
     mutationFn: signUpWithEmailAndPassword,
     onSuccess: () => {
@@ -65,7 +68,7 @@ export function SignUpForm() {
     defaultValues: {
       firstName: '',
       lastName: '',
-      email: '',
+      email: searchParams.get('email') ?? '',
       password: '',
     },
   });
