@@ -6,6 +6,7 @@ import {
   Check,
   Copy,
   InfoIcon,
+  Loader,
   MoreHorizontal,
   Scaling,
   Trash2,
@@ -120,7 +121,7 @@ const ReplicaCard = ({
     textToCopy: replica_id,
   });
   const [error, setError] = useState(false);
-
+  const [bgLoading, setBgLoading] = useState(true);
   const {
     mutate: deleteReplica,
     isPending,
@@ -213,19 +214,26 @@ const ReplicaCard = ({
       <CardContent className="p-2.5 pb-4">
         <div className="relative overflow-hidden rounded-md border bg-secondary">
           <div className="aspect-video size-full">
+            {thumbnail_video_url && bgLoading && !error && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center">
+                <Loader className="size-8 animate-spin text-primary" />
+              </div>
+            )}
             {!error &&
               thumbnail_video_url &&
               status === ReplicaStatus.COMPLETED && (
                 <video
                   ref={videoRef}
                   src={thumbnail_video_url}
-                  className="aspect-video size-full rounded-md bg-black object-contain content-visibility-auto"
+                  className="aspect-video size-full rounded-md bg-black object-contain"
                   muted={isMuted}
                   loop
                   preload={preload}
                   onError={() => setError(true)}
+                  onLoadedData={() => setBgLoading(false)}
                 />
               )}
+
             {error && (
               <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
                 <p className="text-sm text-destructive/80">

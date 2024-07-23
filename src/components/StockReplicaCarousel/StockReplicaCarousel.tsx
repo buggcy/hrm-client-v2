@@ -17,10 +17,9 @@ import { ReplicaCard, useReplicasVideoMute } from '../ReplicaCard';
 import { Card, CardContent } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
 
-import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
+import { ReplicaStatus, ReplicaType } from '@/types';
 
 export const StockReplicaCarousel: React.FC = () => {
-  // TODO: ADD query param when it will be implemented and remove useMemo
   const { data: replicas, isLoading } = useReplicasQuery({
     queryParams: {
       limit: 10,
@@ -30,16 +29,11 @@ export const StockReplicaCarousel: React.FC = () => {
   });
   const { isMuted, toggleMute, onMuteChange } = useReplicasVideoMute();
 
-  const studioReplicas: IReplica[] | undefined = useMemo(() => {
-    return (
-      // @ts-expect-error
-      replicas?.pages
-        // @ts-expect-error
-        ?.map(page => page.data)
-        ?.flat()
-        // @ts-expect-error
-        ?.filter(replica => replica.status === ReplicaStatus.COMPLETED)
-    );
+  const studioReplicas = useMemo(() => {
+    return replicas?.pages
+      ?.map(page => page.data)
+      ?.flat()
+      ?.filter(replica => replica.status === ReplicaStatus.COMPLETED);
   }, [replicas]);
 
   return (

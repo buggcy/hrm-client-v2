@@ -80,12 +80,10 @@ export default function ReplicasPage() {
   };
 
   const stockReplicasData = useMemo(() => {
-    // @ts-expect-error
     return stockReplicas?.pages?.map(page => page.data).flat();
   }, [stockReplicas]);
 
   const personalReplicasData = useMemo(() => {
-    // @ts-expect-error
     return personalReplicas?.pages?.map(page => page.data).flat();
   }, [personalReplicas]);
 

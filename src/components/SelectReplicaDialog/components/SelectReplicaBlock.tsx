@@ -97,14 +97,14 @@ const SelectReplicaBlock = ({
               selected={selectedReplicaId === replica.replica_id}
             />
           ))}
-        {replicas?.length && onLoadMore && (
-          <div className="flex justify-center">
-            <LoadingButton loading={!!isFetchingNextPage} onClick={onLoadMore}>
-              Load More
-            </LoadingButton>
-          </div>
-        )}
       </div>
+      {replicas?.length && onLoadMore && (
+        <div className="flex justify-center">
+          <LoadingButton loading={!!isFetchingNextPage} onClick={onLoadMore}>
+            Load More
+          </LoadingButton>
+        </div>
+      )}
     </div>
   );
 };

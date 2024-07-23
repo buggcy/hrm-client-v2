@@ -37,7 +37,7 @@ export const useReplicasQuery = ({
   queryParams,
   ...config
 }: UseReplicaQueryParams = {}) =>
-  useInfiniteQuery({
+  useInfiniteQuery<IReplicasResponse, Error>({
     queryKey: ['replicas', queryParams],
     queryFn: ({ pageParam }) =>
       getReplicas({ ...queryParams, page: pageParam }).then(data => {
@@ -48,11 +48,12 @@ export const useReplicasQuery = ({
       }),
     initialPageParam: 1,
     getNextPageParam: (data, _, lastPageParam) => {
-      if (data?.data?.length) {
+      if (data?.data?.length >= 10) {
         const last = typeof lastPageParam === 'number' ? lastPageParam : 1;
         return last + 1;
       }
       return undefined;
     },
     ...config,
+    select: undefined,
   });

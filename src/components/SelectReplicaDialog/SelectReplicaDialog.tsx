@@ -16,7 +16,7 @@ import { SelectReplicaDialogProps } from './types';
 import { useReplicasVideoMute } from '../ReplicaCard';
 import { Button } from '../ui/button';
 
-import { IReplica, ReplicaType } from '@/types';
+import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
 const LIMIT = 10;
 
 const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
@@ -78,13 +78,14 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
   };
 
   const stockReplicasData = useMemo(() => {
-    // @ts-expect-error
     return stockReplicas?.pages?.map(page => page.data).flat();
   }, [stockReplicas]);
 
   const personalReplicasData = useMemo(() => {
-    // @ts-expect-error
-    return personalReplicas?.pages?.map(page => page.data).flat();
+    return personalReplicas?.pages
+      ?.map(page => page.data)
+      ?.flat()
+      ?.filter(replica => replica.status === ReplicaStatus.COMPLETED);
   }, [personalReplicas]);
 
   const handleLoadMoreStock = () => {
