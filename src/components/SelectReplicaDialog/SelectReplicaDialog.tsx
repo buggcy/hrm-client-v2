@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -105,7 +106,9 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
         <div className="relative inset-0 overflow-hidden">
           <div className="flex size-full flex-col gap-6 overflow-auto p-6 pb-20">
             <DialogHeader className="border-b pb-4">
-              <h3 className="text-xl font-semibold">Pick a Replica</h3>
+              <DialogTitle className="text-xl font-semibold">
+                Pick a Replica
+              </DialogTitle>
             </DialogHeader>
             <Tabs defaultValue="all">
               <TabsList className="mb-6">

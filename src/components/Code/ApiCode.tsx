@@ -126,7 +126,9 @@ const createCodeSnippet = ({
       return 'In progress...';
   }
 };
+
 const PERSIST_STATE_KEY = 'ApiCodePreviewLanguage';
+
 export const ApiCode = ({
   url,
   method,

@@ -14,9 +14,9 @@ import {
   Info,
   Loader,
   Loader2,
+  RotateCcw,
   Trash2,
   TriangleAlert,
-  Undo2,
   Video,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +39,7 @@ import {
   AccordionTriggerLeftArrow,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -295,18 +295,58 @@ const BackgroundInput = () => {
     </div>
   );
 };
+
+const ClearFormButton = (props: ButtonProps) => {
+  const store = useVideoGenerateFormStore();
+  const filesStore = useVideoGenerateFilesStore();
+
+  const isDirty =
+    store.name ||
+    store.callbackUrl ||
+    store.audioUrl ||
+    store.script ||
+    store.backgroundUrl ||
+    store.backgroundSourceUrl ||
+    filesStore.background ||
+    filesStore.audio;
+
+  if (!isDirty) return null;
+
+  const onClickClearForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    store.set({
+      name: '',
+      script: '',
+      audioUrl: '',
+      callbackUrl: '',
+      backgroundUrl: '',
+      backgroundSourceUrl: '',
+    });
+    filesStore.set({
+      audio: null,
+      background: null,
+    });
+  };
+
+  return (
+    <SimpleTooltip tooltipContent="Clear Form">
+      <Button type="button" onClick={onClickClearForm} {...props}>
+        <RotateCcw className="size-5" />
+      </Button>
+    </SimpleTooltip>
+  );
+};
+
 const AdvancedSettingsInputs = () => {
-  const [name, callbackUrl, isAdvancedSettingsOpen, set, withBackground] =
+  const [name, callbackUrl, isAdvancedSettingsOpen, set] =
     useVideoGenerateFormStore(
       useShallow(store => [
         store.name,
         store.callbackUrl,
         store.isAdvancedSettingsOpen,
         store.set,
-        store.withBackground,
       ]),
     );
-  const setFiles = useVideoGenerateFilesStore(state => state.set);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     set({ [event.target.name]: event.target.value });
   };
@@ -320,23 +360,6 @@ const AdvancedSettingsInputs = () => {
     set({ isAdvancedSettingsOpen: value === 'true' });
   };
 
-  const isAdvanceFormDirty = name || callbackUrl || withBackground;
-
-  const onClickClearForm = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    set({
-      name: '',
-      callbackUrl: '',
-      withBackground: false,
-      backgroundType: VideoBackgroundType.WEBSITE_URL,
-      backgroundUrl: '',
-      backgroundSourceUrl: '',
-    });
-    setFiles({
-      background: null,
-    });
-  };
-
   return (
     <Accordion
       type="single"
@@ -348,18 +371,7 @@ const AdvancedSettingsInputs = () => {
       <AccordionItem value="true" className="h-full rounded border">
         <AccordionTriggerLeftArrow className="h-16 p-4 !ring-primary hover:text-primary hover:no-underline">
           Advanced settings
-          {isAdvancedSettingsOpen && isAdvanceFormDirty && (
-            <SimpleTooltip tooltipContent="Clear Form">
-              <Button
-                variant="ghost"
-                type="button"
-                className="-mr-2 ml-auto"
-                onClick={onClickClearForm}
-              >
-                <Undo2 className="size-4" />
-              </Button>
-            </SimpleTooltip>
-          )}
+          <ClearFormButton variant="ghost" className="-mr-2 ml-auto" />
         </AccordionTriggerLeftArrow>
         <AccordionContent className="flex h-full flex-col gap-4 p-4 pt-0">
           <div>
