@@ -73,6 +73,7 @@ export const VideoPreview: React.FC<{
             onError={() => {
               setError(true);
             }}
+            crossOrigin="anonymous"
           />
         ) : (
           <div className="flex size-full flex-col items-center justify-center gap-2 bg-secondary">

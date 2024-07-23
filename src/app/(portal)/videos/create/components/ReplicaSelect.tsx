@@ -38,6 +38,7 @@ export const ReplicaSelect = () => {
             <video
               src={selectedReplica?.thumbnail_video_url as string}
               className="absolute z-20 aspect-square size-full object-cover"
+              crossOrigin="anonymous"
             />
             <Loader className="absolute z-10 size-5 animate-spin" />
           </Avatar>

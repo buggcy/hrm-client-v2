@@ -516,6 +516,7 @@ const Preview = () => {
               className="aspect-video h-[inherit] rounded"
               preload="auto"
               src={data?.thumbnail_video_url as string}
+              crossOrigin="anonymous"
             />
           </div>
         </>

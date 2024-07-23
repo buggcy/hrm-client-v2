@@ -246,6 +246,7 @@ const ReplicaCard = ({
                   preload={preload}
                   onError={() => setError(true)}
                   onLoadedData={() => setBgLoading(false)}
+                  crossOrigin="anonymous"
                 />
               )}
 
