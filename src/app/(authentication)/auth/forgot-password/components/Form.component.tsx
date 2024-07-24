@@ -35,6 +35,7 @@ const useResetPasswordMutation = () =>
       toast({
         title:
           'Password reset email sent successfully. Please check your inbox.',
+        variant: 'success',
       });
     },
   });

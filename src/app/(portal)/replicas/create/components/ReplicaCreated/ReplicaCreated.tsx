@@ -3,11 +3,15 @@ import Link from 'next/link';
 import { CheckIcon } from 'lucide-react';
 import Confetti from 'react-confetti';
 
+import { toggleIntercom } from '@/components/Intercom';
 import { Button } from '@/components/ui/button';
 
 import { CodeDialog } from '../CodeDialog';
 
 export const ReplicaCreated = () => {
+  const handleClick = () => {
+    toggleIntercom();
+  };
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-8">
       <Confetti recycle={false} numberOfPieces={600} />
@@ -21,9 +25,9 @@ export const ReplicaCreated = () => {
         <p className="mb-8 text-sm font-medium text-muted-foreground">
           Your replica will be created within 3-4 hours. If you have any
           questions, please contact{' '}
-          <a href="mailto:developer-support@tavus.io" className="underline">
-            developer-support@tavus.io
-          </a>
+          <button onClick={handleClick} className="underline">
+            support
+          </button>
           .
         </p>
         <div className="flex items-center justify-center gap-4">

@@ -98,7 +98,7 @@ export const StepList = () => {
   );
 
   return (
-    <Card className="flex rounded-md p-6">
+    <Card className="hidden rounded-md p-6 lg:flex">
       <div className="flex w-full flex-1">
         <Accordion
           // to collapse the accordion

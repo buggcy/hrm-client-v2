@@ -17,7 +17,11 @@ export const useAudio = (url: string) => {
     if (isPlaying)
       audioRef.current.play().catch(() => {
         setIsPlaying(false);
-        toast({ title: 'Error', description: 'Failed to play audio' });
+        toast({
+          title: 'Error',
+          description: 'Failed to play audio',
+          variant: 'error',
+        });
       });
     else audioRef.current.pause();
   }, [isPlaying, toast]);

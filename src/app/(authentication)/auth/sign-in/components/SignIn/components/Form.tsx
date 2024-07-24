@@ -42,7 +42,7 @@ export function SignInForm() {
         // TODO: show correct error message
         title:
           'Sign-in unsuccessful. Please verify your username and password. If the issue persists, try resetting your password or contact our support team at support@example.com for assistance.',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

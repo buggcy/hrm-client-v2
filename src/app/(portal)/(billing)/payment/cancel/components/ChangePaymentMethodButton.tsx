@@ -20,6 +20,7 @@ export const ChangePaymentMethodButton = ({
       toast({
         description:
           'Failed to create a new payment session. Please try again later or contact support.',
+        variant: 'error',
       });
     }
   };

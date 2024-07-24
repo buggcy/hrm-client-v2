@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 
 import { useVideoGenerateFormStore } from '@/app/(portal)/videos/create/hooks';
 import { useReplicaQuery } from '@/hooks';
+import { createReplicaThumbnailUrl } from '@/utils';
 
 import { DEFAULT_REPLICA } from '../constants';
 
@@ -36,7 +37,9 @@ export const ReplicaSelect = () => {
         >
           <Avatar className="mr-2 flex size-8 items-center justify-center overflow-hidden text-center">
             <video
-              src={selectedReplica?.thumbnail_video_url as string}
+              src={createReplicaThumbnailUrl(
+                selectedReplica?.thumbnail_video_url,
+              )}
               className="absolute z-20 aspect-square size-full object-cover"
               crossOrigin="anonymous"
             />

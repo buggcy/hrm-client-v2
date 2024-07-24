@@ -43,6 +43,10 @@ function Pagination({
     }
   }, [currentPage, totalPages]);
 
+  if (total <= perPage) {
+    return null;
+  }
+
   return (
     <PaginationComponent>
       <PaginationContent>

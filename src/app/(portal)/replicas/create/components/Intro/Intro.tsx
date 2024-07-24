@@ -54,7 +54,9 @@ export const Intro = () => {
         <div className="mt-16 grid w-full max-w-screen-md grid-cols-[1fr_minmax(0.25rem,_3.25rem)_1fr_minmax(0.25rem,_3.25rem)_1fr] justify-between gap-2">
           <div className="relative flex aspect-[1.27] items-center justify-center rounded-lg border bg-background shadow-md">
             <div className="absolute -top-4 rounded-md border border-border bg-white/20 px-2 text-center backdrop-blur-sm">
-              <span className="text-sm font-semibold">Consent Video</span>
+              <span className="text-xs font-semibold xl:text-sm">
+                Consent Video
+              </span>
             </div>
             <img src="/images/fileCheck.svg" alt="Consent Video" />
           </div>
@@ -64,7 +66,9 @@ export const Intro = () => {
           </div>
           <div className="relative flex aspect-[1.27] items-center justify-center rounded-lg border bg-background shadow-md">
             <div className="absolute -top-4 rounded-md border border-border bg-white/20 px-2 text-center backdrop-blur-sm">
-              <span className="text-sm font-semibold">Training Video</span>
+              <span className="text-xs font-semibold xl:text-sm">
+                Training Video
+              </span>
             </div>
             <img src="/images/webcam.svg" alt="Training Video" />
           </div>
@@ -75,7 +79,9 @@ export const Intro = () => {
 
           <div className="relative flex aspect-[1.27] items-center justify-center rounded-lg border bg-background shadow-md">
             <div className="absolute -top-4 rounded-md border border-border bg-white/20 px-2 text-center backdrop-blur-sm">
-              <span className="text-sm font-semibold">Your Replica</span>
+              <span className="text-xs font-semibold xl:text-sm">
+                Your Replica
+              </span>
             </div>
             <img
               src="/images/replicaCircle.svg"

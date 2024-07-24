@@ -58,7 +58,7 @@ export function SignUpForm() {
     onError: () => {
       toast({
         title: 'An error occurred while signing up.',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

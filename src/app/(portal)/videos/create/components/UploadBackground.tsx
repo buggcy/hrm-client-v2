@@ -45,6 +45,7 @@ const BackgroundUrlInput = () => {
       return toast({
         title: 'Invalid URL',
         description: 'Please enter a valid URL',
+        variant: 'error',
       });
 
     set({ backgroundSourceUrl: value });

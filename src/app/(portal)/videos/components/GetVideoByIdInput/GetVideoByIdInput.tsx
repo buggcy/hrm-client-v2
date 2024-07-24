@@ -33,7 +33,7 @@ export const GetVideoByIdInput = () => {
       toast({
         title: 'Invalid video ID',
         description: 'Please enter a valid video ID',
-        variant: 'destructive',
+        variant: 'error',
       });
       return;
     }
@@ -47,7 +47,7 @@ export const GetVideoByIdInput = () => {
       toast({
         title: 'Video not found',
         description: 'Please enter a valid video ID',
-        variant: 'destructive',
+        variant: 'error',
       });
     }
   };

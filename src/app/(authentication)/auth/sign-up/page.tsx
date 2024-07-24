@@ -21,7 +21,7 @@ const SignUp: FC = () => {
     onError: () => {
       toast({
         title: 'An error occurred while signing up with Google.',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

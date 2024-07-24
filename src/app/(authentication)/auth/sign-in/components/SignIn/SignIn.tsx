@@ -20,7 +20,7 @@ const SignIn: FC = () => {
     onError: () => {
       toast({
         title: 'An error occurred while signing in with Google.',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

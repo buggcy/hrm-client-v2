@@ -10,15 +10,15 @@ const VideoRecorderComponent = () => {
 
   const onStopRecording = useCallback(
     (blob: Blob) => {
+      const ext = blob.type.split('/')[1];
       const data: Parameters<typeof set>[0] = {
         consentRecordFile: {
-          file: new File([blob], `${Date.now()}consent.webm`, {
+          file: new File([blob], `${Date.now()}consent.${ext}`, {
             type: blob.type,
           }),
           url: URL.createObjectURL(blob),
         },
       };
-
       set(data);
     },
     [set],

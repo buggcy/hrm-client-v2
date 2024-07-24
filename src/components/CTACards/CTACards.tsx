@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 const CTA_CONFIG = [
   {
     title: 'Create Video',
-    description: 'Generate a video from a replica',
+    description: 'Generate a video with a replica',
     icon: Video,
     bg: 'bg-[linear-gradient(36deg,_#F57FC6_0%,_#A907A2_182.27%)]',
     href: '/videos/create',

@@ -166,7 +166,7 @@ export default function ApiKeysPage() {
               </div>
             )}
           </CardContent>
-          <CardFooter className="flex items-center justify-between">
+          <CardFooter className="flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
             {!!apiKeys?.rows?.length && (
               <>
                 <div className="text-xs text-muted-foreground">

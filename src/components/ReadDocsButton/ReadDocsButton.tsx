@@ -20,7 +20,7 @@ export const ReadDocsButton: React.FC<{
   className?: string;
 }> = ({ to, className }) => {
   return (
-    <Button variant="outline" className={cn('ml-auto', className)}>
+    <Button variant="outline" className={cn('ml-auto', className)} asChild>
       <a target="_blank" rel="noopener noreferrer" href={DOCS_ROUTES[to]}>
         Read Docs
       </a>

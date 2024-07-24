@@ -253,7 +253,7 @@ const BillingPlansCardsList: React.FC = () => {
     } catch (_e) {
       const e = _e as AxiosError;
       toast({
-        variant: 'destructive',
+        variant: 'error',
         title: 'Error',
         description:
           e.response?.status === 409
@@ -313,6 +313,7 @@ const UpdateBillingPlansList: React.FC = () => {
       toast({
         title: 'Processing',
         description: 'We are updating your subscription. Please wait. 🚀',
+        variant: 'progress',
       });
     },
   });
@@ -457,7 +458,7 @@ const CancelButton = () => {
     },
     onError: () => {
       toast({
-        variant: 'destructive',
+        variant: 'error',
         title: 'Error',
         description:
           'Oh no! Something went wrong. Please try again later. If the problem persists, contact support.',

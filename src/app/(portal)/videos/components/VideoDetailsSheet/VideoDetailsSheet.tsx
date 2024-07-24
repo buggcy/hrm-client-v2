@@ -54,7 +54,7 @@ const VideoDetailsSheet: FC<VideoDetailsSheetProps> = ({
         <Content
           className={cn(
             sheetVariants({ side: 'right' }),
-            'bottom-2 right-2 top-2 flex h-auto w-[460px] flex-col gap-4 overflow-auto rounded-md p-4 sm:max-w-[460px]',
+            'bottom-2 right-2 top-2 flex h-auto w-[calc(100%-1rem)] flex-col gap-4 overflow-auto rounded-md p-4 sm:w-[460px] sm:max-w-[460px]',
           )}
         >
           {isLoading && (

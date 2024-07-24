@@ -96,7 +96,7 @@ export default function ReplicasPage() {
   return (
     <Layout>
       <LayoutHeader title={'Replica Library'}>
-        <CopyApiUrl type="GET" url="replica" />
+        <CopyApiUrl type="GET" url="replica" className="hidden sm:flex" />
         <LayoutHeaderButtonsBlock>
           <ReadDocsButton to="replicaLibrary" />
           <Button asChild>

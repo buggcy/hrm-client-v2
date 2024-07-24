@@ -40,7 +40,7 @@ const RESOURCES = [
     id: 'api',
     icon: Code2,
     title: 'Get started with the API',
-    description: 'Discover how to begin using the Tavus API.',
+    description: 'Intuitive docs and APIs make it easy.',
     linkTitle: 'Read Docs',
     href: API_DOCS_LINK,
   },
@@ -58,8 +58,7 @@ const RESOURCES = [
     id: 'discord',
     icon: DiscordLogo,
     title: 'Join community',
-    description:
-      'Connect with our developer community to discuss topics and ask questions.',
+    description: 'Connect with our developer community.',
     linkTitle: 'Join Discord',
     href: DISCORD_LINK,
   },

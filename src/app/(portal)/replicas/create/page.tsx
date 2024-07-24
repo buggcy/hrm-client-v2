@@ -37,7 +37,7 @@ export default function ReplicaCreatePage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1" className="max-w-full">
-        <div className="grid h-full grid-cols-[19.125rem,1fr] gap-6">
+        <div className="grid h-full grid-cols-1 gap-6 lg:grid-cols-[19.125rem,1fr]">
           <StepList />
           <Card className="flex w-full flex-col gap-4 rounded-md p-6">
             {activeStep === 'intro' && <Intro />}

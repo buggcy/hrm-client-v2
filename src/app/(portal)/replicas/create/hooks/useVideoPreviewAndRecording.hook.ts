@@ -59,6 +59,16 @@ interface UseVideoPreviewAndRecordingResult {
   cancelRecording: () => void;
 }
 
+const getSupportedVideoTypeAndExtension = (): [string, string] => {
+  const videoTypes = ['video/webm', 'video/mp4', 'video/quicktime'] as const;
+  for (const type of videoTypes) {
+    if (MediaRecorder.isTypeSupported(type)) {
+      return [type, type.split('/')[1]];
+    }
+  }
+  throw new Error('No supported video type found');
+};
+
 export const useVideoPreviewAndRecording = ({
   onStopRecording,
 }: UseVideoPreviewAndRecordingProps): UseVideoPreviewAndRecordingResult => {
@@ -127,7 +137,10 @@ export const useVideoPreviewAndRecording = ({
     if (!stream) return;
 
     recordedChunksRef.current = [];
-    const mediaRecorder = new MediaRecorder(stream);
+    const [mimeType] = getSupportedVideoTypeAndExtension();
+    const mediaRecorder = new MediaRecorder(stream, {
+      mimeType: mimeType,
+    });
 
     mediaRecorder.ondataavailable = (event: BlobEvent) => {
       if (event.data.size > 0) {
@@ -141,7 +154,7 @@ export const useVideoPreviewAndRecording = ({
         return;
       }
       const recordedBlob = new Blob(recordedChunksRef.current, {
-        type: 'video/webm',
+        type: mimeType,
       });
       onStopRecording(recordedBlob);
     };

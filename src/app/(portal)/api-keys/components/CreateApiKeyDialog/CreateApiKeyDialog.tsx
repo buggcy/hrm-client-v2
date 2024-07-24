@@ -77,6 +77,7 @@ export function CreateApiKeyDialog({
     onError: () => {
       toast({
         title: 'Failed to create API key',
+        variant: 'error',
       });
     },
   });

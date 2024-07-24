@@ -62,8 +62,7 @@ export const DeleteVideoBtn: FC<{
         <DialogHeader>
           <DialogTitle>Confirm delete</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            You will no longer be able to access this video.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

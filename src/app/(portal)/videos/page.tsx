@@ -98,7 +98,7 @@ export default function VideosPage() {
   return (
     <Layout>
       <LayoutHeader title={'Video Library'}>
-        <CopyApiUrl type="GET" url="video" />
+        <CopyApiUrl type="GET" url="video" className="hidden sm:flex" />
         <LayoutHeaderButtonsBlock>
           <ReadDocsButton to="videoLibrary" />
           <Button asChild>
@@ -174,7 +174,7 @@ export default function VideosPage() {
                             }
                           }}
                           key={video_id}
-                          className="group rounded-lg border-none outline-offset-[-1px] outline-border hover:bg-transparent hover:outline"
+                          className="group cursor-pointer rounded-lg border-none outline-offset-[-1px] outline-border hover:bg-transparent hover:outline"
                           onClick={() => onOpenChange(video_id)}
                         >
                           <TableCell className="hidden p-2 lg:table-cell">
@@ -242,7 +242,7 @@ export default function VideosPage() {
             </div>
           </CardContent>
           {!!videos?.total_count && (
-            <CardFooter className="flex items-center justify-between">
+            <CardFooter className="flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <div className="text-xs text-muted-foreground">
                 Showing{' '}
                 <strong>

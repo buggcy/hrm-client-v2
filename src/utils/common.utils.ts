@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { ParseParams, z } from 'zod';
 
+import { IReplica } from '@/types';
+
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 export const schemaParse =
@@ -24,4 +26,10 @@ export function getFilenameFromUrl(url: string) {
   const filename = cleanUrl.split('/').pop() || '';
 
   return decodeURIComponent(filename);
+}
+
+export function createReplicaThumbnailUrl(
+  url?: IReplica['thumbnail_video_url'],
+) {
+  return url ? `${url}#t=1` : '';
 }

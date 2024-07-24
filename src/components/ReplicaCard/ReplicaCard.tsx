@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/tooltip';
 
 import { useCopyToClipboard, useDeleteReplicaMutation } from '@/hooks';
-import { cn } from '@/utils';
+import { cn, createReplicaThumbnailUrl } from '@/utils';
 
 import { DeleteDialog } from '../DeleteDialog';
 import { Badge } from '../ui/badge';
@@ -247,7 +247,10 @@ const ReplicaCard = ({
                   onLoadedData={() => setBgLoading(false)}
                   crossOrigin="anonymous"
                 >
-                  <source src={thumbnail_video_url} type="video/mp4" />
+                  <source
+                    src={createReplicaThumbnailUrl(thumbnail_video_url)}
+                    type="video/mp4"
+                  />
                 </video>
               )}
 
@@ -373,7 +376,7 @@ const ReplicaCard = ({
                       isLoading={isPending}
                       isSuccess={isSuccess}
                       onDelete={handleDelete}
-                      description="This action cannot be undone. This will permanently delete your replica."
+                      description="You will no longer be able to access this replica."
                     >
                       <Button
                         variant="destructive-inverted"

@@ -26,13 +26,14 @@ export function DeleteApiKeyDialog({
       void queryClient.refetchQueries({ queryKey: ['api-keys'] });
       toast({
         title: 'API key deleted',
+        variant: 'success',
       });
       onClose();
     },
     onError: () => {
       toast({
         title: 'Failed to delete API key',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

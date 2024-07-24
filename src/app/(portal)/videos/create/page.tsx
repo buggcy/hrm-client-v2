@@ -72,7 +72,13 @@ import {
 } from '@/hooks';
 import { useUserQuotasQuery } from '@/hooks/useBilling';
 import { queryClient } from '@/libs';
-import { cn, getFilenameFromUrl, portalApi, schemaParse } from '@/utils';
+import {
+  cn,
+  createReplicaThumbnailUrl,
+  getFilenameFromUrl,
+  portalApi,
+  schemaParse,
+} from '@/utils';
 
 import { AudioInput } from './components/AudioInput';
 import { ScriptInput } from './components/ScriptInput';
@@ -500,7 +506,7 @@ const Preview = () => {
     <div className="pointer-events-none relative flex h-full items-center justify-center overflow-hidden rounded">
       {hasBackgroundPreview ? (
         <VideoWithBackground
-          src={data?.thumbnail_video_url as string}
+          src={createReplicaThumbnailUrl(data?.thumbnail_video_url)}
           backgroundSrc={backgroundSrc as string}
           noBackgroundContent={
             backgroundType === VideoBackgroundType.WEBSITE_URL
@@ -515,7 +521,7 @@ const Preview = () => {
             <video
               className="aspect-video h-[inherit] rounded"
               preload="auto"
-              src={data?.thumbnail_video_url as string}
+              src={createReplicaThumbnailUrl(data?.thumbnail_video_url)}
               crossOrigin="anonymous"
             />
           </div>
@@ -914,6 +920,7 @@ export default function VideoCreatePage() {
         toast({
           title: 'Error',
           description: message,
+          variant: 'error',
         });
 
         if (

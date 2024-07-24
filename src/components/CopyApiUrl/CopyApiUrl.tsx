@@ -13,12 +13,17 @@ export const URLS = {
   replica: '/v2/replicas',
 };
 
-const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id }) => {
+const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id, className }) => {
   const URL = URLS[url];
   const urlArr = URL.split('/').filter(Boolean);
 
   return (
-    <div className="flex items-center gap-2 rounded-md border py-0.5 pl-2 pr-0.5">
+    <div
+      className={cn(
+        'flex items-center gap-2 rounded-md border py-0.5 pl-2 pr-0.5',
+        className,
+      )}
+    >
       <div
         className={cn(
           'flex items-center justify-center rounded px-2 py-0.5 font-medium',
