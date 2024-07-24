@@ -13,9 +13,7 @@ interface DropzoneProps
   onError?: (message: string) => void;
 }
 
-const hasFileWithUnacceptedType = (files: FileList, accept?: string) => {
-  if (!accept) return true;
-
+const hasFileWithUnacceptedType = (files: FileList, accept: string) => {
   const acceptTypes = accept
     .split(',')
     .map(type => type.trim())
@@ -49,8 +47,13 @@ export const Dropzone = React.forwardRef<HTMLInputElement, DropzoneProps>(
       if (!props.multiple && e.dataTransfer.files.length > 1)
         return onError?.('Only one file is allowed');
 
-      if (!hasFileWithUnacceptedType(e.dataTransfer.files, props.accept))
-        return onError?.('Invalid file type');
+      if (
+        props.accept &&
+        !hasFileWithUnacceptedType(e.dataTransfer.files, props.accept)
+      )
+        return onError?.(
+          'Invalid file type provided. Valid file types are: ' + props.accept,
+        );
 
       onChange(e.dataTransfer.files);
     };

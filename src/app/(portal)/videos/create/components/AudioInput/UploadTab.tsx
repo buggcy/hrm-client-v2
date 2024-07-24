@@ -42,6 +42,7 @@ const AudioUrlInput = () => {
   const handleClick = () => {
     if (!isValidUrl(value))
       return toast({
+        variant: 'error',
         title: 'Invalid URL',
         description: 'Please enter a valid URL',
       });
@@ -119,6 +120,7 @@ export const UploadTab = () => {
   };
   const handleError = (message: string) => {
     const { id } = toast({
+      variant: 'error',
       title: t('ui.toast.title.error'),
       description: message,
     });
@@ -130,12 +132,11 @@ export const UploadTab = () => {
     <div className="my-4 h-full">
       <Dropzone
         ref={inputRef}
-        /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
         onChange={handleChange}
         multiple={false}
         onError={handleError}
         /*NOTE: video type added because recorded audio saves as video format*/
-        accept="audio/mp4, audio/webm, video/mp4, video/webm"
+        accept="audio/mp4, audio/webm, audio/wav, audio/mp3, video/mp4, video/webm, video/wav, video/mp3"
       >
         <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
           <div

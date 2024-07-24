@@ -336,8 +336,13 @@ const ClearFormButton = (props: ButtonProps) => {
 
   return (
     <SimpleTooltip tooltipContent="Clear Form">
-      <Button type="button" onClick={onClickClearForm} {...props}>
-        <RotateCcw className="size-5" />
+      <Button
+        variant="ghost"
+        type="button"
+        onClick={onClickClearForm}
+        {...props}
+      >
+        <RotateCcw className="size-4" />
       </Button>
     </SimpleTooltip>
   );
@@ -377,7 +382,6 @@ const AdvancedSettingsInputs = () => {
       <AccordionItem value="true" className="h-full rounded border">
         <AccordionTriggerLeftArrow className="h-16 p-4 !ring-primary hover:text-primary hover:no-underline">
           Advanced settings
-          <ClearFormButton variant="ghost" className="-mr-2 ml-auto" />
         </AccordionTriggerLeftArrow>
         <AccordionContent className="flex h-full flex-col gap-4 p-4 pt-0">
           <div>
@@ -617,7 +621,7 @@ const getIcon = (status: VideoStatus) => {
 };
 
 const PreviewAndCode = () => (
-  <div className="col-span-1 row-span-1 flex w-full rounded-md border border-border bg-background p-4">
+  <div className="flex w-full rounded-md border border-border bg-background p-4 sm:col-span-1 sm:row-span-1">
     <Tabs
       defaultValue="preview"
       className="flex w-full flex-col overflow-hidden rounded"
@@ -918,6 +922,7 @@ export default function VideoCreatePage() {
         const paths = issues.flatMap(issue => issue.path[0]);
 
         toast({
+          variant: 'error',
           title: 'Error',
           description: message,
           variant: 'error',
@@ -1016,9 +1021,12 @@ export default function VideoCreatePage() {
         className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:grid-rows-2"
       >
         <div className="col-span-1 row-span-2 flex h-[calc(100svh-100px)] flex-col gap-4 rounded-md border border-border bg-background p-4 sm:h-[initial]">
-          <Badge variant="label" className="w-fit text-sm">
-            Input
-          </Badge>
+          <div className="flex h-8 items-center justify-between">
+            <Badge variant="label" className="w-fit text-sm">
+              Input
+            </Badge>
+            <ClearFormButton />
+          </div>
           <form
             id="createVideoForm"
             onSubmit={handleSubmit}
