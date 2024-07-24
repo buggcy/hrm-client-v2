@@ -10,9 +10,30 @@ import {
 } from 'firebase/auth';
 
 import { firebaseAuth, queryClient } from '@/libs';
-import { portalApi } from '@/utils';
+import { portalApi, schemaParse } from '@/utils';
 
-import { IUser } from '@/types';
+import { IUser, UserRole } from '@/types';
+
+export class CustomError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
+export class NonDeveloperError extends Error {}
+
+export const getUser = async (): Promise<IUser> =>
+  portalApi
+    .get('/v3/users/me')
+    .then(schemaParse(IUser))
+    .then(async user => {
+      if (user.role === UserRole.USER) {
+        await logout();
+        throw new NonDeveloperError();
+      }
+
+      return user;
+    });
 
 const signUp = async ({
   firstName,
@@ -72,7 +93,7 @@ export const signInWithGoogle = async (isNewUser = false): Promise<IUser> => {
       })
       .catch();
 
-  return queryClient.fetchQuery({ queryKey: ['user'] });
+  return getUser();
 };
 
 export const signUpWithEmailAndPassword = async ({
@@ -83,7 +104,7 @@ export const signUpWithEmailAndPassword = async ({
   firstName: string;
   lastName: string;
   password: string;
-}) => {
+}): Promise<IUser> => {
   await createUserWithEmailAndPassword(
     firebaseAuth,
     data.email.toLowerCase(),
@@ -91,7 +112,7 @@ export const signUpWithEmailAndPassword = async ({
   );
   await signUp({ ...data, signupType: 'email' });
 
-  return queryClient.fetchQuery({ queryKey: ['user'] });
+  return getUser();
 };
 
 export const signInWithEmailAndPassword = async ({
@@ -100,10 +121,10 @@ export const signInWithEmailAndPassword = async ({
 }: {
   email: string;
   password: string;
-}) => {
+}): Promise<IUser> => {
   await signInWithEmailAndPasswordFirebase(firebaseAuth, email, password);
 
-  return queryClient.fetchQuery({ queryKey: ['user'] });
+  return getUser();
 };
 
 export const sendPasswordResetEmail = async (email: string) =>
@@ -111,9 +132,9 @@ export const sendPasswordResetEmail = async (email: string) =>
 
 export const getToken = () => firebaseAuth.currentUser?.getIdToken();
 
-export const logout = async () => {
+export async function logout() {
   await firebaseAuth.signOut();
   queryClient.clear();
   localStorage.clear();
   sessionStorage.clear();
-};
+}

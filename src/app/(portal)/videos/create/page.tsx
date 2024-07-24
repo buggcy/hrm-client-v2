@@ -708,7 +708,7 @@ const VideoList = () => {
           )}
         </p>
         <Button variant="link" asChild className="p-1 text-muted-foreground">
-          <Link href="/videos/">
+          <Link href="/videos">
             All Videos
             <ChevronRight className="size-4" />
           </Link>

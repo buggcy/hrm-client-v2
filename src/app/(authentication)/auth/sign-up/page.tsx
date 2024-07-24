@@ -7,22 +7,23 @@ import { useMutation } from '@tanstack/react-query';
 
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 import { signInWithGoogle } from '@/services';
 
 import { SignUpForm } from './components/SignUpForm';
-import { useRedirectAfterAuth } from '../hooks';
+import { createHandleAuthError, useRedirectAfterAuth } from '../hooks';
 import { AuthLayout } from '../Layout.component';
 
 const SignUp: FC = () => {
+  const { dismiss } = useToast();
   const { mutate: handleSignUpWithGoogle, isPending } = useMutation({
     mutationFn: () => signInWithGoogle(true),
-    onError: () => {
-      toast({
-        title: 'An error occurred while signing up with Google.',
-        variant: 'error',
-      });
+    onError: createHandleAuthError(
+      'An error occurred while authenticating with Google.',
+    ),
+    onMutate: () => {
+      dismiss();
     },
   });
 

@@ -4,7 +4,7 @@ import {
   UseQueryResult,
 } from '@tanstack/react-query';
 
-import { portalApi, schemaParse } from '@/utils';
+import { getUser } from '@/services';
 
 import { IUser } from '@/types';
 
@@ -13,8 +13,7 @@ export const useUserQuery = (
 ) =>
   useQuery({
     queryKey: ['user'],
-    queryFn: (): Promise<IUser> =>
-      portalApi.get('/v3/users/me').then(schemaParse(IUser)),
+    queryFn: getUser,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchInterval: 1000 * 60 * 5,

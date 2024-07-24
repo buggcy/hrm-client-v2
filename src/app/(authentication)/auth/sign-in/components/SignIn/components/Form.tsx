@@ -19,8 +19,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
+import { createHandleAuthError } from '@/app/(authentication)/auth/hooks';
 import { PasswordInput } from '@/app/(authentication)/auth/sign-in/components/PasswordInput';
 import { signInWithEmailAndPassword } from '@/services';
 
@@ -34,16 +35,15 @@ const FormSchema = z.object({
 });
 
 export function SignInForm() {
+  const { dismiss } = useToast();
   const searchParams = useSearchParams();
   const { mutate, isPending } = useMutation({
     mutationFn: signInWithEmailAndPassword,
-    onError: () => {
-      toast({
-        // TODO: show correct error message
-        title:
-          'Sign-in unsuccessful. Please verify your username and password. If the issue persists, try resetting your password or contact our support team at support@example.com for assistance.',
-        variant: 'error',
-      });
+    onError: createHandleAuthError(
+      'Sign-in unsuccessful. Please verify your username and password. If the issue persists, try resetting your password or contact our support team at support@example.com for assistance.',
+    ),
+    onMutate: () => {
+      dismiss();
     },
   });
 

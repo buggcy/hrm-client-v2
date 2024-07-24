@@ -10,7 +10,7 @@ export const handlers = [
       email: 'test@email.com',
       first_name: 'Test',
       last_name: 'User',
-      role: 'user',
+      role: 'developer',
       billing_account_id: 1,
       created_at: '2021-09-01T00:00:00Z',
       updated_at: '2021-09-01T00:00:00Z',

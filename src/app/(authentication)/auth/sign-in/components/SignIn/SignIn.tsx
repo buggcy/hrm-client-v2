@@ -6,22 +6,26 @@ import Link from 'next/link';
 import { useMutation } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
-import { useRedirectAfterAuth } from '@/app/(authentication)/auth/hooks';
+import {
+  createHandleAuthError,
+  useRedirectAfterAuth,
+} from '@/app/(authentication)/auth/hooks';
 import { AuthLayout } from '@/app/(authentication)/auth/Layout.component';
 import { signInWithGoogle } from '@/services';
 
 import { SignInForm } from './components/Form';
 
 const SignIn: FC = () => {
+  const { dismiss } = useToast();
   const { mutate: handleSignInWithGoogle, isPending } = useMutation({
     mutationFn: signInWithGoogle,
-    onError: () => {
-      toast({
-        title: 'An error occurred while signing in with Google.',
-        variant: 'error',
-      });
+    onError: createHandleAuthError(
+      'An error occurred while signing in with Google.',
+    ),
+    onMutate: () => {
+      dismiss();
     },
   });
 
