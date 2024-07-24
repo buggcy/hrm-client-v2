@@ -55,9 +55,10 @@ export function SignUpForm() {
         method: 'email',
       });
     },
-    onError: () => {
+    onError: error => {
       toast({
         title: 'An error occurred while signing up.',
+        description: error.message || undefined,
         variant: 'error',
       });
     },

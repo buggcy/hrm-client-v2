@@ -1,12 +1,17 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import { CancelledError } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 
 import { useUserQuery } from '@/hooks';
 import { firebaseAuth } from '@/libs';
 import { NonDeveloperError } from '@/services';
+
+import { BillingAccountStatus } from '@/types';
 
 export const useRedirectAfterAuth = () => {
   const searchParams = useSearchParams();
@@ -18,7 +23,10 @@ export const useRedirectAfterAuth = () => {
 
   useEffect(() => {
     if (user) {
-      if (user.billingAccount?.status === null) {
+      if (
+        user.billingAccount?.status === null ||
+        user.billingAccount?.status === BillingAccountStatus.PAYMENT_FAILED
+      ) {
         const plan = searchParams.get('plan');
 
         router.push('/billing' + (plan ? `?plan=${plan}` : ''));
@@ -43,17 +51,23 @@ const nonDeveloperToastDescription = (
   </>
 );
 
-export const createHandleAuthError = (title: string) => (error: Error) => {
-  if (error instanceof NonDeveloperError) {
-    toast({
-      title:
-        'Looking for the Tavus Business Portal? Please login via the link below.',
-      description: nonDeveloperToastDescription,
-      variant: 'destructive',
-    });
-  } else
-    toast({
-      title,
-      variant: 'error',
-    });
-};
+export const createHandleAuthError =
+  (title: string) => (error: Error | CancelledError) => {
+    // TODO: fix to handle NonDeveloperError properly
+    if (
+      error instanceof NonDeveloperError ||
+      (error instanceof AxiosError && error.response?.status === 401) ||
+      error instanceof CancelledError
+    ) {
+      toast({
+        title:
+          'Looking for the Tavus Business Portal? Please login via the link below.',
+        description: nonDeveloperToastDescription,
+        variant: 'destructive',
+      });
+    } else
+      toast({
+        title,
+        variant: 'error',
+      });
+  };

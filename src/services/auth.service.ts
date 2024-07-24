@@ -1,4 +1,5 @@
 import { sendGTMEvent } from '@next/third-parties/google';
+import { AxiosError } from 'axios';
 import {
   createUserWithEmailAndPassword,
   getAdditionalUserInfo,
@@ -35,6 +36,9 @@ export const getUser = async (): Promise<IUser> =>
       return user;
     });
 
+const getUserQuery = (): Promise<IUser> =>
+  queryClient.fetchQuery({ queryKey: ['user'] });
+
 const signUp = async ({
   firstName,
   lastName,
@@ -45,12 +49,19 @@ const signUp = async ({
   lastName: string;
   signupType: 'google' | 'email';
 }): Promise<IUser> =>
-  portalApi.post('/v2/users/signup', {
-    ...data,
-    first_name: firstName,
-    last_name: lastName,
-    agreement: true,
-  });
+  portalApi
+    .post('/v2/users/signup', {
+      ...data,
+      first_name: firstName,
+      last_name: lastName,
+      agreement: true,
+    })
+    .catch(error => {
+      if (error instanceof AxiosError && error.response?.status === 400) {
+        throw new CustomError('An account with this email already exists.');
+      }
+      throw error;
+    }) as unknown as Promise<IUser>;
 
 const getUserDataFromCredentials = (
   userCredential: UserCredential,
@@ -93,7 +104,7 @@ export const signInWithGoogle = async (isNewUser = false): Promise<IUser> => {
       })
       .catch();
 
-  return getUser();
+  return getUserQuery();
 };
 
 export const signUpWithEmailAndPassword = async ({
@@ -109,10 +120,15 @@ export const signUpWithEmailAndPassword = async ({
     firebaseAuth,
     data.email.toLowerCase(),
     password,
-  );
+  ).catch(error => {
+    if (error.code === 'auth/email-already-in-use')
+      throw new CustomError('An account with this email already exists.');
+
+    throw error;
+  });
   await signUp({ ...data, signupType: 'email' });
 
-  return getUser();
+  return getUserQuery();
 };
 
 export const signInWithEmailAndPassword = async ({
@@ -124,7 +140,7 @@ export const signInWithEmailAndPassword = async ({
 }): Promise<IUser> => {
   await signInWithEmailAndPasswordFirebase(firebaseAuth, email, password);
 
-  return getUser();
+  return getUserQuery();
 };
 
 export const sendPasswordResetEmail = async (email: string) =>
