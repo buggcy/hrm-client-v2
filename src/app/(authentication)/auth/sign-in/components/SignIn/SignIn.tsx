@@ -20,7 +20,7 @@ import { SignInForm } from './components/Form';
 const SignIn: FC = () => {
   const { dismiss } = useToast();
   const { mutate: handleSignInWithGoogle, isPending } = useMutation({
-    mutationFn: signInWithGoogle,
+    mutationFn: () => signInWithGoogle(),
     onError: createHandleAuthError(
       'An error occurred while signing in with Google.',
     ),
@@ -42,6 +42,7 @@ const SignIn: FC = () => {
       <div className="space-y-4">
         <SignInForm />
         <Button
+          type="button"
           variant="outline"
           className="w-full"
           disabled={isPending}
