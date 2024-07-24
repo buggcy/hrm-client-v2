@@ -861,7 +861,7 @@ export default function VideoCreatePage() {
       onSuccess: () => {
         toast({
           variant: 'success',
-          title: 'Start video generation 🚀',
+          title: 'Started video generation 🚀',
           description:
             'Your video is being processed. You can check the status in the list below.',
         });
@@ -904,7 +904,7 @@ export default function VideoCreatePage() {
 
       toast({
         variant: 'progress',
-        title: 'Processing video creation request 🎞️',
+        title: 'Processing video creation request',
       });
 
       await uploadFilesAndReplaceFormUrls();

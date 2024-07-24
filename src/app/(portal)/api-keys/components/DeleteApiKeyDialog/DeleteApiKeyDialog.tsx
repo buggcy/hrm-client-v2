@@ -6,7 +6,12 @@ import { TriangleAlert } from 'lucide-react';
 
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
 
 import { useDeleteApiKeyMutation } from '@/hooks/useApiKeys';
@@ -47,17 +52,16 @@ export function DeleteApiKeyDialog({
   return (
     <Dialog open={!!id} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md">
+        <div className="flex items-center space-x-2">
+          <TriangleAlert className="size-5 text-destructive" />
+          <DialogTitle className="text-lg font-semibold">
+            Confirm Delete
+          </DialogTitle>
+        </div>
         <div>
-          <div className="flex items-center space-x-2">
-            <TriangleAlert className="size-5 text-destructive" />
-            <h3 className="text-lg font-semibold">Confirm Delete</h3>
-          </div>
-          <div className="mt-2">
-            <p className="text-sm text-muted-foreground">
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </p>
-          </div>
+          <DialogDescription className="mt-2 text-sm text-muted-foreground">
+            You will no longer be able to access this API Key.
+          </DialogDescription>
           <div className="mt-4 flex justify-end space-x-2">
             <div>
               <Button onClick={onClose} variant="outline">
