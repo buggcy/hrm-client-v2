@@ -44,7 +44,7 @@ const TopicCard: React.FC<TopicCardProps> = ({
     className={`cursor-pointer transition-all ${
       isSelected
         ? 'outline outline-2 outline-offset-2 outline-primary'
-        : 'hover:bg-gray-50'
+        : 'hover:bg-secondary/50'
     }`}
     onClick={() => onSelect(topic)}
     tabIndex={0}
@@ -52,7 +52,7 @@ const TopicCard: React.FC<TopicCardProps> = ({
     <CardContent className="flex flex-col items-center p-6 text-center">
       <div className="mb-4 text-muted-foreground">{icon}</div>
       <h3 className="mb-2 font-semibold">{topic}</h3>
-      <p className="text-sm text-gray-500">{description}</p>
+      <p className="text-sm text-muted-foreground">{description}</p>
     </CardContent>
   </Card>
 );

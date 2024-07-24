@@ -8,7 +8,6 @@ import {
   Glasses,
   Hand,
   HeadsetIcon,
-  Lightbulb,
   Shirt,
   Smartphone,
   Sun,
@@ -32,7 +31,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -43,21 +41,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useMediaQuery } from '@/hooks';
 import { cn } from '@/utils';
 
-export function RecordingTips() {
+export function RecordingTips({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">
-            <span>
-              <Lightbulb className="size-5" />
-            </span>
-            Recording Tips
-          </Button>
-        </DialogTrigger>
+        <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className="max-w-4xl content-start">
           <DialogHeader>
             <DialogTitle className="text-center">
@@ -76,7 +67,11 @@ export function RecordingTips() {
                   className="h-5 gap-1 p-1 font-bold text-foreground underline"
                   asChild
                 >
-                  <a href="https://docs.tavus.io/sections/replicas/best-practices-and-examples">
+                  <a
+                    href="https://docs.tavus.io/sections/replicas/best-practices-and-examples"
+                    target="blank"
+                    rel="noreferrer"
+                  >
                     Best Practices
                     <ArrowUpRight className="size-4" />
                   </a>
@@ -94,18 +89,32 @@ export function RecordingTips() {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Recording Tips</Button>
-      </DrawerTrigger>
+      <DrawerTrigger asChild>{children}</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </DrawerDescription>
+          <DrawerTitle>Prepare your recording environment</DrawerTitle>
         </DrawerHeader>
         <RecordingTipsComponent />
         <DrawerFooter className="pt-2">
+          <div className="inline-flex items-center py-2">
+            <p className="text-sm font-medium text-muted-foreground">
+              Here you can find more detailed
+            </p>
+            <Button
+              variant="link"
+              className="h-5 gap-1 p-1 font-bold text-foreground underline"
+              asChild
+            >
+              <a
+                href="https://docs.tavus.io/sections/replicas/best-practices-and-examples"
+                target="blank"
+                rel="noreferrer"
+              >
+                Best Practices
+                <ArrowUpRight className="size-4" />
+              </a>
+            </Button>
+          </div>
           <DrawerClose asChild>
             <Button>I understand</Button>
           </DrawerClose>

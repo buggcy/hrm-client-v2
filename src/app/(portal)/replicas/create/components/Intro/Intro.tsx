@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { Info, MoveRight } from 'lucide-react';
+import { Info, Lightbulb, MoveRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { SimpleTooltip } from '@/components/ui/tooltip';
@@ -108,7 +108,14 @@ export const Intro = () => {
       </div>
 
       <div className="mb-6 mt-auto flex justify-center gap-2">
-        <RecordingTips />
+        <RecordingTips>
+          <Button variant="outline">
+            <span>
+              <Lightbulb className="size-5" />
+            </span>
+            Recording Tips
+          </Button>
+        </RecordingTips>
         <SimpleTooltip
           disabled={!isOutOfReplicaQuotas}
           tooltipContent={noQuotasTooltipContent}

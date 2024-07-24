@@ -925,7 +925,6 @@ export default function VideoCreatePage() {
           variant: 'error',
           title: 'Error',
           description: message,
-          variant: 'error',
         });
 
         if (

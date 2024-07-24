@@ -10,6 +10,7 @@ import {
   MoreHorizontal,
   Scaling,
   Trash2,
+  VideoOff,
   Volume2Icon,
   VolumeX,
 } from 'lucide-react';
@@ -256,8 +257,11 @@ const ReplicaCard = ({
 
             {error && (
               <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
-                <p className="text-sm text-destructive/80">
-                  Error loading preview
+                <span>
+                  <VideoOff className="size-8 text-error/60" />
+                </span>
+                <p className="text-sm text-muted-foreground">
+                  Preview couldn&apos;t load.
                 </p>
               </div>
             )}
@@ -294,7 +298,7 @@ const ReplicaCard = ({
               variant={status === ReplicaStatus.COMPLETED ? 'default' : 'muted'}
             />
           </div>
-          {thumbnail_video_url && (
+          {thumbnail_video_url && !error && (
             <div className="absolute right-2 top-2 hidden flex-col gap-2 group-hover:flex">
               <TooltipProvider>
                 <Tooltip>

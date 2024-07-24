@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import { SimpleTooltip } from '@/components/ui/tooltip';
 
-import { formatTime } from '@/utils';
+import { cn, formatTime } from '@/utils';
 
 import { StaticOverlay } from '../StaticOverlay';
 import { VoiceLevelIndicator } from '../VoiceLevelIndicator';
@@ -84,7 +84,11 @@ export const VideoRecord = ({
         )}
         {isRecording && (
           <div className="absolute left-4 top-4 flex items-center gap-1.5 rounded-md border bg-background px-2 py-1 text-xs text-foreground">
-            <div className="size-2 rounded-full bg-destructive" />
+            <div
+              className={cn('size-2 rounded-full bg-destructive', {
+                'bg-success': recordingTime > minimumRecordTime,
+              })}
+            />
             {formatTime(recordingTime)}
           </div>
         )}
