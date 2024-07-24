@@ -96,52 +96,54 @@ export const VideoRecord = ({
         {hasAccess && (
           <div className="absolute inset-x-4 bottom-3.5 flex items-center justify-between gap-2">
             <VoiceLevelIndicator voiceLevel={voiceLevel} />
-            <div className="flex items-center justify-center gap-2">
-              <Select
-                value={selectedVideoDevice?.deviceId}
-                onValueChange={e => {
-                  const device = videoDevices.find(
-                    device => device.deviceId === e,
-                  );
-                  selectVideoDevice(device!);
-                }}
-              >
-                <SelectTrigger className="h-8 rounded-md border-none bg-white/25 p-2 text-white backdrop-blur-sm">
-                  <span>
-                    <Video size={16} className="mr-1.5" />
-                  </span>
-                </SelectTrigger>
-                <SelectContent>
-                  {videoDevices.map(device => (
-                    <SelectItem key={device.deviceId} value={device.deviceId}>
-                      {device.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select
-                value={selectedAudioDevice?.deviceId}
-                onValueChange={e => {
-                  const device = audioDevices.find(
-                    device => device.deviceId === e,
-                  );
-                  selectAudioDevice(device!);
-                }}
-              >
-                <SelectTrigger className="h-8 rounded-md border-none bg-white/25 p-2 text-white backdrop-blur-sm">
-                  <span>
-                    <Mic size={16} className="mr-1.5" />
-                  </span>
-                </SelectTrigger>
-                <SelectContent>
-                  {audioDevices.map(device => (
-                    <SelectItem key={device.deviceId} value={device.deviceId}>
-                      {device.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {!isRecording && (
+              <div className="flex items-center justify-center gap-2">
+                <Select
+                  value={selectedVideoDevice?.deviceId}
+                  onValueChange={e => {
+                    const device = videoDevices.find(
+                      device => device.deviceId === e,
+                    );
+                    selectVideoDevice(device!);
+                  }}
+                >
+                  <SelectTrigger className="h-8 rounded-md border-none bg-white/25 p-2 text-white backdrop-blur-sm">
+                    <span>
+                      <Video size={16} className="mr-1.5" />
+                    </span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {videoDevices.map(device => (
+                      <SelectItem key={device.deviceId} value={device.deviceId}>
+                        {device.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={selectedAudioDevice?.deviceId}
+                  onValueChange={e => {
+                    const device = audioDevices.find(
+                      device => device.deviceId === e,
+                    );
+                    selectAudioDevice(device!);
+                  }}
+                >
+                  <SelectTrigger className="h-8 rounded-md border-none bg-white/25 p-2 text-white backdrop-blur-sm">
+                    <span>
+                      <Mic size={16} className="mr-1.5" />
+                    </span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {audioDevices.map(device => (
+                      <SelectItem key={device.deviceId} value={device.deviceId}>
+                        {device.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
         )}
       </div>

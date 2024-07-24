@@ -52,6 +52,7 @@ export const VideoPreview: React.FC<{
 
   const checkAllChecked = Object.values(checkboxes).every(Boolean);
 
+  console.log('first', url);
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="relative aspect-video max-w-[35.25rem] overflow-hidden rounded-md border">
@@ -73,7 +74,6 @@ export const VideoPreview: React.FC<{
             onError={() => {
               setError(true);
             }}
-            crossOrigin="anonymous"
           />
         ) : (
           <div className="flex size-full flex-col items-center justify-center gap-2 bg-secondary">

@@ -76,7 +76,7 @@ export function RecordingTips() {
                   className="h-5 gap-1 p-1 font-bold text-foreground underline"
                   asChild
                 >
-                  <a href="#">
+                  <a href="https://docs.tavus.io/sections/replicas/best-practices-and-examples">
                     Best Practices
                     <ArrowUpRight className="size-4" />
                   </a>

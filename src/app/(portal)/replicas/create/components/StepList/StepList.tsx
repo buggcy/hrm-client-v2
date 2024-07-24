@@ -146,7 +146,8 @@ export const StepList = () => {
               </AccordionTrigger>
             </SimpleTooltip>
             <AccordionContent className="p-4 pt-0 text-muted-foreground">
-              Record or upload your consent video by reading the provided scrip.
+              Record or upload your consent video by reading the provided
+              script.
               {/* <div className="mt-4 flex gap-2">
                 <span>
                   <Video className="size-4" />
