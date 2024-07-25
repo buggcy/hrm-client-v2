@@ -38,14 +38,30 @@ const SimpleTooltip = ({
   children: React.ReactNode;
   tooltipContent: React.ReactNode;
   disabled?: boolean;
-}) => (
-  <TooltipProvider>
-    <Tooltip delayDuration={200} {...props}>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
-      {!disabled && <TooltipContent>{tooltipContent}</TooltipContent>}
-    </Tooltip>
-  </TooltipProvider>
-);
+}) => {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <TooltipProvider>
+      <Tooltip open={open} delayDuration={200} {...props}>
+        <TooltipTrigger
+          asChild
+          onClick={() => setOpen(!open)}
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+          onKeyDown={e => {
+            e.preventDefault();
+            e.key === 'Enter' && setOpen(!open);
+          }}
+          onTouchMove={() => setOpen(true)}
+        >
+          {children}
+        </TooltipTrigger>
+        {!disabled && <TooltipContent>{tooltipContent}</TooltipContent>}
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
 
 export {
   Tooltip,
