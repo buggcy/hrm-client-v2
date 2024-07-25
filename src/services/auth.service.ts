@@ -10,7 +10,7 @@ import {
   UserCredential,
 } from 'firebase/auth';
 
-import { firebaseAuth, queryClient } from '@/libs';
+import { firebaseAuth, identifyLogRocket, queryClient } from '@/libs';
 import { portalApi, schemaParse } from '@/utils';
 
 import { IUser, UserRole } from '@/types';
@@ -32,6 +32,8 @@ export const getUser = async (): Promise<IUser> =>
         await logout();
         throw new NonDeveloperError();
       }
+
+      identifyLogRocket(user);
 
       return user;
     });
