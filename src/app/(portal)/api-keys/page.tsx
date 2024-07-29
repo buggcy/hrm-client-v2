@@ -121,36 +121,32 @@ export default function ApiKeysPage() {
                   <TableRow>
                     <TableHead>Key Name</TableHead>
                     <TableHead>Key Prefix</TableHead>
-                    <TableHead>Whitelisted IPs</TableHead>
-                    <TableHead className="hidden lg:table-cell">
-                      Created
-                    </TableHead>
+                    {/* <TableHead>Whitelisted IPs</TableHead> */}
+                    <TableHead>Created</TableHead>
                     <TableHead />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {apiKeys?.rows?.map(
-                    ({ name, key_prefix, whitelisted_ips, created_at }) => (
-                      <TableRow key={key_prefix}>
-                        <TableCell>{name}</TableCell>
-                        <TableCell>{key_prefix}</TableCell>
-                        <TableCell>{whitelisted_ips}</TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {formatDateToDayMonthYear(created_at)}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() => handleDeleteOpen(key_prefix)}
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                          >
-                            <Trash2Icon className="size-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ),
-                  )}
+                  {apiKeys?.rows?.map(({ name, key_prefix, created_at }) => (
+                    <TableRow key={key_prefix}>
+                      <TableCell>{name}</TableCell>
+                      <TableCell>{key_prefix}</TableCell>
+                      {/* <TableCell>{whitelisted_ips}</TableCell> */}
+                      <TableCell>
+                        {formatDateToDayMonthYear(created_at)}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => handleDeleteOpen(key_prefix)}
+                          variant="ghost"
+                          size="icon"
+                          className="size-8"
+                        >
+                          <Trash2Icon className="size-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             )}
