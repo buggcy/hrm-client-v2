@@ -5,7 +5,7 @@ import * as React from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { TooltipProps } from '@radix-ui/react-tooltip';
 
-import { cn } from '@/utils';
+import { cn, isTouchDevice } from '@/utils';
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
@@ -41,20 +41,21 @@ const SimpleTooltip = ({
 }) => {
   const [open, setOpen] = React.useState(false);
 
+  const handleToggle = () => {
+    if (isTouchDevice()) {
+      setOpen(prev => !prev);
+    }
+  };
+
   return (
     <TooltipProvider>
-      <Tooltip open={open} delayDuration={200} {...props}>
-        <TooltipTrigger
-          asChild
-          onClick={() => setOpen(!open)}
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
-          onKeyDown={e => {
-            e.preventDefault();
-            e.key === 'Enter' && setOpen(!open);
-          }}
-          onTouchMove={() => setOpen(true)}
-        >
+      <Tooltip
+        open={open}
+        onOpenChange={setOpen}
+        delayDuration={200}
+        {...props}
+      >
+        <TooltipTrigger asChild onClick={handleToggle}>
           {children}
         </TooltipTrigger>
         {!disabled && <TooltipContent>{tooltipContent}</TooltipContent>}

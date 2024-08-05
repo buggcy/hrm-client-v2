@@ -36,6 +36,9 @@ export const VideoRecorder = () => {
   const consentRecordURL = useReplicaStore(
     state => state.consentRecordFile?.url,
   );
+  const consentRecordFile = useReplicaStore(
+    state => state.consentRecordFile?.file,
+  );
   const set = useReplicaStore(state => state.set);
   const setActiveStep = useReplicaStore(state => state.setActiveStep);
   const completeStep = useReplicaStore(state => state.completeStep);
@@ -49,6 +52,17 @@ export const VideoRecorder = () => {
     completeStep('consent');
   };
 
+  const handleDownload = () => {
+    if (!consentRecordFile) return;
+    const url = URL.createObjectURL(consentRecordFile);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = consentRecordFile.name;
+    a.click();
+    URL.revokeObjectURL(url);
+    a.remove();
+  };
+
   return (
     <>
       {consentRecordURL ? (
@@ -57,6 +71,7 @@ export const VideoRecorder = () => {
           onDelete={handleDelete}
           checkTitle="Confirm these consent video requirements"
           onConfirm={handleConfirm}
+          onDownload={handleDownload}
         />
       ) : (
         <VideoRecorderComponent />

@@ -49,8 +49,11 @@ export const VideoRecorderTraining = ({
   onSubmit: () => Promise<void>;
 }) => {
   const [open, setOpen] = React.useState(false);
-  const trainingRecordFile = useReplicaStore(
+  const trainingRecordFileURL = useReplicaStore(
     state => state.trainingRecordFile?.url,
+  );
+  const trainingRecordFile = useReplicaStore(
+    state => state.trainingRecordFile?.file,
   );
   const set = useReplicaStore(state => state.set);
   const completeStep = useReplicaStore(state => state.completeStep);
@@ -67,6 +70,17 @@ export const VideoRecorderTraining = ({
 
   const handleConfirm = () => {
     setOpen(true);
+  };
+
+  const handleDownload = () => {
+    if (!trainingRecordFile) return;
+    const url = URL.createObjectURL(trainingRecordFile);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = trainingRecordFile.name;
+    a.click();
+    URL.revokeObjectURL(url);
+    a.remove();
   };
 
   return (
@@ -91,12 +105,13 @@ export const VideoRecorderTraining = ({
         </DialogContent>
       </Dialog>
 
-      {trainingRecordFile ? (
+      {trainingRecordFileURL ? (
         <VideoPreview
-          url={trainingRecordFile}
+          url={trainingRecordFileURL}
           onDelete={handleDelete}
           checkTitle="Confirm these Training video requirements"
           onConfirm={handleConfirm}
+          onDownload={handleDownload}
         />
       ) : (
         <VideoRecorderComponent />

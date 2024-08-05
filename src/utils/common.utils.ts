@@ -33,3 +33,15 @@ export function createReplicaThumbnailUrl(
 ) {
   return url ? `${url}#t=1` : '';
 }
+
+export function isTouchDevice() {
+  if (
+    !(
+      'ontouchstart' in window ||
+      (window.DocumentTouch && document instanceof window.DocumentTouch)
+    )
+  ) {
+    return false;
+  }
+  return true;
+}

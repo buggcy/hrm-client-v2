@@ -109,7 +109,11 @@ export const useVideoPreviewAndRecording = ({
     if (selectedVideoDevice?.deviceId && selectedAudioDevice?.deviceId) {
       try {
         const newStream = await navigator.mediaDevices.getUserMedia({
-          video: { deviceId: selectedVideoDevice.deviceId },
+          video: {
+            deviceId: selectedVideoDevice.deviceId,
+            width: { ideal: 4096 },
+            height: { ideal: 2160 },
+          },
           audio: { deviceId: selectedAudioDevice.deviceId },
         });
         setStream(newStream);

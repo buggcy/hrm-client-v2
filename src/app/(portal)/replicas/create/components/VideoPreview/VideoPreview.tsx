@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { AlertTriangle, RotateCw, Trash2 } from 'lucide-react';
+import { AlertTriangle, Download, RotateCw, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -20,7 +20,8 @@ export const VideoPreview: React.FC<{
   checkTitle: string;
   onDelete: () => void;
   onConfirm: () => void;
-}> = ({ url, checkTitle, onDelete, onConfirm }) => {
+  onDownload?: () => void;
+}> = ({ url, checkTitle, onDelete, onConfirm, onDownload }) => {
   const [checkAll, setCheckAll] = useState(false);
   const [checkboxes, setCheckboxes] = useState({
     clearVoice: false,
@@ -52,7 +53,6 @@ export const VideoPreview: React.FC<{
 
   const checkAllChecked = Object.values(checkboxes).every(Boolean);
 
-  console.log('first', url);
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="relative aspect-video max-w-[35.25rem] overflow-hidden rounded-md border">
@@ -65,6 +65,17 @@ export const VideoPreview: React.FC<{
           <Trash2 className="size-4 text-destructive" />
           <span className="sr-only">Delete</span>
         </Button>
+        {onDownload && (
+          <Button
+            className="absolute right-12 top-2 z-10 size-8"
+            variant="outline"
+            size="icon"
+            onClick={onDownload}
+          >
+            <Download className="size-4" />
+            <span className="sr-only">Download</span>
+          </Button>
+        )}
 
         {!error ? (
           <video
