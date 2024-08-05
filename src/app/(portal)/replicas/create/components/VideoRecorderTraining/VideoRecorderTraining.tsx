@@ -21,9 +21,10 @@ const VideoRecorderComponent = () => {
 
   const onStopRecording = useCallback(
     (blob: Blob) => {
+      const ext = blob.type.split('/')[1];
       const data: Parameters<typeof set>[0] = {
         trainingRecordFile: {
-          file: new File([blob], `${Date.now()}training.webm`, {
+          file: new File([blob], `${Date.now()}training.${ext}`, {
             type: blob.type,
           }),
           url: URL.createObjectURL(blob),
