@@ -59,6 +59,32 @@ interface UseVideoPreviewAndRecordingResult {
   cancelRecording: () => void;
 }
 
+const quickScan = [
+  { label: '4K UHD', width: 3840, height: 2160, ratio: '16:9' },
+  { label: '4K DCI', width: 4096, height: 2160, ratio: '256:135' },
+  { label: '4K UltraWide', width: 3840, height: 1600, ratio: '21:9' },
+  { label: '4K UHD Portrait', height: 3840, width: 2160, ratio: '9:16' },
+  { label: '1440p UltraWide', width: 3440, height: 1440, ratio: '21:9' },
+  { label: '3K 3:2', width: 3000, height: 2000, ratio: '3:2' },
+  { label: '1620p 3:2', width: 2880, height: 1920, ratio: '3:2' },
+  { label: '1440p QHD', width: 2560, height: 1440, ratio: '16:9' },
+  { label: '1080p UltraWide', width: 2560, height: 1080, ratio: '21:9' },
+  { label: '1440p QHD Portrait', height: 2560, width: 1440, ratio: '9:16' },
+  { label: '1:1 2K', width: 2048, height: 2048, ratio: '1:1' },
+  { label: '2K DCI', width: 2048, height: 1080, ratio: '256:135' },
+  { label: '1920x1440', width: 1920, height: 1440, ratio: '4:3' },
+  { label: '1080p FHD', width: 1920, height: 1080, ratio: '16:9' },
+  { label: '1080p FHD Portrait', height: 1920, width: 1080, ratio: '9:16' },
+  { label: '1600x1200', width: 1600, height: 1200, ratio: '4:3' },
+  { label: '1080p 3:2', width: 1620, height: 1080, ratio: '3:2' },
+  { label: '1:1 1080', width: 1080, height: 1080, ratio: '1:1' },
+  { label: '720p HD', width: 1280, height: 720, ratio: '16:9' },
+  { label: '720p HD Portrait', height: 1280, width: 720, ratio: '9:16' },
+  { label: '1024x768', width: 1024, height: 768, ratio: '4:3' },
+  { label: '1:1 720', width: 720, height: 720, ratio: '1:1' },
+  { label: '800x600', width: 800, height: 600, ratio: '4:3' },
+];
+
 const getSupportedVideoTypeAndExtension = (): [string, string] => {
   const videoTypes = ['video/webm', 'video/mp4', 'video/quicktime'] as const;
   for (const type of videoTypes) {
@@ -104,15 +130,50 @@ export const useVideoPreviewAndRecording = ({
   const countdownIntervalRef = useRef<number | null>(null);
   const recordingIntervalRef = useRef<number | null>(null);
 
-  // Function to set up video stream
+  const findBestResolution = useCallback(
+    async (
+      deviceId: string,
+    ): Promise<{ width: number; height: number; label: string } | null> => {
+      for (const resolution of quickScan) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              deviceId: { exact: deviceId },
+              width: { exact: resolution.width },
+              height: { exact: resolution.height },
+            },
+          });
+          stream.getTracks().forEach(track => track.stop());
+          return {
+            width: resolution.width,
+            height: resolution.height,
+            label: resolution.label,
+          };
+        } catch {
+          continue;
+        }
+      }
+      return null;
+    },
+    [],
+  );
+
   const setupVideoStream = useCallback(async (): Promise<void> => {
     if (selectedVideoDevice?.deviceId && selectedAudioDevice?.deviceId) {
       try {
+        const bestResolution = await findBestResolution(
+          selectedVideoDevice.deviceId,
+        );
+        console.log('bestResolution', bestResolution);
         const newStream = await navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: selectedVideoDevice.deviceId,
-            width: { ideal: 4096 },
-            height: { ideal: 2160 },
+            width: bestResolution
+              ? { exact: bestResolution.width }
+              : { ideal: 4096 },
+            height: bestResolution
+              ? { exact: bestResolution.height }
+              : { ideal: 2160 },
           },
           audio: { deviceId: selectedAudioDevice.deviceId },
         });
@@ -121,7 +182,11 @@ export const useVideoPreviewAndRecording = ({
         console.error('Error setting up video stream:', error);
       }
     }
-  }, [selectedVideoDevice?.deviceId, selectedAudioDevice?.deviceId]);
+  }, [
+    selectedVideoDevice?.deviceId,
+    selectedAudioDevice?.deviceId,
+    findBestResolution,
+  ]);
 
   // Set up stream when permissions and devices are available
   useEffect(() => {
