@@ -150,21 +150,21 @@ const useSubmitReplica = () => {
   });
 
   const consentFileValue = useMemo(() => {
-    if (consentMethod === VideoMethod.UPLOAD && consentFile?.file) {
-      return consentFile?.file;
+    if (consentMethod === VideoMethod.UPLOAD && consentFile) {
+      return consentFile;
     }
     if (consentMethod === VideoMethod.RECORD && consentRecordFile) {
-      return consentRecordFile?.file;
+      return consentRecordFile;
     }
     return null;
   }, [consentMethod, consentFile, consentRecordFile]);
 
   const trainingFileValue = useMemo(() => {
-    if (trainingMethod === VideoMethod.UPLOAD && trainingFile?.file) {
-      return trainingFile.file;
+    if (trainingMethod === VideoMethod.UPLOAD && trainingFile) {
+      return trainingFile;
     }
     if (trainingMethod === VideoMethod.RECORD && trainingRecordFile) {
-      return trainingRecordFile.file;
+      return trainingRecordFile;
     }
     return null;
   }, [trainingMethod, trainingFile, trainingRecordFile]);
@@ -225,7 +225,7 @@ const Upload = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
       urlValue: '',
     },
   });
-  const url = useReplicaStore(state => state.trainingFile?.url);
+  const trainingFile = useReplicaStore(state => state.trainingFile);
   const trainingURL = useReplicaStore(state => state.trainingURL);
   const completeStep = useReplicaStore(state => state.completeStep);
   const incompleteStep = useReplicaStore(state => state.incompleteStep);
@@ -254,10 +254,7 @@ const Upload = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
       }
 
       const data: Parameters<typeof set>[0] = {
-        trainingFile: {
-          file,
-          url: URL.createObjectURL(file),
-        },
+        trainingFile: file,
       };
 
       set(data);
@@ -328,9 +325,10 @@ const Upload = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {url || trainingURL ? (
+      {trainingFile || trainingURL ? (
         <VideoPreview
-          url={url || trainingURL!}
+          url={trainingURL}
+          file={trainingFile}
           onDelete={handleDelete}
           checkTitle="Confirm these training video requirements"
           onConfirm={() => setOpen(true)}

@@ -14,23 +14,11 @@ export type State = {
     consent: boolean;
     training: boolean;
   };
-  consentFile: {
-    file: File | null;
-    url: string;
-  } | null;
-  consentRecordFile: {
-    file: File | null;
-    url: string;
-  } | null;
+  consentFile: File | null;
+  consentRecordFile: File | null;
   consentURL?: string;
-  trainingFile: {
-    file: File | null;
-    url: string;
-  } | null;
-  trainingRecordFile: {
-    file: File | null;
-    url: string;
-  } | null;
+  trainingFile: File | null;
+  trainingRecordFile: File | null;
   trainingURL?: string;
 };
 

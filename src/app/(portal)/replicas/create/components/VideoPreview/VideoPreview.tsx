@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { AlertTriangle, Download, RotateCw, Trash2 } from 'lucide-react';
 
@@ -16,12 +16,13 @@ const requirements = [
 ];
 
 export const VideoPreview: React.FC<{
-  url: string;
+  url?: string;
+  file?: File | null;
   checkTitle: string;
   onDelete: () => void;
   onConfirm: () => void;
   onDownload?: () => void;
-}> = ({ url, checkTitle, onDelete, onConfirm, onDownload }) => {
+}> = ({ url, file, checkTitle, onDelete, onConfirm, onDownload }) => {
   const [checkAll, setCheckAll] = useState(false);
   const [checkboxes, setCheckboxes] = useState({
     clearVoice: false,
@@ -53,6 +54,10 @@ export const VideoPreview: React.FC<{
 
   const checkAllChecked = Object.values(checkboxes).every(Boolean);
 
+  const videoUrl = useMemo(() => {
+    return file ? URL.createObjectURL(file) : url;
+  }, [file, url]);
+
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="relative aspect-video max-w-[35.25rem] overflow-hidden rounded-md border">
@@ -78,14 +83,16 @@ export const VideoPreview: React.FC<{
         )}
 
         {!error ? (
-          <video
-            src={url}
-            controls
-            className="aspect-video object-contain"
-            onError={() => {
-              setError(true);
-            }}
-          />
+          videoUrl && (
+            <video
+              src={videoUrl}
+              controls
+              className="aspect-video object-contain"
+              onError={() => {
+                setError(true);
+              }}
+            />
+          )
         ) : (
           <div className="flex size-full flex-col items-center justify-center gap-2 bg-secondary">
             <span>

@@ -46,7 +46,7 @@ const Upload = () => {
       urlValue: '',
     },
   });
-  const url = useReplicaStore(state => state.consentFile?.url);
+  const consentFile = useReplicaStore(state => state.consentFile);
   const consentURL = useReplicaStore(state => state.consentURL);
   const setActiveStep = useReplicaStore(state => state.setActiveStep);
   const completeStep = useReplicaStore(state => state.completeStep);
@@ -62,7 +62,6 @@ const Upload = () => {
     dismiss(errorIdRef.current);
 
     const file = files?.[0];
-
     if (file) {
       if (file.size > MAX_FILE_SIZE) {
         return handleError(
@@ -76,10 +75,7 @@ const Upload = () => {
       }
 
       const data: Parameters<typeof set>[0] = {
-        consentFile: {
-          file,
-          url: URL.createObjectURL(file),
-        },
+        consentFile: file,
       };
 
       set(data);
@@ -129,9 +125,10 @@ const Upload = () => {
 
   return (
     <div className="size-full flex-1">
-      {url || consentURL ? (
+      {consentFile || consentURL ? (
         <VideoPreview
-          url={url || consentURL!}
+          url={consentURL}
+          file={consentFile}
           onDelete={handleDelete}
           checkTitle="Confirm these consent video requirements"
           onConfirm={handleConfirm}

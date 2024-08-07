@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { toast } from '@/components/ui/use-toast';
 
 import { ScriptBlock } from '../ScriptBlock';
 import { VideoPreview } from '../VideoPreview';
@@ -21,14 +22,22 @@ const VideoRecorderComponent = () => {
 
   const onStopRecording = useCallback(
     (blob: Blob) => {
+      if (blob.size === 0) {
+        toast({
+          title: 'Video Save Error',
+          description:
+            'It looks like your browser is having trouble saving the recorded video, please try upload file directly',
+          variant: 'error',
+          duration: 5000,
+        });
+        return;
+      }
+
       const ext = blob.type.split('/')[1];
       const data: Parameters<typeof set>[0] = {
-        trainingRecordFile: {
-          file: new File([blob], `${Date.now()}training.${ext}`, {
-            type: blob.type,
-          }),
-          url: URL.createObjectURL(blob),
-        },
+        trainingRecordFile: new File([blob], `${Date.now()}consent.${ext}`, {
+          type: blob.type,
+        }),
       };
 
       set(data);
@@ -50,12 +59,7 @@ export const VideoRecorderTraining = ({
   onSubmit: () => Promise<void>;
 }) => {
   const [open, setOpen] = React.useState(false);
-  const trainingRecordFileURL = useReplicaStore(
-    state => state.trainingRecordFile?.url,
-  );
-  const trainingRecordFile = useReplicaStore(
-    state => state.trainingRecordFile?.file,
-  );
+  const trainingRecordFile = useReplicaStore(state => state.trainingRecordFile);
   const set = useReplicaStore(state => state.set);
   const completeStep = useReplicaStore(state => state.completeStep);
 
@@ -106,9 +110,9 @@ export const VideoRecorderTraining = ({
         </DialogContent>
       </Dialog>
 
-      {trainingRecordFileURL ? (
+      {trainingRecordFile ? (
         <VideoPreview
-          url={trainingRecordFileURL}
+          file={trainingRecordFile}
           onDelete={handleDelete}
           checkTitle="Confirm these Training video requirements"
           onConfirm={handleConfirm}

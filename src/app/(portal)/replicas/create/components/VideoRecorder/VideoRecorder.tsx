@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 
+import { toast } from '@/components/ui/use-toast';
+
 import { ConsentScript } from '../ConsentScript';
 import { VideoPreview } from '../VideoPreview';
 import { VideoRecord } from '../VideoRecord';
@@ -10,14 +12,22 @@ const VideoRecorderComponent = () => {
 
   const onStopRecording = useCallback(
     (blob: Blob) => {
+      if (blob.size === 0) {
+        toast({
+          title: 'Video Save Error',
+          description:
+            'It looks like your browser is having trouble saving the recorded video, please try upload file directly',
+          variant: 'error',
+          duration: 5000,
+        });
+        return;
+      }
+
       const ext = blob.type.split('/')[1];
       const data: Parameters<typeof set>[0] = {
-        consentRecordFile: {
-          file: new File([blob], `${Date.now()}consent.${ext}`, {
-            type: blob.type,
-          }),
-          url: URL.createObjectURL(blob),
-        },
+        consentRecordFile: new File([blob], `${Date.now()}consent.${ext}`, {
+          type: blob.type,
+        }),
       };
       set(data);
     },
@@ -33,12 +43,7 @@ const VideoRecorderComponent = () => {
 };
 
 export const VideoRecorder = () => {
-  const consentRecordURL = useReplicaStore(
-    state => state.consentRecordFile?.url,
-  );
-  const consentRecordFile = useReplicaStore(
-    state => state.consentRecordFile?.file,
-  );
+  const consentRecordFile = useReplicaStore(state => state.consentRecordFile);
   const set = useReplicaStore(state => state.set);
   const setActiveStep = useReplicaStore(state => state.setActiveStep);
   const completeStep = useReplicaStore(state => state.completeStep);
@@ -65,9 +70,9 @@ export const VideoRecorder = () => {
 
   return (
     <>
-      {consentRecordURL ? (
+      {consentRecordFile ? (
         <VideoPreview
-          url={consentRecordURL}
+          file={consentRecordFile}
           onDelete={handleDelete}
           checkTitle="Confirm these consent video requirements"
           onConfirm={handleConfirm}
