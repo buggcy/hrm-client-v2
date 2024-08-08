@@ -25,6 +25,9 @@ export const metadata: Metadata = {
 export const viewport = {
   // TODO: change to variable
   themeColor: '#F230AB',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

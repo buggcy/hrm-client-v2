@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { AxiosError } from 'axios';
+import { format } from 'date-fns';
 import { ArrowUpRight, CheckIcon, TriangleAlert, XIcon } from 'lucide-react';
 
 import {
@@ -37,6 +38,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 
 import { ChangePaymentMethodButton } from '@/app/(portal)/(billing)/payment/cancel/components/ChangePaymentMethodButton';
+import { UsageProgress } from '@/app/(portal)/components/Navigation/components/QuotasCard';
 import { useUserQuery } from '@/hooks';
 import {
   useCancelSubscriptionMutation,
@@ -44,17 +46,21 @@ import {
   useUpdateSubscriptionMutation,
 } from '@/hooks/useBilling';
 
-import { getPlanPrefixId, PlanIds, PlanPrefixIds } from './types';
+import {
+  DeveloperPlanIds,
+  hasCustomPlan,
+  isEnterprise,
+  PlanIds,
+  PlanPrefixIds,
+} from './types';
 
 import { BillingAccountStatus } from '@/types';
 
 const PlanPrefixIdsLevels = {
-  [PlanPrefixIds.STARTER]: 1,
-  [PlanPrefixIds.HOBBYIST]: 2,
-  [PlanPrefixIds.BUSINESS]: 3,
-  [PlanPrefixIds.CUSTOM]: 4,
-  [PlanPrefixIds.ENTERPRISE]: 4,
-};
+  [DeveloperPlanIds.FREE]: 1,
+  [DeveloperPlanIds.PAY_AS_U_GO]: 2,
+  [DeveloperPlanIds.ADVANCED]: 3,
+} as const;
 
 interface PlanCardProps {
   badge?: React.ReactNode;
@@ -76,18 +82,18 @@ interface PlanCardProps {
 }
 
 const PlanCard: React.FC<PlanCardProps> = ({
-  badge,
+  badge = 'YOUR PLAN',
   buttonProps,
   isSelected,
   item,
 }) => (
   <Card
-    className={`flex min-w-[270px] max-w-[350px] flex-1 flex-col ${isSelected ? 'border-primary bg-primary/10' : 'border-border'}`}
+    className={`flex min-w-[270px] max-w-[420px] flex-1 flex-col ${isSelected ? 'border-primary bg-primary/10' : 'border-border'}`}
   >
     <CardHeader>
       <CardTitle className="flex items-center text-xl font-bold">
         {item.title}
-        {badge && (
+        {isSelected && (
           <Badge
             variant="secondary"
             className="ml-3 !bg-primary/10 text-primary"
@@ -160,26 +166,28 @@ const CardsList: React.FC<{ children: React.ReactNode }> = ({ children }) => (
         asChild
         className="h-auto p-0 text-muted-foreground"
       >
-        <Link
+        <a
+          target="_blank"
           href="https://www.tavus.io/developer#pricing"
           className="flex items-center !gap-1 text-sm"
         >
           Learn more about packages and features
           <ArrowUpRight className="size-4" />
-        </Link>
+        </a>
       </Button>
     </div>
-    <ul className="flex flex-wrap justify-evenly gap-6">{children}</ul>
+    <ul className="flex flex-wrap justify-around gap-6">{children}</ul>
   </div>
 );
 
 const PlanItemsConfig: Record<
-  Exclude<PlanPrefixIds, PlanPrefixIds.ENTERPRISE>,
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  DeveloperPlanIds | PlanPrefixIds.CUSTOM | PlanPrefixIds.ENTERPRISE,
   PlanCardProps['item']
 > = {
-  [PlanPrefixIds.STARTER]: {
-    id: PlanIds[PlanPrefixIds.STARTER],
-    price: '$1',
+  [DeveloperPlanIds.FREE]: {
+    id: DeveloperPlanIds.FREE,
+    price: <span className="text-5xl font-bold">Free</span>,
     title: 'Starter',
     subTitle: 'Quick test our APIs',
     includes: [
@@ -193,10 +201,10 @@ const PlanItemsConfig: Record<
     ],
     excludes: ['No Overage', 'No Personal Replicas'],
   },
-  [PlanPrefixIds.HOBBYIST]: {
-    id: PlanIds[PlanPrefixIds.HOBBYIST],
+  [DeveloperPlanIds.PAY_AS_U_GO]: {
+    id: DeveloperPlanIds.PAY_AS_U_GO,
     price: '$39',
-    title: 'Hobbyist',
+    title: 'Pay as you go',
     subTitle: 'Casually explore our APIs',
     includes: [
       'Everything in Starter',
@@ -207,10 +215,10 @@ const PlanItemsConfig: Record<
       '3 Personal Replicas included',
     ],
   },
-  [PlanPrefixIds.BUSINESS]: {
-    id: PlanIds[PlanPrefixIds.BUSINESS],
-    price: '$199',
-    title: 'Business',
+  [DeveloperPlanIds.ADVANCED]: {
+    id: DeveloperPlanIds.ADVANCED,
+    price: '$359',
+    title: 'Advanced',
     subTitle: 'Add APIs to your app',
     includes: [
       'Everything in Hobbyist',
@@ -222,7 +230,20 @@ const PlanItemsConfig: Record<
     ],
   },
   [PlanPrefixIds.CUSTOM]: {
-    id: PlanIds[PlanPrefixIds.CUSTOM],
+    id: `${PlanPrefixIds.CUSTOM}_enterprise`,
+    price: <span className="text-5xl font-bold">{"Let's talk!"}</span>,
+    title: 'Custom',
+    subTitle: 'Scale AI videos',
+    includes: [
+      'Custom pricing and discounts',
+      'Faster GPU processing',
+      'Priority access to new models',
+      'Analytics & Reporting',
+      'Dedicated Enterprise Support',
+    ],
+  },
+  [PlanPrefixIds.ENTERPRISE]: {
+    id: `${PlanPrefixIds.CUSTOM}_enterprise`,
     price: <span className="text-5xl font-bold">{"Let's talk!"}</span>,
     title: 'Enterprise',
     subTitle: 'Scale AI videos',
@@ -236,20 +257,59 @@ const PlanItemsConfig: Record<
   },
 };
 
+const PlansBadges = {
+  [DeveloperPlanIds.FREE]: 'Free',
+  [DeveloperPlanIds.PAY_AS_U_GO]: 'Pay as you go',
+  [DeveloperPlanIds.ADVANCED]: 'Advanced',
+};
+
 const ENTERPRISE_BUTTON_PROPS: PlanCardProps['buttonProps'] = {
   target: '_blank',
   children: 'Contact Sales',
   href: 'https://calendly.com/d/3r3-8kw-b9x',
 };
 
-const BillingPlansCardsList: React.FC = () => {
+const ActivePlanCard = () => {
   const { data: user } = useUserQuery();
+
+  return (
+    <Card className="mx-auto w-full p-4">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-semibold">Current Plan</h2>
+          <Badge variant="secondary" className="!bg-primary/10 text-primary">
+            {PlansBadges[user?.billingAccount?.plan_id as DeveloperPlanIds] ||
+              'Custom'}
+          </Badge>
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <CancelSubscription />
+          <ChangePaymentMethodButton>
+            Manage Payment Method
+          </ChangePaymentMethodButton>
+        </div>
+      </div>
+      <hr className="my-4" />
+      <div>
+        <h3 className="mb-4 font-semibold">Billing Cycle Usage</h3>
+        <UsageProgress />
+      </div>
+    </Card>
+  );
+};
+
+const BillingPlansCardsList: React.FC = () => {
+  const router = useRouter();
   const { isPending, mutateAsync } = useCreateSubscriptionMutation();
 
   const handleSubmit = async (planId: PlanIds) => {
     try {
       const session = await mutateAsync(planId);
-      window.location.href = session.url;
+
+      if (session) window.location.href = session.url;
+      else {
+        router.push('/payment/success');
+      }
     } catch (_e) {
       const e = _e as AxiosError;
       toast({
@@ -270,102 +330,124 @@ const BillingPlansCardsList: React.FC = () => {
     isLoading: isPending,
     onClick: handleClick,
     children: 'Get Started',
-    disabled:
-      isPending ||
-      user?.billingAccount?.status === BillingAccountStatus.PAYMENT_FAILED,
+    disabled: isPending,
   };
 
   return (
     <CardsList>
       <PlanCard
         buttonProps={buttonProps}
-        item={PlanItemsConfig[PlanPrefixIds.STARTER]}
-      />
-      <PlanCard
-        buttonProps={buttonProps}
-        item={PlanItemsConfig[PlanPrefixIds.HOBBYIST]}
+        item={PlanItemsConfig[DeveloperPlanIds.FREE]}
       />
       <PlanCard
         isSelected
         badge="Recommended"
         buttonProps={buttonProps}
-        item={PlanItemsConfig[PlanPrefixIds.BUSINESS]}
+        item={PlanItemsConfig[DeveloperPlanIds.PAY_AS_U_GO]}
+      />
+      <PlanCard
+        buttonProps={buttonProps}
+        item={PlanItemsConfig[DeveloperPlanIds.ADVANCED]}
       />
       <PlanCard
         buttonProps={ENTERPRISE_BUTTON_PROPS}
-        item={PlanItemsConfig[PlanPrefixIds.CUSTOM]}
+        item={PlanItemsConfig[PlanPrefixIds.ENTERPRISE]}
       />
     </CardsList>
   );
 };
 
 const PLANS = [
-  PlanPrefixIds.STARTER,
-  PlanPrefixIds.HOBBYIST,
-  PlanPrefixIds.BUSINESS,
-  PlanPrefixIds.CUSTOM,
+  DeveloperPlanIds.FREE,
+  DeveloperPlanIds.PAY_AS_U_GO,
+  DeveloperPlanIds.ADVANCED,
 ] as const;
 
 const UpdateBillingPlansList: React.FC = () => {
   const { data: user, isLoading } = useUserQuery();
-  const { isPending, mutate } = useUpdateSubscriptionMutation({
-    onMutate: () => {
-      toast({
-        title: 'Processing',
-        description: 'We are updating your subscription. Please wait. 🚀',
-        variant: 'progress',
-      });
-    },
-  });
+  const { isPending, mutateAsync } = useUpdateSubscriptionMutation();
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    mutate(event.currentTarget.id as PlanIds);
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      const result = await mutateAsync(event.currentTarget.id as PlanIds);
+
+      if (result) {
+        window.location.href = result.url;
+      } else {
+        toast({
+          title: 'Processing',
+          description: 'We are updating your subscription. Please wait. 🚀',
+          variant: 'progress',
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      toast({
+        variant: 'error',
+        title: 'Error',
+        description:
+          'Oh no! Something went wrong. Please try again later. If the problem persists, contact support.',
+      });
+    }
   };
 
-  const currentPlanPrefixId = getPlanPrefixId(
-    user?.billingAccount?.plan_id ?? '',
-  );
-
-  const getUpgradePlanProps = (planPrefixId: PlanPrefixIds) => ({
-    buttonProps:
-      planPrefixId === PlanPrefixIds.CUSTOM
-        ? ENTERPRISE_BUTTON_PROPS
-        : ({
-            isLoading: isPending || isLoading,
-            onClick: handleClick,
-            children: 'Upgrade',
-          } as ButtonProps & { children: React.ReactNode }),
-  });
+  const isPaymentFailed =
+    user?.billingAccount?.status === BillingAccountStatus.PAYMENT_FAILED;
+  const userPlanId = user?.billingAccount?.plan_id as string;
+  const isEnterprisePlan = isEnterprise(user);
+  const isCustomPlan = hasCustomPlan(user);
 
   return (
     <CardsList>
-      {PLANS.map(planPrefixId => {
+      {PLANS.map(planId => {
         let props: Partial<PlanCardProps>;
-        if (planPrefixId === currentPlanPrefixId) {
+
+        if (planId === userPlanId) {
           props = {
             isSelected: true,
-            badge: 'YOUR PLAN',
-            buttonProps: { disabled: true, children: 'Current' },
+            buttonProps: { disabled: true, children: 'Current Plan' },
           };
         } else if (
-          PlanPrefixIdsLevels[planPrefixId] <
-          PlanPrefixIdsLevels[currentPlanPrefixId]
+          !isCustomPlan &&
+          (isEnterprisePlan ||
+            PlanPrefixIdsLevels[planId as DeveloperPlanIds] <
+              PlanPrefixIdsLevels[userPlanId as DeveloperPlanIds])
         ) {
           props = { buttonProps: { disabled: true, children: '-' } };
         } else {
-          props = getUpgradePlanProps(planPrefixId);
+          props = {
+            buttonProps: {
+              disabled: isPaymentFailed || isPending || isLoading,
+              isLoading: isPending || isLoading,
+              onClick: handleClick,
+              children: 'Upgrade',
+            },
+          };
         }
 
         return (
           <PlanCard
-            /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-            // @ts-expect-error
-            item={PlanItemsConfig[planPrefixId]}
-            key={planPrefixId}
+            // @ts-ignore
+            item={PlanItemsConfig[planId]}
+            key={planId}
             {...(props as PlanCardProps)}
           />
         );
       })}
+      {(isEnterprisePlan || !isCustomPlan) && (
+        <PlanCard
+          isSelected={isEnterprisePlan}
+          item={PlanItemsConfig[PlanPrefixIds.ENTERPRISE]}
+          buttonProps={ENTERPRISE_BUTTON_PROPS}
+        />
+      )}
+      {isCustomPlan && (
+        <PlanCard
+          isSelected
+          item={PlanItemsConfig[PlanPrefixIds.CUSTOM]}
+          buttonProps={ENTERPRISE_BUTTON_PROPS}
+        />
+      )}
     </CardsList>
   );
 };
@@ -393,9 +475,6 @@ const PaymentFailedBanner = () => {
 export default function BillingPlansPage() {
   const { data: user, isLoading } = useUserQuery();
 
-  const hasActiveSubscription =
-    user?.billingAccount?.status === BillingAccountStatus.ACTIVE;
-
   if (isLoading) return null;
 
   return (
@@ -413,47 +492,31 @@ export default function BillingPlansPage() {
         <div className="flex flex-col gap-10">
           {user?.billingAccount?.status ===
             BillingAccountStatus.PAYMENT_FAILED && <PaymentFailedBanner />}
-          {hasActiveSubscription ? (
+          {user?.billingAccount?.status === BillingAccountStatus.ACTIVE && (
+            <ActivePlanCard />
+          )}
+          {user?.billingAccount?.status === BillingAccountStatus.ACTIVE ||
+          user?.billingAccount?.status ===
+            BillingAccountStatus.PAYMENT_FAILED ? (
             <UpdateBillingPlansList />
           ) : (
             <BillingPlansCardsList />
           )}
-          <div className="rounded-md border bg-background p-6 shadow-sm">
-            <div className="flex flex-col md:flex-row">
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold">How do tokens work?</h2>
-                <p className="mt-2 text-muted-foreground">
-                  Each plan includes a set amount of tokens per month. You can
-                  use those tokens to create replicas, or generate videos. Some
-                  plans have Personal Replicas included already.
-                </p>
-              </div>
-              <div className="mx-6 hidden border-l md:block" />
-              <div className="mt-4 flex flex-1 flex-col items-center justify-evenly space-y-4 md:mt-0 md:flex-row md:space-x-8 md:space-y-0">
-                <div>
-                  <h3 className="font-semibold">Personal Replicas</h3>
-                  <p className="text-muted-foreground">5000 tokens/Replica</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold">Text to video</h3>
-                  <p className="text-muted-foreground">100 tokens/min</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          {hasActiveSubscription && <CancelButton />}
         </div>
       </LayoutWrapper>
     </Layout>
   );
 }
 
-const CancelButton = () => {
-  const router = useRouter();
-  const [open, setOpen] = React.useState(false);
+const CancelSubscription = () => {
+  const { data: user } = useUserQuery();
+  const [open, setOpen] = useState(false);
   const { mutate, isPending } = useCancelSubscriptionMutation({
     onSuccess: () => {
-      router.push('/billing/cancel-plan');
+      toast({
+        variant: 'progress',
+        title: 'Cancellation request has been submitted',
+      });
       setOpen(false);
     },
     onError: () => {
@@ -466,11 +529,35 @@ const CancelButton = () => {
     },
   });
 
+  const hasActiveSubscription =
+    user?.billingAccount?.status === BillingAccountStatus.ACTIVE;
+
+  if (
+    user?.billingAccount?.plan_id === DeveloperPlanIds.FREE ||
+    !hasActiveSubscription ||
+    isEnterprise(user)
+  )
+    return null;
+
+  if (user?.billingAccount?.scheduled_cancellation_date)
+    return (
+      <p className="text-sm text-gray-600">
+        Your plan will change to{' '}
+        <span className="font-semibold text-primary">Free Plan</span> on{' '}
+        <span className="font-semibold">
+          {format(
+            user?.billingAccount?.scheduled_cancellation_date,
+            'MMMM d, yyyy',
+          )}
+        </span>
+      </p>
+    );
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
-          <Button variant="destructive">Cancel Subscription</Button>
+          <Button variant="outline">Cancel Subscription</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

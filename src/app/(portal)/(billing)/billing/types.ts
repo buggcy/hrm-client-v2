@@ -23,27 +23,31 @@ export interface UsageAndLimits {
 
 export type ProductsUsageAndLimits = Record<BillingEventItem, UsageAndLimits>;
 
-export const PlanIds: Record<PlanPrefixIds, `${PlanPrefixIds}_${string}`> = {
-  [PlanPrefixIds.STARTER]: 'starter_v1',
-  [PlanPrefixIds.HOBBYIST]: 'hobbyist_v1',
-  [PlanPrefixIds.BUSINESS]: 'business_v1',
-  [PlanPrefixIds.CUSTOM]: 'custom_v1',
-  [PlanPrefixIds.ENTERPRISE]: 'enterprise_v1',
+export const DeveloperPlanIds = {
+  FREE: 'free_dev',
+  PAY_AS_U_GO: 'pay_as_you_go_dev',
+  ADVANCED: 'advanced_dev',
 } as const;
-export type PlanIds = (typeof PlanIds)[keyof typeof PlanIds];
+export type DeveloperPlanIds =
+  (typeof DeveloperPlanIds)[keyof typeof DeveloperPlanIds];
+export const DeveloperPlanIdsSet = new Set<string>(
+  Object.values(DeveloperPlanIds),
+);
 
-export const getPlanPrefixId = (planId: string): PlanPrefixIds => {
-  const prefix = planId?.split('_')?.[0];
+export type PlanIds = DeveloperPlanIds | `${PlanPrefixIds}_${string}`;
 
-  return PlanIds[prefix as PlanPrefixIds]
-    ? (prefix as PlanPrefixIds)
-    : PlanPrefixIds.CUSTOM;
-};
+export const getPlanPrefix = (planId?: PlanIds) => planId?.split('_')?.[0];
 
-export const isEnterprisePlan = (user: IUser): boolean =>
+export const isEnterprise = (user?: IUser): boolean =>
+  !!user &&
   user?.billingAccount?.status === BillingAccountStatus.ACTIVE &&
-  getPlanPrefixId(user?.billingAccount?.plan_id as PlanIds) ===
+  getPlanPrefix(user?.billingAccount?.plan_id as PlanIds) ===
     PlanPrefixIds.ENTERPRISE;
+export const hasCustomPlan = (user?: IUser): boolean =>
+  !!user &&
+  !isEnterprise(user) &&
+  user?.billingAccount?.status === BillingAccountStatus.ACTIVE &&
+  !DeveloperPlanIdsSet.has(user?.billingAccount?.plan_id as string);
 
 export enum SubscriptionChangeOption {
   END_OF_SUB_TERM = 'end_of_subscription_term',

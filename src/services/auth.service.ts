@@ -52,7 +52,7 @@ const signUp = async ({
   signupType: 'google' | 'email';
 }): Promise<IUser> =>
   portalApi
-    .post('/v2/users/signup', {
+    .post('/v3/users/signup', {
       ...data,
       first_name: firstName,
       last_name: lastName,

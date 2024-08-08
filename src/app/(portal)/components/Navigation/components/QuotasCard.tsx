@@ -1,12 +1,15 @@
 import Link from 'next/link';
 
-import { Clapperboard, UserIcon } from 'lucide-react';
+import { Clapperboard, MonitorDot, UserIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardFooter } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
-import { isEnterprisePlan } from '@/app/(portal)/(billing)/billing/types';
+import {
+  DeveloperPlanIds,
+  isEnterprise,
+} from '@/app/(portal)/(billing)/billing/types';
 import { useUserQuery } from '@/hooks';
 import { useUserQuotasQuery } from '@/hooks/useBilling';
 import { cn } from '@/utils';
@@ -17,9 +20,15 @@ const INFINITY_QUOTAS_VALUE = 99999999;
 
 export default function QuotasCard({ className }: { className?: string }) {
   const { data: user, isError } = useUserQuery();
-  const { data: quotas, isLoading } = useUserQuotasQuery();
 
-  if (!user || isError) return null;
+  if (
+    !user ||
+    isError ||
+    user?.billingAccount?.plan_id === DeveloperPlanIds.ADVANCED ||
+    user?.billingAccount?.plan_id === DeveloperPlanIds.PAY_AS_U_GO ||
+    isEnterprise(user)
+  )
+    return null;
 
   return (
     <Card
@@ -28,69 +37,85 @@ export default function QuotasCard({ className }: { className?: string }) {
         className,
       )}
     >
-      {user?.billingAccount?.status === BillingAccountStatus.ACTIVE && (
-        <CardContent className="space-y-4 p-0">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <Clapperboard className="size-5 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
-                {isLoading
-                  ? 'Loading...'
-                  : quotas?.video.planLimit
-                    ? quotas.video.planLimit === INFINITY_QUOTAS_VALUE
-                      ? quotas.video.currentUsage + ' min used'
-                      : `${quotas.video.currentUsage}/${quotas.video.planLimit} min left`
-                    : 'No minutes available'}
-              </span>
-            </div>
-            <Progress
-              value={
-                quotas?.video.planLimit &&
-                (quotas?.video.currentUsage / quotas?.video.planLimit) * 100
-              }
-              className="h-1 w-full"
-              variant="white"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <UserIcon className="size-5 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
-                {isLoading
-                  ? 'Loading...'
-                  : quotas?.replica?.planLimit
-                    ? (quotas.replica.planLimit === INFINITY_QUOTAS_VALUE
-                        ? quotas.replica.currentUsage
-                        : `${quotas.replica.currentUsage}/${quotas.replica.planLimit}`) +
-                      ` replica used`
-                    : 'No own replicas available'}
-              </span>
-            </div>
-            <Progress
-              value={
-                quotas?.replica.planLimit &&
-                (quotas?.replica.currentUsage / quotas?.replica.planLimit) * 100
-              }
-              className="h-1 w-full"
-              variant="white"
-            />
-          </div>
-        </CardContent>
-      )}
-      {!isEnterprisePlan(user) && (
-        <CardFooter className="p-0">
-          <Button variant="outline" className="w-full bg-transparent" asChild>
-            <Link href="/billing">
-              {user?.billingAccount?.status === BillingAccountStatus.ACTIVE
-                ? 'Upgrade Plan'
-                : user?.billingAccount?.status ===
-                    BillingAccountStatus.PAYMENT_FAILED
-                  ? 'Update payment method'
-                  : 'Buy Plan'}
-            </Link>
-          </Button>
-        </CardFooter>
-      )}
+      <CardFooter className="p-0">
+        <Button variant="outline" className="w-full bg-transparent" asChild>
+          <Link href="/billing">
+            {user?.billingAccount?.status === BillingAccountStatus.ACTIVE
+              ? 'Upgrade Plan'
+              : user?.billingAccount?.status ===
+                  BillingAccountStatus.PAYMENT_FAILED
+                ? 'Update payment method'
+                : 'Buy Plan'}
+          </Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
+
+const QuotaItem = ({
+  isLoading,
+  data,
+  Icon,
+  measure = 'quotas',
+  noQuotasText = 'No quotas available',
+}: {
+  isLoading: boolean;
+  data?: {
+    planLimit: number;
+    currentUsage: number;
+  };
+  Icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  measure: string;
+  noQuotasText?: string;
+}) => (
+  <div className="space-y-1.5">
+    <div className="flex items-center gap-2">
+      <Icon className="size-5 text-muted-foreground" />
+      <span className="text-xs font-medium text-muted-foreground">
+        {isLoading
+          ? 'Loading...'
+          : data?.planLimit
+            ? data.planLimit === INFINITY_QUOTAS_VALUE
+              ? data.currentUsage + ` ${measure} used`
+              : `${data.currentUsage}/${data.planLimit} ${measure} left`
+            : noQuotasText}
+      </span>
+    </div>
+    <Progress
+      value={data?.planLimit && (data?.currentUsage / data?.planLimit) * 100}
+      className="h-1 w-full"
+      variant="white"
+    />
+  </div>
+);
+
+export const UsageProgress = () => {
+  const { data: quotas, isLoading } = useUserQuotasQuery();
+
+  return (
+    <div className="space-y-4 p-0">
+      <QuotaItem
+        isLoading={isLoading}
+        data={quotas?.video}
+        Icon={Clapperboard}
+        measure="video generation minutes"
+        noQuotasText="No minutes available"
+      />
+      <QuotaItem
+        isLoading={isLoading}
+        data={quotas?.replica}
+        Icon={UserIcon}
+        measure="replicas"
+        noQuotasText="No own replicas available"
+      />
+      <QuotaItem
+        isLoading={isLoading}
+        Icon={MonitorDot}
+        measure={'conversation minutes'}
+        noQuotasText={'No conversation minutes available'}
+        data={quotas?.conversation}
+      />
+    </div>
+  );
+};

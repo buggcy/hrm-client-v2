@@ -29,6 +29,7 @@ export const IUser = z.object({
       status: z.nativeEnum(BillingAccountStatus).nullable(),
       plan_id: z.string().nullable(),
       subscription_id: z.string().nullable(),
+      scheduled_cancellation_date: z.string().nullable(),
     })
     .nullable()
     .optional(),

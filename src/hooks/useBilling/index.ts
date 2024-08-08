@@ -21,21 +21,22 @@ interface StripeSession {
 }
 
 export const BillingService = {
-  createSubscription: (planId: PlanIds): Promise<StripeSession> =>
+  createSubscription: (planId: PlanIds): Promise<StripeSession | void> =>
     portalApi.post('/v2/billing/subscriptions', {
       planId,
       cancelUrl,
       successUrl: `${APP_BASE_URL}/payment/success`,
     }),
-  updateSubscription: (planId: PlanIds): Promise<void> =>
+  updateSubscription: (planId: PlanIds): Promise<StripeSession | void> =>
     portalApi.patch('/v2/billing/subscriptions', {
       planId,
       changeOption: SubscriptionChangeOption.IMMEDIATE,
-    }),
-  createStripeCheckoutSession: (): Promise<string> =>
-    portalApi.post('/v2/billing/v2/subscriptions/checkoutSession', {
       cancelUrl,
-      successUrl: `${APP_BASE_URL}/payment/update/success`,
+      successUrl: `${APP_BASE_URL}/payment/success`,
+    }),
+  getBillingPortal: (): Promise<StripeSession> =>
+    portalApi.post('/v2/billing/stripe/billing-portal', {
+      returnUrl: `${APP_BASE_URL}/payment/update/success`,
     }),
   cancelSubscription: (): Promise<void> =>
     portalApi.post('/v2/billing/subscriptions/cancel'),
@@ -64,25 +65,27 @@ export const useUserQuotasQuery = (
     ...options,
   });
 
+const scheduleUserRefetch = () => {
+  setTimeout(() => queryClient.refetchQueries({ queryKey: ['user'] }), 5000);
+  setTimeout(() => queryClient.refetchQueries({ queryKey: ['user'] }), 10000);
+};
+
 export const useUpdateSubscriptionMutation = ({
   onMutate,
   ...options
-}: UseMutationOptions<void, Error, PlanIds> = {}) =>
+}: UseMutationOptions<StripeSession | void, Error, PlanIds> = {}) =>
   useMutation({
     mutationFn: BillingService.updateSubscription,
     onMutate: (...args) => {
-      setTimeout(
-        () => queryClient.refetchQueries({ queryKey: ['user'] }),
-        5000,
-      );
+      scheduleUserRefetch();
       onMutate?.(...args);
     },
     ...options,
   });
 
-export const useCreateStripeCheckoutSessionUrlMutation = () =>
+export const useStripeBillingPortalSessionMutation = () =>
   useMutation({
-    mutationFn: BillingService.createStripeCheckoutSession,
+    mutationFn: BillingService.getBillingPortal,
   });
 
 export const useCancelSubscriptionMutation = ({
@@ -92,10 +95,7 @@ export const useCancelSubscriptionMutation = ({
   useMutation({
     mutationFn: BillingService.cancelSubscription,
     onSettled: (...args) => {
-      setTimeout(
-        () => queryClient.refetchQueries({ queryKey: ['user'] }),
-        5000,
-      );
+      scheduleUserRefetch();
       onSettled?.(...args);
     },
     ...options,

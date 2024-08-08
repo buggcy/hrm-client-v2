@@ -4,22 +4,23 @@ import { LoadingButton } from '@/components/LoadingButton';
 import { ButtonProps } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 
-import { useCreateStripeCheckoutSessionUrlMutation } from '@/hooks/useBilling';
+import { useStripeBillingPortalSessionMutation } from '@/hooks/useBilling';
 
 export const ChangePaymentMethodButton = ({
   children,
   ...props
 }: ButtonProps) => {
-  const { isPending, mutateAsync } =
-    useCreateStripeCheckoutSessionUrlMutation();
+  const { isPending, mutateAsync } = useStripeBillingPortalSessionMutation();
 
   const handleClick = async () => {
     try {
-      window.location.href = await mutateAsync();
+      const result = await mutateAsync();
+
+      window.location.href = result.url;
     } catch (error) {
       toast({
         description:
-          'Failed to create a new payment session. Please try again later or contact support.',
+          'Failed to create a payment session. Please try again later or contact support.',
         variant: 'error',
       });
     }
