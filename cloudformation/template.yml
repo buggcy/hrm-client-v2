@@ -11,7 +11,7 @@ Parameters:
     Type: String
   HostedZoneId:
     Type: String
-    Default: Z013084135OBL7TN95DU4
+    Default: Z08492762H2TGIGTYKA7
 
 Resources:
   Certificate:
