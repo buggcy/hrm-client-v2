@@ -7,9 +7,11 @@ import { Badge, BadgeProps } from '@/components/ui/badge';
 
 import { StatusBadgeProps } from './types';
 
-import { ReplicaStatus, VideoStatus } from '@/types';
+import { ConversationStatus, ReplicaStatus, VideoStatus } from '@/types';
 
-const statusTextMap: { [key in VideoStatus | ReplicaStatus]: string } = {
+const statusTextMap: {
+  [key in VideoStatus | ReplicaStatus | ConversationStatus]: string;
+} = {
   [VideoStatus.GENERATING]: 'general.statusBadge.generating',
   [VideoStatus.QUEUED]: 'general.statusBadge.generating',
   [VideoStatus.READY]: 'general.statusBadge.ready',
@@ -17,9 +19,13 @@ const statusTextMap: { [key in VideoStatus | ReplicaStatus]: string } = {
   [VideoStatus.DELETED]: 'general.statusBadge.error',
   [ReplicaStatus.STARTED]: 'general.statusBadge.training',
   [ReplicaStatus.COMPLETED]: 'general.statusBadge.completed',
+  [ConversationStatus.ACTIVE]: 'general.statusBadge.active',
+  [ConversationStatus.ENDED]: 'general.statusBadge.completed',
 };
 
-const badgeVariantMap: { [key in VideoStatus | ReplicaStatus]: string } = {
+const badgeVariantMap: {
+  [key in VideoStatus | ReplicaStatus | ConversationStatus]: string;
+} = {
   [VideoStatus.GENERATING]: 'progress',
   [VideoStatus.QUEUED]: 'progress',
   [VideoStatus.READY]: 'success',
@@ -27,6 +33,8 @@ const badgeVariantMap: { [key in VideoStatus | ReplicaStatus]: string } = {
   [VideoStatus.DELETED]: 'general.statusBadge.error',
   [ReplicaStatus.STARTED]: 'progress',
   [ReplicaStatus.COMPLETED]: 'success',
+  [ConversationStatus.ACTIVE]: 'progress',
+  [ConversationStatus.ENDED]: 'success',
 };
 
 const StatusBadge: FC<StatusBadgeProps> = ({ status }) => {

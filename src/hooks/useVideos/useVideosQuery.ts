@@ -1,15 +1,10 @@
-import {
-  Query,
-  QueryKey,
-  useQuery,
-  UseQueryOptions,
-} from '@tanstack/react-query';
+import { Query, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { queryClient } from '@/libs';
 import { rqhApi, schemaParse } from '@/utils';
 
-import { IVideo, VideoStatus } from '@/types';
+import { IVideo, UseQueryConfig, VideoStatus } from '@/types';
 
 export const IVideosResponse = z.object({
   data: z.array(IVideo),
@@ -17,11 +12,7 @@ export const IVideosResponse = z.object({
 });
 export type IVideosResponse = z.infer<typeof IVideosResponse>;
 
-type UseVideosQueryParams = {
-  queryKey?: QueryKey;
-  // TODO: Define the type of the queryParams like in API
-  queryParams?: Record<string, unknown>;
-} & Omit<UseQueryOptions<IVideosResponse>, 'queryKey' | 'queryFn'>;
+type UseVideosQueryParams = UseQueryConfig<IVideosResponse>;
 
 export const useVideosQueryRefetchInterval = (
   query: Query<IVideosResponse>,
@@ -54,9 +45,9 @@ export const useVideosQuery = ({
 }: UseVideosQueryParams = {}) =>
   useQuery<IVideosResponse>({
     queryKey: queryKey || ['videos', queryParams],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       rqhApi
-        .get('/v2/videos', { params: queryParams })
+        .get('/v2/videos', { params: queryParams, signal })
         .then(schemaParse(IVideosResponse))
         .then(data => {
           data.data.forEach(video => {

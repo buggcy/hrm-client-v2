@@ -10,18 +10,18 @@ export enum VideoStatus {
 
 export const IVideo = z.object({
   video_id: z.string(),
-  video_name: z.string().nullable().optional(),
+  video_name: z.string().nullish(),
   status: z.nativeEnum(VideoStatus),
   data: z.object({
     script: z.string().optional(),
     audio_url: z.string().url().optional(),
   }),
   status_details: z.string().optional(),
-  hosted_url: z.string().url().nullable().optional(),
-  stream_url: z.string().url().nullable().optional(),
-  download_url: z.string().url().nullable().optional(),
-  gif_thumbnail_url: z.string().url().nullable().optional(),
-  still_image_thumbnail_url: z.string().url().nullable().optional(),
+  hosted_url: z.string().url().nullish(),
+  stream_url: z.string().url().nullish(),
+  download_url: z.string().url().nullish(),
+  gif_thumbnail_url: z.string().url().nullish(),
+  still_image_thumbnail_url: z.string().url().nullish(),
   created_at: z.string(),
   updated_at: z.string(),
 });

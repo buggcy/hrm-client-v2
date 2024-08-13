@@ -73,7 +73,7 @@ const VideoDetailsSheet: FC<VideoDetailsSheetProps> = ({
                 target="_blank"
                 href={`/videos/details?id=${video?.video_id}`}
               >
-                Video Page
+                Video Details
                 <ArrowUpRight className="size-4" />
               </Link>
             </Button>

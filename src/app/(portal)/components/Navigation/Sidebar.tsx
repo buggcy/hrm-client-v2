@@ -3,7 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Home, Key, ListVideo, Users, Video } from 'lucide-react';
+import {
+  Home,
+  Key,
+  ListVideo,
+  MessageCircle,
+  MonitorDot,
+  Users,
+  Video,
+} from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
@@ -82,6 +90,24 @@ export const Sidebar = () => {
                 icon={ReplicaIcon}
                 href="/replicas"
                 active={pathname === '/replicas'}
+              />
+            </li>
+          </NavSection>
+          <NavSection title="CONVERSATION">
+            <li className="flex">
+              <NavigationItem
+                title="Create Conversation"
+                icon={MonitorDot}
+                href="/conversations/create"
+                active={pathname === '/conversations/create'}
+              />
+            </li>
+            <li className="flex">
+              <NavigationItem
+                title="Conversations Library"
+                icon={MessageCircle}
+                href="/conversations"
+                active={pathname === '/conversations'}
               />
             </li>
           </NavSection>

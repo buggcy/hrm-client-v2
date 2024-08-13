@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { ParseParams, z } from 'zod';
 
+import { isProd } from '@/constants';
+
 import { IReplica } from '@/types';
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
@@ -12,10 +14,11 @@ export const schemaParse =
     try {
       return schema.parse(data, params);
     } catch (error) {
-      console.error(
-        'Error parsing data with schema:',
-        JSON.stringify(error, null, 2),
-      );
+      if (!isProd)
+        console.error(
+          'Error parsing data with schema:',
+          JSON.stringify(error, null, 2),
+        );
       // TODO: remove this when all schemas are fixed
       return data as z.infer<Schema>;
     }
@@ -34,14 +37,9 @@ export function createReplicaThumbnailUrl(
   return url ? `${url}#t=1` : '';
 }
 
-export function isTouchDevice() {
-  if (
-    !(
-      'ontouchstart' in window ||
-      (window.DocumentTouch && document instanceof window.DocumentTouch)
-    )
-  ) {
-    return false;
-  }
-  return true;
+export function isTouchDevice(): boolean {
+  return !!(
+    'ontouchstart' in window ||
+    (window.DocumentTouch && document instanceof window.DocumentTouch)
+  );
 }

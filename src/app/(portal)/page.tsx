@@ -1,4 +1,3 @@
-import { CTACards } from '@/components/CTACards';
 import {
   Layout,
   LayoutHeader,
@@ -6,8 +5,14 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { ReadDocsButton } from '@/components/ReadDocsButton';
-import { Resources } from '@/components/Resources';
-import { StockReplicaCarousel } from '@/components/StockReplicaCarousel';
+
+import {
+  ConversationBanner,
+  CTACards,
+  Resources,
+  StockPersonasCarousel,
+  StockReplicaCarousel,
+} from '@/app/(portal)/components/HomePage';
 
 export default function Home() {
   return (
@@ -17,9 +22,11 @@ export default function Home() {
           <ReadDocsButton to="home" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper>
+      <LayoutWrapper className="flex flex-col gap-10">
+        <ConversationBanner />
         <CTACards />
         <StockReplicaCarousel />
+        <StockPersonasCarousel />
         <Resources />
       </LayoutWrapper>
     </Layout>

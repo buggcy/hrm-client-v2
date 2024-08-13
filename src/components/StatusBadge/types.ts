@@ -1,5 +1,5 @@
-import { ReplicaStatus, VideoStatus } from '@/types';
+import { ConversationStatus, ReplicaStatus, VideoStatus } from '@/types';
 
 export interface StatusBadgeProps {
-  status: VideoStatus | ReplicaStatus;
+  status: VideoStatus | ReplicaStatus | ConversationStatus;
 }

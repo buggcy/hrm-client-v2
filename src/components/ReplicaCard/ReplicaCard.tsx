@@ -35,7 +35,7 @@ import { Skeleton } from '../ui/skeleton';
 
 import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
 
-export const CopyReplicaID = ({
+export const CopyIdButton = ({
   id,
   label,
   variant = 'default',
@@ -100,7 +100,6 @@ const SkeletonReplicaCard: React.FC<{ className?: string }> = ({
       <Skeleton className="aspect-video size-full rounded-md" />
     </CardContent>
     <div className="flex flex-col gap-3 px-2.5 pb-4">
-      <Skeleton className="h-8 w-full rounded-md" />
       <Skeleton className="h-5 w-full rounded-md" />
     </div>
   </Card>
@@ -292,7 +291,7 @@ const ReplicaCard = ({
             )}
           </div>
           <div className="absolute bottom-2 left-2">
-            <CopyReplicaID
+            <CopyIdButton
               id={replica_id}
               label={`ID: ${replica_id}`}
               variant={status === ReplicaStatus.COMPLETED ? 'default' : 'muted'}
@@ -399,7 +398,7 @@ const ReplicaCard = ({
           (status === ReplicaStatus.COMPLETED ? (
             <Button asChild variant="link" className="mt-2.5 h-5 p-0">
               <Link
-                href={`/videos/create/?replica=${replica_id}`}
+                href={`/videos/create/?replicaId=${replica_id}`}
                 prefetch={false}
               >
                 Create Video

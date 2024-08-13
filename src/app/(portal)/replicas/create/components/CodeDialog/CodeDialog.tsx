@@ -1,6 +1,8 @@
+'use client';
+
 import { useMemo } from 'react';
 
-import { ApiCode, HttpMethods } from '@/components/Code';
+import { ApiCode } from '@/components/Code';
 import { URLS } from '@/components/CopyApiUrl';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,9 +16,9 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { RQH_API_BASE_URL } from '@/constants';
-
 import { useReplicaStore, VideoMethod } from '../../hooks';
+
+import { HttpMethods } from '@/types';
 
 export const CodeDialog: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -61,7 +63,7 @@ export const CodeDialog: React.FC<{ children: React.ReactNode }> = ({
         </DialogHeader>
         <div className="flex w-full">
           <ApiCode
-            url={`${RQH_API_BASE_URL}${URLS.replica}`}
+            url={URLS.replica}
             method={HttpMethods.POST}
             body={body}
             className="w-full"

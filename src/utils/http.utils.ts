@@ -47,3 +47,7 @@ export const rqhApi = axios.create({
 
 rqhApi.interceptors.request.use(onRequestFulfilled);
 rqhApi.interceptors.response.use(onResponseFulfilled, onResponseRejected);
+
+export const getErrorMessage = (error: Error) =>
+  (error as AxiosError<{ message: string }>)?.response?.data?.message ||
+  error.message;

@@ -2,6 +2,7 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryOptions,
 } from '@tanstack/react-query';
+import { AxiosRequestConfig } from 'axios';
 import { z } from 'zod';
 
 import { queryClient } from '@/libs';
@@ -27,10 +28,10 @@ type UseReplicaQueryParams = {
   | 'getNextPageParam'
 >;
 
-export const getReplicas = (queryParams?: Record<string, unknown>) =>
+export const getReplicas = (config?: AxiosRequestConfig) =>
   // TODO: filter by schemaParse
   rqhApi
-    .get('/v2/replicas?verbose=true', { params: queryParams })
+    .get('/v2/replicas?verbose=true', config)
     .then(schemaParse(IReplicasResponse));
 
 export const useReplicasQuery = ({
@@ -39,8 +40,11 @@ export const useReplicasQuery = ({
 }: UseReplicaQueryParams = {}) =>
   useInfiniteQuery<IReplicasResponse, Error>({
     queryKey: ['replicas', queryParams],
-    queryFn: ({ pageParam }) =>
-      getReplicas({ ...queryParams, page: pageParam }).then(data => {
+    queryFn: ({ pageParam, signal }) =>
+      getReplicas({
+        params: { ...queryParams, page: pageParam },
+        signal,
+      }).then(data => {
         data.data.forEach(replica => {
           queryClient.setQueryData(['replica', replica.replica_id], replica);
         });

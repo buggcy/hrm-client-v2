@@ -20,7 +20,7 @@ const LayoutHeader: FC<LayoutHeaderProps> = ({
   return (
     <header
       className={cn(
-        'sticky top-0 z-10 flex items-center bg-background p-3 sm:px-8',
+        'sticky top-0 z-20 hidden items-center bg-background p-3 sm:flex sm:px-8',
         className,
       )}
     >

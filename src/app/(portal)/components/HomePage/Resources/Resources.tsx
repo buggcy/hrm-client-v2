@@ -2,8 +2,8 @@ import { Code2, Headphones } from 'lucide-react';
 
 import { API_DOCS_LINK, DISCORD_LINK } from '@/constants';
 
-import { toggleIntercom } from '../Intercom';
-import { Button } from '../ui/button';
+import { toggleIntercom } from '../../../../../components/Intercom';
+import { Button } from '../../../../../components/ui/button';
 
 const DiscordLogo = () => (
   <svg
@@ -66,7 +66,7 @@ const RESOURCES = [
 
 export const Resources = () => {
   return (
-    <div className="mt-8 grid grid-cols-1 gap-6 p-8 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-6 p-8 sm:grid-cols-3">
       {RESOURCES.map(
         ({ id, title, description, icon: Icon, href, linkTitle, onClick }) => (
           <div

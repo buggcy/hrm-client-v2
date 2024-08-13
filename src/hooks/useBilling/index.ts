@@ -2,8 +2,8 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
-  UseQueryOptions,
 } from '@tanstack/react-query';
+import { AxiosRequestConfig } from 'axios';
 
 import {
   PlanIds,
@@ -13,6 +13,8 @@ import {
 import { APP_BASE_URL } from '@/constants';
 import { queryClient } from '@/libs';
 import { portalApi } from '@/utils';
+
+import { UseQueryConfig } from '@/types';
 
 const cancelUrl = `${APP_BASE_URL}/billing`;
 
@@ -40,8 +42,8 @@ export const BillingService = {
     }),
   cancelSubscription: (): Promise<void> =>
     portalApi.post('/v2/billing/subscriptions/cancel'),
-  fetchQuotas: (): Promise<ProductsUsageAndLimits> =>
-    portalApi.get('/v2/billing/quotas'),
+  fetchQuotas: (config?: AxiosRequestConfig): Promise<ProductsUsageAndLimits> =>
+    portalApi.get('/v2/billing/quotas', config),
 };
 
 export const useCreateSubscriptionMutation = () =>
@@ -51,10 +53,7 @@ export const useCreateSubscriptionMutation = () =>
   });
 
 export const useUserQuotasQuery = (
-  options?: Omit<
-    UseQueryOptions<ProductsUsageAndLimits>,
-    'queryKey' | 'queryFn'
-  >,
+  options?: UseQueryConfig<ProductsUsageAndLimits>,
 ) =>
   useQuery({
     queryKey: ['user', 'quotas'],

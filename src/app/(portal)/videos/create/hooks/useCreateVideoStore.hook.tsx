@@ -8,7 +8,7 @@ import { AudioTab, VideoBackgroundType, VideoGenerationType } from '../types';
 
 import { IReplica } from '@/types';
 
-export interface IVideoGenerateFilesStore {
+export interface ICreateVideoFilesStore {
   audio: {
     file?: File;
     url: string;
@@ -19,14 +19,14 @@ export interface IVideoGenerateFilesStore {
     url: string;
     duration?: number;
   } | null;
-  set: StoreApi<IVideoGenerateFilesStore>['setState'];
+  set: StoreApi<ICreateVideoFilesStore>['setState'];
 }
 
 export type Require<T> = {
   [P in keyof T]-?: T[P];
 };
 
-export interface IVideoGenerateFormStore {
+export interface ICreateVideoFormStore {
   replicaId: IReplica['replica_id'];
   audioTab: AudioTab;
   script?: string;
@@ -39,10 +39,10 @@ export interface IVideoGenerateFormStore {
   isAdvancedSettingsOpen: boolean;
   withBackground: boolean;
   backgroundType: VideoBackgroundType;
-  set: StoreApi<IVideoGenerateFormStore>['setState'];
+  set: StoreApi<ICreateVideoFormStore>['setState'];
 }
 
-export const useVideoGenerateFormStore = create<IVideoGenerateFormStore>()(
+export const useCreateVideoFormStore = create<ICreateVideoFormStore>()(
   persist(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
     temporal(set => ({
@@ -55,26 +55,20 @@ export const useVideoGenerateFormStore = create<IVideoGenerateFormStore>()(
       set,
     })),
     {
-      name: 'useVideoFormStore',
+      name: 'useCreateVideoFormStore',
       storage: createJSONStorage(() => sessionStorage),
     },
   ),
 );
 
-export const useVideoGenerateFormUndoHistory = <T,>(
-  selector: (state: TemporalState<IVideoGenerateFormStore>) => T,
+export const useCreateVideoFormUndoHistory = <T,>(
+  selector: (state: TemporalState<ICreateVideoFormStore>) => T,
   equality?: (a: T, b: T) => boolean,
 ) =>
-  useStoreWithEqualityFn(
-    useVideoGenerateFormStore.temporal,
-    selector,
-    equality,
-  );
+  useStoreWithEqualityFn(useCreateVideoFormStore.temporal, selector, equality);
 
-export const useVideoGenerateFilesStore = create<IVideoGenerateFilesStore>(
-  set => ({
-    audio: null,
-    background: null,
-    set,
-  }),
-);
+export const useCreateVideoFilesStore = create<ICreateVideoFilesStore>(set => ({
+  audio: null,
+  background: null,
+  set,
+}));

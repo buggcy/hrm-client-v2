@@ -19,14 +19,14 @@ import { BillingAccountStatus } from '@/types';
 const INFINITY_QUOTAS_VALUE = 99999999;
 
 export default function QuotasCard({ className }: { className?: string }) {
-  const { data: user, isError } = useUserQuery();
+  const { data: user } = useUserQuery();
 
   if (
     !user ||
-    isError ||
-    user?.billingAccount?.plan_id === DeveloperPlanIds.ADVANCED ||
-    user?.billingAccount?.plan_id === DeveloperPlanIds.PAY_AS_U_GO ||
-    isEnterprise(user)
+    ((user?.billingAccount?.plan_id === DeveloperPlanIds.GROWTH ||
+      user?.billingAccount?.plan_id === DeveloperPlanIds.STARTER ||
+      isEnterprise(user)) &&
+      user?.billingAccount?.status === BillingAccountStatus.ACTIVE)
   )
     return null;
 
@@ -78,7 +78,7 @@ const QuotaItem = ({
           : data?.planLimit
             ? data.planLimit === INFINITY_QUOTAS_VALUE
               ? data.currentUsage + ` ${measure} used`
-              : `${data.currentUsage}/${data.planLimit} ${measure} left`
+              : `${data.currentUsage}/${data.planLimit} ${measure} used`
             : noQuotasText}
       </span>
     </div>
@@ -104,17 +104,17 @@ export const UsageProgress = () => {
       />
       <QuotaItem
         isLoading={isLoading}
-        data={quotas?.replica}
-        Icon={UserIcon}
-        measure="replicas"
-        noQuotasText="No own replicas available"
-      />
-      <QuotaItem
-        isLoading={isLoading}
         Icon={MonitorDot}
         measure={'conversation minutes'}
         noQuotasText={'No conversation minutes available'}
         data={quotas?.conversation}
+      />
+      <QuotaItem
+        isLoading={isLoading}
+        data={quotas?.replica}
+        Icon={UserIcon}
+        measure="replicas"
+        noQuotasText="No personal replicas available"
       />
     </div>
   );

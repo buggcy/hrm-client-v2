@@ -9,7 +9,8 @@
         "generating": "Generating...",
         "completed": "Completed",
         "training": "Training",
-        "deleted": "Deleted"
+        "deleted": "Deleted",
+        "active": "Active"
       },
       "status": {
         "ready": "Ready",

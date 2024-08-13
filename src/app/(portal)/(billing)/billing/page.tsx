@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { AxiosError } from 'axios';
 import { format } from 'date-fns';
@@ -48,6 +48,7 @@ import {
 
 import {
   DeveloperPlanIds,
+  DeveloperPlanIdsSet,
   hasCustomPlan,
   isEnterprise,
   PlanIds,
@@ -58,8 +59,8 @@ import { BillingAccountStatus } from '@/types';
 
 const PlanPrefixIdsLevels = {
   [DeveloperPlanIds.FREE]: 1,
-  [DeveloperPlanIds.PAY_AS_U_GO]: 2,
-  [DeveloperPlanIds.ADVANCED]: 3,
+  [DeveloperPlanIds.STARTER]: 2,
+  [DeveloperPlanIds.GROWTH]: 3,
 } as const;
 
 interface PlanCardProps {
@@ -201,8 +202,8 @@ const PlanItemsConfig: Record<
     ],
     excludes: ['No Overage', 'No Personal Replicas'],
   },
-  [DeveloperPlanIds.PAY_AS_U_GO]: {
-    id: DeveloperPlanIds.PAY_AS_U_GO,
+  [DeveloperPlanIds.STARTER]: {
+    id: DeveloperPlanIds.STARTER,
     price: '$39',
     title: 'Pay as you go',
     subTitle: 'Casually explore our APIs',
@@ -215,8 +216,8 @@ const PlanItemsConfig: Record<
       '3 Personal Replicas included',
     ],
   },
-  [DeveloperPlanIds.ADVANCED]: {
-    id: DeveloperPlanIds.ADVANCED,
+  [DeveloperPlanIds.GROWTH]: {
+    id: DeveloperPlanIds.GROWTH,
     price: '$359',
     title: 'Advanced',
     subTitle: 'Add APIs to your app',
@@ -259,8 +260,8 @@ const PlanItemsConfig: Record<
 
 const PlansBadges = {
   [DeveloperPlanIds.FREE]: 'Free',
-  [DeveloperPlanIds.PAY_AS_U_GO]: 'Pay as you go',
-  [DeveloperPlanIds.ADVANCED]: 'Advanced',
+  [DeveloperPlanIds.STARTER]: 'Starter',
+  [DeveloperPlanIds.GROWTH]: 'Growth',
 };
 
 const ENTERPRISE_BUTTON_PROPS: PlanCardProps['buttonProps'] = {
@@ -300,9 +301,14 @@ const ActivePlanCard = () => {
 
 const BillingPlansCardsList: React.FC = () => {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { data: user } = useUserQuery();
   const { isPending, mutateAsync } = useCreateSubscriptionMutation();
 
   const handleSubmit = async (planId: PlanIds) => {
+    if (isPending || user?.billingAccount?.plan_id === planId) return;
+
     try {
       const session = await mutateAsync(planId);
 
@@ -322,6 +328,19 @@ const BillingPlansCardsList: React.FC = () => {
       });
     }
   };
+
+  useEffect(() => {
+    const planId = searchParams.get('plan');
+
+    if (planId) {
+      router.push(pathname);
+
+      if (!DeveloperPlanIdsSet.has(planId)) return;
+
+      void handleSubmit(planId as PlanIds);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
     handleSubmit(event.currentTarget.id as PlanIds);
@@ -343,11 +362,11 @@ const BillingPlansCardsList: React.FC = () => {
         isSelected
         badge="Recommended"
         buttonProps={buttonProps}
-        item={PlanItemsConfig[DeveloperPlanIds.PAY_AS_U_GO]}
+        item={PlanItemsConfig[DeveloperPlanIds.STARTER]}
       />
       <PlanCard
         buttonProps={buttonProps}
-        item={PlanItemsConfig[DeveloperPlanIds.ADVANCED]}
+        item={PlanItemsConfig[DeveloperPlanIds.GROWTH]}
       />
       <PlanCard
         buttonProps={ENTERPRISE_BUTTON_PROPS}
@@ -359,17 +378,22 @@ const BillingPlansCardsList: React.FC = () => {
 
 const PLANS = [
   DeveloperPlanIds.FREE,
-  DeveloperPlanIds.PAY_AS_U_GO,
-  DeveloperPlanIds.ADVANCED,
+  DeveloperPlanIds.STARTER,
+  DeveloperPlanIds.GROWTH,
 ] as const;
 
 const UpdateBillingPlansList: React.FC = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { data: user, isLoading } = useUserQuery();
   const { isPending, mutateAsync } = useUpdateSubscriptionMutation();
 
-  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const update = async (planId: PlanIds) => {
+    if (isPending || user?.billingAccount?.plan_id === planId) return;
+
     try {
-      const result = await mutateAsync(event.currentTarget.id as PlanIds);
+      const result = await mutateAsync(planId);
 
       if (result) {
         window.location.href = result.url;
@@ -390,6 +414,23 @@ const UpdateBillingPlansList: React.FC = () => {
       });
     }
   };
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    void update(event.currentTarget.id as PlanIds);
+  };
+
+  useEffect(() => {
+    const planId = searchParams.get('plan');
+
+    if (planId) {
+      router.push(pathname);
+
+      if (!DeveloperPlanIdsSet.has(planId)) return;
+
+      void update(planId as PlanIds);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const isPaymentFailed =
     user?.billingAccount?.status === BillingAccountStatus.PAYMENT_FAILED;

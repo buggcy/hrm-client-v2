@@ -1,3 +1,5 @@
+import { QueryKey, UseQueryOptions } from '@tanstack/react-query';
+
 declare global {
   interface Window {
     toggleDevtools: () => void;
@@ -7,3 +9,16 @@ declare global {
 export interface ParentReactNode extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
+
+export enum HttpMethods {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+  DELETE = 'DELETE',
+}
+
+export type UseQueryConfig<T = unknown> = {
+  queryKey?: QueryKey;
+  queryParams?: Record<string, unknown>;
+} & Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>;

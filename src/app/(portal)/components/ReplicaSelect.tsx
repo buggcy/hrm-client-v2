@@ -1,35 +1,35 @@
+'use client';
+
 import { ChevronDown, Loader } from 'lucide-react';
-import { useShallow } from 'zustand/react/shallow';
 
 import { SelectReplicaDialog } from '@/components/SelectReplicaDialog';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
-import { useVideoGenerateFormStore } from '@/app/(portal)/videos/create/hooks';
 import { useReplicaQuery } from '@/hooks';
 import { createReplicaThumbnailUrl } from '@/utils';
 
-import { DEFAULT_REPLICA } from '../constants';
+import { DEFAULT_REPLICA } from '../videos/create/constants';
 
 import { IReplica } from '@/types';
 
-export const ReplicaSelect = () => {
-  const [replicaId, set] = useVideoGenerateFormStore(
-    useShallow(store => [store.replicaId, store.set]),
-  );
-  const { data: selectedReplica } = useReplicaQuery(replicaId, {
+export const ReplicaSelect = ({
+  value,
+  onChange,
+}: {
+  value: IReplica['replica_id'];
+  onChange: (value: IReplica['replica_id']) => void;
+}) => {
+  const { data: selectedReplica } = useReplicaQuery(value, {
     placeholderData:
-      replicaId === DEFAULT_REPLICA.replica_id ? DEFAULT_REPLICA : undefined,
+      value === DEFAULT_REPLICA.replica_id ? DEFAULT_REPLICA : undefined,
   });
-
-  const handleSelectReplica = (replicaId: IReplica['replica_id']) => {
-    set({ replicaId });
-  };
 
   return (
     <div className="flex w-full flex-col">
-      <p className="mb-1.5 text-sm font-semibold">Replica</p>
-      <SelectReplicaDialog value={replicaId} onChange={handleSelectReplica}>
+      <Label className="mb-2 inline-block">Replica</Label>
+      <SelectReplicaDialog value={value} onChange={onChange}>
         <Button
           variant="ghost"
           type="button"
@@ -47,7 +47,7 @@ export const ReplicaSelect = () => {
           </Avatar>
           <p className="mr-1 text-sm font-medium">
             <span>{selectedReplica?.replica_name || 'Loading...'}</span>
-            {replicaId === DEFAULT_REPLICA.replica_id && (
+            {value === DEFAULT_REPLICA.replica_id && (
               <span className="ml-1 text-muted-foreground">(default)</span>
             )}
           </p>

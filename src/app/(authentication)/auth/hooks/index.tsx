@@ -23,14 +23,14 @@ export const useRedirectAfterAuth = () => {
 
   useEffect(() => {
     if (user) {
-      if (
-        user.billingAccount?.status === null ||
-        user.billingAccount?.status === BillingAccountStatus.PAYMENT_FAILED
-      ) {
-        const plan = searchParams.get('plan');
+      const plan = searchParams.get('plan');
 
+      if (plan || user.billingAccount?.status !== BillingAccountStatus.ACTIVE) {
         router.push('/billing' + (plan ? `?plan=${plan}` : ''));
-      } else if (pathname.startsWith('/auth')) router.push('/');
+      } else if (pathname.startsWith('/auth')) {
+        if (pathname.startsWith('/auth/sign-up')) router.push('/billing');
+        else router.push('/');
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);

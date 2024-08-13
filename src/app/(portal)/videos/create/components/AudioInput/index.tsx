@@ -5,17 +5,14 @@ import { Input } from '@/components/ui/input';
 
 import { RecordTab } from './RecordTab';
 import { UploadTab } from './UploadTab';
-import {
-  useVideoGenerateFilesStore,
-  useVideoGenerateFormStore,
-} from '../../hooks';
+import { useCreateVideoFilesStore, useCreateVideoFormStore } from '../../hooks';
 import { AudioTab } from '../../types';
 
 export const AudioInput = () => {
-  const [audioUrl, audioTab, setForm] = useVideoGenerateFormStore(
+  const [audioUrl, audioTab, setForm] = useCreateVideoFormStore(
     useShallow(store => [store.audioUrl, store.audioTab, store.set]),
   );
-  const [audio, setFormFiles] = useVideoGenerateFilesStore(
+  const [audio, setFormFiles] = useCreateVideoFilesStore(
     useShallow(store => [store.audio, store.set]),
   );
 

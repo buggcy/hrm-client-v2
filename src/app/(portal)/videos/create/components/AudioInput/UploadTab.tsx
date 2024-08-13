@@ -13,10 +13,7 @@ import { toast, useToast } from '@/components/ui/use-toast';
 
 import { getVideoDuration } from '@/utils';
 
-import {
-  useVideoGenerateFilesStore,
-  useVideoGenerateFormStore,
-} from '../../hooks';
+import { useCreateVideoFilesStore, useCreateVideoFormStore } from '../../hooks';
 import { AudioTab } from '../../types';
 
 const MAX_AUDIO_SIZE = 50 * 1024 * 1024;
@@ -33,7 +30,7 @@ const isValidUrl = (url: string) => {
 
 const AudioUrlInput = () => {
   const [value, setValue] = useState('');
-  const set = useVideoGenerateFormStore(store => store.set);
+  const set = useCreateVideoFormStore(store => store.set);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -84,8 +81,8 @@ export const UploadTab = () => {
   const errorIdRef = useRef<string>();
   const { toast, dismiss } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
-  const setForm = useVideoGenerateFormStore(store => store.set);
-  const setFormFiles = useVideoGenerateFilesStore(store => store.set);
+  const setForm = useCreateVideoFormStore(store => store.set);
+  const setFormFiles = useCreateVideoFilesStore(store => store.set);
 
   const handleClickUpload = () => {
     dismiss(errorIdRef.current);

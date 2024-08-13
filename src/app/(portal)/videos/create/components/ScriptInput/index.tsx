@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { SimpleTooltip } from '@/components/ui/tooltip';
 
-import { useVideoGenerateFormStore } from '@/app/(portal)/videos/create/hooks';
+import { useCreateVideoFormStore } from '@/app/(portal)/videos/create/hooks';
 
 const useRandomScriptsQuery = () =>
   useQuery({
@@ -22,7 +22,7 @@ const useRandomScriptsQuery = () =>
 export const ScriptInput = () => {
   const { t } = useTranslation();
   const { data: randomScripts } = useRandomScriptsQuery();
-  const [script, set] = useVideoGenerateFormStore(
+  const [script, set] = useCreateVideoFormStore(
     useShallow(store => [store.script, store.set]),
   );
 

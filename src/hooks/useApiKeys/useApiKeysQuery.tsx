@@ -1,9 +1,9 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { portalApi, schemaParse } from '@/utils';
 
-import { IApiKey } from '@/types';
+import { IApiKey, UseQueryConfig } from '@/types';
 
 const DataSchema = z.object({
   count: z.number(),
@@ -11,9 +11,7 @@ const DataSchema = z.object({
 });
 type IApiKeysResponse = z.infer<typeof DataSchema>;
 
-type UseApiKeysQueryParams = {
-  queryParams?: Record<string, string | number>;
-} & Omit<UseQueryOptions<IApiKeysResponse>, 'queryKey' | 'queryFn'>;
+type UseApiKeysQueryParams = UseQueryConfig<IApiKeysResponse>;
 
 export const useApiKeysQuery = ({
   queryParams,
@@ -21,9 +19,9 @@ export const useApiKeysQuery = ({
 }: UseApiKeysQueryParams = {}) =>
   useQuery<IApiKeysResponse>({
     queryKey: ['api-keys', queryParams],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       portalApi
-        .get('/v2/api-key', { params: queryParams })
+        .get('/v2/api-key', { params: queryParams, signal })
         .then(data => schemaParse(DataSchema)(data.data)),
     ...config,
   });

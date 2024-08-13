@@ -1,8 +1,16 @@
 'use client';
+
 import { useMemo } from 'react';
+import Link from 'next/link';
 
 import { ChevronRight } from 'lucide-react';
 
+import {
+  ReplicaCard,
+  SkeletonReplicaCard,
+  useReplicasVideoMute,
+} from '@/components/ReplicaCard';
+import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
@@ -12,12 +20,6 @@ import {
 } from '@/components/ui/carousel';
 
 import { useReplicasQuery } from '@/hooks';
-
-import {
-  ReplicaCard,
-  SkeletonReplicaCard,
-  useReplicasVideoMute,
-} from '../ReplicaCard';
 
 import { ReplicaStatus, ReplicaType } from '@/types';
 
@@ -39,10 +41,14 @@ export const StockReplicaCarousel: React.FC = () => {
   }, [replicas]);
 
   return (
-    <div className="mt-8 w-full rounded-md">
-      <h2 className="mb-4 flex items-center text-lg font-semibold">
-        Try stock replica <ChevronRight className="ml-0.5 size-5" />
-      </h2>
+    <div className="w-full rounded-md">
+      <Button variant="link" className="p-0 text-foreground" asChild>
+        <Link href="/videos/create">
+          <h2 className="mb-4 flex items-center text-lg font-semibold">
+            Try stock replica <ChevronRight className="ml-0.5 size-5" />
+          </h2>
+        </Link>
+      </Button>
       <div className="relative">
         <Carousel
           opts={{

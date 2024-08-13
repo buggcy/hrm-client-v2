@@ -157,7 +157,9 @@ export const VideoRecord = ({
         )}
         {isRecording && (
           <div className="flex gap-4">
-            <Button onClick={cancelRecording}>Cancel Recording</Button>
+            <Button onClick={cancelRecording} variant="outline">
+              Cancel Recording
+            </Button>
             <SimpleTooltip
               disabled={recordingTime > minimumRecordTime}
               tooltipContent={`Video must be at least ${minimumRecordTime} seconds long to submit`}

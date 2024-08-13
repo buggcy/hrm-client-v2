@@ -24,9 +24,9 @@ export interface UsageAndLimits {
 export type ProductsUsageAndLimits = Record<BillingEventItem, UsageAndLimits>;
 
 export const DeveloperPlanIds = {
-  FREE: 'free_dev',
-  PAY_AS_U_GO: 'pay_as_you_go_dev',
-  ADVANCED: 'advanced_dev',
+  FREE: 'dev_free',
+  STARTER: 'dev_starter',
+  GROWTH: 'dev_growth',
 } as const;
 export type DeveloperPlanIds =
   (typeof DeveloperPlanIds)[keyof typeof DeveloperPlanIds];

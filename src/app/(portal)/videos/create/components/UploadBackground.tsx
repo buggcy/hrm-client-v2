@@ -15,10 +15,7 @@ import { toast, useToast } from '@/components/ui/use-toast';
 
 import { getVideoDuration } from '@/utils';
 
-import {
-  useVideoGenerateFilesStore,
-  useVideoGenerateFormStore,
-} from '../hooks';
+import { useCreateVideoFilesStore, useCreateVideoFormStore } from '../hooks';
 
 const MAX_FILE_SIZE = 300 * 1024 * 1024;
 // const MAX_FILE_SIZE_MB = `${MAX_FILE_SIZE / 1024 / 1024} MB`;
@@ -34,7 +31,7 @@ const isValidUrl = (url: string) => {
 
 const BackgroundUrlInput = () => {
   const [value, setValue] = useState('');
-  const set = useVideoGenerateFormStore(store => store.set);
+  const set = useCreateVideoFormStore(store => store.set);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -96,10 +93,10 @@ export const UploadBackgroundTab = () => {
   const errorIdRef = useRef<string>();
   const { toast, dismiss } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [backgroundSourceUrl, setForm] = useVideoGenerateFormStore(
+  const [backgroundSourceUrl, setForm] = useCreateVideoFormStore(
     useShallow(store => [store.backgroundSourceUrl, store.set]),
   );
-  const [background, setFormFiles] = useVideoGenerateFilesStore(
+  const [background, setFormFiles] = useCreateVideoFilesStore(
     useShallow(store => [store.background, store.set]),
   );
 

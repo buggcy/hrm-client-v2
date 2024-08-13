@@ -1,16 +1,10 @@
-import {
-  useQuery,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { getUser } from '@/services';
 
-import { IUser } from '@/types';
+import { IUser, UseQueryConfig } from '@/types';
 
-export const useUserQuery = (
-  config: Omit<UseQueryOptions, 'queryKey' | 'queryFn'> = {},
-) =>
+export const useUserQuery = (config: UseQueryConfig = {}) =>
   useQuery({
     queryKey: ['user'],
     queryFn: getUser,

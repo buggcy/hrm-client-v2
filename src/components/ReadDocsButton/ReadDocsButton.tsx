@@ -13,6 +13,9 @@ const DOCS_ROUTES = {
   replicaLibrary: `${BASE_DOCS_URL}/api-reference/phoenix-replica-model/get-replicas`,
   replicaDetails: `${BASE_DOCS_URL}/api-reference/phoenix-replica-model/get-replica`,
   apiReference: `${BASE_DOCS_URL}/api-reference`,
+  conversationLibrary: `${BASE_DOCS_URL}/api-reference/conversations/get-conversation`,
+  conversationCreate: `${BASE_DOCS_URL}/api-reference/conversations/create-conversation`,
+  personaCreate: `${BASE_DOCS_URL}/api-reference/personas/create-persona`,
 } as const;
 
 export const ReadDocsButton: React.FC<{

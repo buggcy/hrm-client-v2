@@ -1,4 +1,5 @@
 'use client';
+
 import { FC, Fragment } from 'react';
 
 import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
@@ -6,12 +7,8 @@ import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
 import { RQH_API_BASE_URL } from '@/constants';
 import { cn } from '@/utils';
 
+import { URLS } from './constants';
 import { CopyApiUrlProps } from './types';
-
-export const URLS = {
-  video: '/v2/videos',
-  replica: '/v2/replicas',
-};
 
 const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id, className }) => {
   const URL = URLS[url];

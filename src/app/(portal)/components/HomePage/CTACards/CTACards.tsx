@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { ArrowRight, Key, UserPlus, Video } from 'lucide-react';
+import { ArrowRight, Key, MessageSquare, UserPlus, Video } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -21,14 +21,14 @@ const CTA_CONFIG = [
     href: '/replicas/create',
     hover: '/images/createReplica.svg',
   },
-  // {
-  //   title: 'Create Conversation',
-  //   description: 'Converse with replica in real-time',
-  //   icon: MessageSquare,
-  //   bg: 'bg-[linear-gradient(15deg,_#CBA9EE_0%,_#8650F8_144.57%)]',
-  //   href: '/conversations/create',
-  //   hover: '/images/createConv.svg',
-  // },
+  {
+    title: 'Create Conversation',
+    description: 'Converse with replica in real-time',
+    icon: MessageSquare,
+    bg: 'bg-[linear-gradient(15deg,_#CBA9EE_0%,_#8650F8_144.57%)]',
+    href: '/conversations/create',
+    hover: '/images/createConv.svg',
+  },
   {
     title: 'Create API Key',
     description: 'Start building with an API Key',
@@ -41,7 +41,7 @@ const CTA_CONFIG = [
 
 export const CTACards = () => {
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,_minmax(19.25rem,_1fr))] gap-6">
+    <div className="grid grid-cols-[repeat(auto-fill,_minmax(19.25rem,_1fr))] gap-4">
       {CTA_CONFIG.map(({ title, description, icon: Icon, href, bg, hover }) => (
         <Card key={href} className="group relative cursor-pointer rounded-md">
           <img

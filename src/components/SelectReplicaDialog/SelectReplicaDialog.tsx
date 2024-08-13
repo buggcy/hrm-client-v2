@@ -102,7 +102,7 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
       <DialogTrigger asChild onClick={handleOpen}>
         {children}
       </DialogTrigger>
-      <DialogContent className="h-[80vh] max-w-screen-lg p-0">
+      <DialogContent className="h-[80vh] max-w-screen-lg overflow-hidden p-0">
         <div className="relative inset-0 overflow-hidden">
           <div className="flex size-full flex-col gap-6 overflow-auto p-6 pb-20">
             <DialogHeader className="border-b pb-4">

@@ -7,13 +7,10 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError, AxiosProgressEvent } from 'axios';
 import {
-  ArrowRight,
   ChevronRight,
   FileText,
   Headphones,
-  Info,
   Loader,
-  Loader2,
   RotateCcw,
   Trash2,
   TriangleAlert,
@@ -23,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 
-import { ApiCode, HttpMethods } from '@/components/Code';
+import { ApiCode } from '@/components/Code';
 import { CopyApiUrl, URLS } from '@/components/CopyApiUrl';
 import {
   Layout,
@@ -43,24 +40,33 @@ import { Button, ButtonProps } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SimpleTooltip } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 
 import {
+  EmptyList,
+  SkeletonList,
+} from '@/app/(portal)/components/ListComponents';
+import { GenerateSubmitButton } from '@/app/(portal)/components/NoQuotasTooltip';
+import { PreviewAndCode } from '@/app/(portal)/components/PreviewAndCode';
+import {
+  ReplicaPreview,
+  ReplicaPreviewBadge,
+  ReplicaPreviewContainer,
+} from '@/app/(portal)/components/ReplicaPreview';
+import { ReplicaSelect } from '@/app/(portal)/components/ReplicaSelect';
+import {
   useVideoDetailsSheet,
   VideoDetailsSheet,
 } from '@/app/(portal)/videos/components/VideoDetailsSheet';
-import { ReplicaSelect } from '@/app/(portal)/videos/create/components/ReplicaSelect';
 import { UploadBackgroundTab } from '@/app/(portal)/videos/create/components/UploadBackground';
 import {
-  IVideoGenerateFormStore,
-  useVideoGenerateFormStore,
-  useVideoGenerateFormUndoHistory,
-} from '@/app/(portal)/videos/create/hooks/useVideoGenerateStore.hook';
-import { RQH_API_BASE_URL } from '@/constants';
+  ICreateVideoFormStore,
+  useCreateVideoFormStore,
+  useCreateVideoFormUndoHistory,
+} from '@/app/(portal)/videos/create/hooks/useCreateVideoStore.hook';
 import {
   CreateVideoDto,
   CreateVideoSchema,
@@ -75,24 +81,30 @@ import { queryClient } from '@/libs';
 import {
   cn,
   createReplicaThumbnailUrl,
+  getErrorMessage,
   getFilenameFromUrl,
   portalApi,
-  schemaParse,
 } from '@/utils';
 
 import { AudioInput } from './components/AudioInput';
 import { ScriptInput } from './components/ScriptInput';
-import { useVideoGenerateFilesStore } from './hooks';
+import { useCreateVideoFilesStore } from './hooks';
 import { VideoBackgroundType, VideoGenerationType } from './types';
 
-import { IVideo, ReplicaType, VideoStatus } from '@/types';
+import {
+  HttpMethods,
+  IReplica,
+  IVideo,
+  ReplicaType,
+  VideoStatus,
+} from '@/types';
 
 const tabsTriggerClassName =
   'inline-flex items-center  justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50  relative h-9 rounded-none border-b-2 border-b-transparent !bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none  data-[state=active]:border-b-black data-[state=active]:focus:border-b-primary data-[state=active]:hover:border-b-primary focus:!text-primary hover:!text-primary data-[state=active]:text-foreground data-[state=active]:border-foreground data-[state=active]:shadow-none';
 
 const ScriptAndAudioInputsTab = () => {
   const { t } = useTranslation();
-  const [type, set, replicaId] = useVideoGenerateFormStore(
+  const [type, set, replicaId] = useCreateVideoFormStore(
     useShallow(store => [store.type, store.set, store.replicaId]),
   );
   const { data: replica } = useReplicaQuery(replicaId);
@@ -217,7 +229,7 @@ const KeyPressService = {
 };
 
 const WebsiteUrlTab = () => {
-  const [backgroundUrl, set] = useVideoGenerateFormStore(
+  const [backgroundUrl, set] = useCreateVideoFormStore(
     useShallow(store => [store.backgroundUrl, store.set]),
   );
 
@@ -249,7 +261,7 @@ const WebsiteUrlTab = () => {
 };
 
 const BackgroundInput = () => {
-  const [withBackground, backgroundType, set] = useVideoGenerateFormStore(
+  const [withBackground, backgroundType, set] = useCreateVideoFormStore(
     useShallow(store => [
       store.withBackground,
       store.backgroundType,
@@ -303,8 +315,8 @@ const BackgroundInput = () => {
 };
 
 const ClearFormButton = (props: ButtonProps) => {
-  const store = useVideoGenerateFormStore();
-  const filesStore = useVideoGenerateFilesStore();
+  const store = useCreateVideoFormStore();
+  const filesStore = useCreateVideoFilesStore();
 
   const isDirty =
     store.name ||
@@ -350,7 +362,7 @@ const ClearFormButton = (props: ButtonProps) => {
 
 const AdvancedSettingsInputs = () => {
   const [name, callbackUrl, isAdvancedSettingsOpen, set] =
-    useVideoGenerateFormStore(
+    useCreateVideoFormStore(
       useShallow(store => [
         store.name,
         store.callbackUrl,
@@ -417,7 +429,7 @@ const AdvancedSettingsInputs = () => {
 };
 
 const getCreateVideoRequestBody = (
-  formState: IVideoGenerateFormStore,
+  formState: ICreateVideoFormStore,
 ): CreateVideoDto => {
   const result: Partial<CreateVideoDto> = {
     replica_id: formState.replicaId,
@@ -448,8 +460,8 @@ const getCreateVideoRequestBody = (
 };
 
 const Code = () => {
-  const formStore = useVideoGenerateFormStore();
-  const formFileStore = useVideoGenerateFilesStore();
+  const formStore = useCreateVideoFormStore();
+  const formFileStore = useCreateVideoFilesStore();
   const body = useMemo(() => {
     const result = getCreateVideoRequestBody(formStore);
 
@@ -465,13 +477,7 @@ const Code = () => {
     return result;
   }, [formStore, formFileStore]);
 
-  return (
-    <ApiCode
-      url={`${RQH_API_BASE_URL}${URLS.video}`}
-      method={HttpMethods.POST}
-      body={body}
-    />
-  );
+  return <ApiCode url={URLS.video} method={HttpMethods.POST} body={body} />;
 };
 
 // TODO: add mock url
@@ -484,7 +490,7 @@ const Preview = () => {
     backgroundUrl,
     backgroundType,
     withBackground,
-  ] = useVideoGenerateFormStore(
+  ] = useCreateVideoFormStore(
     useShallow(state => [
       state.replicaId,
       state.backgroundSourceUrl,
@@ -493,7 +499,7 @@ const Preview = () => {
       state.withBackground,
     ]),
   );
-  const background = useVideoGenerateFilesStore(state => state.background);
+  const background = useCreateVideoFilesStore(state => state.background);
   const { data } = useReplicaQuery(replicaId);
 
   const hasBackgroundPreview =
@@ -506,38 +512,21 @@ const Preview = () => {
       ? MOCK_WEBSITE_URL_PREVIEW_SRC
       : backgroundSourceUrl || background?.url;
 
-  return (
-    <div className="pointer-events-none relative flex h-full items-center justify-center overflow-hidden rounded">
-      {hasBackgroundPreview ? (
-        <VideoWithBackground
-          src={createReplicaThumbnailUrl(data?.thumbnail_video_url)}
-          backgroundSrc={backgroundSrc as string}
-          noBackgroundContent={
-            backgroundType === VideoBackgroundType.WEBSITE_URL
-              ? 'Website Preview not available'
-              : 'Background preview not available'
-          }
-        />
-      ) : (
-        <>
-          <Loader className="absolute z-0 mb-6 size-8 animate-spin" />
-          <div className="relative z-10 h-full">
-            <video
-              className="aspect-video h-[inherit] rounded"
-              preload="auto"
-              src={createReplicaThumbnailUrl(data?.thumbnail_video_url)}
-              crossOrigin="anonymous"
-            />
-          </div>
-        </>
-      )}
-      <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center space-x-2 rounded-md bg-white/10 px-4 py-2 backdrop-blur-sm">
-        <span className="whitespace-nowrap text-sm font-medium text-white text-opacity-80">
-          Video Preview
-        </span>
-        <Info size={16} className="text-white text-opacity-80" />
-      </div>
-    </div>
+  return hasBackgroundPreview ? (
+    <ReplicaPreviewContainer>
+      <VideoWithBackground
+        src={createReplicaThumbnailUrl(data?.thumbnail_video_url)}
+        backgroundSrc={backgroundSrc as string}
+        noBackgroundContent={
+          backgroundType === VideoBackgroundType.WEBSITE_URL
+            ? 'Website Preview not available'
+            : 'Background preview not available'
+        }
+      />
+      <ReplicaPreviewBadge />
+    </ReplicaPreviewContainer>
+  ) : (
+    <ReplicaPreview src={data?.thumbnail_video_url as string} />
   );
 };
 
@@ -590,8 +579,6 @@ const VideoWithBackground = ({
       <div className="absolute bottom-2 left-2 aspect-square w-1/5 overflow-hidden rounded-full bg-border shadow-lg">
         <video
           src={src}
-          autoPlay
-          loop
           muted
           className={`relative z-20 aspect-video size-full object-cover`}
         />
@@ -619,60 +606,6 @@ const getIcon = (status: VideoStatus) => {
       return <Video className="size-6" />;
   }
 };
-
-const PreviewAndCode = () => (
-  <div className="flex w-full rounded-md border border-border bg-background p-4 sm:col-span-1 sm:row-span-1">
-    <Tabs
-      defaultValue="preview"
-      className="flex w-full flex-col overflow-hidden rounded"
-    >
-      <div className="mb-4 flex justify-between">
-        <Badge variant="label" className="w-fit text-sm">
-          Preview
-        </Badge>
-        <TabsList>
-          <TabsTrigger value="preview">Video</TabsTrigger>
-          <TabsTrigger value="code">Code</TabsTrigger>
-        </TabsList>
-      </div>
-
-      <TabsContent
-        value="preview"
-        asChild
-        className="mt-0 flex size-full overflow-hidden"
-      >
-        <Preview />
-      </TabsContent>
-      <TabsContent
-        value="code"
-        asChild
-        className="mt-0 flex h-full overflow-hidden"
-      >
-        <Code />
-      </TabsContent>
-    </Tabs>
-  </div>
-);
-
-const SkeletonVideoList = () => (
-  <>
-    <Skeleton className="m-2 min-h-16 w-full rounded-md" />
-    <Skeleton className="m-2 min-h-16 w-full rounded-md" />
-    <Skeleton className="m-2 min-h-16 w-full rounded-md" />
-    <Skeleton className="m-2 min-h-16 w-full rounded-md" />
-  </>
-);
-
-const NoVideos = () => (
-  <div className="flex h-full flex-col content-center items-center justify-center gap-4 p-5">
-    <div className="flex items-center justify-center rounded-full bg-accent p-3 text-muted-foreground">
-      <Video size={16} />
-    </div>
-    <p className="text-center text-sm font-medium text-muted-foreground">
-      Your generated videos will appear here
-    </p>
-  </div>
-);
 
 const LIMIT = 10;
 
@@ -760,9 +693,12 @@ const VideoList = () => {
           )
         ) : isPending ? (
           // TODO: ADD Empty state
-          <SkeletonVideoList />
+          <SkeletonList />
         ) : (
-          <NoVideos />
+          <EmptyList
+            Icon={Video}
+            title="Your generated videos will appear here"
+          />
         )}
       </ul>
       <VideoDetailsSheet id={video_id} onOpenChange={onOpenChange} />
@@ -776,16 +712,6 @@ const useUploadBackgroundMutation = () =>
     mutationFn: useUploadBackground,
   });
 
-const noQuotasTooltipContent = (
-  <p>
-    {"You don't have enough quotas. Please "}
-    <Button asChild variant="link" className="p-0">
-      <Link href="/billing">upgrade your plan</Link>
-    </Button>{' '}
-    to continue.
-  </p>
-);
-
 // TODO: add payment required case
 // const paymentRequiredTooltipContent = (
 //   <p>
@@ -797,6 +723,16 @@ const noQuotasTooltipContent = (
 //   </p>
 // );
 
+const VideoGenerationReplicaSelect = () => {
+  const replicaId = useCreateVideoFormStore(store => store.replicaId);
+
+  const onChange = (replicaId: IReplica['replica_id']) => {
+    useCreateVideoFormStore.setState({ replicaId });
+  };
+
+  return <ReplicaSelect value={replicaId} onChange={onChange} />;
+};
+
 const OPTIMISTIC_VIDEO_ID = '...';
 
 export default function VideoCreatePage() {
@@ -804,7 +740,7 @@ export default function VideoCreatePage() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { data: quotas, isError } = useUserQuotasQuery();
-  const { undo, redo } = useVideoGenerateFormUndoHistory(state => state);
+  const { undo, redo } = useCreateVideoFormUndoHistory(state => state);
   const { mutateAsync: uploadAudio, isPending: isUploadingAudio } =
     useUploadAudioMutation();
   const { mutateAsync: uploadBackground, isPending: isUploadingBackground } =
@@ -851,7 +787,7 @@ export default function VideoCreatePage() {
             variant: 'error',
             title:
               "Error while creating video. Couldn't start video generation",
-            description: error.message,
+            description: getErrorMessage(error),
           });
         }
       },
@@ -869,10 +805,10 @@ export default function VideoCreatePage() {
     });
 
   useEffect(() => {
-    const replicaId = searchParams.get('replica');
+    const replicaId = searchParams.get('replicaId');
 
     if (replicaId) {
-      useVideoGenerateFormStore.setState({ replicaId });
+      useCreateVideoFormStore.setState({ replicaId });
 
       const params = new URLSearchParams(searchParams.toString());
       params.delete('replica');
@@ -895,8 +831,8 @@ export default function VideoCreatePage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const formState = useVideoGenerateFormStore.getState();
-    const formFileState = useVideoGenerateFilesStore.getState();
+    const formState = useCreateVideoFormStore.getState();
+    const formFileState = useCreateVideoFilesStore.getState();
     const createVideoBody = getCreateVideoRequestBody(formState);
 
     try {
@@ -915,7 +851,7 @@ export default function VideoCreatePage() {
 
     function validateVideoBody() {
       try {
-        schemaParse(CreateVideoSchema)(createVideoBody);
+        CreateVideoSchema.parse(createVideoBody);
       } catch (_error) {
         const { issues } = _error as z.ZodError<CreateVideoSchema>;
         const message = issues.map(issue => issue.message).join(',');
@@ -1008,7 +944,7 @@ export default function VideoCreatePage() {
 
   return (
     <Layout className="flex max-h-screen flex-col">
-      <LayoutHeader title="Video Generation" className="hidden sm:flex">
+      <LayoutHeader title="Video Generation">
         <CopyApiUrl type="POST" url="video" />
         <LayoutHeaderButtonsBlock>
           <ReadDocsButton to="videoCreate" />
@@ -1031,7 +967,7 @@ export default function VideoCreatePage() {
             onSubmit={handleSubmit}
             className="no-scrollbar flex flex-1 flex-col gap-4 overflow-y-scroll"
           >
-            <ReplicaSelect />
+            <VideoGenerationReplicaSelect />
             <ScriptAndAudioInputsTab />
             <AdvancedSettingsInputs />
           </form>
@@ -1045,37 +981,25 @@ export default function VideoCreatePage() {
                     ? 'Uploading background...'
                     : ''}
               </span>
-              <SimpleTooltip
-                disabled={!isOutOfVideoQuotas && !isGenerating}
-                tooltipContent={
-                  isGenerating
-                    ? 'Generating'
-                    : isOutOfVideoQuotas
-                      ? noQuotasTooltipContent
-                      : ''
-                }
+              <GenerateSubmitButton
+                isGenerating={isGenerating}
+                isOutOfQuotas={isOutOfVideoQuotas}
+                form="createVideoForm"
               >
-                <div>
-                  <Button
-                    type="submit"
-                    form="createVideoForm"
-                    disabled={isGenerating || isOutOfVideoQuotas}
-                  >
-                    Generate{' '}
-                    <span className="size-4">
-                      {isGenerating ? (
-                        <Loader2 className="size-4 animate-spin" />
-                      ) : (
-                        <ArrowRight size={16} />
-                      )}
-                    </span>
-                  </Button>
-                </div>
-              </SimpleTooltip>
+                Generate
+              </GenerateSubmitButton>
             </div>
           </footer>
         </div>
-        <PreviewAndCode />
+        <PreviewAndCode
+          title={
+            <Badge variant="label" className="w-fit text-sm">
+              Preview
+            </Badge>
+          }
+          preview={<Preview />}
+          code={<Code />}
+        />
         <VideoList />
       </LayoutWrapper>
     </Layout>

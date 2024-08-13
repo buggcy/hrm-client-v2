@@ -12,13 +12,13 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 
+import { useMicrophones } from '@/hooks';
 import { formatTime } from '@/utils';
 
 import {
   useAudioRecorder,
-  useMicrophones,
-  useVideoGenerateFilesStore,
-  useVideoGenerateFormStore,
+  useCreateVideoFilesStore,
+  useCreateVideoFormStore,
 } from '../../hooks';
 import { AudioTab } from '../../types';
 
@@ -32,8 +32,8 @@ export const RecordTab = () => {
   const { isRecording, record, stop, duration, cancel } = useAudioRecorder(
     selectedMicrophone?.deviceId,
   );
-  const setForm = useVideoGenerateFormStore(store => store.set);
-  const setFormFiles = useVideoGenerateFilesStore(store => store.set);
+  const setForm = useCreateVideoFormStore(store => store.set);
+  const setFormFiles = useCreateVideoFilesStore(store => store.set);
 
   const handleClick = () => {
     if (isRecording) stop();

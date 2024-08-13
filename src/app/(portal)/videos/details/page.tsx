@@ -32,7 +32,7 @@ export default function VideoDetailsPage() {
 
   return (
     <Layout>
-      <LayoutHeader title={'Video Library'}>
+      <LayoutHeader title="Video Details">
         <CopyApiUrl type="GET" url="video" id={videoId as string} />
         <ReadDocsButton to="videoDetails" />
       </LayoutHeader>
