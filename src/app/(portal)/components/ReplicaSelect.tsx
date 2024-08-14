@@ -45,7 +45,7 @@ export const ReplicaSelect = ({
             />
             <Loader className="absolute z-10 size-5 animate-spin" />
           </Avatar>
-          <p className="mr-1 text-sm font-medium">
+          <p className="mr-1 truncate text-sm font-medium">
             <span>{selectedReplica?.replica_name || 'Loading...'}</span>
             {value === DEFAULT_REPLICA.replica_id && (
               <span className="ml-1 text-muted-foreground">(default)</span>

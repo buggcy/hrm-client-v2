@@ -11,6 +11,8 @@ import {
   ListVideo,
   MessageCircle,
   MonitorDot,
+  User,
+  UserRoundPlus,
   Users,
   Video,
 } from 'lucide-react';
@@ -130,10 +132,30 @@ export const MobileHeader = () => {
                 </li>
                 <li className="flex">
                   <MobileNavigationItem
-                    title="Conversations Library"
+                    title="Conversation Library"
                     icon={MessageCircle}
                     href="/conversations"
                     active={pathname === '/conversations'}
+                    onClick={onClose}
+                  />
+                </li>
+              </NavSection>
+              <NavSection title="PERSONA">
+                <li className="flex">
+                  <MobileNavigationItem
+                    title="Create Persona"
+                    icon={UserRoundPlus}
+                    href="/personas/create"
+                    active={pathname === '/personas/create'}
+                    onClick={onClose}
+                  />
+                </li>
+                <li className="flex">
+                  <MobileNavigationItem
+                    title="Persona Library"
+                    icon={User}
+                    href="/personas"
+                    active={pathname === '/personas'}
                     onClick={onClose}
                   />
                 </li>

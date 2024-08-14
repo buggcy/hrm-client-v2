@@ -85,7 +85,11 @@ const ReplicaBlock = ({
       )}
       {!!replicas?.length && onLoadMore && (
         <div className="flex justify-center">
-          <LoadingButton loading={!!isFetchingNextPage} onClick={onLoadMore}>
+          <LoadingButton
+            variant="outline"
+            loading={!!isFetchingNextPage}
+            onClick={onLoadMore}
+          >
             Load More
           </LoadingButton>
         </div>

@@ -26,6 +26,7 @@ import { cn, createReplicaThumbnailUrl } from '@/utils';
 
 import { IPersona, PersonaType } from '@/types';
 
+// TODO: REUSE REPLICA FROM  components
 const PersonaCard = ({
   persona,
   selected,

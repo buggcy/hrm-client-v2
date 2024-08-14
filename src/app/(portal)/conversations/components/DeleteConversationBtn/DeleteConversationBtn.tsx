@@ -93,7 +93,6 @@ export const DeleteConversationBtn: FC<{
             <Button
               variant="destructive-inverted"
               className={cn('flex items-center gap-2', className)}
-              onClick={handleDelete}
             >
               <TrashIcon className="size-4" /> Delete Conversation
             </Button>

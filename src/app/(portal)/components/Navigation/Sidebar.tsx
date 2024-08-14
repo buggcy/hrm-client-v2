@@ -9,6 +9,8 @@ import {
   ListVideo,
   MessageCircle,
   MonitorDot,
+  User,
+  UserRoundPlus,
   Users,
   Video,
 } from 'lucide-react';
@@ -104,10 +106,28 @@ export const Sidebar = () => {
             </li>
             <li className="flex">
               <NavigationItem
-                title="Conversations Library"
+                title="Conversation Library"
                 icon={MessageCircle}
                 href="/conversations"
                 active={pathname === '/conversations'}
+              />
+            </li>
+          </NavSection>
+          <NavSection title="PERSONA">
+            <li className="flex">
+              <NavigationItem
+                title="Create Persona"
+                icon={UserRoundPlus}
+                href="/personas/create"
+                active={pathname === '/personas/create'}
+              />
+            </li>
+            <li className="flex">
+              <NavigationItem
+                title="Persona Library"
+                icon={User}
+                href="/personas"
+                active={pathname === '/personas'}
               />
             </li>
           </NavSection>

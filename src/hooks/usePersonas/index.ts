@@ -1,4 +1,6 @@
 import {
+  useInfiniteQuery,
+  UseInfiniteQueryOptions,
   useMutation,
   UseMutationOptions,
   useQuery,
@@ -69,8 +71,6 @@ export const usePersonasQuery = ({
   ...config
 }: UseQueryConfig<IPersonasResponse> = {}) =>
   useQuery({
-    // TODO: remove after removing mock data
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: queryKey || ['personas', queryParams],
     queryFn: async ({ signal }) => {
       const result = await rqhApi
@@ -84,6 +84,55 @@ export const usePersonasQuery = ({
       return result;
     },
     ...config,
+  });
+
+type UsePersonasInfinityQueryParams = {
+  queryParams?: Record<string, unknown>;
+} & Omit<
+  UseInfiniteQueryOptions<IPersonasResponse>,
+  | 'queryKey'
+  | 'queryFn'
+  | 'initialPageParam'
+  | 'getPreviousPageParam'
+  | 'getNextPageParam'
+>;
+
+export const usePersonasInfinityQuery = ({
+  queryParams,
+  ...config
+}: UsePersonasInfinityQueryParams = {}) =>
+  useInfiniteQuery<IPersonasResponse, Error>({
+    queryKey: ['personas-q', queryParams],
+    queryFn: async ({ pageParam, signal }) => {
+      const result = await rqhApi
+        .get('/v2/personas', {
+          params: { ...queryParams, page: pageParam },
+          signal,
+        })
+        .then(schemaParse(IPersonasResponse));
+
+      result.data.forEach(persona => {
+        queryClient.setQueryData(['persona', persona.persona_id], persona);
+      });
+
+      return result;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (data, allData, lastPageParam) => {
+      const totalItemsLoaded = allData.reduce(
+        (acc, page) => acc + page.data?.length || 0,
+        0,
+      );
+
+      if (data?.data?.length && totalItemsLoaded < data.total_count) {
+        const last = typeof lastPageParam === 'number' ? lastPageParam : 1;
+        return last + 1;
+      }
+
+      return undefined;
+    },
+    ...config,
+    select: undefined,
   });
 
 export const usePersonaQuery = (
@@ -107,7 +156,7 @@ export const useCreatePersonaMutation = (
     ...options,
   });
 
-export const useUpdatePersonaСontextMutation = (
+export const useUpdatePersonaContextMutation = (
   options?: UseMutationOptions<IPersona, Error, IPersona>,
 ) =>
   useMutation<IPersona, Error, IPersona>({

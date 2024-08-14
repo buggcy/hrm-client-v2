@@ -192,7 +192,7 @@ export const CreatePersonaForm = () => {
         window.open(conversation.conversation_url, '_blank');
         router.push('/conversations/create?personaId=' + persona.persona_id);
       } else {
-        router.push('/personas');
+        router.push('/personas?persona_id=' + persona.persona_id);
       }
 
       useCreatePersonaFormStore.setState({

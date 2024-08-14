@@ -15,6 +15,7 @@ const DOCS_ROUTES = {
   apiReference: `${BASE_DOCS_URL}/api-reference`,
   conversationLibrary: `${BASE_DOCS_URL}/api-reference/conversations/get-conversation`,
   conversationCreate: `${BASE_DOCS_URL}/api-reference/conversations/create-conversation`,
+  personaLibrary: `${BASE_DOCS_URL}/api-reference/personas/get-persona`,
   personaCreate: `${BASE_DOCS_URL}/api-reference/personas/create-persona`,
 } as const;
 
