@@ -182,78 +182,74 @@ const CardsList: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 const PlanItemsConfig: Record<
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   DeveloperPlanIds | PlanPrefixIds.CUSTOM | PlanPrefixIds.ENTERPRISE,
   PlanCardProps['item']
 > = {
   [DeveloperPlanIds.FREE]: {
     id: DeveloperPlanIds.FREE,
-    price: <span className="text-5xl font-bold">Free</span>,
-    title: 'Starter',
-    subTitle: 'Quick test our APIs',
+    price: '$0',
+    title: 'Free',
+    subTitle: 'Get your feet wet',
     includes: [
-      'AI Video Generation',
-      <React.Fragment key="tokens">
-        <b>300</b>&nbsp;tokens per month
-      </React.Fragment>,
-      'Access to Stock Replicas',
-      'Multilingual',
-      'API Access',
+      'Access to Conversational Video & Video Generation',
+      'API access',
+      '30+ languages (Video Generation)',
+      // '5 Stock Replicas',
+      '3 mins free credit (Video Generation)',
+      '3 minute free credit (Conversational Video)',
     ],
-    excludes: ['No Overage', 'No Personal Replicas'],
+    excludes: ['No personal replicas', 'No overage'],
   },
   [DeveloperPlanIds.STARTER]: {
     id: DeveloperPlanIds.STARTER,
     price: '$39',
-    title: 'Pay as you go',
-    subTitle: 'Casually explore our APIs',
+    title: 'Starter',
+    subTitle: 'Starting to build with AI video',
     includes: [
-      'Everything in Starter',
-      <React.Fragment key="tokens">
-        <b>2,500</b>&nbsp;tokens per month
-      </React.Fragment>,
-      '$20 per 1,000 more tokens',
-      '3 Personal Replicas included',
+      'Everything in Free',
+      '3 free personal replicas',
+      '25 new personal replicas per month maximum',
+      'Up to 5 concurrent conversations',
+      'Content Moderation',
+      'Bring your own audio',
     ],
   },
   [DeveloperPlanIds.GROWTH]: {
     id: DeveloperPlanIds.GROWTH,
-    price: '$359',
-    title: 'Advanced',
-    subTitle: 'Add APIs to your app',
+    price: '$375',
+    title: 'Growth',
+    subTitle: 'Scaling AI video in your app',
     includes: [
-      'Everything in Hobbyist',
-      <React.Fragment key="tokens">
-        <b>15,000</b>&nbsp;tokens per month
-      </React.Fragment>,
-      '$16 per 1,000 more tokens',
-      '7 Personal Replicas included',
-    ],
-  },
-  [PlanPrefixIds.CUSTOM]: {
-    id: `${PlanPrefixIds.CUSTOM}_enterprise`,
-    price: <span className="text-5xl font-bold">{"Let's talk!"}</span>,
-    title: 'Custom',
-    subTitle: 'Scale AI videos',
-    includes: [
-      'Custom pricing and discounts',
-      'Faster GPU processing',
-      'Priority access to new models',
-      'Analytics & Reporting',
-      'Dedicated Enterprise Support',
+      'Everything in Starter',
+      '10 free personal replicas',
+      '100 new personal replicas per month maximum',
+      'Up to 25 concurrent conversations',
+      'Conversation recording & transcripts',
+      'Discounted pay as you go rates',
     ],
   },
   [PlanPrefixIds.ENTERPRISE]: {
-    id: `${PlanPrefixIds.CUSTOM}_enterprise`,
+    id: `${PlanPrefixIds.ENTERPRISE}_enterprise`,
     price: <span className="text-5xl font-bold">{"Let's talk!"}</span>,
     title: 'Enterprise',
-    subTitle: 'Scale AI videos',
+    subTitle: 'For high volume and enterprise needs',
     includes: [
       'Custom pricing and discounts',
-      'Faster GPU processing',
-      'Priority access to new models',
-      'Analytics & Reporting',
-      'Dedicated Enterprise Support',
+      'Unlimited personal replicas per month',
+      'Custom concurrent sessions',
+      'Whitelabeled consent clause',
+      'Priority GPUs',
+      'Premium Conversational Replicas',
+      'Dedicated support',
+    ],
+  },
+  [PlanPrefixIds.CUSTOM]: {
+    id: `${PlanPrefixIds.CUSTOM}_custom`,
+    price: <span className="text-5xl font-bold">{"Let's talk!"}</span>,
+    title: 'Custom',
+    subTitle: 'Legacy or trial plans',
+    includes: [
+      "You're on a custom plan. To upgrade or change your plan, please select a plan or contact your Tavus point of contact",
     ],
   },
 };
