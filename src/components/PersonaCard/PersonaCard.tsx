@@ -77,14 +77,16 @@ export const PersonaCard = ({
         </div>
       </CardContent>
       <CardFooter className="mt-4 flex content-start items-start gap-2 p-0">
-        <LoadingButton
-          variant="outline"
-          loading={isLoading!}
-          disabled={isLoading}
-          onClick={handleClick}
-        >
-          Join Now
-        </LoadingButton>
+        {persona.default_replica_id && (
+          <LoadingButton
+            variant="outline"
+            loading={isLoading!}
+            disabled={isLoading}
+            onClick={handleClick}
+          >
+            Join Now
+          </LoadingButton>
+        )}
         <Button variant="primary-inverted" asChild>
           <Link
             href={`/conversations/create?personaId=${persona.persona_id}`}

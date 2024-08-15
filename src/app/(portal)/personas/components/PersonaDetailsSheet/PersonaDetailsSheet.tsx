@@ -204,13 +204,15 @@ const PersonaDetailsSheet: FC<PersonaDetailsSheetProps> = ({
                 Setup Conversation
               </Link>
             </Button>
-            <LoadingButton
-              loading={isPending}
-              disabled={isPending || isLoading}
-              onClick={handleJoin}
-            >
-              Join Now
-            </LoadingButton>
+            {persona?.default_replica_id && (
+              <LoadingButton
+                loading={isPending}
+                disabled={isPending || isLoading}
+                onClick={handleJoin}
+              >
+                Join Now
+              </LoadingButton>
+            )}
           </div>
         </Content>
       </SheetPortal>
