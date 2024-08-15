@@ -9,6 +9,7 @@ import { ArrowRight, Loader, LoaderCircle, MessageCircle } from 'lucide-react';
 
 import { CopyApiUrl } from '@/components/CopyApiUrl';
 import { CopyRequestID } from '@/components/CopyRequestID';
+import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
   LayoutHeader,
@@ -70,6 +71,7 @@ export default function ConversationsPage() {
 
   return (
     <Layout>
+      <HighTrafficBanner />
       <LayoutHeader title="Conversation Library">
         <CopyApiUrl type="GET" url="conversation" className="hidden sm:flex" />
         <LayoutHeaderButtonsBlock>

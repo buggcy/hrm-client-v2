@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Loader } from 'lucide-react';
 
 import { CopyApiUrl } from '@/components/CopyApiUrl';
+import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
   LayoutHeader,
@@ -91,6 +92,7 @@ export default function PersonasPage() {
 
   return (
     <Layout>
+      <HighTrafficBanner />
       <LayoutHeader title="Persona Library">
         <CopyApiUrl type="GET" url="persona" className="hidden sm:flex" />
         <LayoutHeaderButtonsBlock>

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { CopyApiUrl } from '@/components/CopyApiUrl';
+import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
   LayoutHeader,
@@ -23,6 +24,7 @@ import { ConversationDetailsSheetWrapper } from '../components/ConversationDetai
 export default function Page() {
   return (
     <Layout className="flex max-h-screen flex-col">
+      <HighTrafficBanner />
       <LayoutHeader title="New Conversation">
         <CopyApiUrl type="POST" url="conversation" />
         <LayoutHeaderButtonsBlock>

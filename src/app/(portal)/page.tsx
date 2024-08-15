@@ -1,3 +1,4 @@
+import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
   LayoutHeader,
@@ -17,6 +18,7 @@ import {
 export default function Home() {
   return (
     <Layout>
+      <HighTrafficBanner />
       <LayoutHeader title="Home">
         <LayoutHeaderButtonsBlock>
           <ReadDocsButton to="home" />
