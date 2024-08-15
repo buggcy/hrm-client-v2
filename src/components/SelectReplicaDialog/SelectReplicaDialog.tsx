@@ -11,6 +11,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { useReplicasQuery } from '@/hooks';
+import { useReplicaQueryParams } from '@/hooks/useReplicaQueryParams/useReplicaQueryParams';
 
 import { SelectReplicaBlock } from './components/SelectReplicaBlock';
 import { SelectReplicaDialogProps } from './types';
@@ -26,6 +27,8 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
   children,
   onChange,
 }) => {
+  const { params } = useReplicaQueryParams();
+
   const {
     data: stockReplicas,
     isLoading: stockReplicasIsLoading,
@@ -37,6 +40,7 @@ const SelectReplicaDialog: FC<SelectReplicaDialogProps> = ({
     queryParams: {
       limit: LIMIT,
       replica_type: ReplicaType.STUDIO,
+      ...params,
     },
   });
 

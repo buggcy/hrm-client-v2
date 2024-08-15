@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { useReplicasQuery } from '@/hooks';
+import { useReplicaQueryParams } from '@/hooks/useReplicaQueryParams/useReplicaQueryParams';
 
 import { ReplicaBlock } from './components/ReplicaBlock';
 
@@ -25,6 +26,7 @@ import { ReplicaStatus, ReplicaType } from '@/types';
 const LIMIT = 10;
 
 export default function ReplicasPage() {
+  const { params } = useReplicaQueryParams();
   const {
     data: stockReplicas,
     isLoading: stockReplicasIsLoading,
@@ -39,6 +41,7 @@ export default function ReplicasPage() {
     queryParams: {
       limit: LIMIT,
       replica_type: ReplicaType.STUDIO,
+      ...params,
     },
   });
 
