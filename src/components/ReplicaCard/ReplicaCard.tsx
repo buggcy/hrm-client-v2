@@ -402,7 +402,7 @@ const ReplicaCard = ({
             </Popover>
           )}
         </div>
-        {isSelectable && (
+        {!isSelectable && (
           <DropdownMenu>
             <DropdownMenuTrigger
               className={cn(
