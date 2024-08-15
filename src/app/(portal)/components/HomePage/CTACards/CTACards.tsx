@@ -23,7 +23,7 @@ const CTA_CONFIG = [
   },
   {
     title: 'Create Conversation',
-    description: 'Converse with replica in real-time',
+    description: 'Talk with a replica in real-time',
     icon: MessageSquare,
     bg: 'bg-[linear-gradient(15deg,_#CBA9EE_0%,_#8650F8_144.57%)]',
     href: '/conversations/create',

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { format } from 'date-fns';
-import { ChevronRight, Loader, MonitorDot } from 'lucide-react';
+import { ChevronRight, CircleHelp, Loader, MonitorDot } from 'lucide-react';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -15,6 +15,11 @@ import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
@@ -45,6 +50,28 @@ import { cn, getErrorMessage } from '@/utils';
 import { useConversationDetailsSheet } from './ConversationDetailsSheet';
 
 import { HttpMethods, IReplica } from '@/types';
+
+export const LabelWithPopover = ({
+  children,
+  popoverContent,
+  className,
+}: {
+  children: React.ReactNode;
+  popoverContent: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className="mb-2 flex items-center gap-1.5">
+      <Label className={(cn('inline-block'), className)}>{children}</Label>
+      <Popover>
+        <PopoverTrigger>
+          <CircleHelp className="size-4 text-muted-foreground" />
+        </PopoverTrigger>
+        <PopoverContent className="text-xs">{popoverContent}</PopoverContent>
+      </Popover>
+    </div>
+  );
+};
 
 export const CreateConversationPersonSelect = () => {
   const [personaId, replicaId] = useCreateConversationFormStore(state => [
@@ -140,20 +167,38 @@ const CreateConversationInputs = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <Label className="mb-2 inline-block">Conversation Name</Label>
+      <Label className="mb-2 inline-block">Conversation Name (optional)</Label>
       <Input
         className="mb-4"
         type="text"
-        placeholder="Enter a name for your conversation, e.g., “Test Conversation”"
+        placeholder="Enter a name for your conversation"
         name="name"
         value={name}
         onChange={handleChange}
         onBlur={handleBlur}
       />
-      <Label className="mb-2 inline-block">Conversation Context</Label>
+      <LabelWithPopover
+        popoverContent={
+          <p>
+            Conversational context is context that the replica will use for this
+            conversation only. The replica will not use this context for other
+            conversations.
+            <br />
+            <br />
+            Example: <br />
+            You are about to speak with Sarah, a vibrant 35-year-old marketing
+            executive. Sarah loves literature and is currently reading Don
+            Quioxte. Sarah loves stories that are full of adventure and
+            intrigue. She is a fan of the classics and enjoys reading books that
+            are rich in history and culture.
+          </p>
+        }
+      >
+        Conversation Context (optional)
+      </LabelWithPopover>
       <Textarea
         className="h-full resize-none"
-        placeholder={`Describe the context of the conversation, e.g., "This conversation is for testing purposes"`}
+        placeholder="Enter context for your conversation"
         value={context}
         name="context"
         onChange={handleChange}

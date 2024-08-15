@@ -68,7 +68,9 @@ export const PersonaCard = ({
           <Skeleton className="aspect-video size-14 rounded-full" />
         )}
         <div>
-          <h3 className="text-lg font-semibold">{persona.persona_name}</h3>
+          <h3 className="truncate text-lg font-semibold">
+            {persona.persona_name}
+          </h3>
           <p className="text-sm font-medium text-muted-foreground">
             {PersonasDescriptions[persona.persona_id]}
           </p>

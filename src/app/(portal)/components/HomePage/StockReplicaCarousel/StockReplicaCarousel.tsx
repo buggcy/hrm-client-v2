@@ -19,15 +19,15 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 
+import { FREE } from '@/constants/replicas';
 import { useReplicasQuery } from '@/hooks';
 
-import { ReplicaStatus, ReplicaType } from '@/types';
+import { ReplicaStatus } from '@/types';
 
 export const StockReplicaCarousel: React.FC = () => {
   const { data: replicas, isLoading } = useReplicasQuery({
     queryParams: {
-      limit: 10,
-      replica_type: ReplicaType.STUDIO,
+      replica_ids: FREE.join(','),
     },
     refetchInterval: false,
   });

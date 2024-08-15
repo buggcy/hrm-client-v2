@@ -216,10 +216,12 @@ const SelectPersonaDialog = ({
                 <Item label="Replica ID">
                   {selectedPersona?.default_replica_id}
                 </Item>
-                <Item label="Created">
-                  {selectedPersona?.created_at &&
-                    format(selectedPersona.created_at, 'MMMM d, h:mm aaa')}
-                </Item>
+                {selectedPersona?.created_at && (
+                  <Item label="Created">
+                    {selectedPersona?.created_at &&
+                      format(selectedPersona.created_at, 'MMMM d, h:mm aaa')}
+                  </Item>
+                )}
               </div>
               {selectedPersona?.system_prompt && (
                 <div className="mb-2 h-[15.375rem] rounded-md border bg-secondary">

@@ -10,7 +10,6 @@ import {
   MessageCircle,
   MonitorDot,
   User,
-  UserRoundPlus,
   Users,
   Video,
 } from 'lucide-react';
@@ -112,8 +111,16 @@ export const Sidebar = () => {
                 active={pathname === '/conversations'}
               />
             </li>
+            <li className="flex">
+              <NavigationItem
+                title="Persona Library"
+                icon={User}
+                href="/personas"
+                active={pathname === '/personas'}
+              />
+            </li>
           </NavSection>
-          <NavSection title="PERSONA">
+          {/* <NavSection title="PERSONA">
             <li className="flex">
               <NavigationItem
                 title="Create Persona"
@@ -130,7 +137,7 @@ export const Sidebar = () => {
                 active={pathname === '/personas'}
               />
             </li>
-          </NavSection>
+          </NavSection> */}
           <NavSection>
             <li className="flex">
               <NavigationItem

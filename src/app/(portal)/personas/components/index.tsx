@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight, CircleHelp, Loader2 } from 'lucide-react';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -12,6 +12,11 @@ import { URLS } from '@/components/CopyApiUrl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
@@ -27,7 +32,7 @@ import {
   CreatePersonaSchema,
   useCreatePersonaMutation,
 } from '@/hooks/usePersonas';
-import { getErrorMessage } from '@/utils';
+import { cn, getErrorMessage } from '@/utils';
 
 import { HttpMethods, IReplica } from '@/types';
 
@@ -43,6 +48,28 @@ const getCreatePersonaRequestBody = (
   if (state.context) result.context = state.context;
 
   return result;
+};
+
+export const LabelWithPopover = ({
+  children,
+  popoverContent,
+  className,
+}: {
+  children: React.ReactNode;
+  popoverContent: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className="mb-2 flex items-center gap-1.5">
+      <Label className={(cn('inline-block'), className)}>{children}</Label>
+      <Popover>
+        <PopoverTrigger>
+          <CircleHelp className="size-4 text-muted-foreground" />
+        </PopoverTrigger>
+        <PopoverContent className="text-xs">{popoverContent}</PopoverContent>
+      </Popover>
+    </div>
+  );
 };
 
 export const Code = () => {
@@ -101,7 +128,7 @@ const CreatePersonaInputs = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <Label className="mb-2 inline-block">Persona Name</Label>
+      <Label className="mb-2 inline-block">Persona Name (optional)</Label>
       <Input
         className="mb-4"
         type="text"
@@ -111,20 +138,61 @@ const CreatePersonaInputs = () => {
         onChange={handleChange}
         onBlur={handleBlur}
       />
-      <Label className="mb-2 inline-block">System Prompt</Label>
+      <LabelWithPopover
+        popoverContent={
+          <p>
+            The system prompt is used to craft the replica&apos;s personality
+            and how it will respond.
+            <br />
+            <br />
+            Example:
+            <br />
+            Your role is to be a captivating storyteller influenced by classic
+            literature. Focus on rich descriptions, dynamic characters, and
+            compelling plots that evoke emotion and wonder.
+          </p>
+        }
+      >
+        System Prompt
+      </LabelWithPopover>
       <Textarea
         required
         className="mb-4 h-full resize-none"
-        placeholder="Enter the system prompt that will be used by the llm"
+        placeholder="Enter System Prompt for your persona"
         value={systemPrompt}
         name="systemPrompt"
         onChange={handleChange}
         onBlur={handleBlur}
       />
-      <Label className="mb-2 inline-block">Persona Context</Label>
+
+      <LabelWithPopover
+        popoverContent={
+          <p>
+            The persona context is additional information that the replica is
+            able to use in its responses.
+            <br />
+            <br />
+            Example:
+            <br />
+            Don Quixote is a classic novel by Spanish author Miguel de
+            Cervantes, first published in two parts in 1605 and 1615. The story
+            follows Alonso Quixano, an elderly gentleman who becomes so enamored
+            with chivalric romances that he loses his sanity, assumes the
+            identity of a knight-errant named Don Quixote, and sets out on a
+            series of comical and delusional adventures across Spain.
+            Accompanied by his loyal squire Sancho Panza, Don Quixote&apos;s
+            misadventures, including his famous tilting at windmills mistaken
+            for giants, serve as a satirical critique of the romanticized
+            chivalric literature of Cervantes&apos; time while exploring themes
+            of reality, identity, and the nature of heroism.
+          </p>
+        }
+      >
+        Persona Context (optional)
+      </LabelWithPopover>
       <Textarea
         className="h-full resize-none"
-        placeholder="Enter the context of the persona, e.g., “This persona is for testing purposes”"
+        placeholder="Enter Context for your persona"
         value={context!}
         name="context"
         onChange={handleChange}

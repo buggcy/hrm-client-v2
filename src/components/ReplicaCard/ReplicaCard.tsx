@@ -2,14 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 import {
-  ArrowRight,
   Check,
+  ChevronDown,
   Copy,
   InfoIcon,
   Loader,
+  MessageCircle,
   MoreHorizontal,
   Scaling,
   Trash2,
+  Video,
   VideoOff,
   Volume2Icon,
   VolumeX,
@@ -30,6 +32,12 @@ import { DeleteDialog } from '../DeleteDialog';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardFooter } from '../ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Skeleton } from '../ui/skeleton';
 
@@ -394,27 +402,44 @@ const ReplicaCard = ({
             </Popover>
           )}
         </div>
-        {!isSelectable &&
-          (status === ReplicaStatus.COMPLETED ? (
-            <Button asChild variant="link" className="mt-2.5 h-5 p-0">
-              <Link
-                href={`/videos/create/?replicaId=${replica_id}`}
-                prefetch={false}
-              >
-                Create Video
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          ) : (
-            <Button
-              disabled
-              variant="link"
-              className="mt-2.5 h-5 p-0 text-muted-foreground"
+        {isSelectable && (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className={cn(
+                'mt-1 flex items-center gap-1.5 text-sm font-medium text-primary',
+                { 'text-muted-foreground': status !== ReplicaStatus.COMPLETED },
+              )}
+              disabled={status !== ReplicaStatus.COMPLETED}
             >
-              Create Video
-              <ArrowRight className="size-4" />
-            </Button>
-          ))}
+              Create <ChevronDown className="size-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem
+                className="cursor-pointer gap-3 py-2.5 text-sm font-medium"
+                asChild
+              >
+                <Link
+                  href={`/videos/create/?replicaId=${replica_id}`}
+                  prefetch={false}
+                >
+                  <Video className="size-4 text-muted-foreground" /> Video
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer gap-3 py-2.5 text-sm font-medium"
+                asChild
+              >
+                <Link
+                  href={`/conversations/create/?replicaId=${replica_id}`}
+                  prefetch={false}
+                >
+                  <MessageCircle className="size-4 text-muted-foreground" />
+                  Conversation
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </CardFooter>
     </Card>
   );
