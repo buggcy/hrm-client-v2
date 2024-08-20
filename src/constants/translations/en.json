@@ -6,11 +6,12 @@
       "statusBadge": {
         "ready": "Ready",
         "error": "Error",
-        "generating": "Generating...",
+        "generating": "Generating",
         "completed": "Completed",
         "training": "Training",
         "deleted": "Deleted",
-        "active": "Active"
+        "active": "Active",
+        "ended": "Ended"
       },
       "status": {
         "ready": "Ready",

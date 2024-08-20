@@ -16,8 +16,18 @@ export const VideoInfoBlock: FC<{
   created_at?: IVideo['created_at'];
   status?: IVideo['status'];
   video_name?: IVideo['video_name'];
+  replicaId?: IVideo['replica_id'];
+  generationProgress?: IVideo['generation_progress'];
   withDelete?: boolean;
-}> = ({ video_id, created_at, status, video_name, withDelete }) => {
+}> = ({
+  video_id,
+  created_at,
+  status,
+  video_name,
+  replicaId,
+  generationProgress,
+  withDelete,
+}) => {
   const router = useRouter();
   return (
     <div>
@@ -42,6 +52,16 @@ export const VideoInfoBlock: FC<{
             <CopyRequestID id={video_id} />
           </div>
         </div>
+        {replicaId && (
+          <div className="flex items-center gap-4">
+            <div className="w-full max-w-38.5">
+              <p className="text-sm font-semibold">Replica ID</p>
+            </div>
+            <div>
+              <CopyRequestID id={replicaId} />
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-4">
           <div className="w-full max-w-38.5">
             <p className="text-sm font-semibold">Created</p>
@@ -65,6 +85,9 @@ export const VideoInfoBlock: FC<{
               })}
             >
               {status}
+              {status === VideoStatus.GENERATING &&
+                generationProgress &&
+                ` ${generationProgress.split('/')[0]}%`}
             </p>
           </div>
         </div>

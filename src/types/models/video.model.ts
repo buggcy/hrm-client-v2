@@ -22,6 +22,8 @@ export const IVideo = z.object({
   download_url: z.string().url().nullish(),
   gif_thumbnail_url: z.string().url().nullish(),
   still_image_thumbnail_url: z.string().url().nullish(),
+  replica_id: z.string().nullish(),
+  generation_progress: z.string().nullish(),
   created_at: z.string(),
   updated_at: z.string(),
 });

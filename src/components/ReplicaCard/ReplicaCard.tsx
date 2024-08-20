@@ -298,7 +298,12 @@ const ReplicaCard = ({
               </div>
             )}
           </div>
-          <div className="absolute bottom-2 left-2">
+          <div className="absolute bottom-2 left-2 flex gap-2">
+            {replica?.model_name && (
+              <div className="flex items-center rounded-full bg-blur-background px-2 py-1 text-sm font-semibold capitalize leading-3 text-blur-background-foreground backdrop-blur-sm hover:bg-blur-background/30">
+                {replica.model_name}
+              </div>
+            )}
             <CopyIdButton
               id={replica_id}
               label={`ID: ${replica_id}`}

@@ -159,6 +159,7 @@ export default function VideosPage() {
                         video_name,
                         status,
                         still_image_thumbnail_url,
+                        generation_progress,
                         created_at,
                         data,
                       }) => (
@@ -206,7 +207,10 @@ export default function VideosPage() {
                             <CopyRequestID id={video_id} />
                           </TableCell>
                           <TableCell className="p-2">
-                            <StatusBadge status={status} />
+                            <StatusBadge
+                              status={status}
+                              progress={generation_progress?.split('/')[0]}
+                            />
                           </TableCell>
                           <TableCell className="hidden p-2 font-medium lg:table-cell">
                             {created_at &&

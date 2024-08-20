@@ -95,6 +95,8 @@ const VideoDetailsSheet: FC<VideoDetailsSheetProps> = ({
             video_id={video?.video_id}
             created_at={video?.created_at}
             status={video?.status}
+            replicaId={video?.replica_id}
+            generationProgress={video?.generation_progress}
           />
           <VideoDataBlock data={video?.data} />
           <ShareFooterButtons

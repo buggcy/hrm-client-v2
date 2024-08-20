@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 
-import { LoaderCircle, TrashIcon } from 'lucide-react';
+import { LoaderCircle, Trash2Icon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -53,7 +53,7 @@ export const DeleteVideoBtn: FC<{
           {isPending ? (
             <LoaderCircle className="size-4 animate-spin" />
           ) : (
-            <TrashIcon className="size-4" />
+            <Trash2Icon className="size-4" />
           )}
           Delete
         </Button>

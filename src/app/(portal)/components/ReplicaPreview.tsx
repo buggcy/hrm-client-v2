@@ -15,15 +15,17 @@ export const ReplicaPreviewContainer = ({
 );
 
 export const ReplicaPreviewBadge = () => (
-  <p className="absolute bottom-4 left-1/2 z-20 flex w-max -translate-x-1/2 items-center space-x-2 rounded-md bg-white/10 px-4 py-2 text-center text-sm font-medium text-white text-opacity-80 backdrop-blur-sm">
-    In preview mode, sound and face animations are off
-  </p>
+  <div className="absolute inset-x-0 bottom-4 z-20 flex items-center justify-center">
+    <p className="flex w-max items-center space-x-2 rounded-md bg-blur-background px-4 py-2 text-center text-sm font-medium text-white/90 backdrop-blur-sm">
+      In preview mode, sound and face animations are off
+    </p>
+  </div>
 );
 
 export const ReplicaPreview = ({ src }: { src?: string }) => (
   <ReplicaPreviewContainer>
     <Loader className="absolute z-0 mb-6 size-8 animate-spin" />
-    <div className="relative z-10 h-full">
+    <div className="relative z-10 h-full rounded-md border bg-secondary">
       <video
         className="aspect-video h-[inherit] rounded"
         preload="auto"

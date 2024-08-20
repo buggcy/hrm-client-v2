@@ -131,11 +131,17 @@ export const StockPersonasCarousel = () => {
 
   return (
     <div className="w-full rounded-md">
-      <Button variant="link" className="p-0 text-foreground" asChild>
+      <Button
+        variant="link"
+        className="text-balance p-0 pr-20 text-foreground"
+        asChild
+      >
         <Link href="/conversations/create">
           <h2 className="mb-4 flex items-center text-lg font-semibold">
-            Chat with our stock replica personas{' '}
-            <ChevronRight className="ml-0.5 size-5" />
+            Chat with our stock replica personas
+            <span>
+              <ChevronRight className="ml-0.5 size-5" />
+            </span>
           </h2>
         </Link>
       </Button>

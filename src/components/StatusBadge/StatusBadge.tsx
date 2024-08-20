@@ -20,7 +20,7 @@ const statusTextMap: {
   [ReplicaStatus.STARTED]: 'general.statusBadge.training',
   [ReplicaStatus.COMPLETED]: 'general.statusBadge.completed',
   [ConversationStatus.ACTIVE]: 'general.statusBadge.active',
-  [ConversationStatus.ENDED]: 'general.statusBadge.completed',
+  [ConversationStatus.ENDED]: 'general.statusBadge.ended',
 };
 
 const badgeVariantMap: {
@@ -37,14 +37,15 @@ const badgeVariantMap: {
   [ConversationStatus.ENDED]: 'success',
 };
 
-const StatusBadge: FC<StatusBadgeProps> = ({ status }) => {
+const StatusBadge: FC<StatusBadgeProps> = ({ status, progress }) => {
   const { t } = useTranslation();
   return (
     <Badge variant={badgeVariantMap[status] as BadgeProps['variant']}>
-      {t(statusTextMap[status])}{' '}
+      {t(statusTextMap[status])}
       {(status === VideoStatus.ERROR || status === ReplicaStatus.ERROR) && (
         <InfoIcon className="ml-1 size-4 text-destructive" />
       )}
+      {status === VideoStatus.GENERATING && progress && ` ${progress}%`}
     </Badge>
   );
 };

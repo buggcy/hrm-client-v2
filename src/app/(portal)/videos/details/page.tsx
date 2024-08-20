@@ -19,7 +19,6 @@ import { VideoInfoBlock } from '../components/VideoInfoBlock';
 export default function VideoDetailsPage() {
   const searchParams = useSearchParams();
   const videoId = searchParams.get('id');
-  // TODO: add refetch if video in generating status
   const {
     data: video,
     isLoading,
@@ -48,7 +47,7 @@ export default function VideoDetailsPage() {
           </div>
         )}
         {!isError && (
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Card className="flex flex-col p-4">
               <CardContent className="mb-4 p-0">
                 {/* TODO: add when video request will contain all necessary info to show code */}
@@ -106,6 +105,8 @@ export default function VideoDetailsPage() {
                       video_id={video?.video_id}
                       created_at={video?.created_at}
                       status={video?.status}
+                      replicaId={video?.replica_id}
+                      generationProgress={video?.generation_progress}
                       withDelete
                     />
                     <VideoDataBlock data={video?.data} />

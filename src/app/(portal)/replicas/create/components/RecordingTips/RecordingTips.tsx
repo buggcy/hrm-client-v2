@@ -258,7 +258,7 @@ function RecordingTipsComponent() {
         </TabsContent>
         <TabsContent value="video" className="mt-8">
           <MuxPlayer
-            className="h-64"
+            className="h-64 overflow-hidden rounded-md"
             src="https://stream.mux.com/OiWxgih49NGrbvObft01CS01UcVOo97TOEt2oOYBAH00gU.m3u8?redundant_streams=true"
           />
         </TabsContent>

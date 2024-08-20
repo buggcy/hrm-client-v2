@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 
-import { TrashIcon } from 'lucide-react';
+import { Trash2Icon } from 'lucide-react';
 
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
@@ -65,7 +65,7 @@ export const DeletePersonaBtn: FC<{
           variant="destructive-inverted"
           className={cn('flex items-center gap-2', className)}
         >
-          <TrashIcon className="size-4" /> Delete Persona
+          <Trash2Icon className="size-4" /> Delete Persona
         </Button>
       </DialogTrigger>
       <DialogContent>

@@ -21,7 +21,10 @@ export const VideoBlock: FC<{
       )}
     >
       {status === VideoStatus.READY && stream_url && (
-        <MuxPlayer src={stream_url} className="h-[inherit]" />
+        <MuxPlayer
+          src={stream_url}
+          className="h-[inherit] overflow-hidden rounded-md"
+        />
       )}
       {status === VideoStatus.READY && !stream_url && (
         <div className="flex flex-col items-center justify-center p-4">

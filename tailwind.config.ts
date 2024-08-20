@@ -71,6 +71,10 @@ const config = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsla(var(--destructive) / 0.15)',
         },
+        'blur-background': {
+          DEFAULT: 'hsla(229, 84%, 5%, 0.2)',
+          foreground: 'hsla(0, 0%, 100%, 1)',
+        },
       },
       ringColor: {
         DEFAULT: 'hsl(var(--primary))',

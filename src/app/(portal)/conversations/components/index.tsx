@@ -454,11 +454,11 @@ export const ConversationsList = () => {
                 {/*    getIcon(status)*/}
                 {/*  )}*/}
                 {/*</div>*/}
-                <div className="grid w-full grid-cols-3">
+                <div className="grid w-full grid-cols-[1fr,80px,1fr]">
                   <p className="truncate text-sm font-medium">
                     {conversation_name}
                   </p>
-                  <div>
+                  <div className="flex justify-center">
                     <StatusBadge status={status} />
                   </div>
                   <p className="text-end text-sm font-medium text-muted-foreground">
