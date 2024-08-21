@@ -310,7 +310,7 @@ export const CreatePersonaForm = () => {
         <Alert className="bg-secondary p-3">
           <AlertTitle className="flex gap-2 text-sm">
             <Layers className="size-4" />
-            Custom LLM
+            Additional customization available via API
           </AlertTitle>
           <AlertDescription>
             Note: You can use a different or custom LLM, as well as adjust
