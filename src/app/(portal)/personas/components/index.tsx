@@ -3,12 +3,13 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
-import { ArrowRight, CircleHelp, Loader2 } from 'lucide-react';
+import { ArrowRight, CircleHelp, Layers, Loader2 } from 'lucide-react';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 
 import { ApiCode } from '@/components/Code';
 import { URLS } from '@/components/CopyApiUrl';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -128,7 +129,9 @@ const CreatePersonaInputs = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <Label className="mb-2 inline-block">Persona Name (optional)</Label>
+      <Label className="mb-2 inline-block">
+        Persona Name <span className="text-muted-foreground">(optional)</span>
+      </Label>
       <Input
         className="mb-4"
         type="text"
@@ -188,7 +191,8 @@ const CreatePersonaInputs = () => {
           </p>
         }
       >
-        Persona Context (optional)
+        Persona Context{' '}
+        <span className="text-muted-foreground">(optional)</span>
       </LabelWithPopover>
       <Textarea
         className="h-full resize-none"
@@ -303,15 +307,34 @@ export const CreatePersonaForm = () => {
         <CreatePersonaInputs />
       </form>
       <footer className="flex flex-col items-end">
-        <Separator className="mb-4" />
-        <div className="flex items-end gap-4">
+        <Alert className="bg-secondary p-3">
+          <AlertTitle className="flex gap-2 text-sm">
+            <Layers className="size-4" />
+            Custom LLM
+          </AlertTitle>
+          <AlertDescription>
+            Note: You can use a different or custom LLM, as well as adjust
+            options for each layer via the{' '}
+            <a
+              href="https://docs.tavus.io/api-reference/personas/create-persona"
+              target="blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              API
+            </a>
+          </AlertDescription>
+        </Alert>
+        <Separator className="my-4" />
+        <div className="flex flex-wrap items-end justify-end gap-4 lg:flex-nowrap">
           <Button
             variant="outline"
             id={START_CONVERSATION_BUTTON_ID}
             onClick={() => handleSubmit()}
             disabled={isGenerating}
+            className="text-pretty"
           >
-            Create and Start Conversation{' '}
+            Create and Start Conversation
             {isGenerating && <Loader2 className="size-4 animate-spin" />}
           </Button>
           <Button type="submit" disabled={isGenerating} form={CREATE_FORM_ID}>

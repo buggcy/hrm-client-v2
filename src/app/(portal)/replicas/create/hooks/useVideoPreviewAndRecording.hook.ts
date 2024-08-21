@@ -164,7 +164,6 @@ export const useVideoPreviewAndRecording = ({
         const bestResolution = await findBestResolution(
           selectedVideoDevice.deviceId,
         );
-        console.log('bestResolution', bestResolution);
         const newStream = await navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: selectedVideoDevice.deviceId,
@@ -174,6 +173,7 @@ export const useVideoPreviewAndRecording = ({
             height: bestResolution
               ? { exact: bestResolution.height }
               : { ideal: 2160 },
+            frameRate: { ideal: 25 },
           },
           audio: { deviceId: selectedAudioDevice.deviceId },
         });
