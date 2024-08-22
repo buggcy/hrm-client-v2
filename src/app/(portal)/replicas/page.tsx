@@ -83,7 +83,13 @@ export default function ReplicasPage() {
   };
 
   const stockReplicasData = useMemo(() => {
-    return stockReplicas?.pages?.map(page => page.data).flat();
+    return stockReplicas?.pages
+      ?.map(page => page.data)
+      .flat()
+      .filter(
+        replica => !replica.replica_name.toLowerCase().includes('deprecated'),
+      );
+    // TODO: temp solution to filter out deprecated replicas
   }, [stockReplicas]);
 
   const personalReplicasData = useMemo(() => {
