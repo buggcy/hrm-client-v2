@@ -139,7 +139,7 @@ const Upload = () => {
           onChange={handleChange}
           multiple={false}
           onError={handleError}
-          accept="video/mp4, video/webm"
+          accept="video/mp4, video/webm, video/quicktime"
         >
           <div
             className="flex size-full flex-1 cursor-pointer flex-col items-center justify-between p-4"
@@ -153,10 +153,14 @@ const Upload = () => {
                 <p className="text-lg font-semibold">
                   Click to upload your consent video or drag and drop
                 </p>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {/*TODO: ADD Image*/}
-                  Video file up to 750mb or 30min
-                </p>{' '}
+                <p className="mt-2 text-sm font-medium text-muted-foreground">
+                  Video file up to 750mb
+                  <br />
+                  Supported formats: <b>.mp4 .webm .mov</b>
+                  <br />
+                  Currently, the <b>H.264 codec is required</b> to ensure
+                  efficient compression.
+                </p>
               </div>
             </div>
             <div className="w-full">

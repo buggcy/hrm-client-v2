@@ -1,11 +1,11 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 
 import { LoadingButton } from '@/components/LoadingButton';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 
 import { useReplicaQuery } from '@/hooks';
 import { PersonasDescriptions } from '@/hooks/usePersonas';
@@ -39,6 +39,14 @@ export const PersonaCard = ({
     onClick(persona.persona_id);
   };
 
+  const personaInitials = useMemo(() => {
+    return persona.persona_name
+      .split(' ')
+      .slice(0, 2)
+      .map(word => word[0])
+      .join('');
+  }, [persona.persona_name]);
+
   return (
     <Card
       className={cn(
@@ -51,8 +59,8 @@ export const PersonaCard = ({
       onClick={handleSelect}
     >
       <CardContent className="flex flex-col gap-4 p-0">
-        {replica ? (
-          <Avatar className="size-14">
+        <Avatar className="size-14">
+          {replica?.thumbnail_video_url ? (
             <video
               className="aspect-video size-full rounded-md bg-black object-cover"
               muted
@@ -63,10 +71,10 @@ export const PersonaCard = ({
                 type="video/mp4"
               />
             </video>
-          </Avatar>
-        ) : (
-          <Skeleton className="aspect-video size-14 rounded-full" />
-        )}
+          ) : (
+            <AvatarFallback>{personaInitials}</AvatarFallback>
+          )}
+        </Avatar>
         <div>
           <h3 className="truncate text-lg font-semibold">
             {persona.persona_name}

@@ -38,7 +38,7 @@ export const BillingService = {
     }),
   getBillingPortal: (): Promise<StripeSession> =>
     portalApi.post('/v2/billing/stripe/billing-portal', {
-      returnUrl: `${APP_BASE_URL}/payment/update/success`,
+      returnUrl: `${APP_BASE_URL}/billing`,
     }),
   cancelSubscription: (): Promise<void> =>
     portalApi.post('/v2/billing/subscriptions/cancel'),
