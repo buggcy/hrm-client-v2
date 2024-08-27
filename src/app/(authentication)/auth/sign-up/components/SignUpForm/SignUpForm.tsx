@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
 import { PasswordInput } from '@/app/(authentication)/auth/sign-in/components/PasswordInput';
+import { SupportButton } from '@/app/(portal)/components/Navigation/components/SupportButton';
 import { signUpWithEmailAndPassword } from '@/services';
 
 const FormSchema = z.object({
@@ -59,6 +60,7 @@ export function SignUpForm() {
       toast({
         title: 'An error occurred while signing up.',
         description: error.message || undefined,
+        action: <SupportButton />,
         variant: 'error',
       });
     },

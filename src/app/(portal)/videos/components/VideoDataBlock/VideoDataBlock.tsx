@@ -40,9 +40,7 @@ export const VideoDataBlock: FC<{
           </div>
           <textarea
             className="h-48 w-full resize-none rounded-md bg-secondary px-4 text-sm font-normal text-muted-foreground outline-none"
-            value={
-              'Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling! Parents, give your child the gift of coding. Summer boot camps now enrolling!'
-            }
+            value={script}
             readOnly
           ></textarea>
         </div>

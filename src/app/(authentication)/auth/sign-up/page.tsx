@@ -9,6 +9,7 @@ import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
+import { SupportButton } from '@/app/(portal)/components/Navigation/components/SupportButton';
 import { signInWithGoogle } from '@/services';
 
 import { SignUpForm } from './components/SignUpForm';
@@ -19,9 +20,12 @@ const SignUp: FC = () => {
   const { dismiss } = useToast();
   const { mutate: handleSignUpWithGoogle, isPending } = useMutation({
     mutationFn: () => signInWithGoogle(true),
-    onError: createHandleAuthError(
-      'An error occurred while authenticating with Google.',
-    ),
+    onError: createHandleAuthError({
+      title: 'An error occurred while authenticating with Google.',
+      description:
+        'Please try again. If this issue persists, please reach out to our support team',
+      action: <SupportButton />,
+    }),
     onMutate: () => {
       dismiss();
     },

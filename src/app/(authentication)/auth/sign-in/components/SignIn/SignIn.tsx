@@ -13,6 +13,7 @@ import {
   useRedirectAfterAuth,
 } from '@/app/(authentication)/auth/hooks';
 import { AuthLayout } from '@/app/(authentication)/auth/Layout.component';
+import { SupportButton } from '@/app/(portal)/components/Navigation/components/SupportButton';
 import { signInWithGoogle } from '@/services';
 
 import { SignInForm } from './components/Form';
@@ -21,9 +22,12 @@ const SignIn: FC = () => {
   const { dismiss } = useToast();
   const { mutate: handleSignInWithGoogle, isPending } = useMutation({
     mutationFn: () => signInWithGoogle(),
-    onError: createHandleAuthError(
-      'An error occurred while signing in with Google.',
-    ),
+    onError: createHandleAuthError({
+      title: 'An error occurred while signing in with Google.',
+      description:
+        'Please try again. If this issue persists, please reach out to our support team',
+      action: <SupportButton />,
+    }),
     onMutate: () => {
       dismiss();
     },

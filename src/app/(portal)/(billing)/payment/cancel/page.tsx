@@ -5,6 +5,7 @@ import { TriangleAlertIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 import { ChangePaymentMethodButton } from '@/app/(portal)/(billing)/payment/cancel/components/ChangePaymentMethodButton';
+import { DEVELOPER_SUPPORT_EMAIL, DEVELOPER_SUPPORT_LINK } from '@/constants';
 
 export default function Page() {
   return (
@@ -21,11 +22,8 @@ export default function Page() {
         </p>
         <p className="text-center text-muted-foreground">
           If you continue to experience issues, please contact{' '}
-          <a
-            href="mailto:developer-support@tavus.io"
-            className="text-blue-500 underline"
-          >
-            developer-support@tavus.io
+          <a href={DEVELOPER_SUPPORT_LINK} className="text-blue-500 underline">
+            {DEVELOPER_SUPPORT_EMAIL}
           </a>
           .
         </p>

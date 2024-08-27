@@ -5,8 +5,9 @@ import { CancelledError } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
+import { Toast, toast } from '@/components/ui/use-toast';
 
+import { DEVELOPER_SUPPORT_EMAIL, DEVELOPER_SUPPORT_LINK } from '@/constants';
 import { useUserQuery } from '@/hooks';
 import { firebaseAuth } from '@/libs';
 import { NonDeveloperError } from '@/services';
@@ -40,8 +41,8 @@ const nonDeveloperToastDescription = (
   <>
     If you think there’s a mistake, or are interested in the Tavus Developer
     platform, please let us know at{' '}
-    <a href="mailto:support@tavus.io" className="underline">
-      support@tavus.io
+    <a href={DEVELOPER_SUPPORT_LINK} className="underline">
+      {DEVELOPER_SUPPORT_EMAIL}
     </a>
     <br />
     <br />
@@ -52,7 +53,7 @@ const nonDeveloperToastDescription = (
 );
 
 export const createHandleAuthError =
-  (title: string) => (error: Error | CancelledError) => {
+  (data: Toast) => (error: Error | CancelledError) => {
     // TODO: fix to handle NonDeveloperError properly
     if (
       error instanceof NonDeveloperError ||
@@ -67,7 +68,7 @@ export const createHandleAuthError =
       });
     } else
       toast({
-        title,
         variant: 'error',
+        ...data,
       });
   };

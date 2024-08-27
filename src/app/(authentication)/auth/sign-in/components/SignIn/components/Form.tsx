@@ -19,10 +19,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
 
 import { createHandleAuthError } from '@/app/(authentication)/auth/hooks';
 import { PasswordInput } from '@/app/(authentication)/auth/sign-in/components/PasswordInput';
+import { SupportButton } from '@/app/(portal)/components/Navigation/components/SupportButton';
 import { signInWithEmailAndPassword } from '@/services';
 
 const FormSchema = z.object({
@@ -35,16 +35,16 @@ const FormSchema = z.object({
 });
 
 export function SignInForm() {
-  const { dismiss } = useToast();
   const searchParams = useSearchParams();
   const { mutate, isPending } = useMutation({
     mutationFn: signInWithEmailAndPassword,
-    onError: createHandleAuthError(
-      'Sign-in unsuccessful. Please verify your username and password. If the issue persists, try resetting your password or contact our support team at support@example.com for assistance.',
-    ),
-    onMutate: () => {
-      dismiss();
-    },
+    onError: createHandleAuthError({
+      title:
+        'An error occurred while signing in. Please check your email and password and try again.',
+      description:
+        ' If the issue persists, try resetting your password or contact our support team for assistance.',
+      action: <SupportButton />,
+    }),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
