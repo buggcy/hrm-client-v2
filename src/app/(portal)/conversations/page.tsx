@@ -153,19 +153,6 @@ export default function ConversationsPage() {
                           className="group cursor-pointer rounded-lg border-none outline-offset-[-1px] outline-border hover:bg-transparent hover:outline"
                           onClick={() => onOpenChange(conversation_id)}
                         >
-                          {/* <TableCell className="hidden p-2 lg:table-cell">
-                            <div className="flex h-13.5 w-24 items-center justify-center overflow-hidden rounded border bg-secondary">
-                              {still_image_thumbnail_url ? (
-                                <img
-                                  src={still_image_thumbnail_url}
-                                  alt={video_name || 'Video thumbnail'}
-                                  className="max-h-13.5 object-contain"
-                                />
-                              ) : (
-                                getIcon(status)
-                              )}
-                            </div>
-                          </TableCell> */}
                           <TableCell className="px-4 py-2 text-left">
                             <div className="max-w-[25ch] md:max-w-[40ch] lg:max-w-[35ch] xl:max-w-[60ch] 2xl:max-w-[80ch]">
                               <p className="mt-1 truncate font-semibold">

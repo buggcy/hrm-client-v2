@@ -12,8 +12,6 @@ import {
   Headphones,
   Loader,
   RotateCcw,
-  Trash2,
-  TriangleAlert,
   Video,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -90,6 +88,7 @@ import { AudioInput } from './components/AudioInput';
 import { ScriptInput } from './components/ScriptInput';
 import { useCreateVideoFilesStore } from './hooks';
 import { VideoBackgroundType, VideoGenerationType } from './types';
+import { Thumbnail } from '../components/Thumbnail';
 
 import {
   HttpMethods,
@@ -591,22 +590,6 @@ const VideoWithBackground = ({
   );
 };
 
-const getIcon = (status: VideoStatus) => {
-  switch (status) {
-    case VideoStatus.GENERATING:
-    case VideoStatus.QUEUED:
-      return <Loader className="size-6 text-progress" />;
-    case VideoStatus.ERROR:
-      return <TriangleAlert className="size-6 text-destructive" />;
-    case VideoStatus.READY:
-      return <Video className="size-6" />;
-    case VideoStatus.DELETED:
-      return <Trash2 className="size-6 text-destructive" />;
-    default:
-      return <Video className="size-6" />;
-  }
-};
-
 const LIMIT = 10;
 
 const queryParams = {
@@ -657,6 +640,7 @@ const VideoList = () => {
               status,
               still_image_thumbnail_url,
               data,
+              generation_progress,
             }) => (
               <li
                 key={video_id}
@@ -669,16 +653,13 @@ const VideoList = () => {
                   },
                 )}
               >
-                <div className="flex min-h-14 min-w-24 items-center justify-center overflow-hidden rounded border bg-secondary">
-                  {still_image_thumbnail_url ? (
-                    <img
-                      src={still_image_thumbnail_url}
-                      alt={video_name || 'Video thumbnail'}
-                      className="max-h-13.5 object-contain"
-                    />
-                  ) : (
-                    getIcon(status)
-                  )}
+                <div className="relative flex min-h-14 min-w-24 items-center justify-center overflow-hidden rounded border bg-secondary">
+                  <Thumbnail
+                    src={still_image_thumbnail_url}
+                    status={status}
+                    progress={generation_progress}
+                    video_name={video_name}
+                  />
                 </div>
                 <div className="grid w-full">
                   <p className="truncate">

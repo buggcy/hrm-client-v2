@@ -443,17 +443,6 @@ export const ConversationsList = () => {
                   },
                 )}
               >
-                {/*<div className="flex min-h-14 min-w-24 items-center justify-center overflow-hidden rounded border bg-secondary">*/}
-                {/*  {still_image_thumbnail_url ? (*/}
-                {/*    <img*/}
-                {/*      src={still_image_thumbnail_url}*/}
-                {/*      alt={video_name || 'Video thumbnail'}*/}
-                {/*      className="max-h-13.5 object-contain"*/}
-                {/*    />*/}
-                {/*  ) : (*/}
-                {/*    getIcon(status)*/}
-                {/*  )}*/}
-                {/*</div>*/}
                 <div className="grid w-full grid-cols-[1fr,80px,1fr]">
                   <p className="truncate text-sm font-medium">
                     {conversation_name}

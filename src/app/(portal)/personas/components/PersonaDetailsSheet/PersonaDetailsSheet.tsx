@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Close, Content } from '@radix-ui/react-dialog';
-import { Check, ChevronsRight, Copy, Loader } from 'lucide-react';
+import { ChevronsRight, Loader } from 'lucide-react';
 
 import { LoadingButton } from '@/components/LoadingButton';
+import { ScriptTextArea } from '@/components/ScriptTextArea';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui/sheet';
 import { toast } from '@/components/ui/use-toast';
 
-import { useCopyToClipboard, useCreateConversationMutation } from '@/hooks';
+import { useCreateConversationMutation } from '@/hooks';
 import { usePersonaQuery } from '@/hooks/usePersonas';
 import { cn } from '@/utils';
 
@@ -76,9 +77,6 @@ const PersonaDetailsSheet: FC<PersonaDetailsSheetProps> = ({
   const router = useRouter();
   const { data: persona, isLoading } = usePersonaQuery(id as string, {
     enabled: !!id,
-  });
-  const { isCopied, copyToClipboard } = useCopyToClipboard({
-    textToCopy: persona?.system_prompt,
   });
   const { mutateAsync, isPending } = useCreateConversationMutation();
 
@@ -142,59 +140,11 @@ const PersonaDetailsSheet: FC<PersonaDetailsSheetProps> = ({
             persona_id={persona?.persona_id}
             replica_id={persona?.default_replica_id}
           />
-          {persona?.system_prompt && (
-            <div className="mb-2 h-[15.375rem] rounded-md border bg-secondary">
-              <div className="flex items-center justify-between px-4 pb-2 pt-4">
-                <p className="text-sm font-semibold text-muted-foreground">
-                  System Prompt
-                </p>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="size-8"
-                  onClick={copyToClipboard}
-                >
-                  {isCopied ? (
-                    <Check className="size-4" />
-                  ) : (
-                    <Copy className="size-4" />
-                  )}
-                </Button>
-              </div>
-              <textarea
-                className="h-48 w-full resize-none rounded-md bg-secondary px-4 pb-4 text-sm font-normal text-muted-foreground outline-none"
-                value={persona.system_prompt}
-                readOnly
-              ></textarea>
-            </div>
-          )}
-          {persona?.context && (
-            <div className="mb-2 h-[15.375rem] rounded-md border bg-secondary">
-              <div className="flex items-center justify-between px-4 pb-2 pt-4">
-                <p className="text-sm font-semibold text-muted-foreground">
-                  Persona Context
-                </p>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="size-8"
-                  onClick={copyToClipboard}
-                >
-                  {isCopied ? (
-                    <Check className="size-4" />
-                  ) : (
-                    <Copy className="size-4" />
-                  )}
-                </Button>
-              </div>
-              <textarea
-                className="h-48 w-full resize-none rounded-md bg-secondary px-4 pb-4 text-sm font-normal text-muted-foreground outline-none"
-                value={persona.context}
-                readOnly
-              ></textarea>
-            </div>
-          )}
-
+          <ScriptTextArea
+            label="System Prompt"
+            script={persona?.system_prompt}
+          />
+          <ScriptTextArea label="Persona Context" script={persona?.context} />
           <div className="sticky bottom-0 mt-auto flex items-center justify-between border-t bg-background py-4">
             <Button variant="primary-inverted" asChild>
               <Link

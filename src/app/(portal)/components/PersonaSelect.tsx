@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import { format } from 'date-fns';
-import { Check, ChevronDown, Copy } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
+import { ScriptTextArea } from '@/components/ScriptTextArea';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 
-import { useCopyToClipboard, useReplicaQuery } from '@/hooks';
+import { useReplicaQuery } from '@/hooks';
 import {
   DEFAULT_PERSONA,
   usePersonaQuery,
@@ -110,10 +111,6 @@ const SelectPersonaDialog = ({
       enabled: !!selectedPersona?.default_replica_id,
     },
   );
-
-  const { isCopied, copyToClipboard } = useCopyToClipboard({
-    textToCopy: selectedPersona?.system_prompt,
-  });
 
   useEffect(() => {
     setSelectedPersonaId(value);
@@ -223,32 +220,16 @@ const SelectPersonaDialog = ({
                   </Item>
                 )}
               </div>
-              {selectedPersona?.system_prompt && (
-                <div className="mb-2 h-[15.375rem] rounded-md border bg-secondary">
-                  <div className="flex items-center justify-between px-4 pb-2 pt-4">
-                    <p className="text-sm font-semibold text-muted-foreground">
-                      System Prompt
-                    </p>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="size-8"
-                      onClick={copyToClipboard}
-                    >
-                      {isCopied ? (
-                        <Check className="size-4" />
-                      ) : (
-                        <Copy className="size-4" />
-                      )}
-                    </Button>
-                  </div>
-                  <textarea
-                    className="h-48 w-full resize-none rounded-md bg-secondary px-4 pb-4 text-sm font-normal text-muted-foreground outline-none"
-                    value={selectedPersona.system_prompt}
-                    readOnly
-                  ></textarea>
-                </div>
-              )}
+              <ScriptTextArea
+                label="System Prompt"
+                script={selectedPersona?.system_prompt}
+                className="mb-4"
+              />
+              <ScriptTextArea
+                label="Persona Context"
+                script={selectedPersona?.context}
+                className="mb-4"
+              />
             </div>
           </div>
           <DialogFooter className="sticky bottom-0 border-t bg-background p-3">

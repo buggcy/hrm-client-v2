@@ -5,14 +5,7 @@ import Link from 'next/link';
 
 import { keepPreviousData } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import {
-  ArrowRight,
-  Loader,
-  LoaderCircle,
-  Trash2,
-  TriangleAlert,
-  Video,
-} from 'lucide-react';
+import { ArrowRight, Loader, LoaderCircle, Video } from 'lucide-react';
 
 import { CopyApiUrl } from '@/components/CopyApiUrl';
 import {
@@ -50,26 +43,11 @@ import { useVideosQuery, useVideosQueryRefetchInterval } from '@/hooks';
 
 import { CopyRequestID } from './components/CopyRequestID/CopyRequestID';
 import { GetVideoByIdInput } from './components/GetVideoByIdInput';
+import { Thumbnail } from './components/Thumbnail';
 
 import { VideoStatus } from '@/types';
 
 const LIMIT = 10;
-
-const getIcon = (status: VideoStatus) => {
-  switch (status) {
-    case VideoStatus.GENERATING:
-    case VideoStatus.QUEUED:
-      return <Loader className="size-6 text-progress" />;
-    case VideoStatus.ERROR:
-      return <TriangleAlert className="size-6 text-destructive" />;
-    case VideoStatus.READY:
-      return <Video className="size-6" />;
-    case VideoStatus.DELETED:
-      return <Trash2 className="size-6 text-destructive" />;
-    default:
-      return <Video className="size-6" />;
-  }
-};
 
 export default function VideosPage() {
   const { video_id, onOpenChange } = useVideoDetailsSheet();
@@ -138,7 +116,7 @@ export default function VideosPage() {
                 <Table>
                   <TableHeader className="[&_tr]:border-none">
                     <tr>
-                      <TableHead className="hidden lg:table-cell">
+                      <TableHead>
                         <span className="sr-only">Thumbnail</span>
                       </TableHead>
                       <TableHead className="text-left">Name</TableHead>
@@ -178,21 +156,18 @@ export default function VideosPage() {
                           className="group cursor-pointer rounded-lg border-none outline-offset-[-1px] outline-border hover:bg-transparent hover:outline"
                           onClick={() => onOpenChange(video_id)}
                         >
-                          <TableCell className="hidden p-2 lg:table-cell">
+                          <TableCell className="p-2">
                             <div className="flex h-13.5 w-24 items-center justify-center overflow-hidden rounded border bg-secondary">
-                              {still_image_thumbnail_url ? (
-                                <img
-                                  src={still_image_thumbnail_url}
-                                  alt={video_name || 'Video thumbnail'}
-                                  className="max-h-13.5 object-contain"
-                                />
-                              ) : (
-                                getIcon(status)
-                              )}
+                              <Thumbnail
+                                src={still_image_thumbnail_url}
+                                status={status}
+                                progress={generation_progress}
+                                video_name={video_name}
+                              />
                             </div>
                           </TableCell>
                           <TableCell className="p-2 text-left">
-                            <div className="max-w-[25ch] md:max-w-[40ch] lg:max-w-[35ch] xl:max-w-[60ch] 2xl:max-w-[80ch]">
+                            <div className="max-w-[25ch] md:max-w-[35ch] lg:max-w-[40ch] xl:max-w-[60ch] 2xl:max-w-[80ch]">
                               <p className="mt-1 truncate font-semibold">
                                 {video_name}
                               </p>
@@ -207,10 +182,7 @@ export default function VideosPage() {
                             <CopyRequestID id={video_id} />
                           </TableCell>
                           <TableCell className="p-2">
-                            <StatusBadge
-                              status={status}
-                              progress={generation_progress?.split('/')[0]}
-                            />
+                            <StatusBadge status={status} />
                           </TableCell>
                           <TableCell className="hidden p-2 font-medium lg:table-cell">
                             {created_at &&

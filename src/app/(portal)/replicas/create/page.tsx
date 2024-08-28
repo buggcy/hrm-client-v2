@@ -14,6 +14,7 @@ import { ReadDocsButton } from '@/components/ReadDocsButton';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
+import { CodeDialog } from './components/CodeDialog';
 import { Consent } from './components/Consent';
 import { Intro } from './components/Intro';
 import { RecordingTips } from './components/RecordingTips';
@@ -34,8 +35,8 @@ export default function ReplicaCreatePage() {
 
   return (
     <Layout className="flex flex-col">
-      <LayoutHeader title={'Replica Generation'}>
-        <CopyApiUrl type="POST" url="replica" />
+      <LayoutHeader title="Replica Generation">
+        <CopyApiUrl type="POST" url="replica" className="hidden lg:flex" />
         <LayoutHeaderButtonsBlock>
           <RecordingTips>
             <Button variant="outline" size="icon" className="rounded-full">
@@ -45,6 +46,9 @@ export default function ReplicaCreatePage() {
               <span className="sr-only">Recording Tips</span>
             </Button>
           </RecordingTips>
+          <CodeDialog>
+            <Button variant="outline">View Code</Button>
+          </CodeDialog>
           <ReadDocsButton to="replicaCreate" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
