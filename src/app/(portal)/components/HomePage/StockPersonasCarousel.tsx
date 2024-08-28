@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -21,7 +22,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/use-toast';
 
 import { useCreateConversationMutation, useReplicaQuery } from '@/hooks';
-import { PersonasDescriptions, usePersonasQuery } from '@/hooks/usePersonas';
+import {
+  DEFAULT_PERSONA_ID,
+  PersonasDescriptions,
+  usePersonasQuery,
+} from '@/hooks/usePersonas';
 import { cn, createReplicaThumbnailUrl } from '@/utils';
 
 import { IPersona, PersonaType } from '@/types';
@@ -129,6 +134,12 @@ export const StockPersonasCarousel = () => {
       });
   };
 
+  const personaArr = useMemo(() => {
+    return personas?.data
+      ?.filter(persona => !!PersonasDescriptions[persona.persona_id])
+      .toSorted(a => (a.persona_id === DEFAULT_PERSONA_ID ? -1 : 1));
+  }, [personas]);
+
   return (
     <div className="w-full rounded-md">
       <Button
@@ -172,20 +183,18 @@ export const StockPersonasCarousel = () => {
                 </CarouselItem>
               </>
             )}
-            {personas?.data
-              ?.filter(persona => !!PersonasDescriptions[persona.persona_id])
-              .map(persona => (
-                <CarouselItem
-                  key={persona.persona_id}
-                  className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-                >
-                  <PersonaCard
-                    persona={persona}
-                    isLoading={isPending}
-                    onClick={handleJoin}
-                  />
-                </CarouselItem>
-              ))}
+            {personaArr?.map(persona => (
+              <CarouselItem
+                key={persona.persona_id}
+                className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+              >
+                <PersonaCard
+                  persona={persona}
+                  isLoading={isPending}
+                  onClick={handleJoin}
+                />
+              </CarouselItem>
+            ))}
           </CarouselContent>
         </Carousel>
       </div>

@@ -63,7 +63,11 @@ export const PersonasDescriptions: Record<IPersona['persona_id'], string> = {
   p88964a7: 'Offer a digital extension at low cost',
   p24293d6: 'Allow celebrities to talk 1-on-1 to fans at scale',
   pd43ffef: 'Build technical co-pilots to supercharge a team',
+  p9a95912: 'Meet Carter, a Tavus team member',
+  p2fbd605: 'A digital personal assistant for Tavus users',
 };
+
+export const DEFAULT_PERSONA_ID = 'p9a95912';
 
 export const usePersonasQuery = ({
   queryKey,
