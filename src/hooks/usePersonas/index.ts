@@ -78,7 +78,10 @@ export const usePersonasQuery = ({
     queryKey: queryKey || ['personas', queryParams],
     queryFn: async ({ signal }) => {
       const result = await rqhApi
-        .get('/v2/personas', { params: queryParams, signal })
+        .get('/v2/personas', {
+          params: { ...queryParams, sort: 'desc' },
+          signal,
+        })
         .then(schemaParse(IPersonasResponse));
 
       result.data.forEach(persona => {
@@ -110,7 +113,7 @@ export const usePersonasInfinityQuery = ({
     queryFn: async ({ pageParam, signal }) => {
       const result = await rqhApi
         .get('/v2/personas', {
-          params: { ...queryParams, page: pageParam },
+          params: { ...queryParams, page: pageParam, sort: 'desc' },
           signal,
         })
         .then(schemaParse(IPersonasResponse));

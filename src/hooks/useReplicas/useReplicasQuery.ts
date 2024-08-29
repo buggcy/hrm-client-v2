@@ -42,7 +42,7 @@ export const useReplicasQuery = ({
     queryKey: ['replicas', queryParams],
     queryFn: ({ pageParam, signal }) =>
       getReplicas({
-        params: { ...queryParams, page: pageParam },
+        params: { ...queryParams, page: pageParam, sort: 'desc' },
         signal,
       }).then(data => {
         data.data.forEach(replica => {

@@ -71,7 +71,10 @@ export const useConversationsQuery = ({
     queryKey: queryKey || ['conversations', queryParams],
     queryFn: ({ signal }) =>
       rqhApi
-        .get('/v2/conversations', { params: queryParams, signal })
+        .get('/v2/conversations', {
+          params: { ...queryParams, sort: 'desc' },
+          signal,
+        })
         .then(schemaParse(IConversationsResponse))
         .then(data => {
           data.data.forEach(conversation => {
