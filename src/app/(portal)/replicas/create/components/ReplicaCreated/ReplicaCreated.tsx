@@ -3,12 +3,19 @@ import Link from 'next/link';
 import { CheckIcon } from 'lucide-react';
 import Confetti from 'react-confetti';
 
+import { CopyRequestID } from '@/components/CopyRequestID';
 import { toggleIntercom } from '@/components/Intercom';
 import { Button } from '@/components/ui/button';
 
 import { CodeDialog } from '../CodeDialog';
 
-export const ReplicaCreated = () => {
+import { IReplica } from '@/types';
+
+export const ReplicaCreated = ({
+  replicaId,
+}: {
+  replicaId: IReplica['replica_id'];
+}) => {
   const handleClick = () => {
     toggleIntercom();
   };
@@ -22,7 +29,7 @@ export const ReplicaCreated = () => {
         <h1 className="mb-4 text-2xl font-bold">
           Replica Submitted Successfully!
         </h1>
-        <p className="mb-8 text-sm font-medium text-muted-foreground">
+        <p className="mb-4 text-sm font-medium text-muted-foreground">
           Your replica will be created within 3-4 hours. If you have any
           questions, please contact{' '}
           <button onClick={handleClick} className="underline">
@@ -30,6 +37,12 @@ export const ReplicaCreated = () => {
           </button>
           .
         </p>
+        <div className="mb-8 flex items-center">
+          <p className="text-sm font-medium text-muted-foreground">
+            Replica ID:
+          </p>
+          <CopyRequestID id={replicaId} />
+        </div>
         <div className="flex items-center justify-center gap-4">
           <CodeDialog>
             <Button variant="outline">View Code</Button>

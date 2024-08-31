@@ -4,10 +4,15 @@ export enum VideoMethod {
   UPLOAD = 'upload',
   RECORD = 'record',
 }
+export enum ConsentMethod {
+  UPLOAD = 'upload',
+  RECORD = 'record',
+  SKIP = 'skip',
+}
 
 export type State = {
   activeStep: 'intro' | 'consent' | 'training';
-  consentMethod: VideoMethod;
+  consentMethod: ConsentMethod;
   trainingMethod: VideoMethod;
   completedSteps: {
     intro: boolean;
@@ -31,7 +36,7 @@ type Action = {
 
 export const useReplicaStore = create<State & Action>(set => ({
   activeStep: 'intro',
-  consentMethod: VideoMethod.RECORD,
+  consentMethod: ConsentMethod.RECORD,
   trainingMethod: VideoMethod.RECORD,
   completedSteps: {
     intro: false,

@@ -34,7 +34,7 @@ import { toast, useToast } from '@/components/ui/use-toast';
 import { getVideoDuration, portalApi } from '@/utils';
 
 import { VideoPreview } from '../VideoPreview';
-import { useReplicaStore, VideoMethod } from '../../hooks';
+import { ConsentMethod, useReplicaStore, VideoMethod } from '../../hooks';
 
 const MAX_FILE_SIZE = 750 * 1024 * 1024;
 const MINIMAL_VIDEO_DURATION = 60;
@@ -45,7 +45,11 @@ const FormSchema = z.object({
 
 import { AxiosError, AxiosProgressEvent } from 'axios';
 
-import { ReplicaModel, useCreateReplicaMutation } from '@/hooks';
+import {
+  CreateReplicaDto,
+  ReplicaModel,
+  useCreateReplicaMutation,
+} from '@/hooks';
 
 import { LoaderBlock } from '../LoaderBlock';
 import { ReplicaCreated } from '../ReplicaCreated';
@@ -150,10 +154,10 @@ const useSubmitReplica = () => {
   });
 
   const consentFileValue = useMemo(() => {
-    if (consentMethod === VideoMethod.UPLOAD && consentFile) {
+    if (consentMethod === ConsentMethod.UPLOAD && consentFile) {
       return consentFile;
     }
-    if (consentMethod === VideoMethod.RECORD && consentRecordFile) {
+    if (consentMethod === ConsentMethod.RECORD && consentRecordFile) {
       return consentRecordFile;
     }
     return null;
@@ -170,8 +174,7 @@ const useSubmitReplica = () => {
   }, [trainingMethod, trainingFile, trainingRecordFile]);
 
   const onSubmit = async () => {
-    const data = {
-      consent_video_url: '',
+    const data: CreateReplicaDto = {
       train_video_url: '',
       model_name: ReplicaModel.PHOENIX_2,
     };
@@ -182,7 +185,7 @@ const useSubmitReplica = () => {
         onUploadProgress: onConsentProgress,
       });
       data.consent_video_url = consentResponseUrl;
-    } else {
+    } else if (consentMethod !== ConsentMethod.SKIP) {
       data.consent_video_url = consentURL!;
     }
 
@@ -443,8 +446,9 @@ export const Training = () => {
           isSubmitLoading={isSubmitLoading}
         />
       )}
-      {createdReplica && <ReplicaCreated />}
-
+      {createdReplica && (
+        <ReplicaCreated replicaId={createdReplica.replica_id} />
+      )}
       {!isLoading && !createdReplica && (
         <Tabs
           value={trainingMethod}

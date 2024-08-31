@@ -15,19 +15,19 @@ export enum ReplicaModel {
 
 export type CreateReplicaDto = {
   replica_name?: IReplica['replica_name'];
-  consent_video_url: string;
+  consent_video_url?: string;
   train_video_url: string;
   model_name: ReplicaModel;
 };
 
-export const createReplica: MutationFunction<void, CreateReplicaDto> = (
+export const createReplica: MutationFunction<IReplica, CreateReplicaDto> = (
   data: CreateReplicaDto,
 ) => rqhApi.post('/v2/replicas', data);
 
 export const useCreateReplicaMutation = (
-  options?: UseMutationOptions<void, Error, CreateReplicaDto>,
+  options?: UseMutationOptions<IReplica, Error, CreateReplicaDto>,
 ) =>
-  useMutation<void, Error, CreateReplicaDto>({
+  useMutation<IReplica, Error, CreateReplicaDto>({
     mutationFn: createReplica,
     // TODO: add cache invalidation
     ...options,

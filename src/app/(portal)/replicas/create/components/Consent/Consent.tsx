@@ -23,9 +23,10 @@ import { useToast } from '@/components/ui/use-toast';
 
 import { getVideoDuration } from '@/utils';
 
+import { Skip } from '../Skip';
 import { VideoPreview } from '../VideoPreview';
 import { VideoRecorder } from '../VideoRecorder';
-import { useReplicaStore, VideoMethod } from '../../hooks';
+import { ConsentMethod, useReplicaStore } from '../../hooks';
 
 const MAX_FILE_SIZE = 750 * 1024 * 1024;
 const MINIMAL_VIDEO_DURATION = 3;
@@ -221,23 +222,29 @@ export const Consent = () => {
     <Tabs
       value={activeTab}
       onValueChange={(value: string) => {
-        set({ consentMethod: value as VideoMethod });
+        set({ consentMethod: value as ConsentMethod });
       }}
       className="flex w-full flex-1 flex-col items-center justify-start gap-6"
     >
       <TabsList className="w-fit">
-        <TabsTrigger className="px-9" value="record">
+        <TabsTrigger className="px-5 sm:px-9" value={ConsentMethod.RECORD}>
           Record
         </TabsTrigger>
-        <TabsTrigger className="px-9" value="upload">
+        <TabsTrigger className="px-5 sm:px-9" value={ConsentMethod.UPLOAD}>
           Upload
         </TabsTrigger>
+        <TabsTrigger className="px-5 sm:px-9" value={ConsentMethod.SKIP}>
+          Skip
+        </TabsTrigger>
       </TabsList>
-      <TabsContent value={VideoMethod.RECORD} className="size-full flex-1">
+      <TabsContent value={ConsentMethod.RECORD} className="size-full flex-1">
         <VideoRecorder />
       </TabsContent>
-      <TabsContent value={VideoMethod.UPLOAD} className="size-full flex-1">
+      <TabsContent value={ConsentMethod.UPLOAD} className="size-full flex-1">
         <Upload />
+      </TabsContent>
+      <TabsContent value={ConsentMethod.SKIP} className="size-full flex-1">
+        <Skip />
       </TabsContent>
     </Tabs>
   );

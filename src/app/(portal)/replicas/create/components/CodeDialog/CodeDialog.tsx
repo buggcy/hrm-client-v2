@@ -16,7 +16,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { useReplicaStore, VideoMethod } from '../../hooks';
+import { ConsentMethod, useReplicaStore, VideoMethod } from '../../hooks';
 
 import { HttpMethods } from '@/types';
 
@@ -32,15 +32,22 @@ export const CodeDialog: React.FC<{ children: React.ReactNode }> = ({
     ]);
 
   const body = useMemo(() => {
-    const initial = {
+    const initial: {
+      replica_name: string;
+      consent_video_url?: string;
+      train_video_url: string;
+      model_name: string;
+    } = {
       replica_name: '',
       consent_video_url: '<file url>',
       train_video_url: '<file url>',
       model_name: 'phoenix-2',
     };
 
-    if (consentMethod === VideoMethod.UPLOAD && consentURL) {
+    if (consentMethod === ConsentMethod.UPLOAD && consentURL) {
       initial.consent_video_url = consentURL;
+    } else if (consentMethod === ConsentMethod.SKIP) {
+      delete initial.consent_video_url;
     }
 
     if (trainingMethod === VideoMethod.UPLOAD && trainingURL) {
