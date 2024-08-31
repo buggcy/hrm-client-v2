@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import {
   DeveloperPlanIds,
   isEnterprise,
+  UsageAndLimits,
 } from '@/app/(portal)/(billing)/billing/types';
 import { useUserQuery } from '@/hooks';
 import { useUserQuotasQuery } from '@/hooks/useBilling';
@@ -61,10 +62,7 @@ const QuotaItem = ({
   noQuotasText = 'No quotas available',
 }: {
   isLoading: boolean;
-  data?: {
-    planLimit: number;
-    currentUsage: number;
-  };
+  data?: UsageAndLimits;
   Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   measure: string;
   noQuotasText?: string;
@@ -75,15 +73,15 @@ const QuotaItem = ({
       <span className="text-xs font-medium text-muted-foreground">
         {isLoading
           ? 'Loading...'
-          : data?.planLimit
-            ? data.planLimit === INFINITY_QUOTAS_VALUE
+          : data?.usageLimit
+            ? data.usageLimit === INFINITY_QUOTAS_VALUE
               ? data.currentUsage + ` ${measure} used`
-              : `${data.currentUsage}/${data.planLimit} ${measure} used`
+              : `${data.currentUsage}/${data.usageLimit} ${measure} used`
             : noQuotasText}
       </span>
     </div>
     <Progress
-      value={data?.planLimit && (data?.currentUsage / data?.planLimit) * 100}
+      value={data?.usageLimit && (data?.currentUsage / data?.usageLimit) * 100}
       className="h-1 w-full"
       variant="white"
     />
