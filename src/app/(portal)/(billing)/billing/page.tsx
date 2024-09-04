@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import { sendGTMEvent } from '@next/third-parties/google';
 import { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { ArrowUpRight, CheckIcon, TriangleAlert, XIcon } from 'lucide-react';
@@ -398,6 +399,10 @@ const UpdateBillingPlansList: React.FC = () => {
           title: 'Processing',
           description: 'We are updating your subscription. Please wait. 🚀',
           variant: 'progress',
+        });
+        sendGTMEvent({
+          event: 'purchase',
+          item: planId,
         });
       }
     } catch (e) {

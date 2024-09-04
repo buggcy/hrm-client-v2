@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 
+import { sendGTMEvent } from '@next/third-parties/google';
 import { Query } from '@tanstack/react-query';
 import { CheckIcon, Loader2 } from 'lucide-react';
 import Confetti from 'react-confetti';
@@ -33,6 +34,10 @@ export default function Page() {
   useEffect(() => {
     if (user?.billingAccount?.status === BillingAccountStatus.ACTIVE) {
       void queryClient.refetchQueries({ queryKey: ['user', 'quotas'] });
+      sendGTMEvent({
+        event: 'purchase',
+        item: user.billingAccount.plan_id,
+      });
     }
   }, [user]);
 
