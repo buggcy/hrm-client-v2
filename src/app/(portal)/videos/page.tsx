@@ -157,7 +157,7 @@ export default function VideosPage() {
                           onClick={() => onOpenChange(video_id)}
                         >
                           <TableCell className="p-2">
-                            <div className="flex h-13.5 w-24 items-center justify-center overflow-hidden rounded border bg-secondary">
+                            <div className="flex h-13.5 w-24 items-center justify-center overflow-hidden rounded border bg-secondary-foreground">
                               <Thumbnail
                                 src={still_image_thumbnail_url}
                                 status={status}

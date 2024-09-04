@@ -653,7 +653,7 @@ const VideoList = () => {
                   },
                 )}
               >
-                <div className="relative flex min-h-14 min-w-24 items-center justify-center overflow-hidden rounded border bg-secondary">
+                <div className="relative flex min-h-14 min-w-24 items-center justify-center overflow-hidden rounded border bg-secondary-foreground">
                   <Thumbnail
                     src={still_image_thumbnail_url}
                     status={status}

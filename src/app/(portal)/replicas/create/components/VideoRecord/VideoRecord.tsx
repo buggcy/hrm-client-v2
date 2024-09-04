@@ -59,7 +59,7 @@ export const VideoRecord = ({
 
   return (
     <div className="mt-6 flex flex-col items-center justify-center">
-      <div className="relative flex aspect-video size-full max-w-[35.25rem] items-center justify-center overflow-hidden rounded-md border bg-secondary">
+      <div className="relative flex aspect-video size-full max-w-[35.25rem] items-center justify-center overflow-hidden rounded-md border bg-secondary-foreground">
         {countdownValue !== null && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[rgba(2,6,23,0.66)] text-2xl font-semibold text-white/90 backdrop-blur-[2px]">
             <span>Get ready!</span>

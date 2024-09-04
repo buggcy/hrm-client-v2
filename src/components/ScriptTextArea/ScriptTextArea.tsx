@@ -21,7 +21,12 @@ export const ScriptTextArea = ({
   if (!script) return null;
 
   return (
-    <div className={cn('rounded-md border bg-secondary py-4', className)}>
+    <div
+      className={cn(
+        'rounded-md border bg-secondary-foreground py-4',
+        className,
+      )}
+    >
       <div className="mb-2 flex items-center justify-between px-4">
         <p className="text-sm font-semibold text-muted-foreground">{label}</p>
         <Button
@@ -38,7 +43,7 @@ export const ScriptTextArea = ({
         </Button>
       </div>
       <textarea
-        className="w-full resize-none rounded-md bg-secondary px-4 text-sm font-normal text-muted-foreground outline-none"
+        className="w-full resize-none rounded-md bg-secondary-foreground px-4 text-sm font-normal text-muted-foreground outline-none"
         value={script}
         readOnly
         rows={10}

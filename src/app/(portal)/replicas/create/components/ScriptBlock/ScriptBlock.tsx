@@ -44,7 +44,7 @@ const TopicCard: React.FC<TopicCardProps> = ({
     className={`cursor-pointer transition-all ${
       isSelected
         ? 'outline outline-2 outline-offset-2 outline-primary'
-        : 'hover:bg-secondary/50'
+        : 'hover:bg-secondary-foreground/50'
     }`}
     onClick={() => onSelect(topic)}
     tabIndex={0}

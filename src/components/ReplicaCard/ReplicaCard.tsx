@@ -235,10 +235,10 @@ const ReplicaCard = ({
       onBlur={handleMouseLeave}
     >
       <CardContent className="p-2.5 pb-4">
-        <div className="relative overflow-hidden rounded-md border bg-secondary">
+        <div className="relative overflow-hidden rounded-md border bg-secondary-foreground">
           <div className="aspect-video size-full">
             {thumbnail_video_url && bgLoading && !error && (
-              <div className="absolute inset-0 flex items-center justify-center bg-secondary">
+              <div className="absolute inset-0 flex items-center justify-center bg-secondary-foreground">
                 <Loader className="size-8 animate-spin text-primary" />
               </div>
             )}

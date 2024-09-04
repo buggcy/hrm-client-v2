@@ -94,7 +94,7 @@ export const VideoPreview: React.FC<{
             />
           )
         ) : (
-          <div className="flex size-full flex-col items-center justify-center gap-2 bg-secondary">
+          <div className="flex size-full flex-col items-center justify-center gap-2 bg-secondary-foreground">
             <span>
               <AlertTriangle className="size-8 text-destructive" />
             </span>
@@ -105,7 +105,7 @@ export const VideoPreview: React.FC<{
           </div>
         )}
       </div>
-      <div className="w-full max-w-2xl rounded-md bg-secondary p-6">
+      <div className="w-full max-w-2xl rounded-md bg-secondary-foreground p-6">
         <div className="mb-4 flex items-center justify-between gap-2">
           <h3 className="text-xl font-semibold">{checkTitle}</h3>
           <div className="flex items-center">

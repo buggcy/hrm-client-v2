@@ -110,7 +110,7 @@ export const StepList = () => {
         >
           <AccordionItem
             value="intro"
-            className="relative rounded-md border data-[state=open]:bg-secondary"
+            className="relative rounded-md border data-[state=open]:bg-secondary-foreground"
           >
             <Separator />
             <AccordionTrigger hideIcon className="relative p-4">
@@ -125,7 +125,7 @@ export const StepList = () => {
           </AccordionItem>
           <AccordionItem
             value="consent"
-            className="relative rounded-md border data-[state=open]:bg-secondary"
+            className="relative rounded-md border data-[state=open]:bg-secondary-foreground"
           >
             <Separator />
             <SimpleTooltip
@@ -165,7 +165,7 @@ export const StepList = () => {
           <AccordionItem
             value="training"
             disabled={isDisabledTraining}
-            className="rounded-md border data-[state=open]:bg-secondary"
+            className="rounded-md border data-[state=open]:bg-secondary-foreground"
           >
             <AccordionTrigger
               className={cn('relative p-4', {

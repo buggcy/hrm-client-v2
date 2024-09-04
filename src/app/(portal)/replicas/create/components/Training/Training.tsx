@@ -375,7 +375,7 @@ const Upload = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
                 <span className="h-px w-full bg-border"></span>
               </div>
               <div
-                className="grid w-full items-center gap-1.5 rounded-md bg-secondary p-4"
+                className="grid w-full items-center gap-1.5 rounded-md bg-secondary-foreground p-4"
                 onClick={handleWrapperClick}
               >
                 <Form {...form}>

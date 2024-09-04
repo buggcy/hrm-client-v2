@@ -36,7 +36,7 @@ export const Intro = () => {
 
   return (
     <>
-      <div className="relative flex flex-col items-center rounded-md bg-secondary px-13 pb-8 pt-11">
+      <div className="relative flex flex-col items-center rounded-md bg-secondary-foreground px-13 pb-8 pt-11">
         <img
           src="/images/introBG.png"
           className="absolute inset-0 -z-0 size-full dark:hidden"

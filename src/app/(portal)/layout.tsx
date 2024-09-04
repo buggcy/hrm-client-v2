@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <main>
       <Navigation />
-      <div className="min-h-screen bg-secondary sm:ml-w-sidebar">
+      <div className="min-h-screen bg-secondary-foreground sm:ml-w-sidebar">
         {children}
       </div>
       <Intercom />

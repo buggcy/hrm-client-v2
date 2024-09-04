@@ -25,7 +25,7 @@ export const ReplicaPreviewBadge = () => (
 export const ReplicaPreview = ({ src }: { src?: string }) => (
   <ReplicaPreviewContainer>
     <Loader className="absolute z-0 mb-6 size-8 animate-spin" />
-    <div className="relative z-10 h-full rounded-md border bg-secondary">
+    <div className="relative z-10 h-full rounded-md border bg-secondary-foreground">
       <video
         className="aspect-video h-[inherit] rounded"
         preload="auto"

@@ -28,7 +28,7 @@ const CopyApiUrl: FC<CopyApiUrlProps> = ({ type, url, id, className }) => {
             'bg-success-foreground text-success': type === 'GET',
             'bg-progress-foreground text-progress': type === 'POST',
             'bg-destructive-foreground text-destructive': type === 'DELETE',
-            'bg-secondary-foreground text-secondary': type === 'PATCH',
+            'bg-secondary text-secondary-foreground': type === 'PATCH',
           },
         )}
       >
