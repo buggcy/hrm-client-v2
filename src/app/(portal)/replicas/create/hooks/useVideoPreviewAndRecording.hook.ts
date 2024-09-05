@@ -11,6 +11,7 @@ import { create } from 'zustand';
 
 import { useMicrophones } from '@/hooks';
 import { useCameras } from '@/hooks/useDevices/useCameras.hook';
+import { LogRocket } from '@/libs';
 
 interface RecordingState {
   countdownValue: number | null;
@@ -129,6 +130,12 @@ export const useVideoPreviewAndRecording = ({
   const recordedChunksRef = useRef<Blob[]>([]);
   const countdownIntervalRef = useRef<number | null>(null);
   const recordingIntervalRef = useRef<number | null>(null);
+  const resolutionRef = useRef<{
+    width: number;
+    height: number;
+    label: string;
+    device: string;
+  } | null>(null);
 
   const findBestResolution = useCallback(
     async (
@@ -164,6 +171,14 @@ export const useVideoPreviewAndRecording = ({
         const bestResolution = await findBestResolution(
           selectedVideoDevice.deviceId,
         );
+        resolutionRef.current = bestResolution
+          ? { ...bestResolution, device: selectedVideoDevice.label }
+          : {
+              label: 'Less than 720p',
+              width: 0,
+              height: 0,
+              device: selectedVideoDevice.label,
+            };
         const newStream = await navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: selectedVideoDevice.deviceId,
@@ -183,8 +198,9 @@ export const useVideoPreviewAndRecording = ({
       }
     }
   }, [
-    selectedVideoDevice?.deviceId,
-    selectedAudioDevice?.deviceId,
+    selectedVideoDevice.deviceId,
+    selectedVideoDevice.label,
+    selectedAudioDevice.deviceId,
     findBestResolution,
   ]);
 
@@ -224,6 +240,9 @@ export const useVideoPreviewAndRecording = ({
       }
       const recordedBlob = new Blob(recordedChunksRef.current, {
         type: mimeType,
+      });
+      LogRocket.track('RECORDING_SUBMIT', {
+        ...resolutionRef.current,
       });
       onStopRecording(recordedBlob);
     };
