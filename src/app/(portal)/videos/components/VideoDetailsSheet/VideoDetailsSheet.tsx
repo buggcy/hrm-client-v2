@@ -54,7 +54,7 @@ const VideoDetailsSheet: FC<VideoDetailsSheetProps> = ({
         <Content
           className={cn(
             sheetVariants({ side: 'right' }),
-            'bottom-2 right-2 top-2 flex h-auto w-[calc(100%-1rem)] flex-col gap-4 overflow-auto rounded-md p-4 sm:w-[460px] sm:max-w-[460px]',
+            'bottom-2 right-2 top-2 flex h-auto w-[calc(100%-1rem)] flex-col gap-0 overflow-auto rounded-md p-4 pb-0 sm:w-[460px] sm:max-w-[460px]',
           )}
         >
           {isLoading && (
@@ -62,7 +62,7 @@ const VideoDetailsSheet: FC<VideoDetailsSheetProps> = ({
               <Loader className="size-6 animate-spin" />
             </div>
           )}
-          <div className="flex items-center gap-2">
+          <div className="mb-4 flex items-center gap-2">
             <Close asChild>
               <Button variant="ghost" size="icon">
                 <ChevronsRight />
@@ -83,27 +83,31 @@ const VideoDetailsSheet: FC<VideoDetailsSheetProps> = ({
               onDeleted={onOpenChange}
             />
           </div>
-          <div className="mb-2">
+          <div className="mb-6">
             <VideoBlock
               status={video?.status}
               stream_url={video?.stream_url}
               status_details={video?.status_details}
             />
           </div>
-          <VideoInfoBlock
-            video_name={video?.video_name}
-            video_id={video?.video_id}
-            created_at={video?.created_at}
-            status={video?.status}
-            replicaId={video?.replica_id}
-            generationProgress={video?.generation_progress}
-          />
+          <div className="mb-4">
+            <VideoInfoBlock
+              video_name={video?.video_name}
+              video_id={video?.video_id}
+              created_at={video?.created_at}
+              status={video?.status}
+              replicaId={video?.replica_id}
+              generationProgress={video?.generation_progress}
+            />
+          </div>
           <VideoDataBlock data={video?.data} />
-          <ShareFooterButtons
-            status={video?.status}
-            downloadUrl={video?.download_url}
-            hostedUrl={video?.hosted_url}
-          />
+          <div className="sticky bottom-0 mt-auto bg-background py-4">
+            <ShareFooterButtons
+              status={video?.status}
+              downloadUrl={video?.download_url}
+              hostedUrl={video?.hosted_url}
+            />
+          </div>
         </Content>
       </SheetPortal>
     </Sheet>
