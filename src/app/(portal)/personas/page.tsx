@@ -171,7 +171,7 @@ export default function PersonasPage() {
             <TabsContent value="all" tabIndex={-1}>
               <div className="space-y-10">
                 <SinglePersonasBlock
-                  title="Result"
+                  title="Persona"
                   persona={searchResult}
                   onOpenDetails={onOpenChange}
                 />
