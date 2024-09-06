@@ -168,18 +168,43 @@ export default function PersonasPage() {
           )}
 
           {searchResult && personaId ? (
-            <TabsContent value="all" tabIndex={-1}>
-              <div className="space-y-10">
-                <SinglePersonasBlock
-                  title="Persona"
-                  persona={searchResult}
-                  onOpenDetails={onOpenChange}
-                />
-              </div>
-            </TabsContent>
+            <div className="space-y-10">
+              <SinglePersonasBlock
+                title="Persona"
+                persona={searchResult}
+                onOpenDetails={onOpenChange}
+              />
+            </div>
           ) : (
-            <TabsContent value="all" tabIndex={-1}>
-              <div className="space-y-10">
+            <div>
+              <TabsContent value="all" tabIndex={-1}>
+                <div className="space-y-10">
+                  <PersonasBlock
+                    title="Personal Personas11"
+                    personas={personalPersonasData}
+                    isLoading={personalPersonasIsLoading}
+                    isPersonalPersonas
+                    onLoadMore={
+                      hasNextPagePersonal ? handleLoadMorePersonal : undefined
+                    }
+                    isFetchingNextPage={isFetchingNextPagePersonal}
+                    total={totalPersonalPersonas}
+                    onOpenDetails={onOpenChange}
+                  />
+                  <PersonasBlock
+                    title="Stock Personas"
+                    personas={stockPersonasData}
+                    isLoading={stockPersonasIsLoading}
+                    onLoadMore={
+                      hasNextPageStock ? handleLoadMoreStock : undefined
+                    }
+                    isFetchingNextPage={isFetchingNextPageStock}
+                    total={totalStockPersonas}
+                    onOpenDetails={onOpenChange}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="personal" tabIndex={-1}>
                 <PersonasBlock
                   title="Personal Personas"
                   personas={personalPersonasData}
@@ -192,6 +217,8 @@ export default function PersonasPage() {
                   total={totalPersonalPersonas}
                   onOpenDetails={onOpenChange}
                 />
+              </TabsContent>
+              <TabsContent value="studio" tabIndex={-1}>
                 <PersonasBlock
                   title="Stock Personas"
                   personas={stockPersonasData}
@@ -203,35 +230,9 @@ export default function PersonasPage() {
                   total={totalStockPersonas}
                   onOpenDetails={onOpenChange}
                 />
-              </div>
-            </TabsContent>
+              </TabsContent>
+            </div>
           )}
-
-          <TabsContent value="personal" tabIndex={-1}>
-            <PersonasBlock
-              title="Personal Personas"
-              personas={personalPersonasData}
-              isLoading={personalPersonasIsLoading}
-              isPersonalPersonas
-              onLoadMore={
-                hasNextPagePersonal ? handleLoadMorePersonal : undefined
-              }
-              isFetchingNextPage={isFetchingNextPagePersonal}
-              total={totalPersonalPersonas}
-              onOpenDetails={onOpenChange}
-            />
-          </TabsContent>
-          <TabsContent value="studio" tabIndex={-1}>
-            <PersonasBlock
-              title="Stock Personas"
-              personas={stockPersonasData}
-              isLoading={stockPersonasIsLoading}
-              onLoadMore={hasNextPageStock ? handleLoadMoreStock : undefined}
-              isFetchingNextPage={isFetchingNextPageStock}
-              total={totalStockPersonas}
-              onOpenDetails={onOpenChange}
-            />
-          </TabsContent>
         </Tabs>
         <PersonaDetailsSheet id={selectedPersona} onOpenChange={onOpenChange} />
       </LayoutWrapper>
