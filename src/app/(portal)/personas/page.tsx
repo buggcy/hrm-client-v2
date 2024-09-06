@@ -1,5 +1,5 @@
 'use client';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 
 import { Loader } from 'lucide-react';
@@ -15,21 +15,27 @@ import {
 import { ReadDocsButton } from '@/components/ReadDocsButton';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from '@/components/ui/use-toast';
 
-import { usePersonasInfinityQuery } from '@/hooks/usePersonas';
+import { usePersonaQuery, usePersonasInfinityQuery } from '@/hooks/usePersonas';
 
+import { GetPersonaByIdInput } from './components/GetPersonaByIdInput';
 import {
   PersonaDetailsSheet,
   usePersonaDetailsSheet,
 } from './components/PersonaDetailsSheet';
 import { PersonasBlock } from './components/PersonasBlock';
+import { SinglePersonasBlock } from './components/SinglePersonasBlock';
 
-import { PersonaType } from '@/types';
+import { IPersona, PersonaType } from '@/types';
 
 const LIMIT = 10;
 
 export default function PersonasPage() {
-  const { personaId, onOpenChange } = usePersonaDetailsSheet();
+  const { personaId: selectedPersona, onOpenChange } = usePersonaDetailsSheet();
+  const [personaId, setPersonaId] = useState('');
+  const [searchResult, setSearchResult] = useState<IPersona | null>(null);
+
   const {
     data: stockPersonas,
     isLoading: stockPersonasIsLoading,
@@ -90,6 +96,43 @@ export default function PersonasPage() {
       stockPersonasIsRefetching &&
       !stockPersonasIsLoading);
 
+  const {
+    data: persona,
+    refetch,
+    isFetching,
+  } = usePersonaQuery(personaId, {
+    enabled: false,
+    retry: false,
+  });
+
+  const handleSubmitPersona = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    if (!personaId || personaId.length !== 8) {
+      toast({
+        title: 'Invalid persona ID',
+        description: 'Please enter a valid persona ID',
+        variant: 'error',
+      });
+      return;
+    }
+    if (persona?.persona_id) {
+      setSearchResult(persona);
+      return;
+    }
+    const result = await refetch();
+    if (result?.data?.persona_id) {
+      setSearchResult(result?.data);
+    } else {
+      toast({
+        title: 'Invalid person ID',
+        description: 'Please enter a valid person ID',
+        variant: 'error',
+      });
+    }
+  };
+
   return (
     <Layout>
       <HighTrafficBanner />
@@ -103,42 +146,67 @@ export default function PersonasPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper>
+        <GetPersonaByIdInput
+          personaId={personaId}
+          setPersonaId={setPersonaId}
+          handleSubmitPersona={handleSubmitPersona}
+          isFetching={isFetching}
+          setSearchResult={setSearchResult}
+        />
         <Tabs defaultValue="all" className="relative w-full">
-          <TabsList className="mb-6 border">
-            <TabsTrigger value="all">All Personas</TabsTrigger>
-            <TabsTrigger value="personal">Personal</TabsTrigger>
-            <TabsTrigger value="studio">Stock</TabsTrigger>
-          </TabsList>
+          {!(searchResult && personaId) && (
+            <TabsList className="mb-6 border">
+              <TabsTrigger value="all">All Personas</TabsTrigger>
+              <TabsTrigger value="personal">Personal</TabsTrigger>
+              <TabsTrigger value="studio">Stock</TabsTrigger>
+            </TabsList>
+          )}
           {backgroundRefetching && (
             <div className="absolute right-2 top-2">
               <Loader className="size-6 animate-spin" />
             </div>
           )}
-          <TabsContent value="all" tabIndex={-1}>
-            <div className="space-y-10">
-              <PersonasBlock
-                title="Personal Personas"
-                personas={personalPersonasData}
-                isLoading={personalPersonasIsLoading}
-                isPersonalPersonas
-                onLoadMore={
-                  hasNextPagePersonal ? handleLoadMorePersonal : undefined
-                }
-                isFetchingNextPage={isFetchingNextPagePersonal}
-                total={totalPersonalPersonas}
-                onOpenDetails={onOpenChange}
-              />
-              <PersonasBlock
-                title="Stock Personas"
-                personas={stockPersonasData}
-                isLoading={stockPersonasIsLoading}
-                onLoadMore={hasNextPageStock ? handleLoadMoreStock : undefined}
-                isFetchingNextPage={isFetchingNextPageStock}
-                total={totalStockPersonas}
-                onOpenDetails={onOpenChange}
-              />
-            </div>
-          </TabsContent>
+
+          {searchResult && personaId ? (
+            <TabsContent value="all" tabIndex={-1}>
+              <div className="space-y-10">
+                <SinglePersonasBlock
+                  title="Result"
+                  persona={searchResult}
+                  onOpenDetails={onOpenChange}
+                />
+              </div>
+            </TabsContent>
+          ) : (
+            <TabsContent value="all" tabIndex={-1}>
+              <div className="space-y-10">
+                <PersonasBlock
+                  title="Personal Personas"
+                  personas={personalPersonasData}
+                  isLoading={personalPersonasIsLoading}
+                  isPersonalPersonas
+                  onLoadMore={
+                    hasNextPagePersonal ? handleLoadMorePersonal : undefined
+                  }
+                  isFetchingNextPage={isFetchingNextPagePersonal}
+                  total={totalPersonalPersonas}
+                  onOpenDetails={onOpenChange}
+                />
+                <PersonasBlock
+                  title="Stock Personas"
+                  personas={stockPersonasData}
+                  isLoading={stockPersonasIsLoading}
+                  onLoadMore={
+                    hasNextPageStock ? handleLoadMoreStock : undefined
+                  }
+                  isFetchingNextPage={isFetchingNextPageStock}
+                  total={totalStockPersonas}
+                  onOpenDetails={onOpenChange}
+                />
+              </div>
+            </TabsContent>
+          )}
+
           <TabsContent value="personal" tabIndex={-1}>
             <PersonasBlock
               title="Personal Personas"
@@ -165,7 +233,7 @@ export default function PersonasPage() {
             />
           </TabsContent>
         </Tabs>
-        <PersonaDetailsSheet id={personaId} onOpenChange={onOpenChange} />
+        <PersonaDetailsSheet id={selectedPersona} onOpenChange={onOpenChange} />
       </LayoutWrapper>
     </Layout>
   );
