@@ -69,19 +69,23 @@ const SelectReplicaBlock = ({
       )}
       <div className="mb-6 grid grid-cols-[repeat(auto-fill,_minmax(276px,_1fr))] gap-6">
         {isPersonalReplicas && (
-          <Card>
-            <CardContent className="p-0">
-              <div className="flex flex-col items-center gap-4 py-14 text-center">
-                <div className="flex size-8 items-center justify-center rounded-full bg-primary-foreground">
-                  <UserPlusIcon className="size-4 text-primary" />
-                </div>
-                <Button variant="link" asChild size="sm">
-                  <Link href="/replicas/create">
+          <Card className="group">
+            <Link href="/replicas/create">
+              <CardContent className="p-0">
+                <div className="flex flex-col items-center gap-4 py-14 text-center">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-primary-foreground">
+                    <UserPlusIcon className="size-4 text-primary" />
+                  </div>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="group-hover:underline"
+                  >
                     Create Replica <ArrowRightIcon className="inline size-4" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
+                  </Button>
+                </div>
+              </CardContent>
+            </Link>
           </Card>
         )}
         {!!replicas?.length &&

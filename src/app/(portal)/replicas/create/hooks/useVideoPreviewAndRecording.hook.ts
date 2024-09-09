@@ -198,9 +198,9 @@ export const useVideoPreviewAndRecording = ({
       }
     }
   }, [
-    selectedVideoDevice.deviceId,
-    selectedVideoDevice.label,
-    selectedAudioDevice.deviceId,
+    selectedVideoDevice?.deviceId,
+    selectedVideoDevice?.label,
+    selectedAudioDevice?.deviceId,
     findBestResolution,
   ]);
 

@@ -47,27 +47,31 @@ const ReplicaBlock = ({
         </div>
       )}
       {replicas?.length === 0 && isPersonalReplicas && (
-        <Card>
-          <CardContent>
-            <div className="flex flex-col items-center gap-4 py-14 text-center">
-              <div className="flex size-8 items-center justify-center rounded-full bg-primary-foreground">
-                <UserPlusIcon className="size-4 text-primary" />
-              </div>
-              <p className="max-w-[30ch] text-muted-foreground">
-                Create your first personal replica with
-                <span className="font-medium text-foreground">
-                  {' '}
-                  just 2 minutes{' '}
-                </span>
-                of recording!
-              </p>
-              <Button variant="link" asChild size="sm">
-                <Link href="/replicas/create">
+        <Card className="group">
+          <Link href="/replicas/create">
+            <CardContent>
+              <div className="flex flex-col items-center gap-4 py-14 text-center">
+                <div className="flex size-8 items-center justify-center rounded-full bg-primary-foreground">
+                  <UserPlusIcon className="size-4 text-primary" />
+                </div>
+                <p className="max-w-[30ch] text-muted-foreground">
+                  Create your first personal replica with
+                  <span className="font-medium text-foreground">
+                    {' '}
+                    just 2 minutes{' '}
+                  </span>
+                  of recording!
+                </p>
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="group-hover:underline"
+                >
                   Create Replica <ArrowRightIcon className="inline size-4" />
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
+                </Button>
+              </div>
+            </CardContent>
+          </Link>
         </Card>
       )}
       {!!replicas?.length && (
