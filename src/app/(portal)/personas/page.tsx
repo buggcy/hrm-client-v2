@@ -168,19 +168,17 @@ export default function PersonasPage() {
           )}
 
           {searchResult && personaId ? (
-            <div className="space-y-10">
-              <SinglePersonasBlock
-                title="Persona"
-                persona={searchResult}
-                onOpenDetails={onOpenChange}
-              />
-            </div>
+            <SinglePersonasBlock
+              title="Persona"
+              persona={searchResult}
+              onOpenDetails={onOpenChange}
+            />
           ) : (
             <div>
               <TabsContent value="all" tabIndex={-1}>
                 <div className="space-y-10">
                   <PersonasBlock
-                    title="Personal Personas11"
+                    title="Personal Personas"
                     personas={personalPersonasData}
                     isLoading={personalPersonasIsLoading}
                     isPersonalPersonas
