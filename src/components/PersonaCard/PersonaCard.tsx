@@ -41,7 +41,7 @@ export const PersonaCard = ({
 
   const personaInitials = useMemo(() => {
     return persona.persona_name
-      .split(' ')
+      ?.split(' ')
       .slice(0, 2)
       .map(word => word[0])
       .join('');
