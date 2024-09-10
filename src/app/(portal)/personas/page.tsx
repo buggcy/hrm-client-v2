@@ -15,9 +15,8 @@ import {
 import { ReadDocsButton } from '@/components/ReadDocsButton';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from '@/components/ui/use-toast';
 
-import { usePersonaQuery, usePersonasInfinityQuery } from '@/hooks/usePersonas';
+import { usePersonasInfinityQuery } from '@/hooks/usePersonas';
 
 import { GetPersonaByIdInput } from './components/GetPersonaByIdInput';
 import {
@@ -96,43 +95,6 @@ export default function PersonasPage() {
       stockPersonasIsRefetching &&
       !stockPersonasIsLoading);
 
-  const {
-    data: persona,
-    refetch,
-    isFetching,
-  } = usePersonaQuery(personaId, {
-    enabled: false,
-    retry: false,
-  });
-
-  const handleSubmitPersona = async (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault();
-    if (!personaId || personaId.length !== 8) {
-      toast({
-        title: 'Invalid persona ID',
-        description: 'Please enter a valid persona ID',
-        variant: 'error',
-      });
-      return;
-    }
-    if (persona?.persona_id) {
-      setSearchResult(persona);
-      return;
-    }
-    const result = await refetch();
-    if (result?.data?.persona_id) {
-      setSearchResult(result?.data);
-    } else {
-      toast({
-        title: 'Invalid person ID',
-        description: 'Please enter a valid person ID',
-        variant: 'error',
-      });
-    }
-  };
-
   return (
     <Layout>
       <HighTrafficBanner />
@@ -149,8 +111,6 @@ export default function PersonasPage() {
         <GetPersonaByIdInput
           personaId={personaId}
           setPersonaId={setPersonaId}
-          handleSubmitPersona={handleSubmitPersona}
-          isFetching={isFetching}
           setSearchResult={setSearchResult}
         />
         <Tabs defaultValue="all" className="relative w-full">
