@@ -58,7 +58,7 @@ export const GetPersonaByIdInput = ({
     } else {
       toast({
         title: 'Invalid person ID',
-        description: 'Please enter a valid person ID',
+        description: 'Please enter a valid persona ID',
         variant: 'error',
       });
     }
