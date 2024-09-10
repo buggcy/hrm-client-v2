@@ -223,6 +223,9 @@ const ReplicaCard = ({
     observer.observe(videoRef.current as Element);
   }, []);
 
+  const isShowThumbnail =
+    status === ReplicaStatus.COMPLETED && thumbnail_video_url && !error;
+
   return (
     <Card
       className={cn('group rounded-md outline-primary hover:shadow', {
@@ -237,30 +240,28 @@ const ReplicaCard = ({
       <CardContent className="p-2.5 pb-4">
         <div className="relative overflow-hidden rounded-md border bg-secondary-foreground">
           <div className="aspect-video size-full">
-            {thumbnail_video_url && bgLoading && !error && (
+            {isShowThumbnail && bgLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-secondary-foreground">
                 <Loader className="size-8 animate-spin text-primary" />
               </div>
             )}
-            {!error &&
-              thumbnail_video_url &&
-              status === ReplicaStatus.COMPLETED && (
-                <video
-                  ref={videoRef}
-                  className="aspect-video size-full rounded-md bg-black object-contain"
-                  muted={isMuted}
-                  loop
-                  preload={preload}
-                  onError={() => setError(true)}
-                  onLoadedData={() => setBgLoading(false)}
-                  crossOrigin="anonymous"
-                >
-                  <source
-                    src={createReplicaThumbnailUrl(thumbnail_video_url)}
-                    type="video/mp4"
-                  />
-                </video>
-              )}
+            {isShowThumbnail && (
+              <video
+                ref={videoRef}
+                className="aspect-video size-full rounded-md bg-black object-contain"
+                muted={isMuted}
+                loop
+                preload={preload}
+                onError={() => setError(true)}
+                onLoadedData={() => setBgLoading(false)}
+                crossOrigin="anonymous"
+              >
+                <source
+                  src={createReplicaThumbnailUrl(thumbnail_video_url)}
+                  type="video/mp4"
+                />
+              </video>
+            )}
 
             {error && (
               <div className="flex aspect-video size-full flex-col items-center justify-center gap-2">
@@ -310,7 +311,7 @@ const ReplicaCard = ({
               variant={status === ReplicaStatus.COMPLETED ? 'default' : 'muted'}
             />
           </div>
-          {thumbnail_video_url && !error && (
+          {isShowThumbnail && (
             <div className="absolute right-2 top-2 hidden flex-col gap-2 group-hover:flex">
               <TooltipProvider>
                 <Tooltip>
