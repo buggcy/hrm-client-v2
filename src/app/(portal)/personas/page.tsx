@@ -32,7 +32,6 @@ const LIMIT = 10;
 
 export default function PersonasPage() {
   const { personaId: selectedPersona, onOpenChange } = usePersonaDetailsSheet();
-  const [personaId, setPersonaId] = useState('');
   const [searchResult, setSearchResult] = useState<IPersona | null>(null);
 
   const {
@@ -108,13 +107,9 @@ export default function PersonasPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper>
-        <GetPersonaByIdInput
-          personaId={personaId}
-          setPersonaId={setPersonaId}
-          setSearchResult={setSearchResult}
-        />
+        <GetPersonaByIdInput setSearchResult={setSearchResult} />
         <Tabs defaultValue="all" className="relative w-full">
-          {!(searchResult && personaId) && (
+          {!searchResult && (
             <TabsList className="mb-6 border">
               <TabsTrigger value="all">All Personas</TabsTrigger>
               <TabsTrigger value="personal">Personal</TabsTrigger>
@@ -127,7 +122,7 @@ export default function PersonasPage() {
             </div>
           )}
 
-          {searchResult && personaId ? (
+          {searchResult ? (
             <SinglePersonasBlock
               title="Persona"
               persona={searchResult}

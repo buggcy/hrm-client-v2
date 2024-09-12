@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import { Loader } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -10,14 +12,12 @@ import { usePersonaQuery } from '@/hooks/usePersonas';
 import { IPersona } from '@/types';
 
 export const GetPersonaByIdInput = ({
-  personaId,
-  setPersonaId,
   setSearchResult,
 }: {
-  personaId?: IPersona['persona_id'];
-  setPersonaId: (id: IPersona['persona_id']) => void;
   setSearchResult: (persona: IPersona | null) => void;
 }) => {
+  const [personaId, setPersonaId] = useState('');
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 8) return;
     if (event.target.value.length === 0) {
@@ -67,7 +67,7 @@ export const GetPersonaByIdInput = ({
   return (
     <form className="mb-4" onSubmit={handleSubmitPersona}>
       <div className="flex w-full items-center gap-2">
-        <div className="flex w-full items-center gap-1 rounded-md border bg-accentWhite p-2.5">
+        <div className="flex w-full items-center gap-1 rounded-md border bg-background p-2.5">
           <code className="inline-flex gap-1 text-sm text-muted-foreground">
             <span className="font-medium">GET</span>
             <span className="">|</span>
@@ -83,7 +83,7 @@ export const GetPersonaByIdInput = ({
             maxLength={10}
             type="text"
             placeholder="{enter persona ID here}"
-            className="h-5 w-full rounded-md border border-none bg-accentWhite p-0 text-muted-foreground focus:outline-none focus:ring-0"
+            className="h-5 w-full rounded-md border border-none bg-background p-0 text-muted-foreground focus:outline-none focus:ring-0"
           />
         </div>
         <Button
