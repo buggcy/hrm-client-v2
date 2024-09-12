@@ -40,6 +40,42 @@ export const CreatePersonaSchema = z.object({
       message: 'Persona context must be less than 5000 characters',
     })
     .optional(),
+
+  layers: z.object({
+    vqa: z.object({
+      enable_vision: z.boolean(),
+    }),
+    llm: z
+      .object({
+        model: z.string().min(1, {
+          message: 'LLM Model must be at least 1 character',
+        }),
+        base_url: z
+          .string()
+          .url({
+            message: 'LLM Base URL must be a valid URL',
+          })
+          .optional(),
+        api_key: z
+          .string()
+          .min(1, {
+            message: 'LLM API key must be at least 1 character',
+          })
+          .optional(),
+      })
+      .optional(),
+    tts: z
+      .object({
+        tts_engine: z.string(),
+        external_voice_id: z.string().min(1, {
+          message: 'TTS External voice ID must be at least 1 character',
+        }),
+        api_key: z.string().min(1, {
+          message: 'TTS API key must be at least 1 character',
+        }),
+      })
+      .optional(),
+  }),
 });
 export type CreatePersonaSchema = z.infer<typeof CreatePersonaSchema>;
 
