@@ -41,8 +41,6 @@
     /* mux video player variables */
     --seek-backward-button: none;
     --seek-forward-button: none;
-
-    --accent-white: 0 0% 100%;
   }
 
   .dark {
@@ -79,8 +77,6 @@
     --ring: 322 88.2% 56.9%;
 
     --radius: 0.5rem;
-
-    --accent-white: 0 0% 0%;
   }
 }
 

@@ -14,7 +14,6 @@ const SinglePersonasBlock = ({
 }: {
   title: string;
   persona?: IPersona;
-  total?: number;
   onOpenDetails?: (id: IPersona['persona_id']) => void;
 }) => {
   const router = useRouter();
