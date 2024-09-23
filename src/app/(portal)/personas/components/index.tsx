@@ -158,7 +158,7 @@ const CreatePersonaInputs = () => {
       </div>
 
       <Label className="mb-2 inline-block">
-        Persona Name <span className="text-muted-foreground">(optional)</span>
+        Persona Role <span className="text-muted-foreground">(optional)</span>
       </Label>
       <Input
         className="mb-4"
@@ -219,7 +219,7 @@ const CreatePersonaInputs = () => {
           </p>
         }
       >
-        Persona Context{' '}
+        Conversational Context{' '}
         <span className="text-muted-foreground">(optional)</span>
       </LabelWithPopover>
       <Textarea

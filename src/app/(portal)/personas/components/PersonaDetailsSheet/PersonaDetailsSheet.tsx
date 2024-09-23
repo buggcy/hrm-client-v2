@@ -144,7 +144,10 @@ const PersonaDetailsSheet: FC<PersonaDetailsSheetProps> = ({
             label="System Prompt"
             script={persona?.system_prompt}
           />
-          <ScriptTextArea label="Persona Context" script={persona?.context} />
+          <ScriptTextArea
+            label="Conversational Context"
+            script={persona?.context}
+          />
           <div className="sticky bottom-0 mt-auto flex items-center justify-between border-t bg-background py-4">
             <Button variant="primary-inverted" asChild>
               <Link

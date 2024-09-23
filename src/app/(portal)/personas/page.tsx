@@ -109,7 +109,7 @@ export default function PersonasPage() {
         <Tabs defaultValue="all" className="relative w-full">
           <TabsList className="mb-6 border">
             <TabsTrigger value="all">All Personas</TabsTrigger>
-            <TabsTrigger value="personal">Personal</TabsTrigger>
+            <TabsTrigger value="personal">Custom</TabsTrigger>
             <TabsTrigger value="studio">Stock</TabsTrigger>
           </TabsList>
           {backgroundRefetching && (
@@ -120,7 +120,7 @@ export default function PersonasPage() {
           <TabsContent value="all" tabIndex={-1}>
             <div className="space-y-10">
               <PersonasBlock
-                title="Personal Personas"
+                title="Custom Personas"
                 personas={personalPersonasData}
                 isLoading={personalPersonasIsLoading}
                 isPersonalPersonas
@@ -144,7 +144,7 @@ export default function PersonasPage() {
           </TabsContent>
           <TabsContent value="personal" tabIndex={-1}>
             <PersonasBlock
-              title="Personal Personas"
+              title="Custom Personas"
               personas={personalPersonasData}
               isLoading={personalPersonasIsLoading}
               isPersonalPersonas

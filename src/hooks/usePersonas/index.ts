@@ -31,13 +31,13 @@ export const CreatePersonaSchema = z.object({
   persona_name: z
     .string()
     .max(255, {
-      message: 'Persona name must be less than 255 characters',
+      message: 'Persona role must be less than 255 characters',
     })
     .optional(),
   context: z
     .string()
     .max(5000, {
-      message: 'Persona context must be less than 5000 characters',
+      message: 'Conversational context must be less than 5000 characters',
     })
     .optional(),
 
