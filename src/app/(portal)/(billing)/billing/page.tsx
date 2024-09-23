@@ -73,9 +73,11 @@ interface PlanCardProps {
     isLoading?: boolean;
   };
   isSelected?: boolean;
+  withDiscount?: boolean;
   item: {
     id: PlanIds;
     price: React.ReactNode;
+    discountPrice?: React.ReactNode;
     title: React.ReactNode;
     subTitle: React.ReactNode;
     includes: React.ReactNode[];
@@ -87,6 +89,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
   badge = 'YOUR PLAN',
   buttonProps,
   isSelected,
+  withDiscount,
   item,
 }) => (
   <Card
@@ -103,6 +106,11 @@ const PlanCard: React.FC<PlanCardProps> = ({
             {badge}
           </Badge>
         )}
+        {withDiscount && item.discountPrice && (
+          <Badge variant="success" className="ml-3 !bg-success/10 text-success">
+            {badge}
+          </Badge>
+        )}
       </CardTitle>
       <p className="text-sm">{item.subTitle}</p>
     </CardHeader>
@@ -110,7 +118,16 @@ const PlanCard: React.FC<PlanCardProps> = ({
       <div className="mb-5 flex items-end gap-1.5">
         {typeof item.price === 'string' ? (
           <>
-            <span className="text-5xl font-bold">{item.price}</span>
+            <span className="text-5xl font-bold">
+              {withDiscount && item.discountPrice ? (
+                <>
+                  <s className="mr-2 text-3xl">{item.price}</s>
+                  {item.discountPrice}
+                </>
+              ) : (
+                item.price
+              )}
+            </span>
             <span className="whitespace-nowrap text-sm text-[#6F7897]">
               / month
             </span>
@@ -195,7 +212,6 @@ const PlanItemsConfig: Record<
       'Access to Conversational Video & Video Generation',
       'API access',
       '30+ languages (Video Generation)',
-      // '5 Stock Replicas',
       '3 mins free credit (Video Generation)',
       '3 minute free credit (Conversational Video)',
     ],
@@ -204,6 +220,7 @@ const PlanItemsConfig: Record<
   [DeveloperPlanIds.STARTER]: {
     id: DeveloperPlanIds.STARTER,
     price: '$39',
+    discountPrice: '$19',
     title: 'Starter',
     subTitle: 'Starting to build with AI video',
     includes: [
@@ -218,6 +235,7 @@ const PlanItemsConfig: Record<
   [DeveloperPlanIds.GROWTH]: {
     id: DeveloperPlanIds.GROWTH,
     price: '$375',
+    discountPrice: '$187',
     title: 'Growth',
     subTitle: 'Scaling AI video in your app',
     includes: [
@@ -307,7 +325,10 @@ const BillingPlansCardsList: React.FC = () => {
     if (isPending || user?.billingAccount?.plan_id === planId) return;
 
     try {
-      const session = await mutateAsync(planId);
+      const session = await mutateAsync({
+        planId,
+        coupon: searchParams.get('coupon') || undefined,
+      });
 
       if (session) window.location.href = session.url;
       else {
@@ -390,7 +411,10 @@ const UpdateBillingPlansList: React.FC = () => {
     if (isPending || user?.billingAccount?.plan_id === planId) return;
 
     try {
-      const result = await mutateAsync(planId);
+      const result = await mutateAsync({
+        planId,
+        coupon: searchParams.get('coupon') || undefined,
+      });
 
       if (result) {
         window.location.href = result.url;
@@ -457,7 +481,11 @@ const UpdateBillingPlansList: React.FC = () => {
         ) {
           props = { buttonProps: { disabled: true, children: '-' } };
         } else {
+          const coupon = searchParams.get('coupon');
+
           props = {
+            withDiscount: !!coupon,
+            badge: coupon ? 'First month 50% off' : undefined,
             buttonProps: {
               disabled: isPaymentFailed || isPending || isLoading,
               isLoading: isPending || isLoading,
