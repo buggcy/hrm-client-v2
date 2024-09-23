@@ -18,10 +18,12 @@ import { useUserQuery } from '@/hooks';
 
 import {
   COMFORTABLE_SCRIPT,
+  CONSENT_SCRIPT,
   DEFAULT_SCRIPT,
   IMPROVISATION_SCRIPT,
   UPBEAT_SCRIPT,
 } from './constants';
+import { ConsentMethod, useReplicaStore } from '../../hooks';
 
 type Topic = 'Narrator' | 'Upbeat' | 'Comfortable' | 'Improvisation';
 
@@ -153,6 +155,8 @@ const TopicDialog: React.FC<TopicDialogProps> = ({
 };
 
 export const ScriptBlock = memo(() => {
+  const { consentMethod } = useReplicaStore();
+
   const user = useUserQuery();
   const [selectedTopic, setSelectedTopic] = React.useState<Topic>(
     () => topics[0].topic,
@@ -172,10 +176,15 @@ export const ScriptBlock = memo(() => {
         <div className="flex max-h-45 flex-col gap-6 overflow-auto text-lg font-medium">
           <p
             dangerouslySetInnerHTML={{
-              __html: topic!.text.replace(
-                '{{Full Name}}',
-                `${user.data!.first_name} ${user.data!.last_name}`,
-              ),
+              __html: topic!.text
+                .replace(
+                  '{{CONSENT}}',
+                  consentMethod === ConsentMethod.SKIP ? CONSENT_SCRIPT : '',
+                )
+                .replaceAll(
+                  '{{Full Name}}',
+                  `${user.data!.first_name} ${user.data!.last_name}`,
+                ),
             }}
           ></p>
         </div>
