@@ -1,8 +1,8 @@
-# 🌋 Developer Portal 🌋
+# 🌋 HRM Portal 🌋
 
 ## Getting Started
 
-These instructions will get your copy of the Developer Portal up and running on your local machine for development and testing purposes. Follow these simple steps:
+These instructions will get your copy of the HRM Portal up and running on your local machine for development and testing purposes. Follow these simple steps:
 
 ### Prerequisites
 
@@ -11,7 +11,7 @@ Make sure you have Node.js installed on your system. We use [`nvm` (Node Version
 1. **Install and use the proper version of Node.js:**
 
    ```bash
-   nvm install && nvm use
+   nvm install 20 && nvm use 20
    ```
 
    This command installs and switches to the Node.js version specified in the `.nvmrc` file located in the project's root directory.
