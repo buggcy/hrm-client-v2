@@ -22,6 +22,8 @@ import { VideoBlock } from '../VideoBlock';
 import { VideoDataBlock } from '../VideoDataBlock';
 import { VideoInfoBlock } from '../VideoInfoBlock';
 
+import { VideoStatus } from '@/types';
+
 export const useVideoDetailsSheet = () => {
   const [video_id, setVideoId] = useState<VideoId>(null);
 
@@ -77,11 +79,16 @@ const VideoDetailsSheet: FC<VideoDetailsSheetProps> = ({
                 <ArrowUpRight className="size-4" />
               </Link>
             </Button>
-            <DeleteVideoBtn
-              id={video?.video_id as string}
-              className="ml-auto"
-              onDeleted={onOpenChange}
-            />
+            {!(
+              video?.status === VideoStatus.GENERATING ||
+              video?.status === VideoStatus.QUEUED
+            ) && (
+              <DeleteVideoBtn
+                id={video?.video_id as string}
+                className="ml-auto"
+                onDeleted={onOpenChange}
+              />
+            )}
           </div>
           <div className="mb-6">
             <VideoBlock

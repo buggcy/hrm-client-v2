@@ -11,6 +11,7 @@ import { DEVELOPER_SUPPORT_EMAIL, DEVELOPER_SUPPORT_LINK } from '@/constants';
 import { useUserQuery } from '@/hooks';
 import { firebaseAuth } from '@/libs';
 import { NonDeveloperError } from '@/services';
+import { getQueryParamsString } from '@/utils';
 
 import { BillingAccountStatus } from '@/types';
 
@@ -25,9 +26,15 @@ export const useRedirectAfterAuth = () => {
   useEffect(() => {
     if (user) {
       const plan = searchParams.get('plan');
+      const coupon = searchParams.get('coupon');
 
-      if (plan || user.billingAccount?.status !== BillingAccountStatus.ACTIVE) {
-        router.push('/billing' + (plan ? `?plan=${plan}` : ''));
+      if (
+        plan ||
+        coupon ||
+        user.billingAccount?.status !== BillingAccountStatus.ACTIVE
+      ) {
+        const paramsStr = getQueryParamsString({ plan, coupon });
+        router.push('/billing' + (paramsStr ? `?${paramsStr}` : ''));
       } else if (pathname.startsWith('/auth')) {
         if (pathname.startsWith('/auth/sign-up')) router.push('/billing');
         else router.push('/');

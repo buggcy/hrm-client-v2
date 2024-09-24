@@ -25,6 +25,7 @@ import {
 } from './components/PersonaDetailsSheet';
 import { PersonasBlock } from './components/PersonasBlock';
 import { SinglePersonasBlock } from './components/SinglePersonasBlock';
+import { PersonaBanner } from '../replicas/PersonaBanner';
 
 import { IPersona, PersonaType } from '@/types';
 
@@ -97,6 +98,7 @@ export default function PersonasPage() {
   return (
     <Layout>
       <HighTrafficBanner />
+
       <LayoutHeader title="Persona Library">
         <CopyApiUrl type="GET" url="persona" className="hidden sm:flex" />
         <LayoutHeaderButtonsBlock>
@@ -107,6 +109,7 @@ export default function PersonasPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper>
+        <PersonaBanner />
         <GetPersonaByIdInput setSearchResult={setSearchResult} />
         <Tabs defaultValue="all" className="relative w-full">
           {!searchResult && (

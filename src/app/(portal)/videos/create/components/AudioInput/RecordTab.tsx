@@ -51,6 +51,7 @@ export const RecordTab = () => {
                   duration: MINIMUM_RECORDING_DURATION,
                 },
               ),
+              variant: 'error',
             });
           // TODO: add validation for audio length
           else

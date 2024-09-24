@@ -109,7 +109,11 @@ export const Intro = () => {
 
       <div className="mb-6 mt-auto flex justify-center gap-2">
         <RecordingTips>
-          <Button variant="outline">
+          <Button variant="outline" className="relative">
+            <span className="absolute -left-1 -top-1 flex size-2 items-center justify-center">
+              <span className="absolute inline-flex size-2.5 animate-ping rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex size-2 rounded-full bg-primary"></span>
+            </span>
             <span>
               <Lightbulb className="size-5" />
             </span>

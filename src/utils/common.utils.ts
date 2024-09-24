@@ -13,13 +13,16 @@ export const schemaParse =
   (data: unknown, params?: ParseParams): z.infer<Schema> => {
     try {
       return schema.parse(data, params);
+      // TODO: remove this when all schemas are fixed
     } catch (error) {
-      if (!isProd)
+      if (!isProd) {
         console.error(
           'Error parsing data with schema:',
           JSON.stringify(error, null, 2),
         );
-      // TODO: remove this when all schemas are fixed
+        throw error;
+      }
+
       return data as z.infer<Schema>;
     }
   };
@@ -42,4 +45,16 @@ export function isTouchDevice(): boolean {
     'ontouchstart' in window ||
     (window.DocumentTouch && document instanceof window.DocumentTouch)
   );
+}
+
+export function getQueryParamsString(
+  data: Record<string, string | number | boolean | null | undefined>,
+): string {
+  return Object.entries(data)
+    .filter(([, value]) => value !== null && value !== undefined)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`,
+    )
+    .join('&');
 }

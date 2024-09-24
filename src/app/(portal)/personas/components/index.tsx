@@ -3,22 +3,17 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
-import { ArrowRight, CircleHelp, Layers, Loader2 } from 'lucide-react';
+import { ArrowRight, Layers, Loader2, User } from 'lucide-react';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 
 import { ApiCode } from '@/components/Code';
 import { URLS } from '@/components/CopyApiUrl';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 
@@ -26,6 +21,8 @@ import { ReplicaPreview } from '@/app/(portal)/components/ReplicaPreview';
 import { ReplicaSelect } from '@/app/(portal)/components/ReplicaSelect';
 import {
   ICreatePersonaFormStore,
+  LLM_ENGINE,
+  TTS_ENGINE,
   useCreatePersonaFormStore,
 } from '@/app/(portal)/personas/hooks';
 import { useCreateConversationMutation, useReplicaQuery } from '@/hooks';
@@ -33,7 +30,10 @@ import {
   CreatePersonaSchema,
   useCreatePersonaMutation,
 } from '@/hooks/usePersonas';
-import { cn, getErrorMessage } from '@/utils';
+import { getErrorMessage } from '@/utils';
+
+import { LabelWithPopover } from './LabelWithPopover';
+import { LayersInputs } from './LayersInputs';
 
 import { HttpMethods, IReplica } from '@/types';
 
@@ -43,34 +43,40 @@ const getCreatePersonaRequestBody = (
   const result: CreatePersonaSchema = {
     default_replica_id: state.replicaId,
     system_prompt: state.systemPrompt,
+    layers: {
+      vqa: {
+        enable_vision: state.enableVision,
+      },
+    },
   };
 
   if (state.name) result.persona_name = state.name;
   if (state.context) result.context = state.context;
+  if (state.ttsEngine && state.ttsEngine !== TTS_ENGINE.DEFAULT) {
+    result.layers.tts = {
+      tts_engine: state.ttsEngine,
+      external_voice_id: state.ttsVoiceId || '',
+      api_key: state.ttsApiKey || '',
+    };
+  }
+  if (
+    state.llmName &&
+    state.llmName !== LLM_ENGINE.CUSTOM &&
+    state.llmName !== LLM_ENGINE.TAVUS_LLAMA
+  ) {
+    result.layers.llm = {
+      model: state.llmName,
+    };
+  }
+  if (state.llmName && state.llmName === LLM_ENGINE.CUSTOM) {
+    result.layers.llm = {
+      model: state.customLLM || '',
+      base_url: state.llmApiUrl || '',
+      api_key: state.llmApiKey || '',
+    };
+  }
 
   return result;
-};
-
-export const LabelWithPopover = ({
-  children,
-  popoverContent,
-  className,
-}: {
-  children: React.ReactNode;
-  popoverContent: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className="mb-2 flex items-center gap-1.5">
-      <Label className={(cn('inline-block'), className)}>{children}</Label>
-      <Popover>
-        <PopoverTrigger>
-          <CircleHelp className="size-4 text-muted-foreground" />
-        </PopoverTrigger>
-        <PopoverContent className="text-xs">{popoverContent}</PopoverContent>
-      </Popover>
-    </div>
-  );
 };
 
 export const Code = () => {
@@ -98,14 +104,16 @@ const CreatePersonaReplicaSelect = () => {
 };
 
 const CreatePersonaInputs = () => {
-  const [name, context, systemPrompt, set] = useCreatePersonaFormStore(
-    useShallow(state => [
-      state.name,
-      state.context,
-      state.systemPrompt,
-      state.set,
-    ]),
-  );
+  const [name, context, systemPrompt, enableVision, set] =
+    useCreatePersonaFormStore(
+      useShallow(state => [
+        state.name,
+        state.context,
+        state.systemPrompt,
+        state.enableVision,
+        state.set,
+      ]),
+    );
 
   const handleChange = (
     event:
@@ -115,6 +123,10 @@ const CreatePersonaInputs = () => {
     const { name, value } = event.target;
 
     set({ [name]: value });
+  };
+
+  const handleCheckedChange = (checked: boolean) => {
+    set({ enableVision: checked });
   };
 
   const handleBlur = (
@@ -129,8 +141,24 @@ const CreatePersonaInputs = () => {
 
   return (
     <div className="flex h-full flex-col">
+      <div className="mb-4 flex gap-2">
+        <Checkbox
+          id="vision"
+          checked={enableVision}
+          onCheckedChange={handleCheckedChange}
+        />
+        <div className="grid gap-1.5 leading-none">
+          <label
+            htmlFor="vision"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Enable Vision
+          </label>
+        </div>
+      </div>
+
       <Label className="mb-2 inline-block">
-        Persona Name <span className="text-muted-foreground">(optional)</span>
+        Persona Role <span className="text-muted-foreground">(optional)</span>
       </Label>
       <Input
         className="mb-4"
@@ -191,7 +219,7 @@ const CreatePersonaInputs = () => {
           </p>
         }
       >
-        Persona Context{' '}
+        Conversational Context{' '}
         <span className="text-muted-foreground">(optional)</span>
       </LabelWithPopover>
       <Textarea
@@ -281,7 +309,7 @@ export const CreatePersonaForm = () => {
         CreatePersonaSchema.parse(body);
       } catch (_error) {
         const { issues } = _error as z.ZodError<CreatePersonaSchema>;
-        const message = issues.map(issue => issue.message).join(',');
+        const message = issues.map(issue => issue.message).join('; ');
 
         toast({
           variant: 'error',
@@ -301,31 +329,34 @@ export const CreatePersonaForm = () => {
       <form
         id={CREATE_FORM_ID}
         onSubmit={handleSubmit}
-        className="no-scrollbar flex flex-1 flex-col gap-4"
+        className="size-full overflow-y-scroll"
       >
-        <CreatePersonaReplicaSelect />
-        <CreatePersonaInputs />
+        <Tabs
+          defaultValue="persona"
+          className="flex size-full w-full flex-col items-center justify-start gap-6"
+        >
+          <TabsList className="w-fit">
+            <TabsTrigger className="gap-1.5" value="persona">
+              <User className="size-4" />
+              Persona
+            </TabsTrigger>
+            <TabsTrigger className="gap-1.5" value="layers">
+              <Layers className="size-4" />
+              Layers
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="persona" className="size-full flex-1">
+            <div className="flex h-full flex-col gap-4">
+              <CreatePersonaReplicaSelect />
+              <CreatePersonaInputs />
+            </div>
+          </TabsContent>
+          <TabsContent value="layers" className="size-full flex-1">
+            <LayersInputs />
+          </TabsContent>
+        </Tabs>
       </form>
-      <footer className="flex flex-col items-end">
-        <Alert className="bg-secondary p-3">
-          <AlertTitle className="flex gap-2 text-sm">
-            <Layers className="size-4" />
-            Additional customization available via API
-          </AlertTitle>
-          <AlertDescription>
-            Note: You can use a different or custom LLM, as well as adjust
-            options for each layer via the{' '}
-            <a
-              href="https://docs.tavus.io/api-reference/personas/create-persona"
-              target="blank"
-              rel="noreferrer"
-              className="underline"
-            >
-              API
-            </a>
-          </AlertDescription>
-        </Alert>
-        <Separator className="my-4" />
+      <footer className="sticky bottom-0 flex flex-col items-end">
         <div className="flex flex-wrap items-end justify-end gap-4 lg:flex-nowrap">
           <Button
             variant="outline"

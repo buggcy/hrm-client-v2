@@ -31,28 +31,28 @@ import { useCopyToClipboard } from '@/hooks';
 import { useCreateApiKeyMutation } from '@/hooks/useApiKeys';
 import { queryClient } from '@/libs';
 
-// function isValidIpAddress(ipAddress: string) {
-//   const ipPattern =
-//     /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
-//   return ipPattern.test(ipAddress);
-// }
+function isValidIpAddress(ipAddress: string) {
+  const ipPattern =
+    /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
+  return ipPattern.test(ipAddress);
+}
 
 const formSchema = z.object({
   name: z.string().min(1, {
     message: 'Name is required and should be at least 1 character.',
   }),
-  // ips: z
-  //   .string({
-  //     message: 'Invalid IP address',
-  //   })
-  //   .optional()
-  //   .refine(value => {
-  //     if (!value) {
-  //       return true;
-  //     }
-  //     const ips = value.split(',').map(ip => ip.trim());
-  //     return ips.every(isValidIpAddress);
-  //   }),
+  ips: z
+    .string({
+      message: 'Invalid IP address',
+    })
+    .optional()
+    .refine(value => {
+      if (!value) {
+        return true;
+      }
+      const ips = value.split(',').map(ip => ip.trim());
+      return ips.every(isValidIpAddress);
+    }),
 });
 
 type formSchemaType = z.infer<typeof formSchema>;
@@ -85,18 +85,18 @@ export function CreateApiKeyDialog({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      // ips: '',
+      ips: '',
     },
   });
 
   const onSubmit = (data: formSchemaType) => {
     createApiKey({
       name: data.name,
-      ips: [],
-      // data.ips
-      //   ?.split(',')
-      //   .map(ip => ip.trim())
-      //   .filter(Boolean) ?? [],
+      ips:
+        data.ips
+          ?.split(',')
+          .map(ip => ip.trim())
+          .filter(Boolean) ?? [],
     });
   };
 
@@ -136,12 +136,15 @@ export function CreateApiKeyDialog({
                   </FormItem>
                 )}
               />
-              {/* <FormField
+              <FormField
                 control={form.control}
                 name="ips"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Whitelisted IPs</FormLabel>
+                    <FormLabel>
+                      Whitelisted IPs{' '}
+                      <span className="text-muted-foreground">(optional)</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="You can add multiple IP addresses separated by a comma."
@@ -151,7 +154,7 @@ export function CreateApiKeyDialog({
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
               <LoadingButton
                 className="ml-auto"
                 type="submit"

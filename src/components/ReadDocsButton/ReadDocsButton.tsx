@@ -19,14 +19,21 @@ const DOCS_ROUTES = {
   personaCreate: `${BASE_DOCS_URL}/api-reference/personas/create-persona`,
 } as const;
 
-export const ReadDocsButton: React.FC<{
+interface ReadDocsButtonProps {
   to: keyof typeof DOCS_ROUTES;
   className?: string;
-}> = ({ to, className }) => {
+  children?: React.ReactNode;
+}
+
+export const ReadDocsButton: React.FC<ReadDocsButtonProps> = ({
+  to,
+  className,
+  children = 'Read Docs',
+}) => {
   return (
     <Button variant="outline" className={cn('ml-auto', className)} asChild>
       <a target="_blank" rel="noopener noreferrer" href={DOCS_ROUTES[to]}>
-        Read Docs
+        {children}
       </a>
     </Button>
   );

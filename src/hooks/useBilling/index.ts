@@ -22,19 +22,32 @@ interface StripeSession {
   url: string;
 }
 
+interface SubscriptionMutationDto {
+  planId: PlanIds;
+  coupon?: string;
+}
+
 export const BillingService = {
-  createSubscription: (planId: PlanIds): Promise<StripeSession | void> =>
+  createSubscription: ({
+    planId,
+    coupon,
+  }: SubscriptionMutationDto): Promise<StripeSession | void> =>
     portalApi.post('/v2/billing/subscriptions', {
+      coupon,
       planId,
       cancelUrl,
       successUrl: `${APP_BASE_URL}/payment/success`,
     }),
-  updateSubscription: (planId: PlanIds): Promise<StripeSession | void> =>
+  updateSubscription: ({
+    planId,
+    coupon,
+  }: SubscriptionMutationDto): Promise<StripeSession | void> =>
     portalApi.patch('/v2/billing/subscriptions', {
       planId,
       changeOption: SubscriptionChangeOption.IMMEDIATE,
       cancelUrl,
       successUrl: `${APP_BASE_URL}/payment/success`,
+      coupon,
     }),
   getBillingPortal: (): Promise<StripeSession> =>
     portalApi.post('/v2/billing/stripe/billing-portal', {
@@ -72,7 +85,11 @@ const scheduleUserRefetch = () => {
 export const useUpdateSubscriptionMutation = ({
   onMutate,
   ...options
-}: UseMutationOptions<StripeSession | void, Error, PlanIds> = {}) =>
+}: UseMutationOptions<
+  StripeSession | void,
+  Error,
+  SubscriptionMutationDto
+> = {}) =>
   useMutation({
     mutationFn: BillingService.updateSubscription,
     onMutate: (...args) => {
