@@ -6,7 +6,7 @@ import {
 import { z } from 'zod';
 
 import { queryClient } from '@/libs';
-import { rqhApi, schemaParse } from '@/utils';
+import { baseAPI, schemaParse } from '@/utils';
 
 import { IConversation, UseQueryConfig } from '@/types';
 
@@ -49,7 +49,7 @@ export const useCreateConversationMutation = (
 ) =>
   useMutation<IConversation, Error, CreateConversationSchema>({
     mutationFn: (body: CreateConversationSchema) =>
-      rqhApi.post('/v2/conversations/', body).then(schemaParse(IConversation)),
+      baseAPI.post('/v2/conversations/', body).then(schemaParse(IConversation)),
     ...options,
   });
 
@@ -70,7 +70,7 @@ export const useConversationsQuery = ({
   useQuery({
     queryKey: queryKey || ['conversations', queryParams],
     queryFn: ({ signal }) =>
-      rqhApi
+      baseAPI
         .get('/v2/conversations', {
           params: { ...queryParams, sort: 'desc' },
           signal,
@@ -95,7 +95,7 @@ export const useConversationQuery = (
   useQuery<IConversation, Error>({
     queryKey: ['conversation', id],
     queryFn: () =>
-      rqhApi.get(`/v2/conversations/${id}`).then(schemaParse(IConversation)),
+      baseAPI.get(`/v2/conversations/${id}`).then(schemaParse(IConversation)),
     ...config,
   });
 
@@ -104,7 +104,7 @@ export const useEndConversationMutation = (
 ) =>
   useMutation<void, Error, IConversation['conversation_id']>({
     mutationFn: (conversationId: IConversation['conversation_id']) =>
-      rqhApi.post(`/v2/conversations/${conversationId}/end`),
+      baseAPI.post(`/v2/conversations/${conversationId}/end`),
     ...options,
   });
 
@@ -113,6 +113,6 @@ export const useDeleteConversationMutation = (
 ) =>
   useMutation<void, Error, IConversation['conversation_id']>({
     mutationFn: (id: IConversation['conversation_id']) =>
-      rqhApi.delete(`/v2/conversations/${id}`),
+      baseAPI.delete(`/v2/conversations/${id}`),
     ...options,
   });

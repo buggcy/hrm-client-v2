@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { rqhApi, schemaParse } from '@/utils';
+import { baseAPI, schemaParse } from '@/utils';
 
 import { IVideo, UseQueryConfig } from '@/types';
 
@@ -11,7 +11,7 @@ export const useVideoQuery = (
   useQuery<IVideo, Error>({
     queryKey: ['video', id],
     queryFn: ({ signal }) =>
-      rqhApi.get(`/v2/videos/${id}`, { signal }).then(schemaParse(IVideo)),
+      baseAPI.get(`/v2/videos/${id}`, { signal }).then(schemaParse(IVideo)),
     enabled: !!id,
     ...config,
   });

@@ -5,7 +5,7 @@ import {
   UseMutationResult,
 } from '@tanstack/react-query';
 
-import { rqhApi } from '@/utils';
+import { baseAPI } from '@/utils';
 
 import { IReplica } from '@/types';
 
@@ -15,7 +15,7 @@ export const renameReplica: MutationFunction<void, RenameReplicaDto> = ({
   replica_id,
   replica_name,
 }) =>
-  rqhApi.patch(`/v2/replicas/${replica_id}`, {
+  baseAPI.patch(`/v2/replicas/${replica_id}`, {
     replica_name,
   });
 

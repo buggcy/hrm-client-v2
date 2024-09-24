@@ -2,7 +2,7 @@ import { Query, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { queryClient } from '@/libs';
-import { rqhApi, schemaParse } from '@/utils';
+import { baseAPI, schemaParse } from '@/utils';
 
 import { IVideo, UseQueryConfig, VideoStatus } from '@/types';
 
@@ -46,7 +46,7 @@ export const useVideosQuery = ({
   useQuery<IVideosResponse>({
     queryKey: queryKey || ['videos', queryParams],
     queryFn: ({ signal }) =>
-      rqhApi
+      baseAPI
         .get('/v2/videos', { params: queryParams, signal })
         .then(schemaParse(IVideosResponse))
         .then(data => {
@@ -70,7 +70,7 @@ export const prefetchVideos = () => {
     ],
     retry: 0,
     queryFn: () =>
-      rqhApi
+      baseAPI
         .get('/v2/videos', {
           params: {
             page: 0,

@@ -1,7 +1,7 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 import { queryClient } from '@/libs';
-import { rqhApi } from '@/utils';
+import { baseAPI } from '@/utils';
 
 import { IVideo } from '@/types';
 
@@ -10,7 +10,7 @@ export const useDeleteVideoMutation = ({
   ...options
 }: UseMutationOptions<void, Error, IVideo['video_id']> = {}) =>
   useMutation<void, Error, IVideo['video_id']>({
-    mutationFn: (id: IVideo['video_id']) => rqhApi.delete(`/v2/videos/${id}`),
+    mutationFn: (id: IVideo['video_id']) => baseAPI.delete(`/v2/videos/${id}`),
     onSuccess: (...data) => {
       onSuccess?.(...data);
       void queryClient.invalidateQueries({ queryKey: ['videos'] });

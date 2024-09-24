@@ -8,7 +8,7 @@ import {
 import { z } from 'zod';
 
 import { queryClient } from '@/libs';
-import { rqhApi, schemaParse } from '@/utils';
+import { baseAPI, schemaParse } from '@/utils';
 
 import { IPersona, PersonaType, UseQueryConfig } from '@/types';
 
@@ -113,7 +113,7 @@ export const usePersonasQuery = ({
   useQuery({
     queryKey: queryKey || ['personas', queryParams],
     queryFn: async ({ signal }) => {
-      const result = await rqhApi
+      const result = await baseAPI
         .get('/v2/personas', {
           params: { ...queryParams, sort: 'desc' },
           signal,
@@ -147,7 +147,7 @@ export const usePersonasInfinityQuery = ({
   useInfiniteQuery<IPersonasResponse, Error>({
     queryKey: ['personas-q', queryParams],
     queryFn: async ({ pageParam, signal }) => {
-      const result = await rqhApi
+      const result = await baseAPI
         .get('/v2/personas', {
           params: { ...queryParams, page: pageParam, sort: 'desc' },
           signal,
@@ -186,7 +186,7 @@ export const usePersonaQuery = (
     enabled: !!id,
     queryKey: ['persona', id],
     queryFn: ({ signal }) =>
-      rqhApi.get(`/v2/personas/${id}`, { signal }).then(schemaParse(IPersona)),
+      baseAPI.get(`/v2/personas/${id}`, { signal }).then(schemaParse(IPersona)),
     ...config,
   });
 
@@ -195,7 +195,7 @@ export const useCreatePersonaMutation = (
 ) =>
   useMutation<IPersona, Error, CreatePersonaSchema>({
     mutationFn: (data: CreatePersonaSchema) =>
-      rqhApi.post('/v2/personas', data).then(schemaParse(IPersona)),
+      baseAPI.post('/v2/personas', data).then(schemaParse(IPersona)),
     ...options,
   });
 
@@ -207,7 +207,7 @@ export const useUpdatePersonaContextMutation = (
       persona_id,
       context,
     }: Pick<IPersona, 'persona_id' | 'context'>) =>
-      rqhApi.patch(`/v2/personas/${persona_id}/context`, { context }),
+      baseAPI.patch(`/v2/personas/${persona_id}/context`, { context }),
     ...options,
   });
 
@@ -216,6 +216,6 @@ export const useDeletePersonaMutation = (
 ) =>
   useMutation<void, Error, IPersona['persona_id']>({
     mutationFn: (id: IPersona['persona_id']) =>
-      rqhApi.delete(`/v2/personas/${id}`),
+      baseAPI.delete(`/v2/personas/${id}`),
     ...options,
   });

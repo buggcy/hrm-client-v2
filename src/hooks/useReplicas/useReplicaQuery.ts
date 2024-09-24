@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosRequestConfig } from 'axios';
 
-import { rqhApi, schemaParse } from '@/utils';
+import { baseAPI, schemaParse } from '@/utils';
 
 import { IReplica, UseQueryConfig } from '@/types';
 
@@ -9,7 +9,7 @@ export const getReplica = (
   id: IReplica['replica_id'],
   config: AxiosRequestConfig,
 ) =>
-  rqhApi
+  baseAPI
     .get(`/v2/replicas/${id}?verbose=true`, config)
     .then(schemaParse(IReplica));
 

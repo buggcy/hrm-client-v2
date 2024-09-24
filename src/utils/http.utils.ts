@@ -5,7 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-import { PORTAL_API_BASE_URL, RQH_API_BASE_URL } from '@/constants';
+import { API_BASE_URL } from '@/constants';
 import { getToken, logout } from '@/services';
 
 const defaultHeaders = {
@@ -36,20 +36,20 @@ const onResponseRejected = async (error: AxiosError) => {
 };
 
 export const portalApi = axios.create({
-  baseURL: PORTAL_API_BASE_URL,
+  baseURL: API_BASE_URL,
   headers: defaultHeaders,
 });
 
 portalApi.interceptors.request.use(onRequestFulfilled);
 portalApi.interceptors.response.use(onResponseFulfilled, onResponseRejected);
 
-export const rqhApi = axios.create({
-  baseURL: RQH_API_BASE_URL,
+export const baseAPI = axios.create({
+  baseURL: API_BASE_URL,
   headers: defaultHeaders,
 });
 
-rqhApi.interceptors.request.use(onRequestFulfilled);
-rqhApi.interceptors.response.use(onResponseFulfilled, onResponseRejected);
+baseAPI.interceptors.request.use(onRequestFulfilled);
+baseAPI.interceptors.response.use(onResponseFulfilled, onResponseRejected);
 
 export const getErrorMessage = (error: Error) =>
   (error as AxiosError<{ message: string }>)?.response?.data?.message ||

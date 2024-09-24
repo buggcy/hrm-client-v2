@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query';
 import { z } from 'zod';
 
-import { rqhApi } from '@/utils';
+import { baseAPI } from '@/utils';
 
 import { IReplica, IVideo } from '@/types';
 
@@ -71,7 +71,7 @@ export type CreateVideoResponse = Pick<
 const createVideo: MutationFunction<
   CreateVideoResponse,
   CreateVideoDto
-> = data => rqhApi.post('/v2/videos/', data);
+> = data => baseAPI.post('/v2/videos/', data);
 
 export const useCreateVideoMutation = (
   options?: UseMutationOptions<CreateVideoResponse, Error, CreateVideoDto>,

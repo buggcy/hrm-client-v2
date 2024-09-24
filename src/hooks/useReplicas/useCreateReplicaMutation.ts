@@ -4,7 +4,7 @@ import {
   UseMutationOptions,
 } from '@tanstack/react-query';
 
-import { rqhApi } from '@/utils';
+import { baseAPI } from '@/utils';
 
 import { IReplica } from '@/types';
 
@@ -22,7 +22,7 @@ export type CreateReplicaDto = {
 
 export const createReplica: MutationFunction<IReplica, CreateReplicaDto> = (
   data: CreateReplicaDto,
-) => rqhApi.post('/v2/replicas', data);
+) => baseAPI.post('/v2/replicas', data);
 
 export const useCreateReplicaMutation = (
   options?: UseMutationOptions<IReplica, Error, CreateReplicaDto>,

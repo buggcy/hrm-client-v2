@@ -6,7 +6,7 @@ import { AxiosRequestConfig } from 'axios';
 import { z } from 'zod';
 
 import { queryClient } from '@/libs';
-import { rqhApi, schemaParse } from '@/utils';
+import { baseAPI, schemaParse } from '@/utils';
 
 import { IReplica } from '@/types';
 
@@ -30,7 +30,7 @@ type UseReplicaQueryParams = {
 
 export const getReplicas = (config?: AxiosRequestConfig) =>
   // TODO: filter by schemaParse
-  rqhApi
+  baseAPI
     .get('/v2/replicas?verbose=true', config)
     .then(schemaParse(IReplicasResponse));
 

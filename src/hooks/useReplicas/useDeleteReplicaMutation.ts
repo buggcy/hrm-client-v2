@@ -5,13 +5,13 @@ import {
 } from '@tanstack/react-query';
 
 import { queryClient } from '@/libs';
-import { rqhApi } from '@/utils';
+import { baseAPI } from '@/utils';
 
 import { IReplica } from '@/types';
 
 export const deleteReplica: MutationFunction<void, IReplica['replica_id']> = (
   id: IReplica['replica_id'],
-) => rqhApi.delete(`/v2/replicas/${id}`);
+) => baseAPI.delete(`/v2/replicas/${id}`);
 
 export const useDeleteReplicaMutation = ({
   onSuccess,
