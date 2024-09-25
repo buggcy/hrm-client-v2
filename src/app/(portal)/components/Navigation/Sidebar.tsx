@@ -39,10 +39,10 @@ export const Sidebar = () => {
           </Button>
 
           <NavigationItem
-            title="Dashboard"
+            title="Home"
             icon={Home}
             href="/employee/dashboard"
-            active={pathname === '/employee/dashboard'}
+            active={pathname === '/hr/dashboard'}
           />
 
           {/* <NavSection title="VIDEO">
