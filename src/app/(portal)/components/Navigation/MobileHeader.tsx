@@ -4,18 +4,7 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import {
-  AlignJustify,
-  Home,
-  Key,
-  ListVideo,
-  MessageCircle,
-  MonitorDot,
-  User,
-  UserRoundPlus,
-  Users,
-  Video,
-} from 'lucide-react';
+import { AlignJustify, Home } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
@@ -23,9 +12,6 @@ import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import { MobileNavigationItem } from './components/MobileNavigationItem';
-import { NavSection } from './components/NavSection';
-import QuotasCard from './components/QuotasCard';
-import { ReplicaIcon } from './components/ReplicaIcon';
 import { NavigationSupportBtn } from './components/SupportButton';
 import { UserPopover } from './components/UserPopover';
 
@@ -80,7 +66,7 @@ export const MobileHeader = () => {
                 active={pathname === '/'}
                 onClick={onClose}
               />
-              <NavSection title="VIDEO">
+              {/* <NavSection title="VIDEO">
                 <li className="flex">
                   <MobileNavigationItem
                     title="Video Generation"
@@ -170,12 +156,12 @@ export const MobileHeader = () => {
                     onClick={onClose}
                   />
                 </li>
-              </NavSection>
+              </NavSection> */}
             </nav>
             <ul className="mt-auto flex flex-col gap-3">
-              <li>
+              {/* <li>
                 <QuotasCard className="w-full" />
-              </li>
+              </li> */}
               <li>
                 <NavigationSupportBtn />
               </li>

@@ -5,11 +5,12 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-import { API_BASE_URL } from '@/constants';
+import { API_BASE_URL, xApiKey } from '@/constants';
 import { getToken, logout } from '@/services';
 
 const defaultHeaders = {
   'Content-Type': 'application/json',
+  'x-api-key': xApiKey,
 };
 
 const onRequestFulfilled = async (config: InternalAxiosRequestConfig) => {
@@ -24,13 +25,13 @@ const onRequestFulfilled = async (config: InternalAxiosRequestConfig) => {
 
 const onResponseFulfilled = (res: AxiosResponse) => res.data as AxiosResponse;
 
-const onResponseRejected = async (error: AxiosError) => {
+const onResponseRejected = (error: AxiosError) => {
   const status = error.response?.status ?? 500;
 
   if (status === 500 && !((error as unknown) instanceof CanceledError)) {
     console.error(error);
   }
-  if (status === 401) await logout();
+  if (status === 401 || status === 440) logout();
 
   throw error;
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -28,21 +28,28 @@ const FormSchema = z.object({
   }),
 });
 
-const useResetPasswordMutation = () =>
-  useMutation({
+export function ResetPasswordForm() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const { mutate, isPending } = useMutation({
     mutationFn: sendPasswordResetEmail,
-    onMutate: () => {
+    onError: err => {
       toast({
-        title:
-          'Password reset email sent successfully. Please check your inbox.',
-        variant: 'success',
+        title: 'Error',
+        description: err?.response?.data?.message || 'Error on sending mail!',
+        variant: 'destructive',
       });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+      });
+      router.push(`/auth/reset-password/${form.getValues('email')}`);
     },
   });
 
-export function ResetPasswordForm() {
-  const searchParams = useSearchParams();
-  const { mutate, isPending } = useResetPasswordMutation();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -52,7 +59,7 @@ export function ResetPasswordForm() {
 
   useRedirectAfterAuth();
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => mutate(data.email);
+  const onSubmit = (data: z.infer<typeof FormSchema>) => mutate(data);
 
   return (
     <Form {...form}>
