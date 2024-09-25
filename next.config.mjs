@@ -5,10 +5,14 @@ const nextConfig = {
     dirs: ['src'],
   },
 
+  images: {
+    unoptimized: true,
+  },
+
   reactStrictMode: true,
   swcMinify: true,
 
-  output: 'export',
+  // output: 'export',
 };
 
 export default nextConfig;

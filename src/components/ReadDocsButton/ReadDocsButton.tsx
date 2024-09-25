@@ -28,7 +28,7 @@ interface ReadDocsButtonProps {
 export const ReadDocsButton: React.FC<ReadDocsButtonProps> = ({
   to,
   className,
-  children = 'Read Docs',
+  children = 'Notification',
 }) => {
   return (
     <Button variant="outline" className={cn('ml-auto', className)} asChild>

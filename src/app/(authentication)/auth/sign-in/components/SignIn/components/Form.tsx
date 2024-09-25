@@ -19,11 +19,17 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useStores } from '@/providers/Store.Provider';
 
 import { createHandleAuthError } from '@/app/(authentication)/auth/hooks';
 import { PasswordInput } from '@/app/(authentication)/auth/sign-in/components/PasswordInput';
 import { SupportButton } from '@/app/(portal)/components/Navigation/components/SupportButton';
 import { signInWithEmailAndPassword } from '@/services';
+import { AuthStoreType } from '@/stores/auth';
+
+interface AuthResponse {
+  token: string;
+}
 
 const FormSchema = z.object({
   email: z.string().email({
@@ -35,6 +41,9 @@ const FormSchema = z.object({
 });
 
 export function SignInForm() {
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { setUser } = authStore;
+
   const searchParams = useSearchParams();
   const { mutate, isPending } = useMutation({
     mutationFn: signInWithEmailAndPassword,
@@ -45,6 +54,9 @@ export function SignInForm() {
         ' If the issue persists, try resetting your password or contact our support team for assistance.',
       action: <SupportButton />,
     }),
+    onSuccess: (response: AuthResponse) => {
+      setUser(response?.token);
+    },
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({

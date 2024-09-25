@@ -7,6 +7,7 @@ import '@/libs/i18n';
 
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider, QueryClientProvider, ThemeProvider } from '@/providers';
+import { StoreProvider } from '@/providers/Store.Provider';
 
 // import { GA_ID } from '@/constants';
 import { cn } from '@/utils';
@@ -44,14 +45,16 @@ export default function RootLayout({
         )}
       >
         <QueryClientProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <AuthProvider>{children}</AuthProvider>
-          </ThemeProvider>
+          <StoreProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <AuthProvider>{children}</AuthProvider>
+            </ThemeProvider>
+          </StoreProvider>
         </QueryClientProvider>
         {/* {GA_ID && <GoogleAnalytics gaId={GA_ID} />} */}
         <Toaster />

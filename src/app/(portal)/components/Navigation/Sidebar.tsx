@@ -3,26 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import {
-  Home,
-  Key,
-  ListVideo,
-  MessageCircle,
-  MonitorDot,
-  User,
-  Users,
-  Video,
-} from 'lucide-react';
+import { Home } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
-import QuotasCard from '@/app/(portal)/components/Navigation/components/QuotasCard';
-
 import { NavigationItem } from './components/NavigationItem';
-import { NavSection } from './components/NavSection';
-import { ReplicaIcon } from './components/ReplicaIcon';
 import { NavigationSupportBtn } from './components/SupportButton';
 import { UserPopover } from './components/UserPopover';
 
@@ -41,7 +28,7 @@ export const Sidebar = () => {
             <Link href="/" aria-label="Go to Home Page">
               <Image
                 className="mx-1 transition-all duration-200 group-hover:-translate-x-8 group-hover:opacity-0"
-                src="/images/logo_small.svg"
+                src="/images/buggcy/logo-buggcy-small.png"
                 alt="Tavus Logo"
                 width={32}
                 height={32}
@@ -52,13 +39,13 @@ export const Sidebar = () => {
           </Button>
 
           <NavigationItem
-            title="Home"
+            title="Dashboard"
             icon={Home}
-            href="/"
-            active={pathname === '/'}
+            href="/employee/dashboard"
+            active={pathname === '/employee/dashboard'}
           />
 
-          <NavSection title="VIDEO">
+          {/* <NavSection title="VIDEO">
             <li className="flex">
               <NavigationItem
                 title="Video Generation"
@@ -119,7 +106,7 @@ export const Sidebar = () => {
                 active={pathname === '/personas'}
               />
             </li>
-          </NavSection>
+          </NavSection> */}
           {/* <NavSection title="PERSONA">
             <li className="flex">
               <NavigationItem
@@ -138,7 +125,7 @@ export const Sidebar = () => {
               />
             </li>
           </NavSection> */}
-          <NavSection>
+          {/* <NavSection>
             <li className="flex">
               <NavigationItem
                 title="API Keys"
@@ -147,12 +134,12 @@ export const Sidebar = () => {
                 active={pathname === '/api-keys'}
               />
             </li>
-          </NavSection>
+          </NavSection> */}
         </nav>
         <ul className="mt-auto flex flex-col gap-3">
-          <li>
+          {/* <li>
             <QuotasCard className="hidden group-hover:flex" />
-          </li>
+          </li> */}
           <li>
             <NavigationSupportBtn />
           </li>

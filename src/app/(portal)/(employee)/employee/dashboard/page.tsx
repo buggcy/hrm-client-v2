@@ -1,3 +1,5 @@
+import { FunctionComponent } from 'react';
+
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
@@ -7,30 +9,22 @@ import {
 } from '@/components/Layout';
 import { ReadDocsButton } from '@/components/ReadDocsButton';
 
-import {
-  ConversationBanner,
-  CTACards,
-  Resources,
-  StockPersonasCarousel,
-  StockReplicaCarousel,
-} from '@/app/(portal)/components/HomePage';
+interface EmployeeDashboardProps {}
 
-export default function Home() {
+const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="Home">
+      <LayoutHeader title="Dashboard">
         <LayoutHeaderButtonsBlock>
           <ReadDocsButton to="home" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
-        <ConversationBanner />
-        <CTACards />
-        <StockReplicaCarousel />
-        <StockPersonasCarousel />
-        <Resources />
+        <h1>Hallo Employee</h1>
       </LayoutWrapper>
     </Layout>
   );
-}
+};
+
+export default EmployeeDashboard;
