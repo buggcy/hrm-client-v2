@@ -4,7 +4,6 @@ import { z } from 'zod';
 
 import { columns } from '@/components/data-table/columns';
 import { DataTable } from '@/components/data-table/data-table';
-import { Shell } from '@/components/shells/shell';
 
 import { taskSchema, TaskType } from '@/libs/validations/schema';
 
@@ -33,13 +32,7 @@ async function getTasks() {
 
 const EmployeeTable: FunctionComponent<EmployeeTableProps> = async () => {
   const tasks = await getTasks();
-  return (
-    <Shell>
-      <div className="flex size-full min-h-screen flex-col">
-        <DataTable data={tasks} columns={columns} />
-      </div>
-    </Shell>
-  );
+  return <DataTable data={tasks} columns={columns} />;
 };
 
 export default EmployeeTable;
