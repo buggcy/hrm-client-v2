@@ -31,7 +31,7 @@ const onResponseRejected = (error: AxiosError) => {
   if (status === 500 && !((error as unknown) instanceof CanceledError)) {
     console.error(error);
   }
-  if (status === 401 || status === 440) logout();
+  if (status === 401) logout();
 
   throw error;
 };

@@ -33,8 +33,7 @@ export const useAuthStore = create<AuthStoreType>()(
         setLoadingFalse: () => set({ loading: false }),
         setUser: (token: string) => {
           const user = jwtDecode<User>(token);
-          set({ user });
-          set({ token });
+          set({ user, token });
         },
         setToken: (token: string) => set({ token }),
         resetSession: () => {
