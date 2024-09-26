@@ -42,7 +42,7 @@ import {
 } from '@/libs/validations/schema';
 import { cn } from '@/utils';
 
-import { label_options, priority_options, status_options } from '../ui/filters';
+import { label_options, priority_options, status_options } from '../filters';
 
 type EditProps = {
   task: TaskType;

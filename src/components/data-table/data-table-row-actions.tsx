@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Row } from '@tanstack/react-table';
 import { Copy, Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
+import { label_options } from '@/components/filters';
 import DeleteDialog from '@/components/modals/delete-modal';
 import EditDialog from '@/components/modals/edit-modal';
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { label_options } from '@/components/ui/filters';
 
 import { taskSchema } from '@/libs/validations/schema';
 
