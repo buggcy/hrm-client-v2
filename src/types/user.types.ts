@@ -21,4 +21,5 @@ export interface User {
   tahometerId?: string;
   profileDescription?: string;
   Ed_Exp_ID?: Array<string>;
+  Avatar?: string;
 }

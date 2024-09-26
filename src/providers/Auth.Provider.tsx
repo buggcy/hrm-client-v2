@@ -25,23 +25,23 @@ export const AuthProvider = ({ children }: ParentReactNode) => {
       if (user?.roleId === 1) {
         if (
           pathname.startsWith('/employee') ||
-          pathname.startsWith('/manage')
+          pathname.startsWith('/manager')
         ) {
           router.push('/hr/dashboard');
         } else if (!pathname.startsWith('/hr')) {
           router.push('/hr/dashboard');
         }
       } else if (user?.roleId === 2) {
-        if (pathname.startsWith('/hr') || pathname.startsWith('/manage')) {
+        if (pathname.startsWith('/hr') || pathname.startsWith('/manager')) {
           router.push('/employee/dashboard');
         } else if (!pathname.startsWith('/employee')) {
           router.push('/employee/dashboard');
         }
       } else if (user?.roleId === 3) {
         if (pathname.startsWith('/hr') || pathname.startsWith('/employee')) {
-          router.push('/manage/dashboard');
-        } else if (!pathname.startsWith('/manage')) {
-          router.push('/manage/dashboard');
+          router.push('/manager/dashboard');
+        } else if (!pathname.startsWith('/manager')) {
+          router.push('/manager/dashboard');
         }
       }
     }

@@ -23,7 +23,6 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { createHandleAuthError } from '@/app/(authentication)/auth/hooks';
 import { PasswordInput } from '@/app/(authentication)/auth/sign-in/components/PasswordInput';
-import { SupportButton } from '@/app/(portal)/components/Navigation/components/SupportButton';
 import { signInWithEmailAndPassword } from '@/services';
 import { AuthStoreType } from '@/stores/auth';
 
@@ -52,7 +51,6 @@ export function SignInForm() {
         'An error occurred while signing in. Please check your email and password and try again.',
       description:
         ' If the issue persists, try resetting your password or contact our support team for assistance.',
-      action: <SupportButton />,
     }),
     onSuccess: (response: AuthResponse) => {
       setUser(response?.token);

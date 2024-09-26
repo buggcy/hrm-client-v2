@@ -19,7 +19,7 @@ const fontSans = FontSans({
   variable: '--font-sans',
 });
 export const metadata: Metadata = {
-  title: 'Tavus',
+  title: 'Buggcy',
   description: 'Developer portal',
 };
 

@@ -1,9 +1,7 @@
 import { AxiosResponse } from 'axios';
 
 import { queryClient } from '@/libs';
-import { baseAPI, portalApi, schemaParse } from '@/utils';
-
-import { IUser, UserRole } from '@/types';
+import { baseAPI } from '@/utils';
 
 export class CustomError extends Error {
   constructor(message: string) {
@@ -13,18 +11,18 @@ export class CustomError extends Error {
 
 export class NonDeveloperError extends Error {}
 
-export const getUser = (): Promise<IUser> =>
-  portalApi
-    .get('/v3/users/me')
-    .then(schemaParse(IUser))
-    .then(user => {
-      if (user.role === UserRole.USER) {
-        logout();
-        throw new NonDeveloperError();
-      }
+// export const getUser = (): Promise<IUser> =>
+//   portalApi
+//     .get('/v3/users/me')
+//     .then(schemaParse(IUser))
+//     .then(user => {
+//       if (user.role === UserRole.USER) {
+//         logout();
+//         throw new NonDeveloperError();
+//       }
 
-      return user;
-    });
+//       return user;
+//     });
 
 export const signInWithEmailAndPassword = async ({
   email,

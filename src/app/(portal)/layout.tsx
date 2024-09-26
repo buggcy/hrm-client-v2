@@ -5,7 +5,7 @@ import { Intercom } from '@/components/Intercom';
 import { Navigation } from '@/app/(portal)/components/Navigation';
 
 export const metadata: Metadata = {
-  title: 'Tavus',
+  title: 'Buggcy',
   description: 'Developer portal',
 };
 

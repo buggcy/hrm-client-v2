@@ -3,13 +3,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Home } from 'lucide-react';
+import { Home, UserCog2 } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 import { NavigationItem } from './components/NavigationItem';
+import { NavSection } from './components/NavSection';
 import { NavigationSupportBtn } from './components/SupportButton';
 import { UserPopover } from './components/UserPopover';
 
@@ -29,7 +30,7 @@ export const Sidebar = () => {
               <Image
                 className="mx-1 transition-all duration-200 group-hover:-translate-x-8 group-hover:opacity-0"
                 src="/images/buggcy/logo-buggcy-small.png"
-                alt="Tavus Logo"
+                alt="Buggcy Logo"
                 width={32}
                 height={32}
                 priority
@@ -45,25 +46,25 @@ export const Sidebar = () => {
             active={pathname === '/hr/dashboard'}
           />
 
-          {/* <NavSection title="VIDEO">
+          <NavSection title="Manage Employee">
             <li className="flex">
               <NavigationItem
-                title="Video Generation"
-                icon={Video}
-                href="/videos/create"
-                active={pathname === '/videos/create'}
+                title="Employee List"
+                icon={UserCog2}
+                href="/hr/employee/list"
+                active={pathname === '/hr/employee/list'}
               />
             </li>
-            <li className="flex">
+            {/* <li className="flex">
               <NavigationItem
                 title="Video Library"
                 icon={ListVideo}
                 href="/videos"
                 active={pathname === '/videos'}
               />
-            </li>
+            </li> */}
           </NavSection>
-          <NavSection title="REPLICA">
+          {/* <NavSection title="REPLICA">
             <li className="flex">
               <NavigationItem
                 title="Replica Generation"
