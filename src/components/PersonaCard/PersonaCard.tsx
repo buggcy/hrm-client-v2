@@ -3,12 +3,13 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 
+import { Bell, Lightbulb, Rocket } from 'lucide-react';
+
 import { LoadingButton } from '@/components/LoadingButton';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
 import { useReplicaQuery } from '@/hooks';
-import { PersonasDescriptions } from '@/hooks/usePersonas';
 import { cn, createReplicaThumbnailUrl } from '@/utils';
 
 import { Button } from '../ui/button';
@@ -58,29 +59,42 @@ export const PersonaCard = ({
       )}
       onClick={handleSelect}
     >
-      <CardContent className="flex flex-col gap-4 p-0">
-        <Avatar className="size-14">
-          {replica?.thumbnail_video_url ? (
-            <video
-              className="aspect-video size-full rounded-md bg-black object-cover"
-              muted
-              crossOrigin="anonymous"
-            >
-              <source
-                src={createReplicaThumbnailUrl(replica.thumbnail_video_url)}
-                type="video/mp4"
-              />
-            </video>
-          ) : (
-            <AvatarFallback>{personaInitials}</AvatarFallback>
-          )}
-        </Avatar>
+      <CardContent className="flex flex-col gap-2 p-0">
+        <div className="flex items-center justify-between">
+          <Avatar className="size-14">
+            {replica?.thumbnail_video_url ? (
+              <video
+                className="aspect-video size-full rounded-md bg-black object-cover"
+                muted
+                crossOrigin="anonymous"
+              >
+                <source
+                  src={createReplicaThumbnailUrl(replica.thumbnail_video_url)}
+                  type="video/mp4"
+                />
+              </video>
+            ) : (
+              <AvatarFallback>{personaInitials}</AvatarFallback>
+            )}
+          </Avatar>
+          <div className="flex space-x-2">
+            <Button variant="outline" size="icon" className="rounded-full">
+              <Bell className="size-5" />
+            </Button>
+            <Button variant="outline" size="icon" className="rounded-full">
+              <Lightbulb className="size-5" />
+            </Button>
+            <Button variant="outline" size="icon" className="rounded-full">
+              <Rocket className="size-5" />
+            </Button>
+          </div>
+        </div>
         <div>
           <h3 className="truncate text-lg font-semibold">
             {persona.persona_name}
           </h3>
           <p className="text-sm font-medium text-muted-foreground">
-            {PersonasDescriptions[persona.persona_id]}
+            Help Students with math problems.
           </p>
         </div>
       </CardContent>
