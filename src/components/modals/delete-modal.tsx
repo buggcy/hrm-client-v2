@@ -13,16 +13,16 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import { TaskType } from '@/libs/validations/schema';
+import { EmployeeListType } from '@/libs/validations/employee';
 
 type DeleteProps = {
-  task: TaskType;
+  data: EmployeeListType;
   isOpen: boolean;
   showActionToggle: (open: boolean) => void;
 };
 
 export default function DeleteDialog({
-  task,
+  data,
   isOpen,
   showActionToggle,
 }: DeleteProps) {
@@ -33,7 +33,7 @@ export default function DeleteDialog({
           <AlertDialogTitle>Are you sure absolutely sure ?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. You are about to delete Task Details
-            of <b>{task.title}</b>
+            of <b>{data.firstName + ' ' + data.lastName}</b>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

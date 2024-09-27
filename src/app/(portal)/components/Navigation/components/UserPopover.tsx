@@ -54,13 +54,13 @@ export const UserPopover = () => {
           >
             <div className="flex w-52 items-center gap-2.5">
               <Avatar className="size-8">
-                <AvatarImage src="" alt="User Avatar" />
-                <AvatarFallback>
+                <AvatarImage src={user?.Avatar || ''} alt="User Avatar" />
+                <AvatarFallback className="uppercase">
                   {user?.firstName?.charAt(0)}
                   {user?.lastName?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              <span className="truncate sm:translate-x-2 sm:opacity-0 sm:transition-all sm:duration-200 sm:group-hover:translate-x-0 sm:group-hover:opacity-100">
+              <span className="truncate capitalize sm:translate-x-2 sm:opacity-0 sm:transition-all sm:duration-200 sm:group-hover:translate-x-0 sm:group-hover:opacity-100">
                 {username}
               </span>
             </div>
@@ -68,8 +68,10 @@ export const UserPopover = () => {
         </PopoverTrigger>
         <PopoverContent className="w-[13.5rem] p-2" align="start">
           <div className="space-y-1 p-2">
-            <h3 className="truncate text-sm font-semibold">{username}</h3>
-            <p className="truncate text-xs text-gray-500">
+            <h3 className="truncate text-sm font-semibold capitalize">
+              {username}
+            </h3>
+            <p className="truncate text-xs lowercase text-gray-500">
               {user?.companyEmail}
             </p>
           </div>

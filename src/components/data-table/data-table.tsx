@@ -32,11 +32,18 @@ import { DataTableToolbar } from './data-table-toolbar';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pagination: {
+    pageCount: number;
+    page: number;
+    limit: number;
+    onPaginationChange: (page: number, limit: number) => void;
+  };
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pagination,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -48,11 +55,16 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    pageCount: pagination.pageCount,
     state: {
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
+      // pagination: {
+      //   pageIndex: pagination.page - 1,
+      //   pageSize: pagination.limit,
+      // },
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -120,7 +132,13 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+
+      <DataTablePagination
+        table={table}
+        page={pagination.page}
+        limit={pagination.limit}
+        onPaginationChange={pagination.onPaginationChange}
+      />
     </div>
   );
 }

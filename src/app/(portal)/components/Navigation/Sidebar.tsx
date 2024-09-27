@@ -3,19 +3,27 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Home, UserCog2 } from 'lucide-react';
-
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useStores } from '@/providers/Store.Provider';
+
+import { AuthStoreType } from '@/stores/auth';
+import { employeeMenu } from '@/utils/menu/employee.menu';
+import { hrMenu } from '@/utils/menu/hr.menu';
 
 import { NavigationItem } from './components/NavigationItem';
 import { NavSection } from './components/NavSection';
 import { NavigationSupportBtn } from './components/SupportButton';
 import { UserPopover } from './components/UserPopover';
 
+import { MenuItem } from '@/types/menu';
+
 export const Sidebar = () => {
   const pathname = usePathname();
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
+  const menuItems: MenuItem[] = user?.roleId === 1 ? hrMenu : employeeMenu;
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r bg-background sm:flex">
@@ -39,103 +47,31 @@ export const Sidebar = () => {
             </Link>
           </Button>
 
-          <NavigationItem
-            title="Home"
-            icon={Home}
-            href="/employee/dashboard"
-            active={pathname === '/hr/dashboard'}
-          />
-
-          <NavSection title="Manage Employee">
-            <li className="flex">
-              <NavigationItem
-                title="Employee List"
-                icon={UserCog2}
-                href="/hr/employee/list"
-                active={pathname === '/hr/employee/list'}
-              />
-            </li>
-            {/* <li className="flex">
-              <NavigationItem
-                title="Video Library"
-                icon={ListVideo}
-                href="/videos"
-                active={pathname === '/videos'}
-              />
-            </li> */}
-          </NavSection>
-          {/* <NavSection title="REPLICA">
-            <li className="flex">
-              <NavigationItem
-                title="Replica Generation"
-                icon={Users}
-                href="/replicas/create"
-                active={pathname === '/replicas/create'}
-              />
-            </li>
-            <li className="flex">
-              <NavigationItem
-                title="Replica Library"
-                icon={ReplicaIcon}
-                href="/replicas"
-                active={pathname === '/replicas'}
-              />
-            </li>
-          </NavSection>
-          <NavSection title="CONVERSATION">
-            <li className="flex">
-              <NavigationItem
-                title="Create Conversation"
-                icon={MonitorDot}
-                href="/conversations/create"
-                active={pathname === '/conversations/create'}
-              />
-            </li>
-            <li className="flex">
-              <NavigationItem
-                title="Conversation Library"
-                icon={MessageCircle}
-                href="/conversations"
-                active={pathname === '/conversations'}
-              />
-            </li>
-            <li className="flex">
-              <NavigationItem
-                title="Persona Library"
-                icon={User}
-                href="/personas"
-                active={pathname === '/personas'}
-              />
-            </li>
-          </NavSection> */}
-          {/* <NavSection title="PERSONA">
-            <li className="flex">
-              <NavigationItem
-                title="Create Persona"
-                icon={UserRoundPlus}
-                href="/personas/create"
-                active={pathname === '/personas/create'}
-              />
-            </li>
-            <li className="flex">
-              <NavigationItem
-                title="Persona Library"
-                icon={User}
-                href="/personas"
-                active={pathname === '/personas'}
-              />
-            </li>
-          </NavSection> */}
-          {/* <NavSection>
-            <li className="flex">
-              <NavigationItem
-                title="API Keys"
-                icon={Key}
-                href="/api-keys"
-                active={pathname === '/api-keys'}
-              />
-            </li>
-          </NavSection> */}
+          {menuItems.map(item =>
+            item.children ? (
+              <NavSection title={item.title} key={item.title}>
+                {item.children.map(child => (
+                  <li className="flex" key={child.href}>
+                    <NavigationItem
+                      title={child.title}
+                      icon={child.icon}
+                      href={child.href!}
+                      active={pathname === child.href}
+                    />
+                  </li>
+                ))}
+              </NavSection>
+            ) : (
+              <li className="flex" key={item.href}>
+                <NavigationItem
+                  title={item.title}
+                  icon={item.icon}
+                  href={item.href!}
+                  active={pathname === item.href}
+                />
+              </li>
+            ),
+          )}
         </nav>
         <ul className="mt-auto flex flex-col gap-3">
           {/* <li>
