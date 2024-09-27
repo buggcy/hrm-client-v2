@@ -1,26 +1,51 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
-import { SignIn } from '@/app/(authentication)/auth/sign-in/components/SignIn';
+import { AuthStoreType } from '@/stores/auth';
+
+import { useStores } from './Store.Provider';
 
 import { ParentReactNode } from '@/types';
 
 export const AuthProvider = ({ children }: ParentReactNode) => {
-  const [isLoading] = useState(false);
-  const [isAuthenticated] = useState(false);
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { token, user } = authStore;
+
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
-    // return onAuthStateChanged(firebaseAuth, user => {
-    //   setIsLoading(false);
-    //   setIsAuthenticated(!!user);
-    // });
-  }, []);
-
-  if (isLoading) return null;
-  if (!isAuthenticated && !pathname.startsWith('/auth')) return <SignIn />;
+    if (!token) {
+      if (!pathname.startsWith('/auth')) {
+        router.push('/auth/sign-in');
+      }
+    } else {
+      if (user?.roleId === 1) {
+        if (
+          pathname.startsWith('/employee') ||
+          pathname.startsWith('/manager')
+        ) {
+          router.push('/hr/dashboard');
+        } else if (!pathname.startsWith('/hr')) {
+          router.push('/hr/dashboard');
+        }
+      } else if (user?.roleId === 2) {
+        if (pathname.startsWith('/hr') || pathname.startsWith('/manager')) {
+          router.push('/employee/dashboard');
+        } else if (!pathname.startsWith('/employee')) {
+          router.push('/employee/dashboard');
+        }
+      } else if (user?.roleId === 3) {
+        if (pathname.startsWith('/hr') || pathname.startsWith('/employee')) {
+          router.push('/manager/dashboard');
+        } else if (!pathname.startsWith('/manager')) {
+          router.push('/manager/dashboard');
+        }
+      }
+    }
+  }, [token, pathname, router, user]);
 
   return children;
 };

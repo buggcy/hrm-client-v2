@@ -16,7 +16,7 @@ export const useRedirectAfterAuth = () => {
 
 const nonDeveloperToastDescription = (
   <>
-    If you think there’s a mistake, or are interested in the Tavus Developer
+    If you think there’s a mistake, or are interested in the Buggcy Developer
     platform, please let us know at{' '}
     <a href={DEVELOPER_SUPPORT_LINK} className="underline">
       {DEVELOPER_SUPPORT_EMAIL}
@@ -24,7 +24,7 @@ const nonDeveloperToastDescription = (
     <br />
     <br />
     <Button asChild variant="primary-inverted" className="ml-auto w-full">
-      <a href="https://app.tavus.io">Access Tavus Business Portal</a>
+      <a href="https://app.tavus.io">Access Buggcy Business Portal</a>
     </Button>
   </>
 );
@@ -39,7 +39,7 @@ export const createHandleAuthError =
     ) {
       toast({
         title:
-          'Looking for the Tavus Business Portal? Please login via the link below.',
+          'Looking for the Buggcy Business Portal? Please login via the link below.',
         description: nonDeveloperToastDescription,
         variant: 'destructive',
       });

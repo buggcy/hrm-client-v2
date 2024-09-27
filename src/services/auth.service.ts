@@ -1,19 +1,7 @@
-import { sendGTMEvent } from '@next/third-parties/google';
-import { AxiosError } from 'axios';
-import {
-  createUserWithEmailAndPassword,
-  getAdditionalUserInfo,
-  GoogleAuthProvider,
-  sendPasswordResetEmail as sendPasswordResetEmailFirebase,
-  signInWithEmailAndPassword as signInWithEmailAndPasswordFirebase,
-  signInWithPopup,
-  UserCredential,
-} from 'firebase/auth';
+import { AxiosResponse } from 'axios';
 
-import { firebaseAuth, queryClient } from '@/libs';
-import { portalApi, schemaParse } from '@/utils';
-
-import { IUser, UserRole } from '@/types';
+import { queryClient } from '@/libs';
+import { baseAPI } from '@/utils';
 
 export class CustomError extends Error {
   constructor(message: string) {
@@ -23,113 +11,18 @@ export class CustomError extends Error {
 
 export class NonDeveloperError extends Error {}
 
-export const getUser = async (): Promise<IUser> =>
-  portalApi
-    .get('/v3/users/me')
-    .then(schemaParse(IUser))
-    .then(async user => {
-      if (user.role === UserRole.USER) {
-        await logout();
-        throw new NonDeveloperError();
-      }
+// export const getUser = (): Promise<IUser> =>
+//   portalApi
+//     .get('/v3/users/me')
+//     .then(schemaParse(IUser))
+//     .then(user => {
+//       if (user.role === UserRole.USER) {
+//         logout();
+//         throw new NonDeveloperError();
+//       }
 
-      return user;
-    });
-
-const getUserQuery = (): Promise<IUser> =>
-  queryClient.fetchQuery({ queryKey: ['user'] });
-
-const signUp = async ({
-  firstName,
-  lastName,
-  ...data
-}: {
-  email: string;
-  firstName: string;
-  lastName: string;
-  signupType: 'google' | 'email';
-}): Promise<IUser> =>
-  portalApi
-    .post('/v3/users/signup', {
-      ...data,
-      first_name: firstName,
-      last_name: lastName,
-      agreement: true,
-    })
-    .catch(error => {
-      if (error instanceof AxiosError && error.response?.status === 400) {
-        throw new CustomError('An account with this email already exists.');
-      }
-      throw error;
-    }) as unknown as Promise<IUser>;
-
-const getUserDataFromCredentials = (
-  userCredential: UserCredential,
-): {
-  email: string;
-  firstName: string;
-  lastName: string;
-} => {
-  const additionalUserInfo = getAdditionalUserInfo(userCredential);
-  const profile = additionalUserInfo?.profile;
-
-  return {
-    email: userCredential.user.email!,
-    firstName:
-      (profile?.given_name as string) ||
-      userCredential.user.displayName?.split(' ')?.[0] ||
-      'User',
-    lastName:
-      (profile?.family_name as string) ||
-      userCredential.user.displayName?.split(' ')?.[1] ||
-      'User',
-  };
-};
-
-export const signInWithGoogle = async (isNewUser = false): Promise<IUser> => {
-  const provider = new GoogleAuthProvider();
-  const userCredential = await signInWithPopup(firebaseAuth, provider);
-  const additionalUserInfo = getAdditionalUserInfo(userCredential);
-
-  if (isNewUser || additionalUserInfo?.isNewUser)
-    await signUp({
-      ...getUserDataFromCredentials(userCredential),
-      signupType: 'google',
-    })
-      .then(() => {
-        sendGTMEvent({
-          event: 'signup',
-          method: 'google',
-        });
-      })
-      .catch();
-
-  return getUserQuery();
-};
-
-export const signUpWithEmailAndPassword = async ({
-  password,
-  ...data
-}: {
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-}): Promise<IUser> => {
-  await createUserWithEmailAndPassword(
-    firebaseAuth,
-    data.email.toLowerCase(),
-    password,
-  ).catch(error => {
-    if (error.code === 'auth/email-already-in-use')
-      throw new CustomError('An account with this email already exists.');
-
-    throw error;
-  });
-  await signUp({ ...data, signupType: 'email' });
-
-  return getUserQuery();
-};
+//       return user;
+//     });
 
 export const signInWithEmailAndPassword = async ({
   email,
@@ -137,19 +30,50 @@ export const signInWithEmailAndPassword = async ({
 }: {
   email: string;
   password: string;
-}): Promise<IUser> => {
-  await signInWithEmailAndPasswordFirebase(firebaseAuth, email, password);
-
-  return getUserQuery();
+}): Promise<AxiosResponse> => {
+  const res = await baseAPI.post('/login', { email, password });
+  return res;
 };
 
-export const sendPasswordResetEmail = async (email: string) =>
-  sendPasswordResetEmailFirebase(firebaseAuth, email);
+export const sendPasswordResetEmail = async ({
+  email,
+}: {
+  email: string;
+}): Promise<AxiosResponse> => {
+  const res = await baseAPI.post('/forgot-password', { email });
+  return res;
+};
 
-export const getToken = () => firebaseAuth.currentUser?.getIdToken();
+export const sendDataForResetPassword = async ({
+  email,
+  password,
+  otp,
+}: {
+  email: string;
+  password: string;
+  otp: string;
+}): Promise<AxiosResponse> => {
+  const res = await baseAPI.post('/reset-password', { email, password, otp });
+  return res;
+};
 
-export async function logout() {
-  await firebaseAuth.signOut();
+export const getToken = () => {
+  const authStorage = sessionStorage.getItem('auth-storage');
+
+  if (authStorage) {
+    try {
+      const parsedData = JSON.parse(authStorage);
+      return parsedData?.token || null;
+    } catch (error) {
+      console.error('Failed to parse auth-storage:', error);
+      return null;
+    }
+  }
+
+  return null;
+};
+
+export function logout() {
   queryClient.clear();
   localStorage.clear();
   sessionStorage.clear();

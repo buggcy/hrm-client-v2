@@ -20,25 +20,29 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useStores } from '@/providers/Store.Provider';
 
-import { useUserQuery } from '@/hooks';
 import { logout as logoutFn } from '@/services';
+import { AuthStoreType } from '@/stores/auth';
 
 const TERMS_LINK = 'https://www.tavus.io/terms-of-service';
 const PRIVACY_LINK = 'https://www.tavus.io/privacy-policy';
 
 export const UserPopover = () => {
-  const { data: user } = useUserQuery();
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user, resetSession } = authStore;
+
   const { theme, setTheme } = useTheme();
   const { mutate: logout, isPending } = useMutation({
     mutationFn: logoutFn,
   });
 
   const handleLogout = () => {
+    resetSession();
     logout();
   };
 
-  const username = `${user?.first_name} ${user?.last_name}`;
+  const username = `${user?.firstName} ${user?.lastName}`;
 
   return (
     <div>
@@ -52,8 +56,8 @@ export const UserPopover = () => {
               <Avatar className="size-8">
                 <AvatarImage src="" alt="User Avatar" />
                 <AvatarFallback>
-                  {user?.first_name?.charAt(0)}
-                  {user?.last_name?.charAt(0)}
+                  {user?.firstName?.charAt(0)}
+                  {user?.lastName?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <span className="truncate sm:translate-x-2 sm:opacity-0 sm:transition-all sm:duration-200 sm:group-hover:translate-x-0 sm:group-hover:opacity-100">
@@ -65,7 +69,9 @@ export const UserPopover = () => {
         <PopoverContent className="w-[13.5rem] p-2" align="start">
           <div className="space-y-1 p-2">
             <h3 className="truncate text-sm font-semibold">{username}</h3>
-            <p className="truncate text-xs text-gray-500">{user?.email}</p>
+            <p className="truncate text-xs text-gray-500">
+              {user?.companyEmail}
+            </p>
           </div>
           <Separator className="mb-1 w-full" />
           <ul className="space-y-1">
