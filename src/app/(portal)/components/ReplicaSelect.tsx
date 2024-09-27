@@ -10,8 +10,7 @@ import { Label } from '@/components/ui/label';
 import { useReplicaQuery } from '@/hooks';
 import { createReplicaThumbnailUrl } from '@/utils';
 
-import { DEFAULT_REPLICA } from '../videos/create/constants';
-
+// import { DEFAULT_REPLICA } from '../videos/create/constants';
 import { IReplica } from '@/types';
 
 export const ReplicaSelect = ({

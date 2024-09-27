@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Home, UserCog2 } from 'lucide-react';
+import { BadgeCheck, Home, UserCog2 } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
@@ -53,6 +53,14 @@ export const Sidebar = () => {
                 icon={UserCog2}
                 href="/hr/employee/list"
                 active={pathname === '/hr/employee/list'}
+              />
+            </li>
+            <li className="flex">
+              <NavigationItem
+                title="Manage Employees"
+                icon={BadgeCheck}
+                href="/hr/manage-employees"
+                active={pathname === '/hr/manage-employees'}
               />
             </li>
             {/* <li className="flex">
