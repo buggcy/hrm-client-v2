@@ -35,11 +35,13 @@ const data = [
 
 export function ExperienceTable() {
   return (
-    <Card className="border-none p-0 shadow-none">
+    <Card className="border-none p-6 shadow-none">
       <div>
         <div className="mb-4 flex justify-between">
           <CardHeader className="mb-4 flex items-center justify-between p-0">
-            <CardTitle className="flex-1 text-right">Bank Details</CardTitle>
+            <CardTitle className="flex-1 text-right">
+              Education & Experience
+            </CardTitle>
           </CardHeader>
           <Button>Add More</Button>
         </div>
