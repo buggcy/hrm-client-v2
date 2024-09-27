@@ -63,7 +63,7 @@ export const getToken = () => {
   if (authStorage) {
     try {
       const parsedData = JSON.parse(authStorage);
-      return parsedData?.token || null;
+      return parsedData?.state?.token || null;
     } catch (error) {
       console.error('Failed to parse auth-storage:', error);
       return null;

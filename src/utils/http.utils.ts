@@ -13,6 +13,18 @@ const defaultHeaders = {
   'x-api-key': xApiKey,
 };
 
+const addBearerToken = async (config: InternalAxiosRequestConfig) => {
+  try {
+    const token = await getToken();
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+  } catch (error) {
+    console.error('Failed to get token:', error);
+  }
+  return config;
+};
+
 const onRequestFulfilled = async (config: InternalAxiosRequestConfig) => {
   const token = await getToken();
 
@@ -48,7 +60,7 @@ export const baseAPI = axios.create({
   baseURL: API_BASE_URL,
   headers: defaultHeaders,
 });
-
+baseAPI.interceptors.request.use(addBearerToken);
 baseAPI.interceptors.request.use(onRequestFulfilled);
 baseAPI.interceptors.response.use(onResponseFulfilled, onResponseRejected);
 

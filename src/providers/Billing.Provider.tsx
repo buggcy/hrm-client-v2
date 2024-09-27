@@ -5,7 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { isPast, isYesterday } from 'date-fns';
 
-import BillingPlansPage from '@/app/(portal)/(billing)/billing/page';
+import { SignIn } from '@/app/(authentication)/auth/sign-in/components/SignIn';
+// import BillingPlansPage from '@/app/(portal)/(billing)/billing/page';
 import { usePersistentState, useUserQuery } from '@/hooks';
 
 import { BillingAccountStatus, ParentReactNode } from '@/types';
@@ -37,7 +38,7 @@ export const BillingProvider = ({ children }: ParentReactNode) => {
 
   if (isPending) return null;
   // NOTE: If the user has never been fulfilled his billing info, redirect to the billing plans page
-  if (user?.billingAccount?.status === null) return <BillingPlansPage />;
+  if (user?.billingAccount?.status === null) return <SignIn />;
 
   return children;
 };
