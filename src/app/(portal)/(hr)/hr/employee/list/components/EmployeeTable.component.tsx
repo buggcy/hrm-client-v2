@@ -46,7 +46,7 @@ const EmployeeTable: FunctionComponent = () => {
   return (
     <>
       {isLoading || isFetching ? (
-        <DataTableLoading columnCount={4} rowCount={limit} />
+        <DataTableLoading columnCount={7} rowCount={limit} />
       ) : (
         <DataTable
           data={employeeList?.data || []}

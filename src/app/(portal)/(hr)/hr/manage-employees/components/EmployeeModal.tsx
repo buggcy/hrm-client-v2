@@ -43,31 +43,10 @@ export function DialogDemo({ open, onOpenChange }: DialogDemoProps) {
   const [companyEmail, setCompanyEmail] = useState('');
   const [contact, setContact] = useState('');
   const [basicSalary, setBasicSalary] = useState('');
-  const [joiningDate, setJoiningDate] = useState('');
-  const [designation, setDesignation] = useState('');
   const [date, setDate] = React.useState<Date>();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log({
-      firstName,
-      lastName,
-      email,
-      companyEmail,
-      contact,
-      basicSalary,
-      joiningDate,
-      designation,
-    });
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setCompanyEmail('');
-    setContact('');
-    setBasicSalary('');
-    setJoiningDate('');
-    setDesignation('');
-    onOpenChange(false);
   };
 
   return (

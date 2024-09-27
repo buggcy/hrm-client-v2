@@ -7,9 +7,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 import { TaskType } from '@/libs/validations/schema';
 
-import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
-import { label_options, priority_options, status_options } from '../filters';
+import { DataTableRowActions } from '../actions/data-table-row-actions';
+import { DataTableColumnHeader } from '../data-table-column-header';
+import { label_options, priority_options, status_options } from '../../filters';
 
 export const columns: ColumnDef<TaskType>[] = [
   {

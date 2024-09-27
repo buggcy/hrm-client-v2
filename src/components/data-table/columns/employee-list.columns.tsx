@@ -3,10 +3,12 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { gender_options } from '@/components/filters';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { EmployeeListType } from '@/libs/validations/employee';
 
+import { EmployeeListRowActions } from '../actions/employee-list.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
 export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
@@ -38,16 +40,26 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
+      const firstName: string = row.getValue('firstName');
+      const first = row.original.firstName;
+      const lastName = row.original.lastName;
+      const avatar = row.original.Avatar;
+      const initials = `${first?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
+
       return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue('firstName')}
+        <div className="flex items-center space-x-2">
+          <Avatar className="size-8">
+            <AvatarImage src={avatar || ''} alt={`${firstName} ${lastName}`} />
+            <AvatarFallback className="uppercase">{initials}</AvatarFallback>
+          </Avatar>
+
+          <span className="max-w-[500px] truncate font-medium capitalize">
+            {`${firstName} ${lastName}`}
           </span>
         </div>
       );
     },
   },
-
   {
     accessorKey: 'companyEmail',
     header: ({ column }) => (
@@ -80,16 +92,16 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
     },
   },
 
-  // {
-  //   accessorKey: 'DOB',
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Date of Birth" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const field = row.getValue('DOB');
-  //     return <div>{field?.toDateString()}</div>;
-  //   },
-  // },
+  {
+    accessorKey: 'DOB',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date of Birth" />
+    ),
+    cell: ({ row }) => {
+      const field = new Date(Date.parse(row.getValue('DOB')));
+      return <div>{field?.toDateString()}</div>;
+    },
+  },
 
   {
     accessorKey: 'Gender',
@@ -119,8 +131,24 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
     },
   },
 
-  //   {
-  //     id: 'actions',
-  //     cell: ({ row }) => <DataTableRowActions row={row} />,
-  //   },
+  {
+    accessorKey: 'Designation',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Designation" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue('Designation')}
+          </span>
+        </div>
+      );
+    },
+  },
+
+  {
+    id: 'actions',
+    cell: ({ row }) => <EmployeeListRowActions row={row} />,
+  },
 ];

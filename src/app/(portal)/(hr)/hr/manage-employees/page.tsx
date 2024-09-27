@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 import { Bell } from 'lucide-react';
 
@@ -33,12 +34,12 @@ export default function ManageEmployeesPage() {
             Add Employee
           </Button>
           <Button variant="outline" asChild>
-            <a href="/approval" className="flex items-center">
+            <Link href="/hr/approval" className="flex items-center">
               View Approval Requests
               <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
                 3
               </span>
-            </a>
+            </Link>
           </Button>
 
           <Button variant="outline" size="icon" className="rounded-full">
