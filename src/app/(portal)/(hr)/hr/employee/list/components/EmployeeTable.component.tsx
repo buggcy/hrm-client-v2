@@ -1,38 +1,66 @@
-import { FunctionComponent } from 'react';
+'use client';
+import React, { FunctionComponent, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { z } from 'zod';
-
-import { columns } from '@/components/data-table/columns';
+import { employeeListColumns } from '@/components/data-table/columns/employee-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
+import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 
-import { taskSchema, TaskType } from '@/libs/validations/schema';
+import { useEmployeeListQuery } from '@/hooks/employee/useEmployeeList.hook';
 
-interface EmployeeTableProps {}
+const EmployeeTable: FunctionComponent = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-export const runtime = 'edge';
+  const page = Number(searchParams.get('page')) || 1;
+  const limit = Number(searchParams.get('limit')) || 10;
 
-async function getTasks() {
-  const res = await fetch(
-    'https://my.api.mockaroo.com/tasks.json?key=f0933e60',
+  const {
+    data: employeeList,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useEmployeeListQuery({ page, limit });
+
+  useEffect(() => {
+    void (async () => {
+      await refetch({ page, limit });
+    })();
+  }, [page, limit, refetch]);
+
+  const handlePaginationChange = (newPage: number, newLimit: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', newPage.toString());
+    params.set('limit', newLimit.toString());
+    router.push(`?${params.toString()}`);
+  };
+
+  if (error)
+    return (
+      <div className="py-4 text-center text-red-500">
+        Error: {error.message}
+      </div>
+    );
+
+  return (
+    <>
+      {isLoading || isFetching ? (
+        <DataTableLoading columnCount={4} rowCount={limit} />
+      ) : (
+        <DataTable
+          data={employeeList?.data || []}
+          columns={employeeListColumns}
+          pagination={{
+            pageCount: employeeList?.pagination.totalPages || 1,
+            page: page,
+            limit: limit,
+            onPaginationChange: handlePaginationChange,
+          }}
+        />
+      )}
+    </>
   );
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  const data = await res.json();
-
-  // ** Workaround as my mock api has date returned as "dd-Mon-yyyy"
-  const tasks = z.array(taskSchema).parse(
-    data.map((task: TaskType) => {
-      task.due_date = new Date(Date.parse(task.due_date));
-      return task;
-    }),
-  );
-  return tasks;
-}
-
-const EmployeeTable: FunctionComponent<EmployeeTableProps> = async () => {
-  const tasks = await getTasks();
-  return <DataTable data={tasks} columns={columns} />;
 };
 
 export default EmployeeTable;

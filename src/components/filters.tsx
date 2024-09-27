@@ -5,8 +5,10 @@ import {
   Bug,
   CheckCircle2,
   Circle,
+  CircleArrowOutUpRight,
   HelpCircle,
   PackagePlus,
+  PersonStanding,
   ScrollText,
   Timer,
   XCircle,
@@ -73,5 +75,18 @@ export const priority_options = [
     value: 'high',
     label: 'High',
     icon: ArrowUp,
+  },
+];
+
+export const gender_options = [
+  {
+    value: 'male',
+    label: 'Male',
+    icon: CircleArrowOutUpRight,
+  },
+  {
+    value: 'female',
+    label: 'Female',
+    icon: PersonStanding,
   },
 ];
