@@ -58,3 +58,8 @@ export function getQueryParamsString(
     )
     .join('&');
 }
+
+export function maskedAccountNumber(value: number | string): string {
+  const strValue = value.toString();
+  return strValue.replace(/.(?=.{3})/g, '*');
+}

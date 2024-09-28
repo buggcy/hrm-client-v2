@@ -25,7 +25,6 @@ export default function MyProfile() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
-        <h1>Hallo Profile!</h1>
         <ProfileComponent user={user} />
       </LayoutWrapper>
     </Layout>

@@ -1,0 +1,73 @@
+import React from 'react';
+
+import moment from 'moment';
+
+const OverviewTab = ({ user }) => {
+  return (
+    <>
+      <div className="mb-2 mt-4 text-sm font-bold">Basic Information</div>
+      <dl className="grid grid-cols-1 gap-y-4 md:grid-cols-3">
+        <dt className="font-medium">Emergency Number</dt>
+        <dd className="col-span-2 text-gray-600">
+          {user?.Emergency_Phone || '-'}
+        </dd>
+
+        <dt className="font-medium">Company Email</dt>
+        <dd className="col-span-2 text-gray-600">
+          <a href="#" className="hover:underline">
+            {user?.companyEmail || '-'}
+          </a>
+        </dd>
+
+        <dt className="font-medium">Blood Group</dt>
+        <dd className="col-span-2 text-gray-600">{user?.Blood_Group || '-'}</dd>
+
+        <dt className="font-medium">Marital Status</dt>
+        <dd className="col-span-2 capitalize text-gray-600">
+          {user?.Marital_Status || '-'}
+        </dd>
+
+        <dt className="font-medium">Nationality</dt>
+        <dd className="col-span-2 capitalize text-gray-600">
+          {user?.Nationality || '-'}
+        </dd>
+
+        <dt className="font-medium">Date of Joining</dt>
+        <dd className="col-span-2 text-gray-600">
+          {user?.Joining_Date
+            ? moment(user?.Joining_Date as string | number | Date).format(
+                'YYYY-MM-DD',
+              )
+            : '-'}
+        </dd>
+      </dl>
+
+      <div className="my-4 border-b border-gray-300" />
+
+      <div className="mb-2 mt-4 text-sm font-bold">Family Details</div>
+      <dl className="grid grid-cols-1 gap-y-4 md:grid-cols-3">
+        <dt className="font-medium">Name</dt>
+        <dd className="col-span-2 capitalize text-gray-600">
+          {user?.Family_Name || '-'}
+        </dd>
+
+        <dt className="font-medium">Relation</dt>
+        <dd className="col-span-2 capitalize text-gray-600">
+          {user?.Family_Relation || '-'}
+        </dd>
+
+        <dt className="font-medium">Occupation</dt>
+        <dd className="col-span-2 capitalize text-gray-600">
+          {user?.Family_Occupation || '-'}
+        </dd>
+
+        <dt className="font-medium">Phone Number</dt>
+        <dd className="col-span-2 text-gray-600">
+          {user?.Family_PhoneNo || '-'}
+        </dd>
+      </dl>
+    </>
+  );
+};
+
+export default OverviewTab;
