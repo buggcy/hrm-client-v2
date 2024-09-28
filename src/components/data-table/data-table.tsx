@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/table';
 
 import { DataTablePagination } from './data-table-pagination';
-import { DataTableToolbar } from './data-table-toolbar';
+import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,12 +38,19 @@ interface DataTableProps<TData, TValue> {
     limit: number;
     onPaginationChange: (page: number, limit: number) => void;
   };
+  searchTerm: string;
+  onSearch: (term: string) => void;
+  searchLoading: boolean;
+  refetchEmployeeList: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pagination,
+  onSearch,
+  searchTerm,
+  searchLoading,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -81,8 +88,13 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
-      <div className="rounded-md border">
+      <EmployeeListToolbar
+        table={table}
+        onSearch={onSearch}
+        searchTerm={searchTerm}
+        searchLoading={searchLoading}
+      />
+      <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
@@ -125,7 +137,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {searchLoading ? 'Finding User ...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

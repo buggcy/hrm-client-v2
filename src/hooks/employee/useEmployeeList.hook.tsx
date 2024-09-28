@@ -15,8 +15,8 @@ export const useEmployeeListQuery = (
   useQuery({
     queryKey: ['employeeList', params],
     queryFn: () => getEmployeeList(params),
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<EmployeeApiResponse, Error>;

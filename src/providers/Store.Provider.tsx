@@ -2,19 +2,23 @@
 
 import React, { createContext, ReactNode, useContext } from 'react';
 
+import { useEmployeeStore } from '@/stores/hr/employee';
+
 import { useAuthStore } from '../stores/auth';
 
 interface StoreContextType {
   authStore: ReturnType<typeof useAuthStore>;
+  employeeStore: ReturnType<typeof useEmployeeStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
 export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const authStore = useAuthStore();
+  const employeeStore = useEmployeeStore();
 
   return (
-    <StoreContext.Provider value={{ authStore }}>
+    <StoreContext.Provider value={{ authStore, employeeStore }}>
       {children}
     </StoreContext.Provider>
   );
