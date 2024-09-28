@@ -1,19 +1,13 @@
-import React, { useState } from 'react';
+'use client';
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@radix-ui/react-popover';
-import {
-  Select,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@radix-ui/react-select';
+import React from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { CalendarIcon, ChevronDown } from 'lucide-react';
+import { Controller, useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -23,200 +17,330 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SelectContent } from '@/components/ui/select';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { toast } from '@/components/ui/use-toast';
 
+import { useTypesQuery } from '@/hooks/types.hook';
+import { addEmployeeData } from '@/services/hr/employee.service';
 import { cn } from '@/utils';
+
+// Define the Zod schema
+const addEmployeeSchema = z.object({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  email: z.string().email('Invalid email address'),
+  companyEmail: z.string().email('Invalid company email address'),
+  contactNo: z.string().regex(/^03\d{9}$/, 'Invalid contact number'),
+  basicSalary: z
+    .string()
+    .min(1, 'Salary is required')
+    .regex(/^\d+$/, 'Salary must be a valid number'),
+  Joining_Date: z.date(),
+  Designation: z.string().min(1, 'Designation is required'),
+});
+
+export type AddEmployeeFormData = z.infer<typeof addEmployeeSchema>;
 
 interface DialogDemoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCloseChange: (open: boolean) => void;
 }
 
-export function DialogDemo({ open, onOpenChange }: DialogDemoProps) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [companyEmail, setCompanyEmail] = useState('');
-  const [contact, setContact] = useState('');
-  const [basicSalary, setBasicSalary] = useState('');
-  const [date, setDate] = React.useState<Date>();
+export function DialogDemo({
+  open,
+  onOpenChange,
+  onCloseChange,
+}: DialogDemoProps) {
+  const { data: types, isLoading } = useTypesQuery();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<AddEmployeeFormData>({
+    resolver: zodResolver(addEmployeeSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      companyEmail: '',
+      contactNo: '',
+      basicSalary: '0',
+      Joining_Date: new Date(),
+      Designation: '',
+    },
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: addEmployeeData,
+    onError: err => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on adding employee!',
+        variant: 'destructive',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+      });
+      reset();
+      onCloseChange();
+    },
+  });
+
+  const onSubmit = (data: AddEmployeeFormData) => {
+    mutate(data);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="h-[470px] sm:max-w-[905px]">
         <DialogHeader>
           <DialogTitle>Add Employee</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-8 py-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 py-4">
           <div className="flex flex-wrap gap-8">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="first-name" className="mb-2 text-left">
+              <Label htmlFor="firstName" className="mb-2 text-left">
                 First Name
               </Label>
-              <Input
-                id="first-name"
-                value={firstName}
-                onChange={e => setFirstName(e.target.value)}
-                placeholder="First Name"
-                required
+              <Controller
+                name="firstName"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} id="firstName" placeholder="First Name" />
+                )}
               />
+              {errors.firstName && (
+                <span className="text-sm text-red-500">
+                  {errors.firstName.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="last-name" className="mb-2 text-left">
+              <Label htmlFor="lastName" className="mb-2 text-left">
                 Last Name
               </Label>
-              <Input
-                id="last-name"
-                value={lastName}
-                onChange={e => setLastName(e.target.value)}
-                placeholder="Last Name"
-                required
+              <Controller
+                name="lastName"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} id="lastName" placeholder="Last Name" />
+                )}
               />
+              {errors.lastName && (
+                <span className="text-sm text-red-500">
+                  {errors.lastName.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="email" className="mb-2 text-left">
                 Personal Email
               </Label>
-              <Input
-                id="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="personal@mail.com"
-                required
-                type="email"
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="email"
+                    placeholder="personal@mail.com"
+                    type="email"
+                  />
+                )}
               />
+              {errors.email && (
+                <span className="text-sm text-red-500">
+                  {errors.email.message}
+                </span>
+              )}
             </div>
           </div>
 
           <div className="flex flex-wrap gap-8">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="company-email" className="mb-2 text-left">
+              <Label htmlFor="companyEmail" className="mb-2 text-left">
                 Company Email
               </Label>
-              <Input
-                id="company-email"
-                value={companyEmail}
-                onChange={e => setCompanyEmail(e.target.value)}
-                placeholder="company@mail.com"
-                required
-                type="email"
+              <Controller
+                name="companyEmail"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="companyEmail"
+                    placeholder="company@mail.com"
+                    type="email"
+                  />
+                )}
               />
+              {errors.companyEmail && (
+                <span className="text-sm text-red-500">
+                  {errors.companyEmail.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="contact" className="mb-2 text-left">
+              <Label htmlFor="contactNo" className="mb-2 text-left">
                 Contact
               </Label>
-              <Input
-                id="contact"
-                value={contact}
-                onChange={e => setContact(e.target.value)}
-                placeholder="03XXXXXXXXX"
-                required
-                type="tel"
+              <Controller
+                name="contactNo"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="contactNo"
+                    placeholder="03XXXXXXXXX"
+                    type="tel"
+                  />
+                )}
               />
+              {errors.contactNo && (
+                <span className="text-sm text-red-500">
+                  {errors.contactNo.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="basic-salary" className="mb-2 text-left">
+              <Label htmlFor="basicSalary" className="mb-2 text-left">
                 Basic Salary
               </Label>
-              <Input
-                id="basic-salary"
-                value={basicSalary}
-                onChange={e => setBasicSalary(e.target.value)}
-                placeholder="10000"
-                required
-                type="number"
+              <Controller
+                name="basicSalary"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="basicSalary"
+                    placeholder="10000"
+                    type="number"
+                  />
+                )}
               />
+              {errors.basicSalary && (
+                <span className="text-sm text-red-500">
+                  {errors.basicSalary.message}
+                </span>
+              )}
             </div>
           </div>
 
           <div className="flex flex-wrap gap-8 sm:max-w-[570px]">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="joining-date" className="mb-2 text-left">
+              <Label htmlFor="Joining_Date" className="mb-2 text-left">
                 Joining Date
               </Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={'outline'}
-                    className={cn(
-                      'w-[263.664px] justify-start text-left font-normal',
-                      !date && 'text-muted-foreground',
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 size-4" />
-                    {date ? format(date, 'PPP') : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    className="z-10 mt-6 rounded-md border bg-white dark:bg-gray-800"
-                  />
-                </PopoverContent>
-              </Popover>
+              <Controller
+                name="Joining_Date"
+                control={control}
+                render={({ field }) => (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        className={cn(
+                          'w-[263.664px] justify-start text-left font-normal',
+                          !field.value && 'text-muted-foreground',
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 size-4" />
+                        {field.value ? (
+                          format(field.value, 'PPP')
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={date =>
+                          date > new Date() || date < new Date('1900-01-01')
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
+              {errors.Joining_Date && (
+                <span className="text-sm text-red-500">
+                  {errors.Joining_Date.message}
+                </span>
+              )}
             </div>
 
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="designation" className="mb-2 text-left">
+              <Label htmlFor="Designation" className="mb-2 text-left">
                 Designation
               </Label>
-              <Select>
-                <SelectTrigger className="relative z-50 w-[263.664px] rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Designation" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem
-                      value="apple"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Assistant
-                    </SelectItem>
-                    <SelectItem
-                      value="banana"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      CEO
-                    </SelectItem>
-                    <SelectItem
-                      value="blueberry"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      CTO
-                    </SelectItem>
-                    <SelectItem
-                      value="grapes"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      HR
-                    </SelectItem>
-                    <SelectItem
-                      value="pineapple"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Intern
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
-              </Select>
+              <Controller
+                name="Designation"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="relative z-50 w-[263.664px] rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select Designation" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="No Designation" disabled>
+                          Select designation
+                        </SelectItem>
+                        {types?.designationType.map((designation, index) => (
+                          <SelectItem
+                            key={index}
+                            value={designation}
+                            className="capitalize"
+                          >
+                            {designation}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                    <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                  </Select>
+                )}
+              />
+              {errors.Designation && (
+                <span className="text-sm text-red-500">
+                  {errors.Designation.message}
+                </span>
+              )}
             </div>
           </div>
 
           <DialogFooter>
-            <Button type="submit">Add Employee</Button>
+            <Button type="submit" disabled={isLoading || isPending}>
+              Add Employee
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

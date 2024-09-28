@@ -57,6 +57,11 @@ export const sendDataForResetPassword = async ({
   return res;
 };
 
+export const getTypes = async (): Promise<AxiosResponse> => {
+  const res = await baseAPI.get('/types');
+  return res;
+};
+
 export const getToken = () => {
   const authStorage = sessionStorage.getItem('auth-storage');
 
