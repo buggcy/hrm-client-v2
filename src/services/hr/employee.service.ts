@@ -1,4 +1,11 @@
-import { employeeApiResponseSchema } from '@/libs/validations/employee';
+import { AxiosResponse } from 'axios';
+
+import { ApprovalEmployeeType } from '@/app/(portal)/(hr)/hr/approval/ApprovalCard/ApprovalCard';
+import { AddEmployeeFormData } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
+import {
+  employeeApiResponseSchema,
+  EmployeeListType,
+} from '@/libs/validations/employee';
 import { baseAPI, schemaParse } from '@/utils';
 
 import { EmployeeApiResponse } from '@/types/employee.types';
@@ -51,4 +58,54 @@ export const getEmployeeList = async (
     console.error('Error fetching employee list:', error);
     throw error;
   }
+};
+
+export const searchEmployeeList = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<AxiosResponse<EmployeeApiResponse>> => {
+  const res = await baseAPI.get(
+    `/user/search?page=${page}&limit=${limit}&query=${query}`,
+  );
+  return res;
+};
+
+export const approvalEmployeeList = async (): Promise<
+  AxiosResponse<EmployeeListType[]>
+> => {
+  const res = await baseAPI.get(`/user/unapproved`);
+  return res;
+};
+
+export const addEmployeeData = async (
+  data: AddEmployeeFormData,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.post(`/employee`, data);
+  return res;
+};
+
+export const exportEmployeeCSVData = async (
+  ids: Array<string>,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.post(`/user/export-csv`, { ids });
+  return res;
+};
+
+export const deleteEmployeeRecord = async (
+  id: string,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.delete(`/employee/${id}`);
+  return res;
+};
+
+export const employeeApprovalRequest = async (
+  data: ApprovalEmployeeType,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.post(`/approve-employee`, data);
+  return res;
 };

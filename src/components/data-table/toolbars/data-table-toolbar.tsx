@@ -8,7 +8,7 @@ import { DataTableViewOptions } from '@/components/data-table/data-table-view-op
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { priority_options, status_options } from '../filters';
+import { gender_options } from '../../filters';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -30,20 +30,14 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn('status') && (
+        {table.getColumn('Gender') && (
           <DataTableFacetedFilter
-            column={table.getColumn('status')}
-            title="Status"
-            options={status_options}
+            column={table.getColumn('Gender')}
+            title="Gender"
+            options={gender_options}
           />
         )}
-        {table.getColumn('priority') && (
-          <DataTableFacetedFilter
-            column={table.getColumn('priority')}
-            title="Priority"
-            options={priority_options}
-          />
-        )}
+
         {isFiltered && (
           <Button
             variant="ghost"

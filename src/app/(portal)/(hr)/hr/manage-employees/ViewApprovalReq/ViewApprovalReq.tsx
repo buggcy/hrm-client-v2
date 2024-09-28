@@ -2,21 +2,19 @@
 
 import { useState } from 'react';
 
+import { EmployeeListType } from '@/libs/validations/employee';
+
 import { ApprovalCard } from '../../approval/ApprovalCard/ApprovalCard';
 
 export const description = 'A pie chart with a custom label';
 
-const dummyPersona = {
-  persona_id: '1',
-  persona_name: 'Ahmad Mehmood',
-  system_prompt: 'Example Prompt',
-  created_at: '2023-09-26T00:00:00Z',
-  updated_at: '2023-09-26T00:00:00Z',
-  persona_type: null,
-  default_replica_id: '123',
-};
-
-export function ApprovalRequest() {
+export function ApprovalRequest({
+  data,
+  refetchApprovalList,
+}: {
+  data: EmployeeListType;
+  refetchApprovalList: () => void;
+}) {
   const [selected, setSelected] = useState(false);
   const [isLoading] = useState(false);
 
@@ -30,7 +28,8 @@ export function ApprovalRequest() {
   return (
     <div>
       <ApprovalCard
-        persona={dummyPersona}
+        refetchApprovalList={refetchApprovalList}
+        person={data}
         selected={selected}
         isSelectable={true}
         handleSelect={handleSelect}

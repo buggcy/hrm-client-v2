@@ -17,6 +17,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { deleteEmployeeRecord } from '@/services/hr/employee.service';
+
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
@@ -71,9 +73,10 @@ export function EmployeeListRowActions<TData>({
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
       <DeleteDialog
-        data={data}
+        id={data._id}
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
+        mutationFunc={deleteEmployeeRecord}
       />
     </Dialog>
   );

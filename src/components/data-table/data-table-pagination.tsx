@@ -30,7 +30,7 @@ export function DataTablePagination<TData>({
   page,
   limit,
   onPaginationChange,
-  pageSizeOptions = [2, 10, 20, 30, 40, 50],
+  pageSizeOptions = [5, 10, 20, 30, 40, 50],
 }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex flex-col items-center justify-between space-y-3 px-2 md:flex-row md:space-y-0">
