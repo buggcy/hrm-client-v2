@@ -63,7 +63,7 @@ export function EmployeeListToolbar<TData>({
           placeholder="Filter ..."
           value={searchTerm}
           onChange={event => onSearch(event.target.value)}
-          className="h-8 w-[150px] lg:w-[250px]"
+          inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
         {table.getColumn('Gender') && (
