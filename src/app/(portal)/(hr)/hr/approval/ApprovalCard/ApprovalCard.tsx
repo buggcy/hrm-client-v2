@@ -195,7 +195,7 @@ export const ApprovalCard = ({
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                    <p>Profile</p>
+                    <p>{person.Designation}</p>
                   </TooltipContent>
                 </Tooltip>
 
