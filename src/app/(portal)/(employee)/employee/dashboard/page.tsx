@@ -1,3 +1,4 @@
+'use client';
 import { FunctionComponent } from 'react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
@@ -7,21 +8,34 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { ReadDocsButton } from '@/components/ReadDocsButton';
+import { Notification } from '@/components/NotificationIcon/NotificationIcon';
 
 interface EmployeeDashboardProps {}
 
 const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
+  const authStorage = sessionStorage.getItem('auth-storage');
+  let user = null;
+
+  if (authStorage) {
+    const parsedStorage = JSON.parse(authStorage);
+    user = parsedStorage.state?.user;
+  }
+
   return (
     <Layout>
       <HighTrafficBanner />
       <LayoutHeader title="Dashboard">
         <LayoutHeaderButtonsBlock>
-          <ReadDocsButton to="home" />
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
-        <h1>Hallo Employee</h1>
+        <h1>
+          Welcome Back !{' '}
+          <span className="font-bold capitalize">
+            {user.firstName} {user.lastName}
+          </span>
+        </h1>
       </LayoutWrapper>
     </Layout>
   );
