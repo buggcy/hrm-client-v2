@@ -1,4 +1,3 @@
-// Internal imports (aliased paths)
 import { create } from 'zustand';
 
 import { NotificationStore } from '@/components/NotificationIcon/types';

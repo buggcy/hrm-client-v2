@@ -51,9 +51,8 @@ const Notification: React.FC = () => {
     );
   }, [notifications]);
 
-  // Always call the hooks unconditionally
   const notificationsHR = useNotificationsHR();
-  const notificationsEmp = useNotificationsEmp(userId!); // Use userId! for non-null assertion
+  const notificationsEmp = useNotificationsEmp(userId!);
 
   const isLoading = isHR
     ? notificationsHR.isLoading
@@ -191,14 +190,13 @@ const Notification: React.FC = () => {
             <button
               className="text-sm text-gray-500 underline"
               onClick={handleAllMarkAsRead}
-              disabled={isMarkingAllAsRead} // Disable button when marking all read
+              disabled={isMarkingAllAsRead}
             >
               Mark all as read
             </button>
           </div>
         </div>
         <DropdownMenuSeparator />
-        {/* ... (header content remains the same) ... */}
         <ScrollArea className="h-80">
           {isMarkingAllAsRead ? (
             <div className="absolute inset-0 flex h-full items-center justify-center bg-gray-100 opacity-50">
@@ -223,7 +221,6 @@ const Notification: React.FC = () => {
                   opacity: loadingNotificationId === notification._id ? 0.5 : 1,
                 }}
               >
-                {/* ... (notification content remains the same) ... */}
                 {loadingNotificationId === notification._id && (
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-100 opacity-50">
                     <Loader size={24} className="animate-spin" />

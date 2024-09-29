@@ -1,9 +1,7 @@
-// External imports first
 import { useEffect } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-// Internal imports (aliased paths)
 import {
   fetchNotificationsEmp,
   fetchNotificationsHR,
@@ -57,8 +55,7 @@ export const useMarkNotificationAsRead = () => {
 
   return useMutation({
     mutationFn: async (notificationId: string) => {
-      // await the promise here to avoid floating promise issues
-      await markNotificationAsRead(notificationId); // <-- This is correct since it's awaited here.
+      await markNotificationAsRead(notificationId);
     },
     onSuccess: () => {
       queryClient

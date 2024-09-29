@@ -1,4 +1,3 @@
-// Internal imports (aliased paths)
 import { Notification } from '@/components/NotificationIcon/types';
 
 import { baseAPI } from '@/utils';
