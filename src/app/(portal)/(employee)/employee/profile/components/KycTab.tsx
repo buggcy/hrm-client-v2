@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 
 import { Eye, EyeOff } from 'lucide-react';
@@ -11,9 +12,16 @@ import {
 
 import { maskedAccountNumber } from '@/utils';
 
-const KycTab = ({ user }) => {
+import { Kyc } from '@/types/employee.types';
+
+interface KycTabProps {
+  kyc: Kyc[];
+}
+
+const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
   const [showFullAccountNumber, setShowFullAccountNumber] = useState(false);
   const [showFullIban, setShowFullIban] = useState(false);
+
   return (
     <TooltipProvider>
       <>
@@ -21,15 +29,15 @@ const KycTab = ({ user }) => {
         <dl className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <dt className="font-medium">CNIC Number</dt>
           <dd className="tracking-wide text-gray-700">
-            {user?.cnic?.number || '41303-0000000-0'}
+            {kyc[0]?.cnic?.number || '-'}
           </dd>
           <dt className="font-medium">Front Of CNIC Image</dt>
           <dd className="text-gray-700">
-            {user?.cnic?.frontPicture ? (
+            {kyc[0]?.cnic?.frontPicture ? (
               <span>
-                {typeof user?.cnic?.frontPicture === 'string' &&
+                {typeof kyc[0]?.cnic?.frontPicture === 'string' &&
                   decodeURIComponent(
-                    String(user.cnic.frontPicture)
+                    String(kyc[0].cnic.frontPicture)
                       .split('/')
                       .pop()
                       ?.split('.')[0] || '',
@@ -37,8 +45,8 @@ const KycTab = ({ user }) => {
                 <Eye
                   className="ml-2 inline cursor-pointer"
                   onClick={() =>
-                    user?.cnic?.frontPicture &&
-                    window.open(String(user.cnic.frontPicture), '_blank')
+                    kyc[0]?.cnic?.frontPicture &&
+                    window.open(String(kyc[0].cnic.frontPicture), '_blank')
                   }
                   size={18}
                 />
@@ -57,11 +65,11 @@ const KycTab = ({ user }) => {
           </dd>
           <dt className="font-medium">Back Of CNIC Image</dt>
           <dd className="text-gray-700">
-            {user?.cnic?.backPicture ? (
+            {kyc[0]?.cnic?.backPicture ? (
               <span>
-                {typeof user?.cnic?.backPicture === 'string' &&
+                {typeof kyc[0]?.cnic?.backPicture === 'string' &&
                   decodeURIComponent(
-                    String(user.cnic.backPicture)
+                    String(kyc[0].cnic.backPicture)
                       .split('/')
                       .pop()
                       ?.split('.')[0] || '',
@@ -69,8 +77,8 @@ const KycTab = ({ user }) => {
                 <Eye
                   className="ml-2 inline cursor-pointer"
                   onClick={() =>
-                    user?.cnic?.backPicture &&
-                    window.open(String(user.cnic.backPicture), '_blank')
+                    kyc[0]?.cnic?.backPicture &&
+                    window.open(String(kyc[0].cnic.backPicture), '_blank')
                   }
                   size={18}
                 />
@@ -96,8 +104,8 @@ const KycTab = ({ user }) => {
           <dt className="font-medium">Account Number</dt>
           <dd className="tracking-wider text-gray-700">
             {showFullAccountNumber
-              ? user?.bankDetails?.accountNumber || ''
-              : maskedAccountNumber(String(user?.bankDetails?.iban || ''))}
+              ? kyc[0]?.bankDetails?.accountNumber || ''
+              : maskedAccountNumber(String(kyc[0]?.bankDetails?.iban || ''))}
             <Tooltip>
               <TooltipTrigger asChild>
                 <span
@@ -122,17 +130,17 @@ const KycTab = ({ user }) => {
           </dd>
           <dt className="font-medium">Account Name</dt>
           <dd className="text-gray-700">
-            {user?.bankDetails?.accountHolderName || '-'}
+            {kyc[0]?.bankDetails?.accountHolderName || '-'}
           </dd>
           <dt className="font-medium">Bank Name</dt>
           <dd className="text-gray-700">
-            {user?.bankDetails?.branchName || '-'}
+            {kyc[0]?.bankDetails?.branchName || '-'}
           </dd>
           <dt className="font-medium">IBAN Number</dt>
           <dd className="capitalize tracking-wider text-gray-700">
             {showFullIban
-              ? user?.bankDetails?.iban || ''
-              : maskedAccountNumber(String(user?.bankDetails?.iban || ''))}
+              ? kyc[0]?.bankDetails?.iban || ''
+              : maskedAccountNumber(String(kyc[0]?.bankDetails?.iban || ''))}
             <Tooltip>
               <TooltipTrigger asChild>
                 <span

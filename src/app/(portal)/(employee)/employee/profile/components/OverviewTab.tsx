@@ -1,11 +1,18 @@
+'use client';
 import React from 'react';
 
 import moment from 'moment';
 
-const OverviewTab = ({ user }) => {
+import { Employee } from '@/types/employee.types';
+interface OverviewTabProps {
+  user: Employee;
+}
+
+const OverviewTab: React.FC<OverviewTabProps> = ({ user }) => {
   return (
     <>
       <div className="mb-2 mt-4 text-sm font-bold">Basic Information</div>
+
       <dl className="grid grid-cols-1 gap-y-4 md:grid-cols-3">
         <dt className="font-medium">Emergency Number</dt>
         <dd className="col-span-2 text-gray-600">

@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,7 +10,26 @@ import EducationTab from './EducationTab';
 import KycTab from './KycTab';
 import OverviewTab from './OverviewTab';
 
-const ProfileTabs = ({ user }) => {
+import {
+  AdditionalDocuments,
+  EducationExperiences,
+  Employee,
+  Kyc,
+} from '@/types/employee.types';
+
+interface ProfileTabsProps {
+  user: Employee;
+  kyc: Kyc[];
+  educationExperiences: EducationExperiences[];
+  additionalDocuments: AdditionalDocuments[];
+}
+
+const ProfileTabs: React.FC<ProfileTabsProps> = ({
+  user,
+  kyc,
+  educationExperiences,
+  additionalDocuments,
+}) => {
   const [activeTab, setActiveTab] = useState<string>('Overview');
 
   const handleTabChange = (value: string) => {
@@ -18,21 +38,22 @@ const ProfileTabs = ({ user }) => {
   return (
     <>
       <Tabs value={activeTab} onValueChange={handleTabChange}>
-        <TabsList className="mb-2 h-9 p-0.5">
-          <TabsTrigger className="h-8" value="Overview">
+        <TabsList className="mb-2 flex h-9 p-0.5">
+          <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Overview">
             Overview
           </TabsTrigger>
-          <TabsTrigger className="h-8" value="Kyc">
+          <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Kyc">
             Kyc
           </TabsTrigger>
-          <TabsTrigger className="h-8" value="Education">
+          <TabsTrigger className="h-8 grow sm:w-2/5" value="Education">
             Education & Experience
           </TabsTrigger>
-          <TabsTrigger className="h-8" value="Additional">
+          <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Additional">
             Additional
           </TabsTrigger>
         </TabsList>
       </Tabs>
+
       <Card>
         {activeTab === 'Overview' && (
           <CardContent>
@@ -42,23 +63,29 @@ const ProfileTabs = ({ user }) => {
         {activeTab === 'Kyc' && (
           <CardContent>
             <TooltipProvider>
-              <KycTab user={user} />
+              <KycTab kyc={kyc} />
             </TooltipProvider>
           </CardContent>
         )}
         {activeTab === 'Education' && (
           <CardContent>
             <div className="mb-2 mt-4 text-sm font-bold">Education</div>
-            {user?.educationExperiences?.length > 0 ? (
-              <EducationTab user={user} type={'education'} />
+            {educationExperiences?.length > 0 ? (
+              <EducationTab
+                educationExperiences={educationExperiences}
+                type={'education'}
+              />
             ) : (
               <p className="mt-3 text-center text-gray-600">
                 {'Currently No Education Available!'}
               </p>
             )}
             <div className="mb-2 mt-4 text-sm font-bold">Experience</div>
-            {user?.educationExperiences?.length > 0 ? (
-              <EducationTab user={user} type={'experience'} />
+            {educationExperiences?.length > 0 ? (
+              <EducationTab
+                educationExperiences={educationExperiences}
+                type={'experience'}
+              />
             ) : (
               <p className="mt-3 text-center text-gray-600">
                 {'Currently No Experience Available!'}
@@ -68,7 +95,7 @@ const ProfileTabs = ({ user }) => {
         )}
         {activeTab === 'Additional' && (
           <CardContent>
-            <AdditionalTab user={user} />
+            <AdditionalTab additionalDocuments={additionalDocuments} />
           </CardContent>
         )}
       </Card>

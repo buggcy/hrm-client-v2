@@ -1,4 +1,6 @@
+'use client';
 import React from 'react';
+import Link from 'next/link';
 
 import moment from 'moment';
 
@@ -7,18 +9,27 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
-const ProfileDetails = ({ user }) => {
+import { Employee } from '@/types/employee.types';
+
+interface ProfileDetailsProps {
+  user: Employee;
+}
+
+const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
   return (
     <>
       <Card>
         <CardContent>
           <div className="my-3 flex justify-center">
             <Avatar className="size-16">
-              <AvatarImage src="" alt="User Avatar" />
-              <AvatarFallback>
-                {user?.firstName?.charAt(0)}
-                {user?.lastName?.charAt(0)}
-              </AvatarFallback>
+              {user?.Avatar ? (
+                <AvatarImage src={user?.Avatar} alt="User Avatar" />
+              ) : (
+                <AvatarFallback>
+                  {user?.firstName?.charAt(0)}
+                  {user?.lastName?.charAt(0)}
+                </AvatarFallback>
+              )}
             </Avatar>
           </div>
           <div className="mb-4 text-center">
@@ -32,12 +43,14 @@ const ProfileDetails = ({ user }) => {
               {user?.Designation || ''}
             </div>
           </div>
-          <Button
-            variant="ghost"
-            className="w-full border border-gray-300 bg-transparent text-black"
-          >
-            Edit Profile
-          </Button>
+          <Link href="/employee/edit-profile">
+            <Button
+              variant="ghost"
+              className="w-full border border-gray-300 bg-transparent text-black"
+            >
+              Edit Profile
+            </Button>
+          </Link>
 
           <div className="my-4 border-b border-gray-300" />
 

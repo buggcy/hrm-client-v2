@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 
 import moment from 'moment';
@@ -5,8 +6,16 @@ import moment from 'moment';
 import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 
-const EducationTab = ({ user, type }) => {
-  const filteredExperiences = user?.educationExperiences?.filter(
+import { EducationExperiences } from '@/types/employee.types';
+interface EducationTabProps {
+  educationExperiences: EducationExperiences[];
+  type: 'education' | 'experience';
+}
+const EducationTab: React.FC<EducationTabProps> = ({
+  educationExperiences,
+  type,
+}) => {
+  const filteredExperiences = educationExperiences?.filter(
     experience => experience.type === type,
   );
   return (
@@ -24,37 +33,49 @@ const EducationTab = ({ user, type }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredExperiences?.map((experience, index) => (
-                <tr key={index}>
-                  <td className="border-b p-2">
-                    {experience?.Position || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    {experience?.Institute || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    {moment(
-                      experience?.Start_Date as string | number | Date,
-                    ).format('DD-MM-YYYY') || '-'}{' '}
-                    -{' '}
-                    {moment(
-                      experience?.End_Date as string | number | Date,
-                    ).format('DD-MM-YYYY') || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    {experience?.documentType || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    <Button
-                      onClick={() =>
-                        window.open(String(experience?.Document), '_blank')
-                      }
-                    >
-                      View
-                    </Button>
+              {filteredExperiences && filteredExperiences.length > 0 ? (
+                filteredExperiences.map((experience, index) => (
+                  <tr key={index}>
+                    <td className="border-b p-2">
+                      {experience?.Position || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      {experience?.Institute || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      {moment(
+                        experience?.Start_Date as string | number | Date,
+                      ).format('DD-MM-YYYY') || '-'}{' '}
+                      -{' '}
+                      {moment(
+                        experience?.End_Date as string | number | Date,
+                      ).format('DD-MM-YYYY') || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      {experience?.documentType || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      <Button
+                        size={'sm'}
+                        onClick={() =>
+                          window.open(String(experience?.Document), '_blank')
+                        }
+                      >
+                        View
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="border-b p-2 text-center text-gray-500"
+                  >
+                    No Education Provided!
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </div>
@@ -73,40 +94,52 @@ const EducationTab = ({ user, type }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredExperiences?.map((experience, index) => (
-                <tr key={index}>
-                  <td className="border-b p-2">
-                    {experience?.Position || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    {experience?.Institute || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    {moment(
-                      experience?.Start_Date as string | number | Date,
-                    ).format('DD-MM-YYYY') || '-'}{' '}
-                    -{' '}
-                    {moment(
-                      experience?.End_Date as string | number | Date,
-                    ).format('DD-MM-YYYY') || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    {experience?.referenceNumber || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    {experience?.documentType || '-'}
-                  </td>
-                  <td className="border-b p-2">
-                    <Button
-                      onClick={() =>
-                        window.open(String(experience?.Document), '_blank')
-                      }
-                    >
-                      View
-                    </Button>
+              {filteredExperiences && filteredExperiences.length > 0 ? (
+                filteredExperiences.map((experience, index) => (
+                  <tr key={index}>
+                    <td className="border-b p-2">
+                      {experience?.Position || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      {experience?.Institute || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      {moment(
+                        experience?.Start_Date as string | number | Date,
+                      ).format('DD-MM-YYYY') || '-'}{' '}
+                      -{' '}
+                      {moment(
+                        experience?.End_Date as string | number | Date,
+                      ).format('DD-MM-YYYY') || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      {experience?.referenceNumber || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      {experience?.documentType || '-'}
+                    </td>
+                    <td className="border-b p-2">
+                      <Button
+                        size={'sm'}
+                        onClick={() =>
+                          window.open(String(experience?.Document), '_blank')
+                        }
+                      >
+                        View
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="border-b p-2 text-center text-gray-500"
+                  >
+                    No Experience Provided!
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </div>

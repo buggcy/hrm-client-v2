@@ -7,7 +7,7 @@ export interface User {
   roleId: number;
   isApproved: string;
   companyEmail: string;
-  designation?: string;
+  Designation?: string;
   gender?: string;
   bloodGroup?: string;
   dob?: string;

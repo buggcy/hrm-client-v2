@@ -8,9 +8,4 @@ export const employeeMenu: MenuItem[] = [
     icon: Home,
     href: '/employee/dashboard',
   },
-  {
-    title: 'My Profile',
-    icon: Home,
-    href: '/employee/profile',
-  },
 ];

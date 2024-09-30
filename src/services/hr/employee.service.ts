@@ -22,6 +22,9 @@ export interface EmployeeListParams {
   companyEmail?: string;
 }
 
+export interface EditProfileResponse {
+  token: string;
+}
 export const getEmployeeList = async (
   params: EmployeeListParams = {},
 ): Promise<EmployeeApiResponse> => {
@@ -107,5 +110,42 @@ export const employeeApprovalRequest = async (
   data: ApprovalEmployeeType,
 ): Promise<AxiosResponse> => {
   const res = await baseAPI.post(`/approve-employee`, data);
+  return res;
+};
+
+export const ReadEmployeeRecord = async (
+  id: string,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.get(`/employee/${id}`);
+  return res;
+};
+
+export const ChangePassword = async ({
+  id,
+  oldPassword,
+  newPassword,
+}: {
+  id: string;
+  oldPassword: string;
+  newPassword: string;
+}): Promise<AxiosResponse> => {
+  const res = await baseAPI.put(`/change-password/${id}`, {
+    oldPassword,
+    newPassword,
+  });
+  return res;
+};
+
+export const EditProfile = async ({
+  id,
+  formData,
+}: {
+  id: string;
+  formData: FormData;
+}): Promise<AxiosResponse> => {
+  const res = await baseAPI.put<EditProfileResponse>(
+    `/employee/edit/profile/${id}`,
+    formData,
+  );
   return res;
 };

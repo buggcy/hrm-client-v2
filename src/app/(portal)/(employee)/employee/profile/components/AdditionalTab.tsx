@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 
 import { FileText } from 'lucide-react';
@@ -5,11 +6,18 @@ import { FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 
-const AdditionalTab = ({ user }) => {
+import { AdditionalDocuments } from '@/types/employee.types';
+
+interface AdditionalTabsProps {
+  additionalDocuments: AdditionalDocuments[];
+}
+const AdditionalTab: React.FC<AdditionalTabsProps> = ({
+  additionalDocuments,
+}) => {
   return (
     <>
       <div className="mb-2 mt-4 text-sm font-bold">Additional Document</div>
-      {user?.additionalDocuments?.length > 0 ? (
+      {additionalDocuments?.length > 0 ? (
         <div className="overflow-x-auto">
           <Table className="mb-0 min-w-full">
             <thead>
@@ -23,7 +31,7 @@ const AdditionalTab = ({ user }) => {
               </tr>
             </thead>
             <tbody>
-              {user?.additionalDocuments?.map((documentGroup, index) =>
+              {additionalDocuments?.map((documentGroup, index) =>
                 documentGroup?.Document?.map((documentUrl, docIndex) => (
                   <tr key={`${index}-${docIndex}`}>
                     <td className="p-2 align-middle">
@@ -34,7 +42,7 @@ const AdditionalTab = ({ user }) => {
                           <img
                             src={documentUrl}
                             alt="Document_Img"
-                            className="mr-3 size-12 rounded-full border border-gray-300 object-cover"
+                            className="mr-3 size-8 rounded-full border border-gray-300 object-cover"
                           />
                         )}
                         <div>
@@ -54,6 +62,7 @@ const AdditionalTab = ({ user }) => {
                     </td>
                     <td className="p-2 text-right align-middle">
                       <Button
+                        size={'sm'}
                         onClick={() =>
                           window.open(String(documentUrl), '_blank')
                         }

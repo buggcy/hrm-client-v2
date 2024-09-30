@@ -113,7 +113,7 @@ export const UserPopover = () => {
                 className="w-full justify-start p-2"
                 asChild
               >
-                <a href="/employee/profile">My Profile</a>
+                <Link href="/employee/profile">My Profile</Link>
               </Button>
             </li>
             <li>
