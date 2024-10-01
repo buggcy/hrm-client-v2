@@ -1,6 +1,5 @@
 import { CircleHelp } from 'lucide-react';
 
-import { toggleIntercom } from '@/components/Intercom';
 import { Button, ButtonProps } from '@/components/ui/button';
 
 import { cn } from '@/utils';
@@ -17,7 +16,6 @@ export const NavigationSupportBtn = ({
         'h-10 w-full justify-start overflow-hidden pl-2.5 text-muted-foreground transition-all duration-200 group-hover:w-52 sm:size-10',
         className,
       )}
-      onClick={toggleIntercom}
       {...props}
     >
       <div className="flex w-52 items-center gap-2">
@@ -42,7 +40,6 @@ export const SupportButton = ({
         'h-10 w-full justify-start overflow-hidden text-muted-foreground',
         className,
       )}
-      onClick={toggleIntercom}
       {...props}
     >
       {children || (
