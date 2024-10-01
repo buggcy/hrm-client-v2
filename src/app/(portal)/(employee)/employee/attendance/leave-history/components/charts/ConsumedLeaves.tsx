@@ -8,19 +8,19 @@ import { Leave } from './leave';
 import { leaves } from '@/types/leave-history.types';
 
 interface ConsumedLeavesProps {
-  data: leaves;
+  data?: leaves;
 }
 
 const ConsumedLeaves: FunctionComponent<ConsumedLeavesProps> = ({ data }) => {
   const {
-    totalTakenLeaves,
-    totalAllowedLeaves,
-    monthlyAllowedLeaved,
-    annualAllowedLeaves,
-    totalCasualLeaves,
-    totalSickLeaves,
-    totalAnnualLeaveCount,
-  } = data;
+    totalTakenLeaves = 0,
+    totalAllowedLeaves = 0,
+    monthlyAllowedLeaved = 0,
+    annualAllowedLeaves = 0,
+    totalCasualLeaves = 0,
+    totalSickLeaves = 0,
+    totalAnnualLeaveCount = 0,
+  } = data || {};
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -48,8 +48,8 @@ const ConsumedLeaves: FunctionComponent<ConsumedLeavesProps> = ({ data }) => {
           </div>
         </div>
         <Leave
-          totalTakenLeaves={totalTakenLeaves}
-          totalAllowedLeaves={totalAllowedLeaves}
+          totalTakenLeaves={totalTakenLeaves ? totalTakenLeaves : 0}
+          totalAllowedLeaves={totalAllowedLeaves ? totalAllowedLeaves : 0}
         />
       </CardHeader>
       <CardContent>

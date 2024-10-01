@@ -22,7 +22,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function Leave({ totalTakenLeaves, totalAllowedLeaves }) {
+export function Leave({ totalTakenLeaves = 0, totalAllowedLeaves = 0 }) {
   const chartData = [
     {
       browser: 'safari',
