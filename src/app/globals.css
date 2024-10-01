@@ -41,6 +41,12 @@
     /* mux video player variables */
     --seek-backward-button: none;
     --seek-forward-button: none;
+
+    --chart-1: 157 58% 41%;
+    --chart-2: 43 91% 61%;
+    --chart-3: 10 74% 60%;
+    --chart-4: 0 0% 50%;
+    --chart-5: 27 87% 67%;
   }
 
   .dark {
@@ -77,6 +83,12 @@
     --ring: 197 88.2% 56.9%;
 
     --radius: 0.5rem;
+
+    --chart-1: 157 58% 41%;
+    --chart-2: 43 91% 61%;
+    --chart-3: 10 74% 60%;
+    --chart-4: 0 0% 50%;
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -99,6 +111,14 @@
 .no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+.tableContainer {
+  background-color: #1e1f25;
+  border-radius: 20px;
+  height: 244px;
+  padding: 0 10px 10px 10px;
+  overflow: scroll;
 }
 
 @keyframes fadeIn {
