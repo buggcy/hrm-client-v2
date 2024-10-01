@@ -3,6 +3,16 @@ import { z } from 'zod';
 export const gender = ['male', 'female'] as const;
 export const approvalStatus = ['Approved', 'Pending', 'Rejected'] as const;
 export const maritalStatus = ['married', 'unmarried'] as const;
+export const bloodgroupStatus = [
+  'A+',
+  'A-',
+  'B+',
+  'B-',
+  'O+',
+  'O-',
+  'AB+',
+  'AB-',
+] as const;
 
 const paginationSchema = z.object({
   page: z.number(),
@@ -43,7 +53,7 @@ const employeeListSchema = z.object({
   isDeleted: z.boolean(),
   UniqueCodeExpire: z.string(),
   __v: z.number(),
-  Blood_Group: z.string().optional(),
+  Blood_Group: z.enum(bloodgroupStatus).optional(),
   DOB: z.string().optional(),
   Emergency_Phone: z.string().optional(),
   Family_Name: z.string().optional(),

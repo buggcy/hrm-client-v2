@@ -3,6 +3,8 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '@/libs';
 import { baseAPI } from '@/utils';
 
+import { VerifyCodeResponseType } from '@/types/auth.types';
+
 export class CustomError extends Error {
   constructor(message: string) {
     super(message);
@@ -59,6 +61,25 @@ export const sendDataForResetPassword = async ({
 
 export const getTypes = async (): Promise<AxiosResponse> => {
   const res = await baseAPI.get('/types');
+  return res;
+};
+
+export const verifyRegisterCode = async ({
+  code,
+}: {
+  code: string;
+}): Promise<AxiosResponse<VerifyCodeResponseType>> => {
+  const res = await baseAPI.post('/verify', { uniqueCode: code });
+  return res;
+};
+
+export const registerEmployee = async (
+  formData: FormData,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.post(
+    '/Signup/update-details-add-experience',
+    formData,
+  );
   return res;
 };
 

@@ -95,13 +95,14 @@ export function DialogDemo({
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on adding employee!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       reset();
       onCloseChange();

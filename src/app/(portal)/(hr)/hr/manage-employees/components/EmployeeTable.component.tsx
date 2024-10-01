@@ -48,7 +48,7 @@ const EmployeeTable: FunctionComponent = () => {
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on fetching search data!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

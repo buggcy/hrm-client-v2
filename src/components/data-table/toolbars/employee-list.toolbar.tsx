@@ -41,7 +41,7 @@ export function EmployeeListToolbar<TData>({
         title: 'Error',
         description:
           err?.response?.data?.error || 'Error on exporting employees!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {

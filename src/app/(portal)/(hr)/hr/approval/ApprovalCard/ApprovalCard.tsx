@@ -74,13 +74,14 @@ export const ApprovalCard = ({
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on employee approvel request!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       refetchApprovalList();
     },
@@ -113,7 +114,7 @@ export const ApprovalCard = ({
       toast({
         title: 'Validation Error',
         description: errorMessages.join(', '),
-        variant: 'destructive',
+        variant: 'error',
       });
     }
   };
@@ -138,7 +139,7 @@ export const ApprovalCard = ({
       toast({
         title: 'Validation Error',
         description: errorMessages.join(', '),
-        variant: 'destructive',
+        variant: 'error',
       });
     }
   };
@@ -164,7 +165,7 @@ export const ApprovalCard = ({
             </AvatarFallback>
           </Avatar>
           <div className="flex space-x-2">
-            <Badge variant="label" className="w-fit text-sm">
+            <Badge variant="label" className="w-fit truncate text-sm">
               {new Date(person.updatedAt).toDateString()}
             </Badge>
             <TooltipProvider>

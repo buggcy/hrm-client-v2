@@ -24,7 +24,7 @@ const SignIn: FC = () => {
       <div className="text-center text-sm">
         Don&apos;t have an account?{' '}
         <Button asChild variant="link" className="p-0">
-          <Link href="/auth/sign-up" className="underline">
+          <Link href="/auth/register" className="underline">
             Sign up
           </Link>
         </Button>

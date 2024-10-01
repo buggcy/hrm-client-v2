@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   Popover,
@@ -12,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@radix-ui/react-select';
-import { format } from 'date-fns';
+import { format, isAfter, subYears } from 'date-fns';
 import { CalendarIcon, ChevronDown } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -24,64 +25,19 @@ import { SelectContent } from '@/components/ui/select';
 
 import { cn } from '@/utils';
 
-export function Details() {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [companyEmail, setCompanyEmail] = useState('');
-  const [contact, setContact] = useState('');
-  const [basicSalary, setBasicSalary] = useState('');
-  const [joiningDate, setJoiningDate] = useState('');
-  const [designation, setDesignation] = useState('');
-  const [emergencyContact, setEmergencyContact] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState<Date>();
-  const [maritalStatus, setMaritalStatus] = useState('');
-  const [bloodGroup, setBloodGroup] = useState('');
-  const [gender, setGender] = useState('');
-  const [nationality, setNationality] = useState('');
+export function Details({ onNext }: { onNext: () => void }) {
+  const {
+    register,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useFormContext();
 
-  const [occupation, setOccupation] = useState('');
-  const [familyLastName, setFamilyLastName] = useState('');
-  const [familyEmail, setFamilyEmail] = useState('');
-  const [familyContact, setFamilyContact] = useState('');
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log({
-      firstName,
-      lastName,
-      email,
-      companyEmail,
-      contact,
-      basicSalary,
-      joiningDate,
-      designation,
-      emergencyContact,
-      dateOfBirth,
-      maritalStatus,
-      bloodGroup,
-      gender,
-      nationality,
-    });
-    // Clear form fields
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setCompanyEmail('');
-    setContact('');
-    setBasicSalary('');
-    setJoiningDate('');
-    setDesignation('');
-    setEmergencyContact('');
-    setDateOfBirth(undefined);
-    setMaritalStatus('');
-    setBloodGroup('');
-    setGender('');
-    setNationality('');
-    setFamilyLastName('');
-    setFamilyEmail('');
-    setFamilyContact('');
-  };
+  const cutoffDate = subYears(new Date(), 18);
+  const dateOfBirth = watch('additionalInfo.DOB');
+  const maritalStatus = watch('additionalInfo.Marital_Status');
+  const bloodGroup = watch('additionalInfo.Blood_Group');
+  const gender = watch('additionalInfo.Gender');
 
   return (
     <Card className="w-[1110px] border-none shadow-none">
@@ -89,76 +45,93 @@ export function Details() {
         <CardTitle>Add Employee</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-8 py-4">
+        <div className="grid gap-8 py-4">
           <div className="flex flex-wrap gap-8">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="first-name" className="mb-2 text-left">
+              <Label htmlFor="firstName" className="mb-2 text-left">
                 First Name
               </Label>
               <Input
-                id="first-name"
-                value={firstName}
-                onChange={e => setFirstName(e.target.value)}
+                id="firstName"
+                {...register('additionalInfo.firstName')}
                 placeholder="First Name"
-                required
+                disabled
               />
+              {errors.additionalInfo?.firstName && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.firstName.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="last-name" className="mb-2 text-left">
+              <Label htmlFor="lastName" className="mb-2 text-left">
                 Last Name
               </Label>
               <Input
-                id="last-name"
-                value={lastName}
-                onChange={e => setLastName(e.target.value)}
+                id="lastName"
+                {...register('additionalInfo.lastName')}
                 placeholder="Last Name"
-                required
+                disabled
               />
+              {errors.additionalInfo?.lastName && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.lastName.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="email" className="mb-2 text-left">
+              <Label htmlFor="emailAddress" className="mb-2 text-left">
                 Email Address
               </Label>
               <Input
-                id="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                id="emailAddress"
+                {...register('additionalInfo.emailAddress')}
                 placeholder="personal@mail.com"
-                required
-                type="email"
+                disabled
               />
+              {errors.additionalInfo?.emailAddress && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.emailAddress.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="contact" className="mb-2 text-left">
+              <Label htmlFor="contactNo" className="mb-2 text-left">
                 Phone Number
               </Label>
               <Input
-                id="contact"
-                value={contact}
-                onChange={e => setContact(e.target.value)}
+                id="contactNo"
+                {...register('additionalInfo.contactNo')}
                 placeholder="03XXXXXXXXX"
-                required
-                type="tel"
+                disabled
               />
+              {errors.additionalInfo?.contactNo && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.contactNo.message}
+                </span>
+              )}
             </div>
           </div>
 
           <div className="flex flex-wrap gap-8">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="contact" className="mb-2 text-left">
+              <Label htmlFor="Emergency_Phone" className="mb-2 text-left">
                 Emergency Phone
               </Label>
               <Input
-                id="contact"
-                value={contact}
-                onChange={e => setContact(e.target.value)}
+                id="Emergency_Phone"
+                {...register('additionalInfo.Emergency_Phone')}
                 placeholder="03XXXXXXXXX"
-                required
                 type="tel"
               />
+              {errors.additionalInfo?.Emergency_Phone && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Emergency_Phone.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="joining-date" className="mb-2 text-left">
+              <Label htmlFor="DOB" className="mb-2 text-left">
                 Date of Birth
               </Label>
               <Popover>
@@ -181,20 +154,43 @@ export function Details() {
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={dateOfBirth}
-                    onSelect={setDateOfBirth}
+                    selected={dateOfBirth || cutoffDate}
+                    defaultMonth={dateOfBirth}
+                    onSelect={date => {
+                      if (date && !isAfter(date, cutoffDate)) {
+                        setValue('additionalInfo.DOB', date);
+                      }
+                    }}
                     className="z-50 mt-6 rounded-md border bg-white dark:bg-gray-800"
+                    disabled={date => isAfter(date, cutoffDate)}
                   />
                 </PopoverContent>
               </Popover>
+              {errors.additionalInfo?.DOB && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.DOB.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="marital-status" className="mb-2 text-left">
                 Marital Status
               </Label>
-              <Select>
+              <Select
+                value={maritalStatus || 'Select marital status'}
+                onValueChange={value => {
+                  if (value) {
+                    setValue('additionalInfo.Marital_Status', value);
+                  }
+                }}
+              >
                 <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Marital Status" />
+                  <SelectValue>
+                    {maritalStatus
+                      ? maritalStatus.charAt(0).toUpperCase() +
+                        maritalStatus.slice(1)
+                      : 'Select marital status'}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup className="text-sm">
@@ -214,45 +210,88 @@ export function Details() {
                 </SelectContent>
                 <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
               </Select>
+              {errors.additionalInfo?.Marital_Status && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Marital_Status.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="blood-group" className="mb-2 text-left">
                 Blood Group
               </Label>
-              <Select>
+              <Select
+                value={bloodGroup || 'Select blood group'}
+                onValueChange={value => {
+                  if (value) {
+                    setValue('additionalInfo.Blood_Group', value);
+                  }
+                }}
+              >
                 <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Blood Group" />
+                  <SelectValue>
+                    {bloodGroup ? bloodGroup : 'Select blood group'}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup className="text-sm">
                     <SelectItem
-                      value="a+"
+                      value="A+"
                       className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
                     >
                       A+
                     </SelectItem>
                     <SelectItem
-                      value="b+"
+                      value="A-"
+                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
+                    >
+                      A-
+                    </SelectItem>
+                    <SelectItem
+                      value="B+"
                       className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
                     >
                       B+
                     </SelectItem>
                     <SelectItem
-                      value="o+"
+                      value="B-"
+                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
+                    >
+                      B-
+                    </SelectItem>
+                    <SelectItem
+                      value="O+"
                       className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
                     >
                       O+
                     </SelectItem>
                     <SelectItem
-                      value="ab+"
+                      value="O-"
+                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
+                    >
+                      O-
+                    </SelectItem>
+                    <SelectItem
+                      value="AB+"
                       className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
                     >
                       AB+
+                    </SelectItem>
+                    <SelectItem
+                      value="AB-"
+                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
+                    >
+                      AB-
                     </SelectItem>
                   </SelectGroup>
                 </SelectContent>
                 <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
               </Select>
+              {errors.additionalInfo?.Blood_Group && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Blood_Group.message}
+                </span>
+              )}
             </div>
           </div>
           <div className="flex gap-8">
@@ -260,28 +299,45 @@ export function Details() {
               <Label htmlFor="gender" className="mb-2 text-left">
                 Gender
               </Label>
-              <Select>
+              <Select
+                value={gender || 'Select Gender'}
+                onValueChange={value => {
+                  if (value) {
+                    setValue('additionalInfo.Gender', value);
+                  }
+                }}
+              >
                 <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Gender" />
+                  <SelectValue>
+                    {gender
+                      ? gender.charAt(0).toUpperCase() + gender.slice(1)
+                      : 'Select Gender'}
+                  </SelectValue>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem
+                        value="male"
+                        className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
+                      >
+                        Male
+                      </SelectItem>
+                      <SelectItem
+                        value="female"
+                        className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
+                      >
+                        Female
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem
-                      value="male"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Male
-                    </SelectItem>
-                    <SelectItem
-                      value="female"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Female
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
+
                 <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
               </Select>
+              {errors.additionalInfo?.Gender && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Gender.message}
+                </span>
+              )}
             </div>
 
             <div className="flex flex-1 flex-col">
@@ -289,102 +345,125 @@ export function Details() {
                 Nationality
               </Label>
               <Input
-                id="nationality"
-                value={nationality}
-                onChange={e => setNationality(e.target.value)}
+                id="Nationality"
+                {...register('additionalInfo.Nationality')}
                 placeholder="Nationality"
                 className="w-[241.5px]"
               />
+              {errors.additionalInfo?.Nationality && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Nationality.message}
+                </span>
+              )}
             </div>
           </div>
-        </form>
-      </CardContent>
-      <CardHeader>
-        <CardTitle>Family Details</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-8 py-4">
+          <CardHeader>
+            <CardTitle>Family Details</CardTitle>
+          </CardHeader>
           <div className="flex flex-wrap gap-8">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="family-last-name" className="mb-2 text-left">
+              <Label htmlFor="Family_Name" className="mb-2 text-left">
                 Name
               </Label>
               <Input
-                id="family-last-name"
-                value={familyLastName}
-                onChange={e => setFamilyLastName(e.target.value)}
-                placeholder="Last Name"
-                required
+                id="Family_Name"
+                {...register('additionalInfo.Family_Name')}
+                placeholder="Family Member Name"
               />
+              {errors.additionalInfo?.Family_Name && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Family_Name.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="family-email" className="mb-2 text-left">
+              <Label htmlFor="Family_Relation" className="mb-2 text-left">
                 Relation
               </Label>
               <Input
-                id="family-email"
-                value={familyEmail}
-                onChange={e => setFamilyEmail(e.target.value)}
-                placeholder="family@mail.com"
-                required
-                type="email"
+                id="Family_Relation"
+                {...register('additionalInfo.Family_Relation')}
+                placeholder="Relation"
               />
+              {errors.additionalInfo?.Family_Relation && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Family_Relation.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="family-contact" className="mb-2 text-left">
+              <Label htmlFor="Family_PhoneNo" className="mb-2 text-left">
                 Phone Number
               </Label>
               <Input
-                id="family-contact"
-                value={familyContact}
-                onChange={e => setFamilyContact(e.target.value)}
+                id="Family_PhoneNo"
+                {...register('additionalInfo.Family_PhoneNo')}
                 placeholder="03XXXXXXXXX"
-                required
-                type="tel"
               />
+              {errors.additionalInfo?.Family_PhoneNo && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Family_PhoneNo.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="occupation" className="mb-2 text-left">
+              <Label htmlFor="Family_Occupation" className="mb-2 text-left">
                 Occupation
               </Label>
               <Input
-                id="occupation"
-                value={occupation}
-                onChange={e => setOccupation(e.target.value)}
+                id="Family_Occupation"
+                {...register('additionalInfo.Family_Occupation')}
                 placeholder="Occupation"
-                className="w-[241.5px]" // Adjust width as necessary
+                className="w-[241.5px]"
               />
+              {errors.additionalInfo?.Family_Occupation && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Family_Occupation.message}
+                </span>
+              )}
             </div>
           </div>
-        </form>
-      </CardContent>
 
-      <CardHeader>
-        <CardTitle>Address</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-8 py-4">
+          <CardHeader>
+            <CardTitle>Address</CardTitle>
+          </CardHeader>
           <div className="flex flex-wrap gap-8">
-            {/* New Address Fields */}
             <div className="flex flex-1 flex-col">
               <Label htmlFor="street" className="mb-2 text-left">
                 Street
               </Label>
-              <Input id="street" placeholder="Street Address" required />
+              <Input
+                id="street"
+                {...register('additionalInfo.Address.street')}
+                placeholder="Street Address"
+              />
+              {errors.additionalInfo?.Address?.street && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Address.street.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="landmark" className="mb-2 text-left">
+              <Label htmlFor="landMark" className="mb-2 text-left">
                 Landmark
               </Label>
-              <Input id="landmark" placeholder="Landmark" />
+              <Input
+                id="landMark"
+                {...register('additionalInfo.Address.landMark')}
+                placeholder="Landmark"
+              />
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="marital-status" className="mb-2 text-left">
+              <Label htmlFor="country" className="mb-2 text-left">
                 Country
               </Label>
-              <Select>
+              {/* <Select
+                onValueChange={value =>
+                  setValue('additionalInfo.Address.country', value)
+                }
+              >
                 <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select  Country" />
+                  <SelectValue placeholder="Select Country" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup className="text-sm">
@@ -403,13 +482,27 @@ export function Details() {
                   </SelectGroup>
                 </SelectContent>
                 <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
-              </Select>
+              </Select> */}
+              <Input
+                id="country"
+                {...register('additionalInfo.Address.country')}
+                placeholder="Country"
+              />
+              {errors.additionalInfo?.Address?.country && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Address.country.message}
+                </span>
+              )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="marital-status" className="mb-2 text-left">
-                province
+              <Label htmlFor="province" className="mb-2 text-left">
+                Province
               </Label>
-              <Select>
+              {/* <Select
+                onValueChange={value =>
+                  setValue('additionalInfo.Address.province', value)
+                }
+              >
                 <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
                   <SelectValue placeholder="Select Province" />
                 </SelectTrigger>
@@ -442,7 +535,17 @@ export function Details() {
                   </SelectGroup>
                 </SelectContent>
                 <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
-              </Select>
+              </Select> */}
+              <Input
+                id="province"
+                {...register('additionalInfo.Address.province')}
+                placeholder="Province"
+              />
+              {errors.additionalInfo?.Address?.province && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Address.province.message}
+                </span>
+              )}
             </div>
           </div>
 
@@ -451,30 +554,47 @@ export function Details() {
               <Label htmlFor="city" className="mb-2 text-left">
                 City
               </Label>
-              <Input id="city" placeholder="City" required />
+              <Input
+                id="city"
+                {...register('additionalInfo.Address.city')}
+                placeholder="City"
+              />
+              {errors.additionalInfo?.Address?.city && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Address.city.message}
+                </span>
+              )}
             </div>
             <div className="flex w-[241.5px] flex-col">
-              <Label htmlFor="postal-code" className="mb-2 text-left">
+              <Label htmlFor="zip" className="mb-2 text-left">
                 Postal Code
               </Label>
               <Input
-                id="postal-code"
+                id="zip"
+                {...register('additionalInfo.Address.zip')}
                 placeholder="Postal Code"
-                required
-                type="text"
               />
+              {errors.additionalInfo?.Address?.zip && (
+                <span className="text-xs text-red-500">
+                  {errors.additionalInfo.Address.zip.message}
+                </span>
+              )}
             </div>
             <div className="flex w-[241.5px] flex-col">
-              <Label htmlFor="description" className="mb-2 text-left">
+              <Label htmlFor="full" className="mb-2 text-left">
                 Description
               </Label>
-              <Input id="description" placeholder="Description" required />
+              <Input
+                id="full"
+                {...register('additionalInfo.Address.full')}
+                placeholder="Description"
+              />
             </div>
           </div>
           <div className="flex justify-end pt-8">
-            <Button type="submit">Submit</Button>
+            <Button onClick={onNext}>Next</Button>
           </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
   );

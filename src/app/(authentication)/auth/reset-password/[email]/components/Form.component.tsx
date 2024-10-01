@@ -70,13 +70,14 @@ export function ResetPasswordForm({ email }: { email: string }) {
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on reseting password!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       router.push(`/auth/sign-in`);
     },
