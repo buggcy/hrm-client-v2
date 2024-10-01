@@ -26,13 +26,14 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
     <TooltipProvider>
       <>
         <div className="mb-2 mt-4 text-sm font-bold">CNIC Details</div>
-        <dl className="grid grid-cols-1 gap-2 md:grid-cols-2">
+
+        <dl className="grid grid-cols-1 gap-y-4 md:grid-cols-3">
           <dt className="font-medium">CNIC Number</dt>
-          <dd className="tracking-wide text-gray-700">
+          <dd className="col-span-2 tracking-widest text-gray-600">
             {kyc[0]?.cnic?.number || '-'}
           </dd>
           <dt className="font-medium">Front Of CNIC Image</dt>
-          <dd className="text-gray-700">
+          <dd className="col-span-2 text-gray-600">
             {kyc[0]?.cnic?.frontPicture ? (
               <span>
                 {typeof kyc[0]?.cnic?.frontPicture === 'string' &&
@@ -64,7 +65,7 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
             )}
           </dd>
           <dt className="font-medium">Back Of CNIC Image</dt>
-          <dd className="text-gray-700">
+          <dd className="col-span-2 text-gray-600">
             {kyc[0]?.cnic?.backPicture ? (
               <span>
                 {typeof kyc[0]?.cnic?.backPicture === 'string' &&
@@ -100,9 +101,9 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
         <div className="my-4 border-b border-gray-300" />
 
         <div className="mb-2 mt-4 text-sm font-bold">Bank Details</div>
-        <dl className="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <dl className="grid grid-cols-1 gap-y-4 md:grid-cols-3">
           <dt className="font-medium">Account Number</dt>
-          <dd className="tracking-wider text-gray-700">
+          <dd className="col-span-2 tracking-widest text-gray-600">
             {showFullAccountNumber
               ? kyc[0]?.bankDetails?.accountNumber || ''
               : maskedAccountNumber(String(kyc[0]?.bankDetails?.iban || ''))}
@@ -129,15 +130,15 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
             </Tooltip>
           </dd>
           <dt className="font-medium">Account Name</dt>
-          <dd className="text-gray-700">
+          <dd className="col-span-2 text-gray-600">
             {kyc[0]?.bankDetails?.accountHolderName || '-'}
           </dd>
           <dt className="font-medium">Bank Name</dt>
-          <dd className="text-gray-700">
+          <dd className="col-span-2 text-gray-600">
             {kyc[0]?.bankDetails?.branchName || '-'}
           </dd>
           <dt className="font-medium">IBAN Number</dt>
-          <dd className="capitalize tracking-wider text-gray-700">
+          <dd className="col-span-2 capitalize tracking-widest text-gray-600">
             {showFullIban
               ? kyc[0]?.bankDetails?.iban || ''
               : maskedAccountNumber(String(kyc[0]?.bankDetails?.iban || ''))}

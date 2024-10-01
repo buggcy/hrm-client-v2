@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 'use client';
 import React from 'react';
 import Link from 'next/link';
@@ -58,32 +59,37 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
           <p>{user?.profileDescription || 'No Summary available'}</p>
 
           <div className="my-4 border-b border-gray-300" />
-
-          <div className="mb-2 mt-4 text-base font-bold">Current Status</div>
-          <div className="mb-4 text-left">
-            <Badge>{user?.Current_Status || 'unknown'}</Badge>
+          <div className="my-2 flex justify-between">
+            <div className="text-base font-bold">Current Status</div>
+            <div className="text-left">
+              <Badge>{user?.Current_Status || 'unknown'}</Badge>
+            </div>
           </div>
           <div className="my-4 border-b border-gray-300" />
 
           <div className="mb-2 mt-4 text-base font-bold">Contact</div>
           <dl className="grid grid-cols-1 gap-y-2">
             <div className="flex justify-between">
-              <dt className="font-medium">Phone:</dt>
-              <dd className="text-gray-600">{user?.contactNo || '-'}</dd>
+              <dt className="font-medium">Phone</dt>
+              <dd className="leading-relaxed text-gray-600">
+                {user?.contactNo || '-'}
+              </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="font-medium">Email:</dt>
-              <dd className="text-gray-600">{user?.email || '-'}</dd>
+              <dt className="font-medium">Email</dt>
+              <dd className="leading-relaxed text-gray-600">
+                {user?.email || '-'}
+              </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="font-medium">Gender:</dt>
-              <dd className="capitalize text-gray-600">
+              <dt className="font-medium">Gender</dt>
+              <dd className="capitalize leading-relaxed text-gray-600">
                 {user?.Gender || '-'}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="font-medium">DOB:</dt>
-              <dd className="text-gray-600">
+              <dt className="font-medium">DOB</dt>
+              <dd className="leading-relaxed text-gray-600">
                 {user?.DOB
                   ? moment(user.DOB as string | number | Date).format(
                       'YYYY-MM-DD',
@@ -93,39 +99,50 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
             </div>
           </dl>
           <div className="my-4 border-b border-gray-300" />
+
           <div className="mb-2 mt-4 text-base font-bold">Address</div>
           <dl className="grid grid-cols-1 gap-y-2">
             <div className="flex justify-between">
-              <dt className="font-medium">Full Address:</dt>
-              <dd className="text-gray-600">{user?.Address?.full || '-'}</dd>
+              <dt className="font-medium">Country</dt>
+              <dd className="leading-relaxed text-gray-600">
+                {user?.Address?.country || '-'}
+              </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="font-medium">Country:</dt>
-              <dd className="text-gray-600">{user?.Address?.country || '-'}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="font-medium">Province:</dt>
-              <dd className="text-gray-600">
+              <dt className="font-medium">Province</dt>
+              <dd className="leading-relaxed text-gray-600">
                 {user?.Address?.province || '-'}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="font-medium">City:</dt>
-              <dd className="text-gray-600">{user?.Address?.city || '-'}</dd>
+              <dt className="font-medium">City</dt>
+              <dd className="leading-relaxed text-gray-600">
+                {user?.Address?.city || '-'}
+              </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="font-medium">Street:</dt>
-              <dd className="text-gray-600">{user?.Address?.street || '-'}</dd>
+              <dt className="font-medium">Street</dt>
+              <dd className="leading-relaxed text-gray-600">
+                {user?.Address?.street || '-'}
+              </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="font-medium">Land Mark:</dt>
-              <dd className="text-gray-600">
+              <dt className="font-medium">Land Mark</dt>
+              <dd className="leading-relaxed text-gray-600">
                 {user?.Address?.landMark || '-'}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="font-medium">Postal Code:</dt>
-              <dd className="text-gray-600">{user?.Address?.zip || '-'}</dd>
+              <dt className="font-medium">Postal Code</dt>
+              <dd className="leading-relaxed text-gray-600">
+                {user?.Address?.zip || '-'}
+              </dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="font-medium">Full Address</dt>
+              <dd className="w-30 truncate leading-relaxed text-gray-600">
+                {user?.Address?.full || '-'}
+              </dd>
             </div>
           </dl>
         </CardContent>

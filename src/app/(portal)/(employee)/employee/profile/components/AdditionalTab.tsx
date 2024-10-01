@@ -16,10 +16,9 @@ const AdditionalTab: React.FC<AdditionalTabsProps> = ({
 }) => {
   return (
     <>
-      <div className="mb-2 mt-4 text-sm font-bold">Additional Document</div>
       {additionalDocuments?.length > 0 ? (
         <div className="overflow-x-auto">
-          <Table className="mb-0 min-w-full">
+          <Table className="mb-0 mt-2 min-w-full">
             <thead>
               <tr>
                 <th className="border-t-0 p-2 text-left align-middle">

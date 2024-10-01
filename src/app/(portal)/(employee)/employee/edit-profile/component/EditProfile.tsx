@@ -21,8 +21,8 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
   return (
     <>
       {' '}
-      <div className="w-full px-4 pb-2">
-        <div className="flex items-center gap-2.5">
+      <div>
+        <div className="ml-3 flex items-center gap-2.5">
           <Avatar className="size-16">
             {user?.Avatar ? (
               <AvatarImage src={user?.Avatar || ''} alt="User Avatar" />
@@ -38,44 +38,45 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
             <span>{user?.Designation}</span>
           </div>
         </div>
-      </div>
-      <div className="flex flex-wrap">
-        <div
-          className="mb-2 w-full px-4 md:w-4/12 lg:w-4/12"
-          style={{ height: '100px' }}
-        >
-          {' '}
-          <Tabs
-            value={activeTab}
-            onValueChange={handleTabChange}
-            className="flex h-full flex-col"
+
+        <div className="mt-3 flex flex-wrap">
+          <div
+            className="mb-2 w-full px-4 md:w-4/12 lg:w-4/12"
+            style={{ height: '100px' }}
           >
-            <TabsList className="mb-2 flex size-full flex-col border-r p-0.5">
-              <TabsTrigger
-                className="mb-2 h-12 w-full text-left"
-                value="profile"
-              >
-                Profile Edit
-              </TabsTrigger>
-              <TabsTrigger className="h-12 w-full text-left" value="account">
-                Account Edit
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-        <div className="w-full px-4 md:w-8/12 lg:w-8/12">
-          <Card>
-            {activeTab === 'profile' && (
-              <CardContent>
-                <ProfileTab user={user} />
-              </CardContent>
-            )}
-            {activeTab === 'account' && (
-              <CardContent>
-                <AccountTab user={user} />
-              </CardContent>
-            )}
-          </Card>
+            {' '}
+            <Tabs
+              value={activeTab}
+              onValueChange={handleTabChange}
+              className="flex h-full flex-col"
+            >
+              <TabsList className="mb-2 flex size-full flex-col border-r p-0.5">
+                <TabsTrigger
+                  className="mb-2 h-12 w-full text-left"
+                  value="profile"
+                >
+                  Profile Edit
+                </TabsTrigger>
+                <TabsTrigger className="h-12 w-full text-left" value="account">
+                  Account Edit
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+          <div className="w-full px-4 md:w-8/12 lg:w-8/12">
+            <Card>
+              {activeTab === 'profile' && (
+                <CardContent>
+                  <ProfileTab user={user} />
+                </CardContent>
+              )}
+              {activeTab === 'account' && (
+                <CardContent>
+                  <AccountTab user={user} />
+                </CardContent>
+              )}
+            </Card>
+          </div>
         </div>
       </div>
     </>
