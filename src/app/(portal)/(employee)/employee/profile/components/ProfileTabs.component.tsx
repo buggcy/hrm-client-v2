@@ -16,8 +16,10 @@ import {
   Employee,
   Kyc,
 } from '@/types/employee.types';
+import { User } from '@/types/user.types';
 
 interface ProfileTabsProps {
+  currentUser: User;
   user: Employee;
   kyc: Kyc[];
   educationExperiences: EducationExperiences[];
@@ -25,13 +27,13 @@ interface ProfileTabsProps {
 }
 
 const ProfileTabs: React.FC<ProfileTabsProps> = ({
+  currentUser,
   user,
   kyc,
   educationExperiences,
   additionalDocuments,
 }) => {
   const [activeTab, setActiveTab] = useState<string>('Overview');
-
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   };
@@ -42,15 +44,19 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
           <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Overview">
             Overview
           </TabsTrigger>
-          <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Kyc">
-            Kyc
-          </TabsTrigger>
-          <TabsTrigger className="h-8 grow sm:w-2/5" value="Education">
-            Education & Experience
-          </TabsTrigger>
-          <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Additional">
-            Additional
-          </TabsTrigger>
+          {currentUser?.roleId === 2 ? (
+            <>
+              <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Kyc">
+                Kyc
+              </TabsTrigger>
+              <TabsTrigger className="h-8 grow sm:w-2/5" value="Education">
+                Education & Experience
+              </TabsTrigger>
+              <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Additional">
+                Additional
+              </TabsTrigger>
+            </>
+          ) : null}
         </TabsList>
       </Tabs>
 

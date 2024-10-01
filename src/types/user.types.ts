@@ -17,7 +17,7 @@ export interface User {
   familyRelation?: string;
   familyPhoneNo?: string;
   familyOccupation?: string;
-  currentStatus?: string;
+  Current_Status?: string;
   tahometerId?: string;
   profileDescription?: string;
   Ed_Exp_ID?: Array<string>;

@@ -11,24 +11,29 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 import { Employee } from '@/types/employee.types';
+import { User } from '@/types/user.types';
 
 interface ProfileDetailsProps {
   user: Employee;
+  currentUser: User;
 }
 
-const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
+const ProfileDetails: React.FC<ProfileDetailsProps> = ({
+  user,
+  currentUser,
+}) => {
   return (
     <>
       <Card>
         <CardContent>
           <div className="my-3 flex justify-center">
             <Avatar className="size-16">
-              {user?.Avatar ? (
-                <AvatarImage src={user?.Avatar} alt="User Avatar" />
+              {currentUser?.Avatar ? (
+                <AvatarImage src={currentUser?.Avatar} alt="User Avatar" />
               ) : (
                 <AvatarFallback>
-                  {user?.firstName?.charAt(0)}
-                  {user?.lastName?.charAt(0)}
+                  {currentUser?.firstName?.charAt(0)}
+                  {currentUser?.lastName?.charAt(0)}
                 </AvatarFallback>
               )}
             </Avatar>
@@ -56,13 +61,13 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
           <div className="my-4 border-b border-gray-300" />
 
           <div className="mb-2 mt-4 text-base font-bold">Summary</div>
-          <p>{user?.profileDescription || 'No Summary available'}</p>
+          <p>{currentUser?.profileDescription || 'No Summary available'}</p>
 
           <div className="my-4 border-b border-gray-300" />
           <div className="my-2 flex justify-between">
             <div className="text-base font-bold">Current Status</div>
             <div className="text-left">
-              <Badge>{user?.Current_Status || 'unknown'}</Badge>
+              <Badge>{currentUser?.Current_Status || 'unknown'}</Badge>
             </div>
           </div>
           <div className="my-4 border-b border-gray-300" />
@@ -72,13 +77,13 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
             <div className="flex justify-between">
               <dt className="font-medium">Phone</dt>
               <dd className="leading-relaxed text-gray-600">
-                {user?.contactNo || '-'}
+                {currentUser?.contactNo || '-'}
               </dd>
             </div>
             <div className="flex justify-between">
               <dt className="font-medium">Email</dt>
               <dd className="leading-relaxed text-gray-600">
-                {user?.email || '-'}
+                {currentUser?.email || '-'}
               </dd>
             </div>
             <div className="flex justify-between">

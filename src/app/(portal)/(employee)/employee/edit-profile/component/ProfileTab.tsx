@@ -16,6 +16,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useReadEmployeeRecordQuery } from '@/hooks/employee/useEmployeeList.hook';
 import { useTypesQuery } from '@/hooks/types.hook';
 import { EditProfile } from '@/services/hr/employee.service';
+import { useAuthStore } from '@/stores/auth';
 
 import { User } from '@/types/user.types';
 interface UserProps {
@@ -90,10 +91,15 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
 
     return error;
   };
-
+  const { setUser } = useAuthStore();
   const { mutate, isPending } = useMutation({
     mutationFn: EditProfile,
     onSuccess: response => {
+      const token = response?.token;
+      if (token) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        setUser(token);
+      }
       toast({
         title: 'Success',
         description: response?.message || 'Profile Edit Successfully!',

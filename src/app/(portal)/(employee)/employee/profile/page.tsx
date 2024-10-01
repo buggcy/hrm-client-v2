@@ -29,7 +29,7 @@ export default function MyProfile() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
-        <ProfileComponent user={data} />
+        {user && <ProfileComponent user={data} currentUser={user} />}
       </LayoutWrapper>
     </Layout>
   );

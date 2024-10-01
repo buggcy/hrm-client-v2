@@ -10,8 +10,10 @@ import {
   Employee,
   Kyc,
 } from '@/types/employee.types';
+import { User } from '@/types/user.types';
 
 interface ProfileComponentProps {
+  currentUser: User;
   user:
     | {
         output: {
@@ -24,7 +26,10 @@ interface ProfileComponentProps {
     | undefined;
 }
 
-const ProfileComponent: React.FC<ProfileComponentProps> = ({ user }) => {
+const ProfileComponent: React.FC<ProfileComponentProps> = ({
+  user,
+  currentUser,
+}) => {
   if (!user) return null;
 
   const { employee, kyc, educationExperiences, additionalDocuments } =
@@ -33,10 +38,11 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user }) => {
     <>
       <div className="flex flex-wrap">
         <div className="w-full p-4 md:w-4/12 lg:w-4/12">
-          <ProfileDetails user={employee} />
+          <ProfileDetails user={employee} currentUser={currentUser} />
         </div>
         <div className="w-full p-4 md:w-8/12 lg:w-8/12">
           <ProfileTabs
+            currentUser={currentUser}
             user={employee}
             kyc={kyc}
             educationExperiences={educationExperiences}
