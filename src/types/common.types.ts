@@ -22,3 +22,16 @@ export type UseQueryConfig<T = unknown> = {
   queryKey?: QueryKey;
   queryParams?: Record<string, unknown>;
 } & Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>;
+
+export interface ErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+export interface SuccessResponse {
+  message?: string;
+  email?: string;
+}

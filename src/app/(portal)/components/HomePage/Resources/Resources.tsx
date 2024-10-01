@@ -1,8 +1,7 @@
-import { Code2, Headphones } from 'lucide-react';
+import { Code2 } from 'lucide-react';
 
 import { API_DOCS_LINK, DISCORD_LINK } from '@/constants';
 
-import { toggleIntercom } from '../../../../../components/Intercom';
 import { Button } from '../../../../../components/ui/button';
 
 const DiscordLogo = () => (
@@ -45,16 +44,6 @@ const RESOURCES = [
     href: API_DOCS_LINK,
   },
   {
-    id: 'help',
-    icon: Headphones,
-    title: 'Help center',
-    description:
-      'Find answers to frequently asked questions or contact our support team.',
-    linkTitle: 'Get Help',
-    href: '',
-    onClick: toggleIntercom,
-  },
-  {
     id: 'discord',
     icon: DiscordLogo,
     title: 'Join community',
@@ -68,7 +57,7 @@ export const Resources = () => {
   return (
     <div className="grid grid-cols-1 gap-6 p-8 sm:grid-cols-3">
       {RESOURCES.map(
-        ({ id, title, description, icon: Icon, href, linkTitle, onClick }) => (
+        ({ id, title, description, icon: Icon, href, linkTitle }) => (
           <div
             key={id}
             className="flex flex-col items-center justify-center gap-4"
@@ -84,19 +73,10 @@ export const Resources = () => {
             <p className="max-w-[40ch] text-center text-sm text-muted-foreground">
               {description}
             </p>
-            <Button
-              variant="outline"
-              className="w-35.5"
-              asChild={!onClick}
-              onClick={onClick}
-            >
-              {onClick ? (
-                linkTitle
-              ) : (
-                <a href={href} target="_blank">
-                  {linkTitle}
-                </a>
-              )}
+            <Button variant="outline" className="w-35.5">
+              <a href={href} target="_blank">
+                {linkTitle}
+              </a>
             </Button>
           </div>
         ),
