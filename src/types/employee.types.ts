@@ -23,6 +23,44 @@ export interface Position {
   timestamp: string;
 }
 
+export interface EducationExperiences {
+  _id: string;
+  user_id: string;
+  type: string;
+  Start_Date: string;
+  End_Date: string;
+  documentType: string;
+  referenceNumber?: string;
+  Institute: string;
+  Position: string;
+  Document?: string;
+  isDeleted: boolean;
+}
+
+export interface AdditionalDocuments {
+  _id: string;
+  user_id: string;
+  Document?: string[];
+  isDeleted: boolean;
+}
+
+export interface Kyc {
+  _id: string;
+  userId: string;
+  cnic: {
+    number: string;
+    frontPicture?: string;
+    backPicture?: string;
+  };
+  bankDetails: {
+    branchName: string;
+    accountHolderName: string;
+    accountNumber: string;
+    iban: string;
+  };
+  createdAt: string;
+}
+
 export interface Employee {
   _id: string;
   firstName: string;
@@ -69,4 +107,13 @@ export interface Employee {
 export interface EmployeeApiResponse {
   pagination: Pagination;
   data: Employee[];
+}
+
+export interface GetEmployeeByIdResponse {
+  output: {
+    employee: Employee;
+    educationExperiences: EducationExperiences[];
+    additionalDocuments: AdditionalDocuments[];
+    kyc: Kyc[];
+  };
 }

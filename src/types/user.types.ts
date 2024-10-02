@@ -7,7 +7,7 @@ export interface User {
   roleId: number;
   isApproved: string;
   companyEmail: string;
-  designation?: string;
+  Designation?: string;
   gender?: string;
   bloodGroup?: string;
   dob?: string;
@@ -17,7 +17,7 @@ export interface User {
   familyRelation?: string;
   familyPhoneNo?: string;
   familyOccupation?: string;
-  currentStatus?: string;
+  Current_Status?: string;
   tahometerId?: string;
   profileDescription?: string;
   Ed_Exp_ID?: Array<string>;
