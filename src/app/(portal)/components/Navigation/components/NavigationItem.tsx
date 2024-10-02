@@ -27,7 +27,7 @@ export const NavigationItem: FC<{
     >
       <Link href={href}>
         <div className="flex w-52 items-center gap-2">
-          <Icon className="size-5" />
+          {Icon && <Icon className="size-5" />}
           <span className="transition-all duration-200 sm:translate-x-2 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100">
             {title}
           </span>
