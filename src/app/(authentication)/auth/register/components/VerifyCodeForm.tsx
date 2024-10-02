@@ -414,14 +414,14 @@ export function VerifyCodeForm(): JSX.Element {
   };
 
   return (
-    <Card className="min-w-[700px]">
+    <Card className="">
       <CardHeader>
         <Tabs
           defaultValue="verify-code"
           value={activeTab}
           className="flex w-full flex-col items-center"
         >
-          <TabsList className="flex w-[500px] justify-between">
+          <TabsList className="flex justify-between">
             <TabsTrigger value="verify-code">Verify Code</TabsTrigger>
             <TabsTrigger value="personal-details">Personal Details</TabsTrigger>
             <TabsTrigger value="kyc">KYC</TabsTrigger>
@@ -475,8 +475,8 @@ export function VerifyCodeForm(): JSX.Element {
               onSubmit={codeHandleSubmit(onSubmit)}
               className="mx-auto mb-8 grid w-9/12 items-center gap-4"
             >
-              <CardTitle className="pt-8 text-center">Verify Code</CardTitle>
-              <div className="flex flex-col space-y-1.5">
+              <CardTitle className="py-8 text-center">Verify Code</CardTitle>
+              <div className="mx-auto flex w-9/12 flex-col gap-2">
                 <Label htmlFor="code">Enter your code</Label>
                 <Input
                   id="code"
