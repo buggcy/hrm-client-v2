@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -18,6 +19,7 @@ import { useTypesQuery } from '@/hooks/types.hook';
 import { EditProfile } from '@/services/hr/employee.service';
 import { useAuthStore } from '@/stores/auth';
 
+import { MessageErrorResponse } from '@/types';
 import { User } from '@/types/user.types';
 interface UserProps {
   user: User;
@@ -106,7 +108,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       });
       reset();
     },
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
         description: err?.response?.data?.message || 'Error on Edit Profile!',

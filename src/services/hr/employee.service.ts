@@ -22,6 +22,7 @@ export interface EmployeeListParams {
 }
 
 export interface EditProfileResponse {
+  message: string;
   token: string;
 }
 export type SuccessMessageResponse = {
@@ -141,12 +142,15 @@ export const ChangePassword = async ({
   id: string;
   oldPassword: string;
   newPassword: string;
-}): Promise<AxiosResponse> => {
-  const res = await baseAPI.put(`/change-password/${id}`, {
-    oldPassword,
-    newPassword,
-  });
-  return res;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/change-password/${id}`,
+    {
+      oldPassword,
+      newPassword,
+    },
+  );
+  return { message };
 };
 
 export const EditProfile = async ({
@@ -155,10 +159,10 @@ export const EditProfile = async ({
 }: {
   id: string;
   formData: FormData;
-}): Promise<AxiosResponse> => {
-  const res = await baseAPI.put<EditProfileResponse>(
+}): Promise<EditProfileResponse> => {
+  const { message, token }: EditProfileResponse = await baseAPI.put(
     `/employee/edit/profile/${id}`,
     formData,
   );
-  return res;
+  return { message, token };
 };

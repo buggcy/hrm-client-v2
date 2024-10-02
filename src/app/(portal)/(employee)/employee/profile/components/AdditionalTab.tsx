@@ -31,6 +31,11 @@ interface AdditionalTabsProps {
 const AdditionalTab: React.FC<AdditionalTabsProps> = ({
   additionalDocuments,
 }) => {
+  const totalDocuments = additionalDocuments.reduce(
+    (total, documentGroup) => total + (documentGroup?.Document?.length || 0),
+    0,
+  );
+
   return (
     <>
       {additionalDocuments?.length > 0 ? (
@@ -108,9 +113,7 @@ const AdditionalTab: React.FC<AdditionalTabsProps> = ({
           <TableFooter>
             <TableRow>
               <TableCell colSpan={2}>Total Records</TableCell>
-              <TableCell className="text-right">
-                {additionalDocuments?.length}
-              </TableCell>
+              <TableCell className="text-right">{totalDocuments}</TableCell>
             </TableRow>
           </TableFooter>
         </Table>

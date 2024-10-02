@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { Eye, EyeOff } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -15,6 +16,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useTypesQuery } from '@/hooks/types.hook';
 import { ChangePassword } from '@/services/hr/employee.service';
 
+import { MessageErrorResponse } from '@/types';
 import { User } from '@/types/user.types';
 interface UserProps {
   user: User;
@@ -74,7 +76,7 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: ChangePassword,
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
         description:
