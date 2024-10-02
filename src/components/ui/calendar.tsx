@@ -54,6 +54,7 @@ function Calendar({
         ...classNames,
       }}
       components={{
+        //@ts-ignore
         IconLeft: ({ ...props }) => (
           <ChevronLeft className="size-4" {...props} />
         ),
