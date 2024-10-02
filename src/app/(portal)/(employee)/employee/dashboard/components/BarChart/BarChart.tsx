@@ -62,7 +62,7 @@ export function BChart() {
     <Card>
       <CardHeader className="flex justify-between">
         <div className="flex w-full items-center">
-          <CardDescription className="mr-4 grow text-lg font-bold text-black">
+          <CardDescription className="mr-4 grow text-lg font-bold text-black dark:text-white">
             {isMonthlyView
               ? `${currentMonthName} Attendance Record`
               : `${currentMonthName} Attendance Record`}

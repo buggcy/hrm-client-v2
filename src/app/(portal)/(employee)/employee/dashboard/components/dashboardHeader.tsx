@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { ClockIcon } from 'lucide-react';
+
 const DashboardHeader = () => {
   const [currentTime, setCurrentTime] = useState('');
   const [user, setUser] = useState({ firstName: '', lastName: '' });
@@ -36,25 +37,25 @@ const DashboardHeader = () => {
   }, []);
 
   return (
-    <div className="flex w-full flex-col items-center justify-between rounded-md p-4 shadow-sm md:flex-row">
+    <div className="flex w-full flex-col items-center justify-between rounded-md p-4 shadow-sm dark:bg-zinc-900 md:flex-row">
       <div className="md:flex md:flex-col">
-        <h5 className="text-xl font-bold text-gray-900 md:text-lg">
+        <h5 className="text-xl font-bold text-gray-900 dark:text-white md:text-lg">
           Good Afternoon, {user.firstName} {user.lastName}!
         </h5>
-        <p className="text-sm text-gray-500 md:text-base">
+        <p className="text-sm text-gray-500 dark:text-gray-300 md:text-base">
           Your Personal Workplace Hub
         </p>
       </div>
-      <div className="mt-4 flex w-full items-center justify-center rounded-lg bg-white p-2 shadow-sm md:ml-4 md:mt-0 md:w-auto">
+      <div className="mt-4 flex w-full items-center justify-center rounded-lg bg-white p-2 shadow-sm dark:bg-zinc-900 md:ml-4 md:mt-0 md:w-auto">
         <div className="flex flex-col items-center md:items-end">
-          <span className="text-sm font-normal text-gray-500 md:text-base">
+          <span className="text-sm font-normal text-gray-500 dark:text-gray-300 md:text-base">
             Current time
           </span>
-          <span className="text-lg font-bold text-black md:text-xl">
+          <span className="text-lg font-bold text-black dark:text-white md:text-xl">
             {currentTime}
           </span>
         </div>
-        <ClockIcon className="ml-28 text-gray-500" />
+        <ClockIcon className="ml-28 text-gray-500 dark:text-gray-300" />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+
 type ProgressCircleProps = {
   value: number;
   max: number;
@@ -34,6 +35,7 @@ const ProgressCircle = ({
               fill="transparent"
               stroke="#e5e7eb"
               strokeWidth="10"
+              className="dark:stroke-gray-700"
             />
             <circle
               cx="50"
@@ -53,13 +55,13 @@ const ProgressCircle = ({
               textAnchor="middle"
               dy=".3em"
               fontSize="1.5rem"
-              className="font-bold text-primary"
+              className="font-bold text-primary dark:text-white"
             >
               {value}
             </text>
           </svg>
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent className="dark:bg-gray-700 dark:text-white">
           {tooltipText || `Progress: ${value}/${max}`}
         </TooltipContent>
       </Tooltip>

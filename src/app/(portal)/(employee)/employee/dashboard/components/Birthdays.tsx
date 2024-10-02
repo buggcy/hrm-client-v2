@@ -12,9 +12,9 @@ const BirthdaysUpcoming = () => {
   const upcomingBirthdays = isLoading || error ? [] : birthdayData?.data || [];
 
   return (
-    <Card className="rounded-lg border p-6 shadow-sm">
+    <Card className="rounded-lg border p-6 shadow-sm dark:bg-zinc-900">
       <div className="mb-4 flex items-center justify-between">
-        <CardTitle className="text-lg font-semibold">
+        <CardTitle className="text-lg font-semibold dark:text-white">
           Upcoming Birthdays
         </CardTitle>
         <span className="items-center rounded-xl border-red-100 bg-primary px-3 py-1 text-center text-sm text-white">
@@ -41,10 +41,10 @@ const BirthdaysUpcoming = () => {
                 )}
               </Avatar>
               <div>
-                <p className="font-medium">
+                <p className="font-medium dark:text-white">
                   {employee.firstName} {employee.lastName}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-300">
                   {new Date(employee.DOB).toLocaleDateString('en-US', {
                     day: 'numeric',
                     month: 'long',
@@ -57,12 +57,14 @@ const BirthdaysUpcoming = () => {
       </div>
 
       {upcomingBirthdays.length === 0 && (
-        <p className="text-center text-gray-500">No upcoming birthdays</p>
+        <p className="text-center text-gray-500 dark:text-gray-300">
+          No upcoming birthdays
+        </p>
       )}
 
       <Button
         variant="secondary"
-        className="w-full bg-blue-100 text-primary hover:bg-none"
+        className="w-full bg-blue-100 text-primary hover:bg-none dark:bg-gray-600 dark:text-white"
       >
         Wish Him Birthday!
       </Button>
