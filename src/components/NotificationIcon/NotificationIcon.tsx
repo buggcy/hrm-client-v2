@@ -170,7 +170,7 @@ const Notification: React.FC = () => {
                 key={notification._id}
                 className="relative flex items-center p-2"
                 style={{
-                  width: '28vw',
+                  width: '29vw',
                   paddingBottom: '0.5rem',
                   paddingTop: '0.5rem',
                   opacity: loadingNotificationId === notification._id ? 0.5 : 1,

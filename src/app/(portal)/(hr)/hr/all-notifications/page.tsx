@@ -114,7 +114,7 @@ const AllNotifications: FunctionComponent = () => {
       </LayoutHeader>
 
       <LayoutWrapper className="flex gap-12">
-        <div className="mt-24 w-1/4">
+        <div className="mt-20 w-1/4">
           <Tabs
             value={filter}
             onValueChange={value =>
@@ -122,58 +122,47 @@ const AllNotifications: FunctionComponent = () => {
             }
           >
             <TabsList className="flex flex-col space-y-2 bg-transparent p-4">
-              <Card className="w-full p-0">
-                <CardContent className="p-0">
+              {['all', 'read', 'unread'].map(tabValue => (
+                <div
+                  key={tabValue}
+                  style={{ border: '1px solid lightgray', width: '100%' }}
+                  className="rounded-md"
+                >
                   <TabsTrigger
-                    style={{ width: '100%' }}
-                    value="all"
-                    className={`flex items-center justify-center rounded-lg py-3 ${
-                      filter === 'all'
-                        ? 'w-full bg-gray-300 text-black'
-                        : 'hover:w-full hover:bg-gray-200'
+                    value={tabValue}
+                    className={`flex w-full items-center justify-center rounded-md py-3 data-[state=active]:bg-gray-200 data-[state=active]:text-black ${
+                      filter === tabValue && 'bg-gray-300 text-black'
                     }`}
                   >
-                    <BadgeCheck className="mr-2 text-blue-500" size={17} />
-                    <span style={{ paddingRight: '1.7rem' }}>
-                      All ({storeNotifications.length})
+                    {tabValue === 'all' && (
+                      <BadgeCheck className="mr-2 text-blue-500" size={17} />
+                    )}
+                    {tabValue === 'read' && (
+                      <Eye className="mr-2 text-blue-500" size={17} />
+                    )}
+                    {tabValue === 'unread' && (
+                      <Mail className="mr-2 text-blue-500" size={17} />
+                    )}
+                    <span
+                      className={
+                        tabValue === 'all'
+                          ? 'pr-8'
+                          : tabValue === 'read'
+                            ? 'pr-6'
+                            : ''
+                      }
+                    >
+                      {tabValue.charAt(0).toUpperCase() + tabValue.slice(1)} (
+                      {tabValue === 'all'
+                        ? storeNotifications.length
+                        : tabValue === 'read'
+                          ? readCount
+                          : unreadCount}
+                      )
                     </span>
                   </TabsTrigger>
-                </CardContent>
-              </Card>
-              <Card className="w-full p-0">
-                <CardContent className="p-0">
-                  <TabsTrigger
-                    style={{ width: '100%' }}
-                    value="read"
-                    className={`flex items-center justify-center rounded-lg py-3 ${
-                      filter === 'read'
-                        ? 'w-full bg-gray-300 text-black'
-                        : 'hover:w-full hover:bg-gray-200'
-                    }`}
-                  >
-                    <Eye className="mr-2 text-blue-500" size={17} />
-                    <span style={{ paddingRight: '1.3rem' }}>
-                      Read ({readCount})
-                    </span>
-                  </TabsTrigger>
-                </CardContent>
-              </Card>
-              <Card className="w-full p-0">
-                <CardContent className="p-0">
-                  <TabsTrigger
-                    style={{ width: '100%' }}
-                    value="unread"
-                    className={`flex items-center justify-center rounded-lg py-3 ${
-                      filter === 'unread'
-                        ? 'w-full bg-gray-300 text-black'
-                        : 'hover:w-full hover:bg-gray-200'
-                    }`}
-                  >
-                    <Mail className="mr-2 text-blue-500" size={17} />
-                    <span>Unread ({unreadCount})</span>
-                  </TabsTrigger>
-                </CardContent>
-              </Card>
+                </div>
+              ))}
             </TabsList>
           </Tabs>
         </div>
@@ -219,7 +208,7 @@ const AllNotifications: FunctionComponent = () => {
                             className="mr-2 size-10 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="mr-2 flex size-12 items-center justify-center rounded-full bg-gray-300">
+                          <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-gray-300">
                             <User size={24} color="#555" />
                           </div>
                         )}
