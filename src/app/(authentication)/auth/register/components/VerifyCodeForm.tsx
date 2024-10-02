@@ -3,8 +3,14 @@ import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { subYears } from 'date-fns';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import {
+  FieldErrors,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -25,11 +31,10 @@ import { Details } from './Details';
 import { ExperienceTable } from './Experience';
 import { KYC } from './KYC';
 
+import { MessageErrorResponseWithError } from '@/types';
 import {
-  VerifyAdditionalDocumentsType,
+  VerifyCodeResponseType,
   VerifyEducationExperienceType,
-  VerifyEmployeeType,
-  VerifyKYCType,
 } from '@/types/auth.types';
 
 const verifyCodeSchema = z.object({
@@ -52,6 +57,8 @@ const imageFileSchema = z
   });
 
 const imageSchema = z.union([z.string().url(), imageFileSchema]);
+
+export type ImageUrlType = z.infer<typeof imageSchema>;
 
 const cutoffDate = subYears(new Date(), 18);
 
@@ -152,6 +159,10 @@ const mainFormSchema = z.object({
   }),
 });
 
+export type EducationalDocumentType = z.infer<
+  typeof mainFormSchema
+>['educationalDocument'];
+
 const defaultMainFormValues = {
   userId: '',
   additionalInfo: {
@@ -180,8 +191,8 @@ const defaultMainFormValues = {
     },
   },
   kyc: {
-    cnicFrontPicture: null,
-    cnicBackPicture: null,
+    cnicFrontPicture: '',
+    cnicBackPicture: '',
     bankBranchName: '',
     cnicNumber: '',
     bankAccountHolderName: '',
@@ -195,7 +206,8 @@ const defaultMainFormValues = {
   },
 };
 
-type MainFormData = z.infer<typeof mainFormSchema>;
+export type MainFormData = z.infer<typeof mainFormSchema>;
+export type MainFormErrorsType = FieldErrors<MainFormData>;
 
 export function VerifyCodeForm(): JSX.Element {
   const [activeTab, setActiveTab] = useState<string>('verify-code');
@@ -214,7 +226,7 @@ export function VerifyCodeForm(): JSX.Element {
 
   const { mutate, isPending } = useMutation({
     mutationFn: verifyRegisterCode,
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
         description: err?.response?.data?.error || 'Error on verifying code!',
@@ -224,7 +236,7 @@ export function VerifyCodeForm(): JSX.Element {
     onSuccess: response => {
       toast({
         title: 'Success',
-        description: response?.message || 'Code verification successfull!',
+        description: 'Code verification successfull!',
         variant: 'success',
       });
       setActiveTab('personal-details');
@@ -234,12 +246,7 @@ export function VerifyCodeForm(): JSX.Element {
         educationExperiences,
         additionalDocuments,
         kyc,
-      }: {
-        employee: VerifyEmployeeType;
-        educationExperiences: VerifyEducationExperienceType;
-        additionalDocuments: VerifyAdditionalDocumentsType;
-        kyc: VerifyKYCType;
-      } = response;
+      }: VerifyCodeResponseType = response;
 
       methods.reset({
         userId: employee?._id || '',
@@ -271,8 +278,8 @@ export function VerifyCodeForm(): JSX.Element {
           },
         },
         kyc: {
-          cnicFrontPicture: kyc?.cnic?.frontPicture || null,
-          cnicBackPicture: kyc?.cnic?.backPicture || null,
+          cnicFrontPicture: kyc?.cnic?.frontPicture || '',
+          cnicBackPicture: kyc?.cnic?.backPicture || '',
           bankBranchName: kyc?.bankDetails?.branchName || '',
           cnicNumber: kyc?.cnic?.number || '',
           bankAccountHolderName: kyc?.bankDetails?.accountHolderName || '',
@@ -289,7 +296,7 @@ export function VerifyCodeForm(): JSX.Element {
               End_Date: exp.End_Date ? new Date(exp.End_Date) : new Date(),
               type: exp.type || 'education',
               documentType: exp.documentType || '',
-              Document: exp?.Document || null,
+              Document: exp?.Document || '',
               Position: exp.Position || '',
               referenceNumber: exp.referenceNumber || '',
               user_id: exp.user_id || '',
@@ -311,11 +318,9 @@ export function VerifyCodeForm(): JSX.Element {
     mode: 'onChange',
   });
 
-  console.log(methods.getValues());
-
   const { mutate: mainMutate, isPending: mainIsPending } = useMutation({
     mutationFn: registerEmployee,
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
         description:
@@ -323,12 +328,10 @@ export function VerifyCodeForm(): JSX.Element {
         variant: 'error',
       });
     },
-    onSuccess: response => {
+    onSuccess: () => {
       toast({
         title: 'Success',
-        description:
-          response?.message ||
-          'Your request has been forwarded to HR for approval!',
+        description: 'Your request has been forwarded to HR for approval!',
         variant: 'success',
       });
       methods.reset();

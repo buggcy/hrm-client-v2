@@ -6,7 +6,7 @@ export type VerifyEmployeeType = {
   contactNo: string;
   uniqueCode: string;
   roleId: number;
-  isApproved: string;
+  isApproved: 'Approved' | 'Pending' | 'Rejected';
   companyEmail: string;
   Designation: string;
   position: Position[];
@@ -21,15 +21,24 @@ export type VerifyEmployeeType = {
   createdAt: string;
   updatedAt: string;
   __v: number;
-  Blood_Group: string;
+  Blood_Group?:
+    | 'A+'
+    | 'A-'
+    | 'B+'
+    | 'B-'
+    | 'O+'
+    | 'O-'
+    | 'AB+'
+    | 'AB-'
+    | undefined;
   DOB: string;
   Emergency_Phone: string;
   Family_Name: string;
   Family_Occupation: string;
   Family_PhoneNo: string;
   Family_Relation: string;
-  Gender: string;
-  Marital_Status: string;
+  Gender: 'male' | 'female';
+  Marital_Status: 'married' | 'unmarried';
   Nationality: string;
   rejectedReason: string;
 };
@@ -63,8 +72,8 @@ export type VerifyKYCType = {
 
 export type CNICDetails = {
   number: string;
-  frontPicture: string;
-  backPicture: string;
+  frontPicture: string | undefined | File;
+  backPicture: string | undefined | File;
 };
 
 export type BankDetails = {
@@ -77,7 +86,7 @@ export type BankDetails = {
 export type VerifyEducationExperienceType = {
   _id: string;
   user_id: string;
-  type: string;
+  type: 'education' | 'experience' | undefined;
   Start_Date: string;
   End_Date: string;
   Document: string;

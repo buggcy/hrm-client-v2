@@ -6,12 +6,14 @@ import { useFormContext } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 
+import { MainFormData } from './VerifyCodeForm';
+
 const Dropzone: React.FC = () => {
   const {
     setValue,
     watch,
     formState: { errors },
-  } = useFormContext();
+  } = useFormContext<MainFormData>();
 
   const addDoc = watch('educationalDocument.Additional_Documents');
   const fileErrors = errors.educationalDocument?.Additional_Documents;
@@ -37,7 +39,7 @@ const Dropzone: React.FC = () => {
 
     setValue(
       'educationalDocument.Additional_Documents',
-      addDoc.filter((_, i) => i !== index),
+      addDoc.filter((_: string | File, i: number) => i !== index),
     );
   };
 

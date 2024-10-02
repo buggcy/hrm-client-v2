@@ -75,9 +75,16 @@ export const verifyRegisterCode = async ({
   code,
 }: {
   code: string;
-}): Promise<AxiosResponse<VerifyCodeResponseType>> => {
-  const res = await baseAPI.post('/verify', { uniqueCode: code });
-  return res;
+}): Promise<VerifyCodeResponseType> => {
+  const {
+    employee,
+    educationExperiences,
+    additionalDocuments,
+    kyc,
+  }: VerifyCodeResponseType = await baseAPI.post('/verify', {
+    uniqueCode: code,
+  });
+  return { employee, educationExperiences, additionalDocuments, kyc };
 };
 
 export const registerEmployee = async (

@@ -37,7 +37,7 @@ import {
 
 import { EduEpxDialog } from './EduExpDialg';
 import Dropzone from './uploadFile';
-import { EducationExperienceType } from './VerifyCodeForm';
+import { EducationExperienceType, MainFormData } from './VerifyCodeForm';
 
 export function ExperienceTable({
   onBack,
@@ -55,7 +55,7 @@ export function ExperienceTable({
     formState: { errors },
     setValue,
     watch,
-  } = useFormContext();
+  } = useFormContext<MainFormData>();
 
   const educationExperiences = watch(
     'educationalDocument.educationExperiences',

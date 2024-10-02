@@ -25,13 +25,15 @@ import { SelectContent } from '@/components/ui/select';
 
 import { cn } from '@/utils';
 
+import { MainFormData } from './VerifyCodeForm';
+
 export function Details({ onNext }: { onNext: () => void }) {
   const {
     register,
     formState: { errors },
     watch,
     setValue,
-  } = useFormContext();
+  } = useFormContext<MainFormData>();
 
   const cutoffDate = subYears(new Date(), 18);
   const dateOfBirth = watch('additionalInfo.DOB');
@@ -178,8 +180,8 @@ export function Details({ onNext }: { onNext: () => void }) {
               </Label>
               <Select
                 value={maritalStatus || 'Select marital status'}
-                onValueChange={value => {
-                  if (value) {
+                onValueChange={(value: 'married' | 'unmarried') => {
+                  if (value === 'married' || value === 'unmarried') {
                     setValue('additionalInfo.Marital_Status', value);
                   }
                 }}
@@ -222,7 +224,17 @@ export function Details({ onNext }: { onNext: () => void }) {
               </Label>
               <Select
                 value={bloodGroup || 'Select blood group'}
-                onValueChange={value => {
+                onValueChange={(
+                  value:
+                    | 'A+'
+                    | 'A-'
+                    | 'B+'
+                    | 'B-'
+                    | 'O+'
+                    | 'O-'
+                    | 'AB+'
+                    | 'AB-',
+                ) => {
                   if (value) {
                     setValue('additionalInfo.Blood_Group', value);
                   }
@@ -301,7 +313,7 @@ export function Details({ onNext }: { onNext: () => void }) {
               </Label>
               <Select
                 value={gender || 'Select Gender'}
-                onValueChange={value => {
+                onValueChange={(value: 'male' | 'female') => {
                   if (value) {
                     setValue('additionalInfo.Gender', value);
                   }

@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { MainFormData } from './VerifyCodeForm';
+
 type CNICImage = File | string | null;
 
 export function KYC({
@@ -22,7 +24,7 @@ export function KYC({
     formState: { errors },
     setValue,
     watch,
-  } = useFormContext();
+  } = useFormContext<MainFormData>();
 
   const cnicFrontPicture: CNICImage = watch('kyc.cnicFrontPicture');
   const cnicBackPicture: CNICImage = watch('kyc.cnicBackPicture');
@@ -145,9 +147,10 @@ export function KYC({
               </div>
               <Input
                 id="cnicFrontPicture"
-                onChange={e =>
-                  setValue('kyc.cnicFrontPicture', e.target.files[0])
-                }
+                onChange={e => {
+                  const file = e.target?.files?.[0] || '';
+                  setValue('kyc.cnicFrontPicture', file);
+                }}
                 accept="image/jpeg, image/png, image/jpg"
                 type="file"
               />
@@ -175,9 +178,10 @@ export function KYC({
               </div>
               <Input
                 id="cnicBackPicture"
-                onChange={e =>
-                  setValue('kyc.cnicBackPicture', e?.target?.files[0])
-                }
+                onChange={e => {
+                  const file = e.target?.files?.[0] || '';
+                  setValue('kyc.cnicBackPicture', file);
+                }}
                 accept="image/jpeg, image/png, image/jpg"
                 type="file"
               />

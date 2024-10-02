@@ -120,8 +120,8 @@ export function EduEpxDialog({
             <Select
               name="type"
               value={type || 'Select Type'}
-              onValueChange={value => {
-                if (value) {
+              onValueChange={(value: 'education' | 'experience') => {
+                if (value === 'education' || value === 'experience') {
                   setValue('type', value);
                 }
               }}
@@ -181,7 +181,9 @@ export function EduEpxDialog({
                   mode="single"
                   selected={start}
                   onSelect={date => {
-                    setValue('Start_Date', date);
+                    if (date) {
+                      setValue('Start_Date', date);
+                    }
                   }}
                   className="z-50 mt-6 rounded-md border bg-white dark:bg-gray-800"
                 />
@@ -216,7 +218,9 @@ export function EduEpxDialog({
                   mode="single"
                   selected={end}
                   onSelect={date => {
-                    setValue('End_Date', date);
+                    if (date) {
+                      setValue('End_Date', date);
+                    }
                   }}
                   className="z-50 mt-6 rounded-md border bg-white dark:bg-gray-800"
                 />
@@ -352,7 +356,10 @@ export function EduEpxDialog({
             </div>
             <Input
               id="Document"
-              onChange={e => setValue('Document', e?.target?.files[0])}
+              onChange={e => {
+                const file = e.target?.files?.[0] || '';
+                setValue('Document', file);
+              }}
               accept="image/jpeg, image/png, image/jpg, application/pdf"
               type="file"
             />
