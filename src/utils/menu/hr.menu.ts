@@ -13,11 +13,6 @@ export const hrMenu: MenuItem[] = [
     icon: UserCog2,
     children: [
       {
-        title: 'Employee List',
-        icon: UserCog2,
-        href: '/hr/employee/list',
-      },
-      {
         title: 'Manage Employees',
         icon: BadgeCheck,
         href: '/hr/manage-employees',

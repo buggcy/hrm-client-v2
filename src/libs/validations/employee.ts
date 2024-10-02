@@ -11,16 +11,18 @@ const paginationSchema = z.object({
   totalPages: z.number(),
 });
 
-const addressSchema = z.object({
-  city: z.string().optional(),
-  street: z.string().optional(),
-  province: z.string().optional(),
-  landMark: z.string().optional(),
-  country: z.string().optional(),
-  zip: z.string().optional(),
-  full: z.string().optional(),
-  _id: z.string(),
-});
+const addressSchema = z
+  .object({
+    city: z.string().optional(),
+    street: z.string().optional(),
+    province: z.string().optional(),
+    landMark: z.string().optional(),
+    country: z.string().optional(),
+    zip: z.string().optional(),
+    full: z.string().optional(),
+    _id: z.string(),
+  })
+  .optional();
 
 const positionSchema = z.object({
   position: z.string(),
@@ -35,14 +37,13 @@ const employeeListSchema = z.object({
   lastName: z.string(),
   email: z.string().email(),
   contactNo: z.string(),
-  uniqueCode: z.string(),
+  uniqueCode: z.string().optional(),
   roleId: z.number(),
   companyEmail: z.string().email(),
-  Ed_Exp_ID: z.array(z.string()),
-  dep_ID: z.array(z.string()),
-  isDeleted: z.boolean(),
-  UniqueCodeExpire: z.string(),
-  __v: z.number(),
+  Ed_Exp_ID: z.array(z.string()).optional(),
+  dep_ID: z.array(z.string()).optional(),
+  isDeleted: z.boolean().optional(),
+  UniqueCodeExpire: z.string().optional(),
   Blood_Group: z.string().optional(),
   DOB: z.string().optional(),
   Emergency_Phone: z.string().optional(),
@@ -54,22 +55,23 @@ const employeeListSchema = z.object({
   Marital_Status: z.enum(maritalStatus).optional(),
   Nationality: z.string().optional(),
   isApproved: z.enum(approvalStatus),
-  password: z.string().optional(), // Changed to optional
-  rejectedReason: z.string().optional(), // Changed to optional
+  password: z.string().optional(),
+  rejectedReason: z.string().optional(),
   Avatar: z.string().nullable().optional(),
   Current_Status: z.string().optional(),
   profileDescription: z.string().optional(),
   Tahometer_ID: z.string().optional(),
   basicSalary: z.number(),
-  activeStatus: z.boolean(),
+  activeStatus: z.boolean().optional(),
   updatedAt: z.string(),
-  position: z.array(positionSchema),
+  position: z.array(positionSchema).optional(),
   Joining_Date: z.string().nullable().optional(),
   otp: z.string().optional(),
   otpExpires: z.string().optional(),
   Address: addressSchema,
   Designation: z.string().optional(),
   createdAt: z.string().optional(),
+  __v: z.number().optional(),
 });
 
 const employeeApiResponseSchema = z.object({
@@ -79,6 +81,7 @@ const employeeApiResponseSchema = z.object({
 
 export type EmployeeApiResponse = z.infer<typeof employeeApiResponseSchema>;
 export type EmployeeListType = z.infer<typeof employeeListSchema>;
+export type EmployeeListArrayType = z.infer<typeof employeeListSchema>[] | [];
 
 export {
   employeeApiResponseSchema,

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
 
 import { Bell } from 'lucide-react';
@@ -12,12 +12,16 @@ import {
 } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 
+import { useApprovalEmployeeQuery } from '@/hooks/employee/useApprovalEmployee.hook';
+
 import { BChart } from './BarChart/BarChart';
 import { DialogDemo } from './components/EmployeeModal';
+import EmployeeTable from './components/EmployeeTable.component';
 import { PChart } from './PieChart/PieChart';
 
 export default function ManageEmployeesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { data } = useApprovalEmployeeQuery();
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -37,7 +41,7 @@ export default function ManageEmployeesPage() {
             <Link href="/hr/approval" className="flex items-center">
               View Approval Requests
               <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
-                3
+                {data?.length || 0}
               </span>
             </Link>
           </Button>
@@ -47,12 +51,19 @@ export default function ManageEmployeesPage() {
           </Button>
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper wrapperClassName="flex flex-1" className="max-w-full">
-        <div className="grid h-full grid-cols-1 gap-6 lg:grid-cols-2">
+      <LayoutWrapper wrapperClassName="flex flex-1">
+        <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <BChart /> <PChart />
         </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <EmployeeTable />
+        </Suspense>
       </LayoutWrapper>
-      <DialogDemo open={dialogOpen} onOpenChange={handleDialogClose} />
+      <DialogDemo
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        onCloseChange={handleDialogClose}
+      />
     </Layout>
   );
 }

@@ -122,8 +122,8 @@ export const columns: ColumnDef<TaskType>[] = [
       <DataTableColumnHeader column={column} title="Due Date" />
     ),
     cell: ({ row }) => {
-      const field = row.getValue('due_date');
-      return <div>{field.toDateString()}</div>;
+      const field = new Date(row.getValue('due_date'));
+      return <div>{field?.toDateString()}</div>;
     },
   },
   {

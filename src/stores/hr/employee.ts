@@ -1,17 +1,12 @@
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 
-import { User } from '@/types/user.types';
-
 export type EmployeeState = {
-  loading: boolean;
-  user: User | null;
-  token: string | null;
+  refetchEmployeeList: boolean;
 };
 
 export type EmployeeActions = {
-  setLoadingTrue: () => void;
-  setLoadingFalse: () => void;
+  setRefetchEmployeeList: (res: boolean) => void;
 };
 
 export type EmployeeStoreType = EmployeeState & EmployeeActions;
@@ -20,13 +15,11 @@ export const useEmployeeStore = create<EmployeeStoreType>()(
   devtools(
     persist(
       set => ({
-        loading: false,
-        user: null,
-        token: null,
+        refetchEmployeeList: false,
 
         // Actions
-        setLoadingTrue: () => set({ loading: true }),
-        setLoadingFalse: () => set({ loading: false }),
+        setRefetchEmployeeList: (res: boolean) =>
+          set({ refetchEmployeeList: res }),
       }),
       {
         name: 'employee-storage',

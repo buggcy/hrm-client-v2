@@ -1,10 +1,13 @@
 'use client';
 import { useMemo } from 'react';
 
-// import { DeveloperPlanIds } from '@/app/(portal)/(billing)/billing/types';
 import { FREE } from '@/constants/replicas';
 
 import { useUserQuery } from '../useUser';
+
+const DeveloperPlanIds = {
+  FREE: 'free_plan_id',
+};
 
 export const useReplicaQueryParams = () => {
   const { data: user } = useUserQuery();

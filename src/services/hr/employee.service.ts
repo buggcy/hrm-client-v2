@@ -1,7 +1,13 @@
-import { employeeApiResponseSchema } from '@/libs/validations/employee';
-import { baseAPI, schemaParse } from '@/utils';
+import { AxiosResponse } from 'axios';
 
-import { EmployeeApiResponse } from '@/types/employee.types';
+import { ApprovalEmployeeType } from '@/app/(portal)/(hr)/hr/approval/ApprovalCard/ApprovalCard';
+import { AddEmployeeFormData } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
+import {
+  EmployeeApiResponse,
+  employeeApiResponseSchema,
+  EmployeeListType,
+} from '@/libs/validations/employee';
+import { baseAPI, schemaParse } from '@/utils';
 
 export interface EmployeeListParams {
   page?: number;
@@ -14,6 +20,10 @@ export interface EmployeeListParams {
   designation?: string;
   companyEmail?: string;
 }
+
+export type SuccessMessageResponse = {
+  message: string;
+};
 
 export const getEmployeeList = async (
   params: EmployeeListParams = {},
@@ -51,4 +61,64 @@ export const getEmployeeList = async (
     console.error('Error fetching employee list:', error);
     throw error;
   }
+};
+
+export const searchEmployeeList = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<EmployeeApiResponse> => {
+  const { data, pagination }: EmployeeApiResponse = await baseAPI.get(
+    `/user/search?page=${page}&limit=${limit}&query=${query}`,
+  );
+
+  return { data, pagination };
+};
+
+export const approvalEmployeeList = async (): Promise<
+  AxiosResponse<EmployeeListType[]>
+> => {
+  const res = await baseAPI.get(`/user/unapproved`);
+  return res;
+};
+
+export const addEmployeeData = async (
+  data: AddEmployeeFormData,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/employee`,
+    data,
+  );
+  return { message };
+};
+
+export const exportEmployeeCSVData = async (
+  ids: Array<string>,
+): Promise<string> => {
+  const res = await baseAPI.post(`/user/export-csv`, { ids });
+  return res.data;
+};
+
+export const deleteEmployeeRecord = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/employee/${id}`,
+  );
+
+  return { message };
+};
+
+export const employeeApprovalRequest = async (
+  data: ApprovalEmployeeType,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/approve-employee`,
+    data,
+  );
+  return { message };
 };

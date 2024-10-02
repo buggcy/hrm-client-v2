@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,9 @@ export default function ForgetPasswordPage() {
           Enter your email to reset a password
         </p>
       </div>
-      <ResetPasswordForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ResetPasswordForm />
+      </Suspense>
       <div className="text-center text-sm">
         Know your password?{' '}
         <Button asChild variant="link" className="p-0">
