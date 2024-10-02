@@ -38,13 +38,14 @@ export function ResetPasswordForm() {
       toast({
         title: 'Error',
         description: 'Error on sending mail!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: () => {
       toast({
         title: 'Success',
         description: 'Password reset email sent successfully!',
+        variant: 'success',
       });
       router.push(`/auth/reset-password/${form.getValues('email')}`);
     },

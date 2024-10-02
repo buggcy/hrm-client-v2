@@ -69,13 +69,14 @@ export function ResetPasswordForm({ email }: { email: string }) {
       toast({
         title: 'Error',
         description: 'Error on reseting password!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: () => {
       toast({
         title: 'Success',
         description: 'Password reset successfully!',
+        variant: 'success',
       });
       router.push(`/auth/sign-in`);
     },

@@ -3,12 +3,11 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '@/libs';
 import { baseAPI } from '@/utils';
 
+import { VerifyCodeResponseType } from '@/types/auth.types';
+
 type AuthResponse = {
   token: string;
 };
-
-import { VerifyCodeResponseType } from '@/types/auth.types';
-
 export class CustomError extends Error {
   constructor(message: string) {
     super(message);
