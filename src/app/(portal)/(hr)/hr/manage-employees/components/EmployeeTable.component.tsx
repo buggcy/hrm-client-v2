@@ -3,6 +3,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 import { employeeListColumns } from '@/components/data-table/columns/employee-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
@@ -11,9 +12,11 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useEmployeeListQuery } from '@/hooks/employee/useEmployeeList.hook';
-import { EmployeeListType } from '@/libs/validations/employee';
+import { EmployeeListArrayType } from '@/libs/validations/employee';
 import { searchEmployeeList } from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
+
+import { MessageErrorResponse } from '@/types';
 
 const EmployeeTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
@@ -43,11 +46,13 @@ const EmployeeTable: FunctionComponent = () => {
     data: searchEmployeeData,
   } = useMutation({
     mutationFn: searchEmployeeList,
-    onError: err => {
+    onError: (err: unknown) => {
+      const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({
         title: 'Error',
         description:
-          err?.response?.data?.message || 'Error on fetching search data!',
+          axiosError?.response?.data?.message ||
+          'Error on fetching search data!',
         variant: 'destructive',
       });
     },
@@ -68,20 +73,20 @@ const EmployeeTable: FunctionComponent = () => {
       mutate({ query: debouncedSearchTerm, page, limit });
     } else {
       void (async () => {
-        await refetch({ page, limit });
+        await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
 
   useEffect(() => {
     if (refetchEmployeeList) {
       void (async () => {
-        await refetch({ page, limit });
+        await refetch();
       })();
 
       setRefetchEmployeeList(false);
     }
-  }, [refetchEmployeeList, page, limit, setRefetchEmployeeList, refetch]);
+  }, [refetchEmployeeList, setRefetchEmployeeList, refetch]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -101,13 +106,13 @@ const EmployeeTable: FunctionComponent = () => {
       </div>
     );
 
-  const tableData: EmployeeListType = debouncedSearchTerm
-    ? searchEmployeeData?.data
-    : employeeList?.data;
+  const tableData: EmployeeListArrayType = debouncedSearchTerm
+    ? searchEmployeeData?.data || []
+    : employeeList?.data || [];
 
   const tablePageCount: number = debouncedSearchTerm
-    ? searchEmployeeData?.pagination.totalPages
-    : employeeList?.pagination.totalPages;
+    ? searchEmployeeData?.pagination?.totalPages || 0
+    : employeeList?.pagination?.totalPages || 0;
 
   return (
     <>

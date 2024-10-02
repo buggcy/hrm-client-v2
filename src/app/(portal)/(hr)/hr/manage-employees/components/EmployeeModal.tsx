@@ -4,6 +4,7 @@ import React from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { CalendarIcon, ChevronDown } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
@@ -39,6 +40,8 @@ import { useTypesQuery } from '@/hooks/types.hook';
 import { addEmployeeData } from '@/services/hr/employee.service';
 import { cn } from '@/utils';
 
+import { MessageErrorResponse } from '@/types';
+
 // Define the Zod schema
 const addEmployeeSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -58,8 +61,8 @@ export type AddEmployeeFormData = z.infer<typeof addEmployeeSchema>;
 
 interface DialogDemoProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCloseChange: (open: boolean) => void;
+  onOpenChange: () => void;
+  onCloseChange: () => void;
 }
 
 export function DialogDemo({
@@ -90,12 +93,12 @@ export function DialogDemo({
 
   const { mutate, isPending } = useMutation({
     mutationFn: addEmployeeData,
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on adding employee!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {

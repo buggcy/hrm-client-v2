@@ -10,8 +10,20 @@ import { Label } from '@/components/ui/label';
 import { useReplicaQuery } from '@/hooks';
 import { createReplicaThumbnailUrl } from '@/utils';
 
-// import { DEFAULT_REPLICA } from '../videos/create/constants';
-import { IReplica } from '@/types';
+import { IReplica, ReplicaStatus, ReplicaType } from '@/types';
+
+const DEFAULT_REPLICA: IReplica = {
+  replica_id: 'default-replica-id',
+  replica_name: 'Default Replica',
+  status: ReplicaStatus.COMPLETED,
+  training_progress: '0%',
+  thumbnail_video_url: null,
+  error_message: null,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+  model_name: null,
+  replica_type: ReplicaType.STUDIO,
+};
 
 export const ReplicaSelect = ({
   value,
