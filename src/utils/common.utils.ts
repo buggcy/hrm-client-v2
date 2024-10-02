@@ -58,3 +58,31 @@ export function getQueryParamsString(
     )
     .join('&');
 }
+
+export const getCurrentMonthAndYear = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+};
+
+export function getCurrentMonthName(): string {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  const currentDate = new Date();
+  const currentMonthIndex = currentDate.getMonth(); // getMonth() returns 0-11
+  return monthNames[currentMonthIndex];
+}
