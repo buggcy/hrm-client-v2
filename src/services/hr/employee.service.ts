@@ -21,6 +21,10 @@ export interface EmployeeListParams {
   companyEmail?: string;
 }
 
+export interface EditProfileResponse {
+  message: string;
+  token: string;
+}
 export type SuccessMessageResponse = {
   message: string;
 };
@@ -121,4 +125,44 @@ export const employeeApprovalRequest = async (
     data,
   );
   return { message };
+};
+
+export const ReadEmployeeRecord = async (
+  id: string,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.get(`/employee/${id}`);
+  return res;
+};
+
+export const ChangePassword = async ({
+  id,
+  oldPassword,
+  newPassword,
+}: {
+  id: string;
+  oldPassword: string;
+  newPassword: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/change-password/${id}`,
+    {
+      oldPassword,
+      newPassword,
+    },
+  );
+  return { message };
+};
+
+export const EditProfile = async ({
+  id,
+  formData,
+}: {
+  id: string;
+  formData: FormData;
+}): Promise<EditProfileResponse> => {
+  const { message, token }: EditProfileResponse = await baseAPI.put(
+    `/employee/edit/profile/${id}`,
+    formData,
+  );
+  return { message, token };
 };
