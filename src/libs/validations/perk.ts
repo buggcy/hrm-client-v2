@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-export const hrApproval = ['approved', 'rejected', 'pending'] as const;
+export const hrApproval = [
+  'approved',
+  'rejected',
+  'pending',
+  'available',
+] as const;
 
 const paginationSchema = z.object({
   page: z.number(),

@@ -11,12 +11,21 @@ import {
 import { ReadDocsButton } from '@/components/ReadDocsButton';
 import { Button } from '@/components/ui/button';
 
+import { useAllPerkQuery } from '@/hooks/employee/usePerkList.hook';
+import { useAuthStore } from '@/stores/auth';
+
 import { PerkModal } from './component/PerkModal';
 import PerkTable from './component/PerkTable';
 
 interface PerkProps {}
 
 const Perk: FunctionComponent<PerkProps> = () => {
+  const { user } = useAuthStore();
+  const userId: string | undefined = user?.id;
+  const { data } = useAllPerkQuery(userId as string, {
+    enabled: !!userId,
+  });
+  console.log('perks data: ', data);
   const [modal, setModal] = useState(false);
 
   const handleOpen = () => {
@@ -40,7 +49,7 @@ const Perk: FunctionComponent<PerkProps> = () => {
       <LayoutWrapper className="flex flex-col gap-10">
         <PerkTable />
       </LayoutWrapper>
-      <PerkModal open={modal} onCloseChange={handleClose} />
+      <PerkModal open={modal} onCloseChange={handleClose} user={user} />
     </Layout>
   );
 };

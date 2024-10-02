@@ -1,3 +1,5 @@
+import { AxiosResponse } from 'axios';
+
 import { perkApiResponseSchema } from '@/libs/validations/perk';
 import { baseAPI, schemaParse } from '@/utils';
 
@@ -48,4 +50,35 @@ export const getPerkList = async (
     console.error('Error fetching perks and benefits list:', error);
     throw error;
   }
+};
+
+export const PerkList = async (id: string): Promise<AxiosResponse> => {
+  const res = await baseAPI.get(`/employee/${id}/allPerks`);
+  return res;
+};
+
+export const unAvailPerk = async (
+  employeeId: string,
+  perkId: string,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.delete(
+    `/employee/${employeeId}/perks/${perkId}/unavail`,
+  );
+  return res;
+};
+
+export const AvailPerk = async ({
+  employeeId,
+  perkId,
+  formData,
+}: {
+  employeeId: string;
+  perkId: string;
+  formData: FormData;
+}): Promise<AxiosResponse> => {
+  const res = await baseAPI.post(
+    `/employee/${employeeId}/perks/${perkId}/avail`,
+    formData,
+  );
+  return res;
 };

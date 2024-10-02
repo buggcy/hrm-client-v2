@@ -15,7 +15,7 @@ export interface Perk {
   decrementAmount: number;
   description: string;
   document: string;
-  hrApproval: 'approved' | 'rejected' | 'pending';
+  hrApproval: 'approved' | 'rejected' | 'pending' | 'available';
   incrementAmount: number;
   isAvailable: boolean;
   isAvailed: boolean;
