@@ -3,22 +3,27 @@ import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
+  Notification,
+  NotificationQueryResult,
+} from '@/components/NotificationIcon/types';
+
+import {
   fetchNotificationsEmp,
   fetchNotificationsHR,
   markNotificationAsRead,
 } from '@/services/notification.service';
 import { useNotificationStore } from '@/stores/useNotificationStore';
 
-export const useNotificationsHR = () => {
+export const useNotificationsHR = (): NotificationQueryResult => {
   const setNotifications = useNotificationStore(
     state => state.setNotifications,
   );
 
-  const query = useQuery({
-    queryKey: ['notifications'],
+  const query = useQuery<Notification[]>({
+    queryKey: ['notificationsHR'],
     queryFn: fetchNotificationsHR,
-    refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    staleTime: 1 * 60 * 1000,
   });
 
   useEffect(() => {
@@ -27,18 +32,23 @@ export const useNotificationsHR = () => {
     }
   }, [query.data, setNotifications]);
 
-  return query;
+  return {
+    data: query.data,
+    isLoading: query.isLoading,
+    error: query.error ?? null,
+  };
 };
 
-export const useNotificationsEmp = (id: string) => {
+export const useNotificationsEmp = (id: string): NotificationQueryResult => {
   const setNotifications = useNotificationStore(
     state => state.setNotifications,
   );
 
-  const query = useQuery({
+  const query = useQuery<Notification[]>({
     queryKey: ['notificationsEmp', id],
     queryFn: () => fetchNotificationsEmp(id),
-    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    staleTime: 1 * 60 * 1000,
   });
 
   useEffect(() => {
@@ -47,7 +57,11 @@ export const useNotificationsEmp = (id: string) => {
     }
   }, [query.data, setNotifications]);
 
-  return query;
+  return {
+    data: query.data,
+    isLoading: query.isLoading,
+    error: query.error,
+  };
 };
 
 export const useMarkNotificationAsRead = () => {

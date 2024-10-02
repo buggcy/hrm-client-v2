@@ -8,8 +8,15 @@ export interface Notification {
     lastName: string;
     Avatar?: string;
   };
+  roleId: number;
 }
 export interface NotificationStore {
   notifications: Notification[];
   setNotifications: (notifications: Notification[]) => void;
+}
+
+export interface NotificationQueryResult {
+  data?: Notification[];
+  isLoading: boolean;
+  error?: Error | null; // Allow error to be null as well
 }

@@ -3,18 +3,21 @@
 import React, { createContext, ReactNode, useContext } from 'react';
 
 import { useAuthStore } from '../stores/auth';
+import { useNotificationStore } from '../stores/useNotificationStore';
 
 interface StoreContextType {
   authStore: ReturnType<typeof useAuthStore>;
+  notificationStore: ReturnType<typeof useNotificationStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
 export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const authStore = useAuthStore();
+  const notificationStore = useNotificationStore();
 
   return (
-    <StoreContext.Provider value={{ authStore }}>
+    <StoreContext.Provider value={{ authStore, notificationStore }}>
       {children}
     </StoreContext.Provider>
   );

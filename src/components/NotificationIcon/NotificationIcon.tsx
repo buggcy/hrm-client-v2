@@ -1,156 +1,106 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 
-import { AlertCircle, Bell, Loader } from 'lucide-react';
+import {
+  ArrowLeft,
+  Bell,
+  BellOff,
+  CheckCircle,
+  Loader,
+  MoreHorizontal,
+  User as UserIcon,
+} from 'lucide-react';
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { toast } from '@/components/ui/use-toast';
 
 import {
-  useMarkNotificationAsRead,
   useNotificationsEmp,
   useNotificationsHR,
-} from '@/hooks/useNotification';
+} from '@/hooks/useNotification/useNotification';
+import useNotificationActions from '@/hooks/useNotification/useNotificationActions';
 import { useNotificationStore } from '@/stores/useNotificationStore';
+import { timeAgo } from '@/utils/notification.utills';
+
+import { Button } from '../ui/button';
+
+import { User } from '@/types/user.types';
 
 const Notification: React.FC = () => {
-  const { notifications, setNotifications } = useNotificationStore(state => ({
-    notifications: state.notifications,
-    setNotifications: state.setNotifications,
-  }));
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [isHR, setIsHR] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [isMarkingAllAsRead, setIsMarkingAllAsRead] = useState(false);
   const [loadingNotificationId, setLoadingNotificationId] = useState<
     string | null
   >(null);
+  const [userRole, setUserRole] = useState<number | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const { setNotifications } = useNotificationStore();
+  const { handleMarkAsRead, handleAllMarkAsRead } = useNotificationActions();
 
   useEffect(() => {
     const authStorage = sessionStorage.getItem('auth-storage');
     if (authStorage) {
       const parsedStorage = JSON.parse(authStorage);
-      const user = parsedStorage.state?.user;
-      const userId: string | null = user?.id || null;
-      setUserId(userId);
-      setIsHR(user?.roleId === 1);
+      const user: User = parsedStorage?.state?.user;
+      if (user) {
+        setUserRole(user.roleId || null);
+        setUserId(user.id || null);
+      }
     }
   }, []);
 
+  const { data: hrNotifications, isLoading: isLoadingHR } =
+    useNotificationsHR();
+  const { data: empNotifications, isLoading: isLoadingEmp } =
+    useNotificationsEmp(userId || '');
+
   useEffect(() => {
-    setUnreadCount(
-      notifications.filter(notification => !notification.isRead).length,
-    );
+    if (userRole === 1 && hrNotifications) {
+      setNotifications(hrNotifications);
+    } else if (userRole === 2 && empNotifications) {
+      setNotifications(empNotifications);
+    }
+  }, [userRole, hrNotifications, empNotifications, setNotifications]);
+
+  const { notifications } = useNotificationStore();
+
+  const sortedNotifications = useMemo(() => {
+    return [...notifications]
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
+      .slice(0, 10);
   }, [notifications]);
 
-  const notificationsHR = useNotificationsHR();
-  const notificationsEmp = useNotificationsEmp(userId!);
+  const unreadCount = useMemo(() => {
+    return sortedNotifications.filter(notification => !notification.isRead)
+      .length;
+  }, [sortedNotifications]);
 
-  const isLoading = isHR
-    ? notificationsHR.isLoading
-    : notificationsEmp.isLoading;
-  const error = isHR ? notificationsHR.error : notificationsEmp.error;
-
-  const markAsReadMutation = useMarkNotificationAsRead();
-
-  const updateNotificationState = useCallback(
-    (id: string, isRead: boolean) => {
-      setNotifications(
-        notifications.map(notification =>
-          notification._id === id ? { ...notification, isRead } : notification,
-        ),
-      );
-    },
-    [notifications, setNotifications],
-  );
-
-  const handleMarkAsRead = async (id: string, showToast = true) => {
-    console.log(`Marking notification ${id} as read. Show toast: ${showToast}`);
-
+  const handleMarkAsReadClick = async (id: string) => {
     setLoadingNotificationId(id);
-    try {
-      await markAsReadMutation.mutateAsync(id);
-      updateNotificationState(id, true);
-
-      if (showToast) {
-        toast({
-          title: 'Success',
-          description: 'Notification marked as read.',
-          variant: 'success',
-        });
-      }
-    } catch (error) {
-      if (showToast) {
-        toast({
-          title: 'Error',
-          description: 'Failed to mark notification as read.',
-          variant: 'error',
-        });
-      }
-    } finally {
-      setLoadingNotificationId(null);
-    }
+    await handleMarkAsRead(id);
+    setLoadingNotificationId(null);
   };
 
-  const handleAllMarkAsRead = async () => {
-    setIsMarkingAllAsRead(true);
-
-    try {
-      const unreadNotifications = notifications.filter(
-        notification => !notification.isRead,
-      );
-      await Promise.all(
-        unreadNotifications.map(notification =>
-          handleMarkAsRead(notification._id, false),
-        ),
-      );
-
-      setNotifications(
-        notifications.map(notification => ({ ...notification, isRead: true })),
-      );
-
-      toast({
-        title: 'Success',
-        description: 'All notifications have been marked as read.',
-        variant: 'success',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to mark all notifications as read.',
-        variant: 'error',
-      });
-    } finally {
-      setIsMarkingAllAsRead(false);
-    }
+  const handleMarkAllAsRead = async () => {
+    await handleAllMarkAsRead(sortedNotifications);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-4">
-        <Loader className="mr-2 size-4 animate-spin" />
-        <p>Loading notifications...</p>
-      </div>
-    );
+  if (userRole === null || userId === null) {
+    return <Loader size={24} className="animate-spin" />;
   }
-  if (error) {
-    return (
-      <Alert variant="destructive">
-        <AlertCircle className="size-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>
-          Failed to load notifications. Please try again later.
-        </AlertDescription>
-      </Alert>
-    );
+
+  if ((userRole === 1 && isLoadingHR) || (userRole === 2 && isLoadingEmp)) {
+    return <Loader size={24} className="animate-spin" />;
   }
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -160,64 +110,69 @@ const Notification: React.FC = () => {
           className="relative flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1 hover:bg-gray-200"
         >
           <Bell size={28} />
-          <span className="absolute right-1 top-1 inline-flex -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-primary px-2 py-1 text-xs font-bold leading-none text-red-100">
-            {unreadCount > 9 ? '9+' : unreadCount}
-          </span>
+          {unreadCount > 0 && (
+            <span className="absolute right-1 top-1 inline-flex -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-primary px-2 py-1 text-xs font-bold leading-none text-white">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="absolute -left-0 min-w-[400px] -translate-x-full">
-        <div
-          style={{
-            background: '#ebebeb',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '1rem 0.5rem',
-          }}
-        >
-          <h1 className="font-bold">Activity Feed</h1>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              gap: '1rem',
-            }}
-          >
-            <span className="text-sm text-gray-500">
-              <span className="font-bold">{unreadCount}</span> unread
-            </span>
-            <button
-              className="text-sm text-gray-500 underline"
-              onClick={handleAllMarkAsRead}
-              disabled={isMarkingAllAsRead}
-            >
-              Mark all as read
-            </button>
-          </div>
-        </div>
-        <DropdownMenuSeparator />
-        <ScrollArea className="h-80">
-          {isMarkingAllAsRead ? (
-            <div className="absolute inset-0 flex h-full items-center justify-center bg-gray-100 opacity-50">
-              <Loader size={40} className="animate-spin" />
+
+      <DropdownMenuContent
+        style={{ width: '30vw' }}
+        className="absolute -left-0 min-w-[300px] -translate-x-full"
+      >
+        <DropdownMenu>
+          <div className="flex items-center justify-between p-4">
+            <h1 className="font-bold">Notifications</h1>
+            <div className="flex items-center gap-2">
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-md p-1 hover:bg-gray-200">
+                  <MoreHorizontal size={24} />
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent className="absolute -left-0 min-w-[170px] -translate-x-full">
+                <div className="mr-1 flex items-center justify-between">
+                  <DropdownMenuLabel>Activity Feed</DropdownMenuLabel>
+                  <span className="text-sm text-gray-500">
+                    <span className="ml-2 flex size-7 items-center justify-center rounded-full bg-muted">
+                      {unreadCount}
+                    </span>
+                  </span>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="flex w-full items-center p-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-blue-500"
+                  onClick={handleMarkAllAsRead}
+                >
+                  <CheckCircle className="mr-2 size-4" />
+                  Mark all as read
+                </DropdownMenuItem>
+              </DropdownMenuContent>
             </div>
-          ) : notifications.length === 0 ? (
-            <p>No notifications available.</p>
+          </div>
+        </DropdownMenu>
+
+        <DropdownMenuSeparator />
+        <ScrollArea className="h-72" style={{ width: '30vw' }}>
+          {sortedNotifications.length === 0 ? (
+            <div className="flex items-center justify-start p-4 text-gray-500">
+              <BellOff className="mr-3 size-5 text-gray-400" />
+              <p className="text-sm font-medium">No notifications available</p>
+            </div>
           ) : (
-            notifications.map(notification => (
+            sortedNotifications.map(notification => (
               <DropdownMenuItem
                 onClick={e => {
                   e.preventDefault();
                 }}
                 key={notification._id}
-                className="relative border-b border-gray-200"
+                className="relative flex items-center p-2"
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'stretch',
-                  paddingBottom: '1rem',
-                  paddingTop: '1rem',
+                  width: '28vw',
+                  paddingBottom: '0.5rem',
+                  paddingTop: '0.5rem',
                   opacity: loadingNotificationId === notification._id ? 0.5 : 1,
                 }}
               >
@@ -226,60 +181,61 @@ const Notification: React.FC = () => {
                     <Loader size={24} className="animate-spin" />
                   </div>
                 )}
-                <div
-                  style={{ marginLeft: notification.isRead ? '0' : '0.5rem' }}
-                >
-                  {!notification.isRead && (
-                    <span style={{ color: 'blue', marginRight: '0.5rem' }}>
-                      ●
-                    </span>
-                  )}
-                  <span className="font-bold capitalize">
-                    {notification.senderId?.firstName || 'Unknown First Name'}{' '}
-                    {notification.senderId?.lastName || 'Unknown Last Name'}
-                  </span>
 
-                  <p
-                    style={{
-                      maxWidth: '20vw',
-                      overflow: 'hidden',
-                      wordWrap: 'break-word',
-                      whiteSpace: 'normal',
-                      display: 'inline',
-                    }}
-                    className="mb-1 text-sm font-medium"
-                  >
+                <div style={{ marginRight: '1rem', marginLeft: '0.5rem' }}>
+                  {notification.senderId?.Avatar ? (
+                    <img
+                      src={notification.senderId.Avatar}
+                      alt="Sender Avatar"
+                      className="size-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <UserIcon size={48} className="text-gray-400" />
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  <p className="text-sm">
+                    <span className="font-bold">
+                      {notification.senderId?.firstName || 'Unknown'}{' '}
+                      {notification.senderId?.lastName || 'User'}
+                    </span>{' '}
                     {notification.message}
                   </p>
                 </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <small className="text-xs text-gray-500">
-                    {new Date(notification.createdAt).toLocaleString()}
-                  </small>
-                  {loadingNotificationId !== notification._id &&
-                    (notification.isRead ? (
-                      <span className="ml-4 cursor-default text-sm text-gray-500">
-                        ✔ Read
-                      </span>
-                    ) : (
-                      <button
-                        onClick={() => handleMarkAsRead(notification._id)}
-                        className="ml-4 text-sm text-blue-600 hover:underline"
-                      >
-                        Mark as Read
-                      </button>
-                    ))}
+
+                <div className="mr-2 text-xs text-gray-500">
+                  {timeAgo(notification.createdAt)}
                 </div>
+
+                {!notification.isRead && (
+                  <span
+                    className="cursor-pointer text-lg text-blue-500"
+                    onClick={() => handleMarkAsReadClick(notification._id)}
+                  >
+                    ●
+                  </span>
+                )}
               </DropdownMenuItem>
             ))
           )}
         </ScrollArea>
+
+        <DropdownMenuSeparator />
+        <div className="my-2 flex justify-center">
+          <Button asChild className="w-[95%]">
+            <Link
+              href={
+                userRole === 1
+                  ? '/hr/all-notifications'
+                  : '/employee/all-notifications'
+              }
+            >
+              <ArrowLeft className="mr-2 size-4" />
+              View All Notifications
+            </Link>
+          </Button>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
