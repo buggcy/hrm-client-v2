@@ -10,6 +10,7 @@ import { PolicyListType } from '@/libs/validations/policies';
 import { DataTableColumnHeader } from '../data-table-column-header';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { FileText, FileImage, File } from 'lucide-react';
 
 export const policyListColumns: ColumnDef<PolicyListType>[] = [
   {
@@ -42,17 +43,21 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
     cell: ({ row }) => {
       const fileUrl = row.getValue("file");
       const segments = fileUrl.split("/");
-      const fileNameWithExtension = segments.pop(); // Get the last element (the file name with extension)
+      const fileNameWithExtension = segments.pop();
       const [fileName, fileExtension] = fileNameWithExtension.split('.');
   
-      // Function to determine the icon based on the file extension
-      const fileIcon = (extension) => {
-        switch(extension) {
-          case 'pdf': return '📄';
-          case 'docx': return '📝';
-          case 'jpg': // Fall through
-          case 'png': return '📄'; // Same icon for jpg and png
-          default: return '📦'; // Default icon for other file types
+      const fileIcon = (extension: string) => {
+        switch(extension.toLowerCase()) {
+          case 'pdf':
+          case 'docx':
+            return <FileText className="h-5 w-5" />;
+          case 'jpg':
+          case 'png':
+          case 'gif':
+          case 'jpeg':
+            return <FileImage className="h-5 w-5" />;
+          default:
+            return <File className="h-5 w-5" />;
         }
       };
   
@@ -73,9 +78,6 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
       );
     },
   },
-  
-  
-  
   
   {
     accessorKey: 'userId',

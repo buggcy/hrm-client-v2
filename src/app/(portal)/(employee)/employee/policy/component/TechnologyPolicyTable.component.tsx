@@ -14,7 +14,7 @@ import { usePolicyListQuery } from '@/hooks/policies/usePolicyList.hook';
 import { PolicyListType } from '@/libs/validations/policies';
 import { PolicyStoreType } from '@/stores/employee/policies';
 
-const PolicyTable: FunctionComponent = () => {
+const TechnologyPolicyTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { policyStore } = useStores() as { policyStore: PolicyStoreType };
@@ -29,18 +29,18 @@ const PolicyTable: FunctionComponent = () => {
     isFetching,
     error,
     refetch,
-  } = usePolicyListQuery({ page, limit });
+  } = usePolicyListQuery({ page, limit, category: 'Technology Policy' });
 
   useEffect(() => {
     void (async () => {
-        await refetch({ page, limit });
+        await refetch({ page, limit, category: 'Technology Policy' });
       })();
   }, [page, limit, refetch]);
 
   useEffect(() => {
     if (refetchPolicyList) {
       void (async () => {
-        await refetch({ page, limit });
+        await refetch({ page, limit, category: 'Technology Policy' });
       })();
 
       setRefetchPolicyList(false);
@@ -85,4 +85,4 @@ const PolicyTable: FunctionComponent = () => {
   );
 };
 
-export default PolicyTable;
+export default TechnologyPolicyTable;

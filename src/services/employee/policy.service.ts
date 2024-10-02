@@ -35,7 +35,7 @@ export const getPolicyList = async (
   );
 
   try {
-    const response = await baseAPI.get(`/policy?${queryParams.toString()}`);
+    const response = await baseAPI.get(`/policy-v2?${queryParams.toString()}`);
     return schemaParse(policyApiResponseSchema)(response);
   } catch (error) {
     console.error('Error fetching employee list:', error);
