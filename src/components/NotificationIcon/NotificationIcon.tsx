@@ -34,6 +34,8 @@ import { Button } from '../ui/button';
 import { User } from '@/types/user.types';
 
 const Notification: React.FC = () => {
+  const [isMarkingAllAsRead, setIsMarkingAllAsRead] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false);
   const [loadingNotificationId, setLoadingNotificationId] = useState<
     string | null
@@ -92,7 +94,9 @@ const Notification: React.FC = () => {
   };
 
   const handleMarkAllAsRead = async () => {
+    setIsMarkingAllAsRead(true);
     await handleAllMarkAsRead(sortedNotifications);
+    setIsMarkingAllAsRead(false);
   };
 
   if (userRole === null || userId === null) {
@@ -156,6 +160,11 @@ const Notification: React.FC = () => {
 
         <DropdownMenuSeparator />
         <ScrollArea className="h-72" style={{ width: '30vw' }}>
+          {isMarkingAllAsRead && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
+              <Loader className="mr-2 animate-spin" />
+            </div>
+          )}
           {sortedNotifications.length === 0 ? (
             <div className="flex items-center justify-start p-4 text-gray-500">
               <BellOff className="mr-3 size-5 text-gray-400" />

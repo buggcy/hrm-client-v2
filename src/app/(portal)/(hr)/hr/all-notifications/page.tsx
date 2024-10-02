@@ -146,9 +146,9 @@ const AllNotifications: FunctionComponent = () => {
                     <span
                       className={
                         tabValue === 'all'
-                          ? 'pr-8'
+                          ? 'pr-5'
                           : tabValue === 'read'
-                            ? 'pr-6'
+                            ? 'pr-2'
                             : ''
                       }
                     >

@@ -51,7 +51,7 @@ const useNotificationActions = () => {
   const handleAllMarkAsRead = async (notificationsToMark: Notification[]) => {
     try {
       const unreadNotifications = notificationsToMark.filter(
-        notification => !notification.isRead && notification.roleId === 1,
+        notification => !notification.isRead,
       );
 
       await Promise.all(
