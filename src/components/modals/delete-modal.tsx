@@ -3,7 +3,7 @@
 // * * This is just a demostration of delete modal, actual functionality may vary
 
 import { useMutation } from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 
 import {
   AlertDialog,
@@ -17,15 +17,18 @@ import {
 import { Button } from '@/components/ui/button';
 import { useStores } from '@/providers/Store.Provider';
 
+import { SuccessMessageResponse } from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
 
 import { toast } from '../ui/use-toast';
+
+import { MessageErrorResponse } from '@/types';
 
 type DeleteProps = {
   id: string;
   isOpen: boolean;
   showActionToggle: (open: boolean) => void;
-  mutationFunc: (id: string) => AxiosResponse;
+  mutationFunc: (id: string) => Promise<SuccessMessageResponse>;
 };
 
 export default function DeleteDialog({
@@ -39,7 +42,7 @@ export default function DeleteDialog({
 
   const { mutate, isPending } = useMutation({
     mutationFn: mutationFunc,
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
         description:

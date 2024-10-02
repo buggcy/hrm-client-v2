@@ -65,19 +65,17 @@ export function ResetPasswordForm({ email }: { email: string }) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: sendDataForResetPassword,
-    onError: err => {
+    onError: () => {
       toast({
         title: 'Error',
-        description:
-          err?.response?.data?.message || 'Error on reseting password!',
-        variant: 'error',
+        description: 'Error on reseting password!',
+        variant: 'destructive',
       });
     },
-    onSuccess: response => {
+    onSuccess: () => {
       toast({
         title: 'Success',
-        description: response?.message,
-        variant: 'success',
+        description: 'Password reset successfully!',
       });
       router.push(`/auth/sign-in`);
     },

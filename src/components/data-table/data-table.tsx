@@ -26,6 +26,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import { EmployeeListType } from '@/libs/validations/employee';
+
 import { DataTablePagination } from './data-table-pagination';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 
@@ -41,10 +43,9 @@ interface DataTableProps<TData, TValue> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
-  refetchEmployeeList: () => void;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends EmployeeListType, TValue>({
   columns,
   data,
   pagination,

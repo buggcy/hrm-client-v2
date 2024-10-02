@@ -2,6 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
+import { AxiosError } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
@@ -11,10 +12,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
+import { EmployeeListType } from '@/libs/validations/employee';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
 import { gender_options } from '../../filters';
+
+import { MessageErrorResponseWithError } from '@/types';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -23,7 +27,7 @@ interface DataTableToolbarProps<TData> {
   searchLoading: boolean;
 }
 
-export function EmployeeListToolbar<TData>({
+export function EmployeeListToolbar<TData extends EmployeeListType>({
   table,
   searchTerm,
   onSearch,
@@ -36,7 +40,7 @@ export function EmployeeListToolbar<TData>({
 
   const { mutate, isPending } = useMutation({
     mutationFn: exportEmployeeCSVData,
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
         description:
@@ -44,9 +48,9 @@ export function EmployeeListToolbar<TData>({
         variant: 'error',
       });
     },
-    onSuccess: response => {
-      const fileBlob = new Blob([response]);
-      downloadFile(fileBlob, 'Employees.csv');
+    onSuccess: (response: string) => {
+      const file = new Blob([response]);
+      downloadFile(file, 'Employees.csv');
     },
   });
 
