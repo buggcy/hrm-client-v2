@@ -1,22 +1,20 @@
 import { baseAPI } from '@/utils';
 
-import { AttendanceData, AttendanceReport } from '@/types/attendence.types';
+import { RecentAnnouncement } from '@/types/announcement.types';
+import {
+  AttendanceData,
+  AttendanceReport,
+  Attendence,
+  ChartData,
+} from '@/types/attendence.types';
+import { BirthdayResponse } from '@/types/Birthday.types';
 import { EventData, RawEventData } from '@/types/events.types';
-interface ApiResponseItem {
-  totalHours: string;
-  date: string;
-}
 
-interface ChartData {
-  name: string;
-  Hours: number;
-  date: string;
-}
 export const fetchMonthlyAttendanceChartData = async (
   taho_id: string,
 ): Promise<ChartData[]> => {
   const response = await baseAPI.get(`/attendence-monthly/${taho_id}`);
-  const data: ApiResponseItem[] = response?.data;
+  const data: Attendence[] = response?.data;
 
   const formattedData: ChartData[] = data.map((item, index) => {
     const [hours] = item.totalHours.split(':').map(Number);
@@ -85,18 +83,6 @@ export const fetchAttendanceReport = async (
   return res;
 };
 
-export interface RecentAnnouncement {
-  _id: string;
-  hrId: string;
-  title: string;
-  StartDate: string;
-  EndDate: string;
-  Priority: string;
-  TargetAudience: string;
-  Description: string;
-  isDeleted: boolean;
-  isEnabled: boolean;
-}
 export const fetchRecentAnnouncements = async () => {
   try {
     const response: RecentAnnouncement = await baseAPI.get(`/recent`);
@@ -106,4 +92,10 @@ export const fetchRecentAnnouncements = async () => {
     console.error('Error fetching events data:', err);
     throw err;
   }
+};
+
+export const fetchUpcomingBirthdays = async (): Promise<BirthdayResponse> => {
+  const response: BirthdayResponse = await baseAPI.get('/birthdays');
+  console.log(response);
+  return response;
 };

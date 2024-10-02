@@ -9,3 +9,13 @@ export interface AttendanceReport {
   noOfAbsents: number;
   noOfLeaves: number;
 }
+export interface Attendence {
+  totalHours: string;
+  date: string;
+}
+
+export interface ChartData {
+  name: string;
+  Hours: number;
+  date: string;
+}

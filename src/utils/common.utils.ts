@@ -80,6 +80,26 @@ export function getCurrentMonthName(): string {
   ];
 
   const currentDate = new Date();
-  const currentMonthIndex = currentDate.getMonth(); // getMonth() returns 0-11
+  const currentMonthIndex = currentDate.getMonth();
   return monthNames[currentMonthIndex];
 }
+export const getTotalWorkingDaysInCurrentMonth = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  let totalWorkingDays = 0;
+
+  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+
+  for (let day = 1; day <= totalDaysInMonth; day++) {
+    const currentDate = new Date(year, month, day);
+    const dayOfWeek = currentDate.getDay();
+
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      totalWorkingDays++;
+    }
+  }
+
+  return totalWorkingDays;
+};

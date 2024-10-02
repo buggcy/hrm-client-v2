@@ -75,13 +75,13 @@ export function BChart() {
               <TabsList className="rounded-xl shadow-sm transition">
                 <TabsTrigger
                   value="monthly"
-                  className={`${isMonthlyView ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'} px-4 py-2`}
+                  className={`${isMonthlyView ? 'rounded-xl text-white' : 'rounded-2xl bg-gray-100 text-gray-700'} p-2`}
                 >
                   Monthly
                 </TabsTrigger>
                 <TabsTrigger
                   value="weekly"
-                  className={`${!isMonthlyView ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'} px-4 py-2`}
+                  className={`${!isMonthlyView ? 'rounded-xl text-white' : 'rounded-xl bg-gray-100 text-gray-700'} p-2`}
                 >
                   Weekly
                 </TabsTrigger>
@@ -115,7 +115,7 @@ export function BChart() {
               content={<ChartTooltipContent />}
               formatter={(value: number) => `${value} Hours`}
             />
-            <Bar dataKey="Hours" fill="#3B82F6" barSize={20} />
+            <Bar dataKey="Hours" fill="#30BBF2" barSize={20} />
           </BarChart>
         </ChartContainer>
       </CardContent>

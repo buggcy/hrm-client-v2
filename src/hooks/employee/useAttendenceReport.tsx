@@ -11,8 +11,8 @@ export const useAttendanceReport = (
   return useQuery<AttendanceReport | null>({
     queryKey: ['attendance-report', tahometerId, monthYear],
     queryFn: () => fetchAttendanceReport(tahometerId ?? '', monthYear),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     enabled: !!monthYear,
   });
 };

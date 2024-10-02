@@ -6,8 +6,8 @@ export const useAttendanceData = (taho_id: string | null) => {
     queryKey: ['attendancesss', taho_id],
     queryFn: () => fetchMonthlyAttendanceChartData(taho_id ? taho_id : ''),
     enabled: !!taho_id,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     refetchInterval: 1000 * 60 * 5,
   });
 };

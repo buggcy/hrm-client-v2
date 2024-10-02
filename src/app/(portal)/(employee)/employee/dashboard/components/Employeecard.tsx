@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAttendanceReport } from '@/hooks/employee/useAttendenceReport';
 import { useEmployeeAttendance } from '@/hooks/employee/useEmployeeAttendance';
 import { useUserId } from '@/hooks/employee/useUserId';
+import { getTotalWorkingDaysInCurrentMonth } from '@/utils';
 
 import ProgressCircle from './ProgressCircle';
 import Typography from '../components/Typography';
@@ -12,7 +13,8 @@ import Typography from '../components/Typography';
 const EmployeeCard = () => {
   const userId = useUserId();
   const monthYear = '2024-09';
-
+  const totalDays: number = getTotalWorkingDaysInCurrentMonth();
+  console.log(totalDays);
   const {
     data: empdata,
     isLoading,
@@ -54,15 +56,16 @@ const EmployeeCard = () => {
                 <strong className="text-black">{totalHoursOfWeek}</strong> Total
                 Weekly Hours
               </Typography>
-              <Typography className="py-2 font-normal text-gray-500">
+              <Typography className="py-2 text-sm font-normal text-gray-500">
                 <strong className="text-black">{todayStartTime}</strong>{' '}
                 Today&apos;s Start Time
               </Typography>
             </div>
             <ProgressCircle
               value={noOfPresents}
-              max={30}
-              strokeColor="#3B82F6"
+              max={totalDays}
+              strokeColor="#30BBF2"
+              tooltipText="Presents"
             />
           </div>
         </CardContent>
@@ -95,9 +98,10 @@ const EmployeeCard = () => {
               </Typography>
             </div>
             <ProgressCircle
-              value={noOfPresents}
-              max={100}
+              value={noOfLeaves}
+              max={totalDays}
               strokeColor="#10B981"
+              tooltipText="Leaves"
             />
           </div>
         </CardContent>

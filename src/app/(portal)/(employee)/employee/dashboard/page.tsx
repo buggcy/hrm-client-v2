@@ -27,7 +27,7 @@ const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
           <button className="text-black">View Docs</button>
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper className="flex flex-col gap-10">
+      <LayoutWrapper className="flex flex-col gap-5">
         <div className="m-0 p-0">
           <DashboardHeader />
         </div>

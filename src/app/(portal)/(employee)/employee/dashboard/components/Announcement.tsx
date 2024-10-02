@@ -1,50 +1,68 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { CheckCircleIcon } from 'lucide-react';
+import { CheckCircleIcon, Newspaper, Target } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 import { useRecentAnnouncements } from '@/hooks/employee/useRecentAnnouncement';
 
-interface Announcement {
-  _id: string;
-  hrId: string;
-  title: string;
-  StartDate: string;
-  EndDate: string;
-  Priority: string;
-  TargetAudience: string;
-  Description: string;
-  isDeleted: boolean;
-  isEnabled: boolean;
-}
-
+import { RecentAnnouncement } from '@/types/announcement.types';
 const RecentAnnouncements = () => {
   const {
     data: announcements,
     isLoading,
     isFetching,
   } = useRecentAnnouncements();
+  const [, setSelectedAnnouncement] = useState<RecentAnnouncement | null>(null);
 
   useEffect(() => {}, [announcements]);
-  console.log(announcements);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const announcementArray: Announcement[] = Array.isArray(announcements)
+  const announcementArray: RecentAnnouncement[] = Array.isArray(announcements)
     ? announcements.filter(announcement => announcement !== undefined)
     : [announcements].filter(announcement => announcement !== undefined);
+
+  const getIconAndColor = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return {
+          icon: <CheckCircleIcon className="size-6 text-red-500" />,
+          color: 'text-red-500',
+        };
+      case 'Medium':
+        return {
+          icon: <Newspaper className="size-6 text-blue-500" />,
+          color: 'text-blue-500',
+        };
+      case 'Low':
+      default:
+        return {
+          icon: <Target className="size-6 text-green-500" />,
+          color: 'text-green-500',
+        };
+    }
+  };
   return (
     <Card className="mb-2 w-full px-6 py-9">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">Recent Announcements</h2>
-        <button className="rounded-xl border-red-100 bg-green-600 px-5 py-1 text-sm text-white">
+        <button className="rounded-xl border-red-100 bg-primary px-5 py-1 text-sm text-white">
           {isLoading || isFetching ? '0' : announcementArray.length || '0'}{' '}
           Recent
         </button>
       </div>
 
       <div className="max-h-20 space-y-4 overflow-y-auto">
-        <hr className="border-gray-200 p-2" />
         {isLoading || isFetching ? (
           <div className="flex items-start space-x-4">
             <div>
@@ -56,26 +74,138 @@ const RecentAnnouncements = () => {
         ) : announcementArray.length === 0 ? (
           <div>No recent announcements.</div>
         ) : (
-          announcementArray.map((announcement: Announcement, index: number) => (
-            <div key={index} className="flex items-start space-x-4">
-              <CheckCircleIcon className="size-6 text-blue-500" />
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900">
-                  {announcement.title || 'No Title'}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {announcement.Description || 'No Description'}
-                </p>
-              </div>
-            </div>
-          ))
+          announcementArray.map(
+            (announcement: RecentAnnouncement, index: number) => {
+              const { icon } = getIconAndColor(
+                announcement.Priority || 'normal',
+              );
+              return (
+                <div key={index} className="flex items-start space-x-4 py-2">
+                  {icon}
+                  <div>
+                    <h3 className={`text-sm font-semibold`}>
+                      {announcement.title || 'No Title'}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {announcement.Description || 'No Description'}
+                    </p>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="link"
+                          onClick={() => setSelectedAnnouncement(announcement)}
+                        >
+                          View Details
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>
+                            {announcement.title || 'No Title'}
+                          </DialogTitle>
+                          <DialogDescription>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="font-semibold">
+                                  Description:
+                                </span>
+                                <span>{announcement.Description}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="font-semibold">Priority:</span>
+                                <span>{announcement.Priority}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="font-semibold">
+                                  Start Date:
+                                </span>
+                                <span>
+                                  {new Date(
+                                    announcement.StartDate,
+                                  ).toLocaleString()}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="font-semibold">End Date:</span>
+                                <span>
+                                  {new Date(
+                                    announcement.EndDate,
+                                  ).toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogClose />
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
+              );
+            },
+          )
         )}
       </div>
 
       <div className="mt-6">
-        <Button variant="secondary" className="w-full bg-blue-100 text-primary">
-          View All Announcements
-        </Button>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="secondary"
+              className="w-full bg-blue-100 text-primary"
+              onClick={() => setIsDialogOpen(true)}
+            >
+              View All Announcements
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>All Recent Announcements</DialogTitle>
+              <DialogDescription>
+                <div className="space-y-4">
+                  {announcementArray.length === 0 ? (
+                    <div className="py-6">No recent announcements.</div>
+                  ) : (
+                    announcementArray.map((announcement, index) => (
+                      <div
+                        key={index}
+                        className="rounded-md bg-white p-4 shadow-md"
+                      >
+                        <div className="flex items-center space-x-4">
+                          {
+                            getIconAndColor(announcement.Priority || 'normal')
+                              .icon
+                          }
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {announcement.title || 'No Title'}
+                          </h3>
+                        </div>
+                        <div className="mt-4">
+                          <p className="text-sm text-gray-500">
+                            Description:{' '}
+                            {announcement.Description || 'No Description'}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Priority: {announcement.Priority}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Start Date:{' '}
+                            {new Date(announcement.StartDate).toLocaleString()}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            End Date:{' '}
+                            {new Date(announcement.EndDate).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+            <DialogClose />
+          </DialogContent>
+        </Dialog>
       </div>
     </Card>
   );
