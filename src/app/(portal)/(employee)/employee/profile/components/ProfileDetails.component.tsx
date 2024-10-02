@@ -60,19 +60,19 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
 
           <div className="my-4 border-b border-gray-300" />
 
-          <div className="mb-2 mt-4 text-base font-bold">Summary</div>
+          <div className="mb-2 mt-4 text-sm font-bold">Summary</div>
           <p>{currentUser?.profileDescription || 'No Summary available'}</p>
 
           <div className="my-4 border-b border-gray-300" />
-          <div className="my-2 flex justify-between">
-            <div className="text-base font-bold">Current Status</div>
+          <div className="flex justify-between">
+            <div className="mt-1 text-sm font-bold">Current Status</div>
             <div className="text-left">
               <Badge>{currentUser?.Current_Status || 'unknown'}</Badge>
             </div>
           </div>
           <div className="my-4 border-b border-gray-300" />
 
-          <div className="mb-2 mt-4 text-base font-bold">Contact</div>
+          <div className="mb-2 mt-4 text-sm font-bold">Contact</div>
           <dl className="grid grid-cols-1 gap-y-2">
             <div className="flex justify-between">
               <dt className="font-medium">Phone</dt>
@@ -105,7 +105,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
           </dl>
           <div className="my-4 border-b border-gray-300" />
 
-          <div className="mb-2 mt-4 text-base font-bold">Address</div>
+          <div className="mb-2 mt-4 text-sm font-bold">Address</div>
           <dl className="grid grid-cols-1 gap-y-2">
             <div className="flex justify-between">
               <dt className="font-medium">Country</dt>

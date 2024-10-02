@@ -35,31 +35,25 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
           <dt className="font-medium">Front Of CNIC Image</dt>
           <dd className="col-span-2 text-gray-600">
             {kyc[0]?.cnic?.frontPicture ? (
-              <span>
-                {typeof kyc[0]?.cnic?.frontPicture === 'string' &&
-                  decodeURIComponent(
-                    String(kyc[0].cnic.frontPicture)
-                      .split('/')
-                      .pop()
-                      ?.split('.')[0] || '',
-                  )}
-                <Eye
-                  className="ml-2 inline cursor-pointer"
-                  onClick={() =>
-                    kyc[0]?.cnic?.frontPicture &&
-                    window.open(String(kyc[0].cnic.frontPicture), '_blank')
-                  }
-                  size={18}
-                />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="ml-2 inline cursor-pointer">
-                      <Eye />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>Click to Preview Image</TooltipContent>
-                </Tooltip>
-              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    {typeof kyc[0]?.cnic?.frontPicture === 'string' &&
+                      decodeURIComponent(
+                        String(kyc[0].cnic.frontPicture).split('/').pop() || '',
+                      )}
+                    <Eye
+                      className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                      onClick={() =>
+                        kyc[0]?.cnic?.frontPicture &&
+                        window.open(String(kyc[0].cnic.frontPicture), '_blank')
+                      }
+                      size={18}
+                    />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Click to Preview Image</TooltipContent>
+              </Tooltip>
             ) : (
               '-'
             )}
@@ -67,31 +61,25 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
           <dt className="font-medium">Back Of CNIC Image</dt>
           <dd className="col-span-2 text-gray-600">
             {kyc[0]?.cnic?.backPicture ? (
-              <span>
-                {typeof kyc[0]?.cnic?.backPicture === 'string' &&
-                  decodeURIComponent(
-                    String(kyc[0].cnic.backPicture)
-                      .split('/')
-                      .pop()
-                      ?.split('.')[0] || '',
-                  )}
-                <Eye
-                  className="ml-2 inline cursor-pointer"
-                  onClick={() =>
-                    kyc[0]?.cnic?.backPicture &&
-                    window.open(String(kyc[0].cnic.backPicture), '_blank')
-                  }
-                  size={18}
-                />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="ml-2 inline cursor-pointer">
-                      <Eye />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>Click to Preview Image</TooltipContent>
-                </Tooltip>
-              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    {typeof kyc[0]?.cnic?.backPicture === 'string' &&
+                      decodeURIComponent(
+                        String(kyc[0].cnic.backPicture).split('/').pop() || '',
+                      )}
+                    <Eye
+                      className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                      onClick={() =>
+                        kyc[0]?.cnic?.backPicture &&
+                        window.open(String(kyc[0].cnic.backPicture), '_blank')
+                      }
+                      size={18}
+                    />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Click to Preview Image</TooltipContent>
+              </Tooltip>
             ) : (
               '-'
             )}
@@ -106,7 +94,9 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
           <dd className="col-span-2 tracking-widest text-gray-600">
             {showFullAccountNumber
               ? kyc[0]?.bankDetails?.accountNumber || ''
-              : maskedAccountNumber(String(kyc[0]?.bankDetails?.iban || ''))}
+              : maskedAccountNumber(
+                  String(kyc[0]?.bankDetails?.accountNumber || ''),
+                )}
             <Tooltip>
               <TooltipTrigger asChild>
                 <span
@@ -116,9 +106,15 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
                   }
                 >
                   {showFullAccountNumber ? (
-                    <EyeOff className="ml-2 inline" size={18} />
+                    <EyeOff
+                      className="ml-2 inline text-primary/80 hover:text-primary"
+                      size={18}
+                    />
                   ) : (
-                    <Eye className="ml-2 inline" size={18} />
+                    <Eye
+                      className="ml-2 inline text-primary/80 hover:text-primary"
+                      size={18}
+                    />
                   )}
                 </span>
               </TooltipTrigger>
@@ -149,9 +145,15 @@ const KycTab: React.FC<KycTabProps> = ({ kyc }) => {
                   onClick={() => setShowFullIban(!showFullIban)}
                 >
                   {showFullIban ? (
-                    <EyeOff className="ml-2 inline" size={18} />
+                    <EyeOff
+                      className="ml-2 inline text-primary/80 hover:text-primary"
+                      size={18}
+                    />
                   ) : (
-                    <Eye className="ml-2 inline" size={18} />
+                    <Eye
+                      className="ml-2 inline text-primary/80 hover:text-primary"
+                      size={18}
+                    />
                   )}
                 </span>
               </TooltipTrigger>

@@ -1,8 +1,6 @@
 'use client';
 import React from 'react';
 
-import moment from 'moment';
-
 import { Employee } from '@/types/employee.types';
 interface OverviewTabProps {
   user: Employee;
@@ -42,9 +40,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ user }) => {
         <dt className="font-medium">Date of Joining</dt>
         <dd className="col-span-2 text-gray-600">
           {user?.Joining_Date
-            ? moment(user?.Joining_Date as string | number | Date).format(
-                'YYYY-MM-DD',
-              )
+            ? new Date(user.Joining_Date).toDateString()
             : '-'}
         </dd>
       </dl>
