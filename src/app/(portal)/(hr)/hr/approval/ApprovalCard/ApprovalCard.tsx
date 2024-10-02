@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from '@radix-ui/react-tooltip';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { Mail, Phone, UserCog } from 'lucide-react';
 import { z } from 'zod';
 
@@ -27,7 +28,7 @@ import { cn } from '@/utils';
 
 import { RejectDialog } from './RejectDialog';
 
-import { IPersona } from '@/types';
+import { IPersona, MessageErrorResponse } from '@/types';
 
 const approvalSchema = z
   .object({
@@ -69,7 +70,7 @@ export const ApprovalCard = ({
 
   const { mutate, isPending } = useMutation({
     mutationFn: employeeApprovalRequest,
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
         description:

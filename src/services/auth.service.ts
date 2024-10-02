@@ -3,6 +3,10 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '@/libs';
 import { baseAPI } from '@/utils';
 
+type AuthResponse = {
+  token: string;
+};
+
 export class CustomError extends Error {
   constructor(message: string) {
     super(message);
@@ -30,9 +34,13 @@ export const signInWithEmailAndPassword = async ({
 }: {
   email: string;
   password: string;
-}): Promise<AxiosResponse> => {
-  const res = await baseAPI.post('/login', { email, password });
-  return res;
+}): Promise<AuthResponse> => {
+  const { token }: AuthResponse = await baseAPI.post('/login', {
+    email,
+    password,
+  });
+
+  return { token };
 };
 
 export const sendPasswordResetEmail = async ({
@@ -78,8 +86,11 @@ export const getToken = () => {
   return null;
 };
 
-export function logout() {
-  queryClient.clear();
-  localStorage.clear();
-  sessionStorage.clear();
+export function logout(): Promise<void> {
+  return new Promise(resolve => {
+    queryClient.clear();
+    localStorage.clear();
+    sessionStorage.clear();
+    resolve();
+  });
 }
