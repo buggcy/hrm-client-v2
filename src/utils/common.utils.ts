@@ -41,10 +41,7 @@ export function createReplicaThumbnailUrl(
 }
 
 export function isTouchDevice(): boolean {
-  return !!(
-    'ontouchstart' in window ||
-    (window.DocumentTouch && document instanceof window.DocumentTouch)
-  );
+  return 'ontouchstart' in window;
 }
 
 export function getQueryParamsString(

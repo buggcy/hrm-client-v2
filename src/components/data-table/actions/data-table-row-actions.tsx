@@ -6,7 +6,6 @@ import { Row } from '@tanstack/react-table';
 import { Copy, Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import { label_options } from '@/components/filters';
-import DeleteDialog from '@/components/modals/delete-modal';
 import EditDialog from '@/components/modals/edit-modal';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
@@ -41,6 +40,7 @@ export function DataTableRowActions<TData>({
 
   const handleEditClick = () => {
     setDialogContent(<EditDialog task={task} />);
+    console.log(showDeleteDialog);
   };
 
   return (
@@ -101,11 +101,6 @@ export function DataTableRowActions<TData>({
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
-      <DeleteDialog
-        task={task}
-        isOpen={showDeleteDialog}
-        showActionToggle={setShowDeleteDialog}
-      />
     </Dialog>
   );
 }
