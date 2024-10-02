@@ -1,5 +1,5 @@
 'use client';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -10,16 +10,33 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon/NotificationIcon';
 
+import { User } from '@/types/user.types';
 interface EmployeeDashboardProps {}
 
 const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
-  const authStorage = sessionStorage.getItem('auth-storage');
-  let user = null;
+  const [user, setUser] = useState<User | null>(null);
 
-  if (authStorage) {
-    const parsedStorage = JSON.parse(authStorage);
-    user = parsedStorage.state?.user;
-  }
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const authStorage = sessionStorage.getItem('auth-storage');
+
+      if (authStorage) {
+        const parsedStorage = JSON.parse(authStorage) as {
+          state?: { user?: User };
+        };
+        const userData = parsedStorage.state?.user;
+        if (
+          userData &&
+          typeof userData.firstName === 'string' &&
+          typeof userData.lastName === 'string'
+        ) {
+          setUser(userData);
+        } else {
+          setUser(null);
+        }
+      }
+    }
+  }, []);
 
   return (
     <Layout>
@@ -30,12 +47,16 @@ const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
-        <h1>
-          Welcome Back !{' '}
-          <span className="font-bold capitalize">
-            {user.firstName} {user.lastName}
-          </span>
-        </h1>
+        {user ? (
+          <h1>
+            Welcome Back!{' '}
+            <span className="font-bold capitalize">
+              {user.firstName} {user.lastName}
+            </span>
+          </h1>
+        ) : (
+          <h1>Welcome Back!</h1>
+        )}
       </LayoutWrapper>
     </Layout>
   );
