@@ -8,9 +8,9 @@ import {
   CheckCircle,
   Loader,
   MoreHorizontal,
-  User as UserIcon,
 } from 'lucide-react';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -109,17 +109,19 @@ const Notification: React.FC = () => {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <button
+        <Button
+          variant="outline"
+          size="icon"
           aria-label={`Notifications (${unreadCount} unread)`}
-          className="relative flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1 hover:bg-gray-200"
+          className="relative flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1"
         >
-          <Bell size={28} />
+          <Bell className="size-5" />
           {unreadCount > 0 && (
             <span className="absolute right-1 top-1 inline-flex -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-primary px-2 py-1 text-xs font-bold leading-none text-white">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
-        </button>
+        </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -127,7 +129,7 @@ const Notification: React.FC = () => {
         className="absolute -left-0 min-w-[300px] -translate-x-full"
       >
         <DropdownMenu>
-          <div className="flex items-center justify-between p-4">
+          <div className="flex items-center justify-between p-2">
             <h1 className="font-bold">Notifications</h1>
             <div className="flex items-center gap-2">
               <DropdownMenuTrigger asChild>
@@ -191,17 +193,15 @@ const Notification: React.FC = () => {
                   </div>
                 )}
 
-                <div style={{ marginRight: '1rem', marginLeft: '0.5rem' }}>
-                  {notification.senderId?.Avatar ? (
-                    <img
-                      src={notification.senderId.Avatar}
-                      alt="Sender Avatar"
-                      className="size-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <UserIcon size={48} className="text-gray-400" />
-                  )}
-                </div>
+                <Avatar className="mr-2 size-10">
+                  <AvatarImage
+                    src={notification.senderId?.Avatar || ''}
+                    alt={`${notification.senderId?.firstName || 'Unknown'} ${notification.senderId?.lastName || 'User'}`}
+                  />
+                  <AvatarFallback className="uppercase">
+                    {`${notification.senderId?.firstName?.charAt(0) || ''}${notification.senderId?.lastName?.charAt(0) || ''}`}
+                  </AvatarFallback>
+                </Avatar>
 
                 <div className="flex-1">
                   <p className="text-sm">
@@ -213,17 +213,19 @@ const Notification: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="mr-2 text-xs text-gray-500">
+                <div className="mx-2 text-xs text-gray-500">
                   {timeAgo(notification.createdAt)}
                 </div>
 
-                {!notification.isRead && (
+                {!notification.isRead ? (
                   <span
                     className="cursor-pointer text-lg text-blue-500"
                     onClick={() => handleMarkAsReadClick(notification._id)}
                   >
                     ●
                   </span>
+                ) : (
+                  <span className="text-lg text-white">●</span>
                 )}
               </DropdownMenuItem>
             ))

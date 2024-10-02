@@ -9,7 +9,6 @@ import {
   Loader,
   Mail,
   MoreHorizontal,
-  User,
 } from 'lucide-react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
@@ -20,6 +19,7 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon/NotificationIcon';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -80,8 +80,8 @@ const AllNotifications: FunctionComponent = () => {
     );
   }, [filteredNotifications]);
 
-  const readCount = storeNotifications.filter(n => n.isRead).length;
-  const unreadCount = storeNotifications.filter(n => !n.isRead).length;
+  const readCount = storeNotifications.filter(n => n.isRead).length || 0;
+  const unreadCount = storeNotifications.filter(n => !n.isRead).length || 0;
 
   const getTitle = () => {
     switch (filter) {
@@ -125,7 +125,7 @@ const AllNotifications: FunctionComponent = () => {
               {['all', 'read', 'unread'].map(tabValue => (
                 <div
                   key={tabValue}
-                  style={{ border: '1px solid lightgray', width: '100%' }}
+                  style={{ width: '100%' }}
                   className="rounded-md"
                 >
                   <TabsTrigger
@@ -135,13 +135,13 @@ const AllNotifications: FunctionComponent = () => {
                     }`}
                   >
                     {tabValue === 'all' && (
-                      <BadgeCheck className="mr-2 text-blue-500" size={17} />
+                      <BadgeCheck className="mr-2 text-gray-500" size={17} />
                     )}
                     {tabValue === 'read' && (
-                      <Eye className="mr-2 text-blue-500" size={17} />
+                      <Eye className="mr-2 text-gray-500" size={17} />
                     )}
                     {tabValue === 'unread' && (
-                      <Mail className="mr-2 text-blue-500" size={17} />
+                      <Mail className="mr-2 text-gray-500" size={17} />
                     )}
                     <span
                       className={
@@ -201,17 +201,15 @@ const AllNotifications: FunctionComponent = () => {
 
                     <Card>
                       <CardContent className="flex items-center px-3 py-2">
-                        {notification.senderId?.Avatar ? (
-                          <img
-                            src={notification.senderId.Avatar}
-                            alt="Sender Avatar"
-                            className="mr-2 size-10 rounded-full object-cover"
+                        <Avatar className="mr-2 size-10">
+                          <AvatarImage
+                            src={notification.senderId?.Avatar || ''}
+                            alt={`${notification.senderId?.firstName || 'Unknown'} ${notification.senderId?.lastName || 'User'}`}
                           />
-                        ) : (
-                          <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-gray-300">
-                            <User size={24} color="#555" />
-                          </div>
-                        )}
+                          <AvatarFallback className="uppercase">
+                            {`${notification.senderId?.firstName?.charAt(0) || ''}${notification.senderId?.lastName?.charAt(0) || ''}`}
+                          </AvatarFallback>
+                        </Avatar>
                         <div className="flex-1">
                           <p className="text-sm">
                             <span className="font-bold capitalize">
