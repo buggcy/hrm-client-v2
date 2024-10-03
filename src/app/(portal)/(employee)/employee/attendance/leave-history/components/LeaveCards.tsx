@@ -20,7 +20,7 @@ const LeaveCards: FunctionComponent<LeaveCardsProps> = ({ date }) => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
-  const { mutate, isPending, data } = useMutation({
+  const { mutate, data } = useMutation({
     mutationFn: ({ id, year }: { id: string; year: number }) =>
       getLeaveHistoryStats({
         id,
@@ -43,14 +43,6 @@ const LeaveCards: FunctionComponent<LeaveCardsProps> = ({ date }) => {
       });
     }
   }, [date, user, mutate]);
-
-  if (isPending) {
-    return (
-      <div className="w-full py-4 text-center text-muted">
-        Loading Leave Stats
-      </div>
-    );
-  }
 
   return (
     <div className="grid grid-cols-1 gap-4 md:mb-8 md:grid-cols-3">

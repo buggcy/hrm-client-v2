@@ -59,10 +59,7 @@ const convertDecimalToHoursAndMinutes = (decimalHours: number): string => {
   return `${hours}:${formattedMinutes}`;
 };
 
-const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({
-  data,
-  isPending,
-}) => {
+const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
   const { card1Data, card2Data, card3Data } = data || {};
 
   const averageHours = card2Data?.averageHours;
@@ -80,30 +77,22 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({
     {
       icon: <LogIn color="#4779e5" />,
       title: 'Average Check-in',
-      value: card2Data?.averageCheckInTime || 'N/A',
+      value: card2Data?.averageCheckInTime || '10:00 AM',
       color: '',
     },
     {
       icon: <Clock4 color="#2ba476" />,
       title: 'On Time Arrivals',
-      value: card2Data?.onTimeArrivals?.toString() || 'N/A',
+      value: card2Data?.onTimeArrivals?.toString() || '0',
       color: '#2ba476',
     },
     {
       icon: <LogOut color="#e5684f" />,
       title: 'Average Check-out',
-      value: card2Data?.averageCheckOutTime || 'N/A',
+      value: card2Data?.averageCheckOutTime || '07:00 PM',
       color: '#e5684f',
     },
   ];
-
-  if (isPending) {
-    return (
-      <p className="w-full py-4 text-center text-muted">
-        Loading Attendence Stats
-      </p>
-    );
-  }
 
   return (
     <section className="flex w-full flex-col gap-4 lg:flex-row">
