@@ -4,6 +4,7 @@ import { FunctionComponent, Suspense, useEffect, useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 
+import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
@@ -77,14 +78,16 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
       <HighTrafficBanner />
       <LayoutHeader title="Attendance">
         <LayoutHeaderButtonsBlock>
-          <MonthPickerComponent
-            setDateValue={setDateValue}
-            initialDate={initialDate}
-          />
           <ReadDocsButton to="home" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-12 px-2">
+        <Header subheading="You are 15 minutes late today!">
+          <MonthPickerComponent
+            setDateValue={setDateValue}
+            initialDate={initialDate}
+          />
+        </Header>
         <AttendanceCards data={attendanceHistoryStats} isPending={isPending} />
         <Suspense fallback={<div>Loading...</div>}>
           <AttendanceHistoryTable date={date} />

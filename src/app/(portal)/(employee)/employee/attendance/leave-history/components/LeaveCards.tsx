@@ -45,7 +45,7 @@ const LeaveCards: FunctionComponent<LeaveCardsProps> = ({ date }) => {
   }, [date, user, mutate]);
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:mb-8 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       <LeavePattern data={data?.dayOfWeekCount} />
       <MonthlyStats data={data?.monthCount} />
       <ConsumedLeaves data={data?.leaves} />
