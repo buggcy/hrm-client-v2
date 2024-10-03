@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -22,7 +22,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useRedirectAfterAuth } from '@/app/(authentication)/auth/hooks';
 import { sendDataForResetPassword } from '@/services';
 
-import { PasswordInput } from '../../../sign-in/components/PasswordInput';
+import { PasswordInput } from '../../sign-in/components/PasswordInput';
 
 const FormSchema = z
   .object({
@@ -60,8 +60,9 @@ const FormSchema = z
     path: ['cPassword'],
   });
 
-export function ResetPasswordForm({ email }: { email: string }) {
+export function ResetPasswordForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { mutate, isPending } = useMutation({
     mutationFn: sendDataForResetPassword,
@@ -85,7 +86,7 @@ export function ResetPasswordForm({ email }: { email: string }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: email.replace(/%40/g, '@') ?? '',
+      email: searchParams.get('email') ?? '',
       password: '',
       otp: '',
       cPassword: '',

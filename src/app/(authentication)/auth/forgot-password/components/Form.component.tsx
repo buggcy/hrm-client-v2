@@ -47,7 +47,7 @@ export function ResetPasswordForm() {
         description: 'Password reset email sent successfully!',
         variant: 'success',
       });
-      router.push(`/auth/reset-password/${form.getValues('email')}`);
+      router.push(`/auth/reset-password?email=${form.getValues('email')}`);
     },
   });
 

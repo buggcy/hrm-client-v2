@@ -1,12 +1,13 @@
-'use client';
+import { Suspense } from 'react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 
 import { AuthLayout } from '@/app/(authentication)/auth/Layout.component';
-import { ResetPasswordForm } from '@/app/(authentication)/auth/reset-password/[email]/components/Form.component';
 
-const ResetPasswordPage = ({ params }: { params: { email: string } }) => {
+import { ResetPasswordForm } from './components/Form.component';
+
+export default function ResetPasswordPage() {
   return (
     <AuthLayout>
       <div className="grid gap-2 text-center">
@@ -15,7 +16,9 @@ const ResetPasswordPage = ({ params }: { params: { email: string } }) => {
           Enter your email to reset a password
         </p>
       </div>
-      <ResetPasswordForm email={params.email} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ResetPasswordForm />
+      </Suspense>
       <div className="text-center text-sm">
         Know your password?{' '}
         <Button asChild variant="link" className="p-0">
@@ -26,6 +29,4 @@ const ResetPasswordPage = ({ params }: { params: { email: string } }) => {
       </div>
     </AuthLayout>
   );
-};
-
-export default ResetPasswordPage;
+}
