@@ -111,7 +111,7 @@ export const getLeaveData = async ({
 export const applyLeaveData = async (
   formData: FormData,
 ): Promise<ApplyLeaveApiResponse> => {
-  const res = await baseAPI.post(`/apply-leave`, formData);
+  const res = await baseAPI.post(`/apply-leave-v2`, formData);
   return schemaParse(applyLeaveApiResponseSchema)(res);
 };
 
