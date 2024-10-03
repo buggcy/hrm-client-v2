@@ -182,7 +182,7 @@ function validateLeaveApplication(
       const month = getMonthName(startMonth);
       toast({
         title: 'Error',
-        description: `Requested leaves exceed remaining leaves for ${month}, ${startYear}.`,
+        description: `Requested leaves exceed remaining leaves for ${month} ${startYear}.`,
         variant: 'destructive',
       });
       return false;
@@ -191,7 +191,7 @@ function validateLeaveApplication(
       const month = getMonthName(endMonth);
       toast({
         title: 'Error',
-        description: `Requested leaves exceed remaining leaves for ${month}, ${endYear}.`,
+        description: `Requested leaves exceed remaining leaves for ${month} ${endYear}.`,
         variant: 'destructive',
       });
       return false;
