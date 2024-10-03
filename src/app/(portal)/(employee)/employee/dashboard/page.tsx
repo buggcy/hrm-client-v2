@@ -1,5 +1,5 @@
 'use client';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent } from 'react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -8,36 +8,17 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { Notification } from '@/components/NotificationIcon/NotificationIcon';
+import { Notification } from '@/components/NotificationIcon';
 
-import { User } from '@/types/user.types';
+import RecentAnnouncements from './components/Announcement';
+import { BChart } from './components/BarChart/BarChart';
+import BirthdaysUpcoming from './components/Birthdays';
+import DashboardHeader from './components/dashboardHeader';
+import EmployeeCard from './components/Employeecard';
+import UpcomingEvents from './components/UpcomingEvents';
 interface EmployeeDashboardProps {}
 
 const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const authStorage = sessionStorage.getItem('auth-storage');
-
-      if (authStorage) {
-        const parsedStorage = JSON.parse(authStorage) as {
-          state?: { user?: User };
-        };
-        const userData = parsedStorage.state?.user;
-        if (
-          userData &&
-          typeof userData.firstName === 'string' &&
-          typeof userData.lastName === 'string'
-        ) {
-          setUser(userData);
-        } else {
-          setUser(null);
-        }
-      }
-    }
-  }, []);
-
   return (
     <Layout>
       <HighTrafficBanner />
@@ -46,17 +27,28 @@ const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper className="flex flex-col gap-10">
-        {user ? (
-          <h1>
-            Welcome Back!{' '}
-            <span className="font-bold capitalize">
-              {user.firstName} {user.lastName}
-            </span>
-          </h1>
-        ) : (
-          <h1>Welcome Back!</h1>
-        )}
+      <LayoutWrapper className="flex flex-col gap-5">
+        <div className="m-0 p-0">
+          <DashboardHeader />
+        </div>
+        <div className="flex flex-col items-start gap-5 lg:flex-row">
+          <div className="w-full lg:w-2/3">
+            <EmployeeCard />
+          </div>
+          <div className="w-full lg:w-1/3">
+            <RecentAnnouncements />
+          </div>
+        </div>
+
+        <div className="flex w-full flex-col items-start gap-6 lg:flex-row">
+          <div className="w-full lg:w-2/3">
+            <BChart />
+          </div>
+          <div className="w-full lg:w-1/3">
+            <UpcomingEvents />
+            <BirthdaysUpcoming />
+          </div>
+        </div>
       </LayoutWrapper>
     </Layout>
   );

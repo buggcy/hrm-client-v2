@@ -1,5 +1,5 @@
 'use client';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent } from 'react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -9,25 +9,16 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
+import { useStores } from '@/providers/Store.Provider';
 
-import { User } from '@/types/user.types';
+import { AuthStoreType } from '@/stores/auth';
 
 interface HrDashboardmeProps {}
 
 const HrDashboardme: FunctionComponent<HrDashboardmeProps> = () => {
-  const [user, setUser] = useState<{
-    firstName: string;
-    lastName: string;
-  } | null>(null);
+  const { authStore } = useStores() as { authStore: AuthStoreType };
 
-  useEffect(() => {
-    const authStorage = sessionStorage.getItem('auth-storage');
-    if (authStorage) {
-      const parsedStorage = JSON.parse(authStorage);
-      const userData: User = parsedStorage.state?.user;
-      setUser(userData || null);
-    }
-  }, []);
+  const { user } = authStore;
 
   return (
     <Layout>

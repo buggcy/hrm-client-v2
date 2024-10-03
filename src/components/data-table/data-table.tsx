@@ -26,10 +26,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import { EmployeeListType } from '@/libs/validations/employee';
+import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
 import { DataTablePagination } from './data-table-pagination';
+import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
+import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -45,7 +49,13 @@ interface DataTableProps<TData, TValue> {
   searchLoading: boolean;
 }
 
-export function DataTable<TData extends EmployeeListType, TValue>({
+export function DataTable<
+  TData extends
+    | EmployeeListType
+    | AttendanceHistoryListType
+    | LeaveHistoryListType,
+  TValue,
+>({
   columns,
   data,
   pagination,
@@ -85,16 +95,34 @@ export function DataTable<TData extends EmployeeListType, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    manualPagination: true,
   });
 
+  const dataType = data[0]?.type;
   return (
     <div className="space-y-4">
-      <EmployeeListToolbar
-        table={table}
-        onSearch={onSearch}
-        searchTerm={searchTerm}
-        searchLoading={searchLoading}
-      />
+      {dataType === 'employee' ? (
+        <EmployeeListToolbar
+          table={table}
+          searchTerm={searchTerm}
+          onSearch={onSearch}
+          searchLoading={searchLoading}
+        />
+      ) : dataType === 'attendanceHistory' ? (
+        <AttendanceHistoryListToolbar
+          table={table}
+          searchTerm={searchTerm}
+          onSearch={onSearch}
+          searchLoading={searchLoading}
+        />
+      ) : (
+        <LeaveHistoryListToolbar
+          table={table}
+          searchTerm={searchTerm}
+          onSearch={onSearch}
+          searchLoading={searchLoading}
+        />
+      )}
       <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>
