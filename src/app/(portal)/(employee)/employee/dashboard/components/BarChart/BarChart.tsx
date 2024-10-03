@@ -26,7 +26,6 @@ export function BChart() {
   const currentMonthName = getCurrentMonthName();
 
   const { data: chartData, isLoading, isFetching } = useAttendanceData(userId);
-  console.log('chartdata', chartData);
   const placeholderData: ChartData[] = Array.from({ length: 7 }, (_, i) => ({
     date: (i + 1).toString(),
     Hours: 0,

@@ -14,13 +14,11 @@ const EmployeeCard = () => {
   const userId = useUserId();
   const monthYear = '2024-09';
   const totalDays: number = getTotalWorkingDaysInCurrentMonth();
-  console.log(totalDays);
   const {
     data: empdata,
     isLoading,
     isFetching,
   } = useEmployeeAttendance(userId);
-  console.log('employeedata', empdata);
   const { data: attendanceReport } = useAttendanceReport(userId, monthYear);
   useEffect(() => {}, [userId, empdata]);
   const totalHoursOfWeek =
