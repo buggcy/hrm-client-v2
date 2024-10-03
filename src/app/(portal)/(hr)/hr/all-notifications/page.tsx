@@ -124,7 +124,7 @@ const AllNotifications: FunctionComponent = () => {
             onValueChange={value => setFilter(value as FilterValue)}
             className="w-full"
           >
-            <TabsList className="mt-4 flex w-full justify-between bg-transparent p-0 sm:flex-col sm:space-y-4">
+            <TabsList className="flex w-full justify-between bg-transparent p-0 sm:mt-4 sm:flex-col sm:space-y-4">
               {[
                 {
                   value: 'all',
@@ -148,7 +148,7 @@ const AllNotifications: FunctionComponent = () => {
           </Tabs>
         </div>
 
-        <div className="w-full min-w-80 p-6 sm:w-8/12">
+        <div className="w-full min-w-80 px-0 py-4 sm:w-8/12">
           <div className="mb-1 flex items-center justify-between">
             <h2 className="mb-0 text-lg font-bold">{getTitle()}</h2>
             <DropdownMenu>
@@ -211,7 +211,7 @@ const AllNotifications: FunctionComponent = () => {
                           </p>
                         </div>
                         <div className="flex items-center">
-                          <p className="mr-2 text-xs text-gray-500">
+                          <p className="mr-1 text-xs text-gray-500">
                             {timeAgo(notification.createdAt)}
                           </p>
                           {!notification.isRead && (

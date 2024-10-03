@@ -135,7 +135,7 @@ const AllNotifications: FunctionComponent = () => {
             onValueChange={value => setFilter(value as FilterValue)}
             className="w-full"
           >
-            <TabsList className="mt-4 flex w-full justify-between bg-transparent p-0 sm:flex-col sm:space-y-4">
+            <TabsList className="flex w-full justify-between bg-transparent p-0 sm:mt-4 sm:flex-col sm:space-y-4">
               {[
                 {
                   value: 'all',
@@ -159,7 +159,7 @@ const AllNotifications: FunctionComponent = () => {
           </Tabs>
         </div>
 
-        <div className="w-full min-w-80 p-6 sm:w-8/12">
+        <div className="w-full min-w-80 px-0 py-4 sm:w-8/12">
           <div className="mb-1 flex items-center justify-between">
             <h2 className="mb-0 text-lg font-bold">{getTitle()}</h2>
             <DropdownMenu>
@@ -188,57 +188,57 @@ const AllNotifications: FunctionComponent = () => {
                 <Loader className="mr-2 animate-spin" />
               </div>
             )}
-            <ul className="space-y-2">
+            <ul className="w-full max-w-full space-y-2 overflow-hidden sm:w-auto">
               {sortedFilteredNotifications.length > 0 ? (
-                sortedFilteredNotifications.map(notification => {
-                  return (
-                    <li key={notification._id} className="relative">
-                      {loadingNotificationId === notification._id && (
-                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
-                          <Loader className="mr-2 animate-spin" />
-                        </div>
-                      )}
+                sortedFilteredNotifications.map(notification => (
+                  <li key={notification._id} className="relative">
+                    {loadingNotificationId === notification._id && (
+                      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
+                        <Loader className="mr-2 animate-spin" />
+                      </div>
+                    )}
 
-                      <Card>
-                        <CardContent className="flex items-center px-3 py-2">
-                          <Avatar className="mr-2 size-10">
-                            <AvatarImage
-                              src={notification.senderId?.Avatar || ''}
-                              alt={`${notification.senderId?.firstName || 'Unknown'} ${notification.senderId?.lastName || 'User'}`}
-                            />
-                            <AvatarFallback className="uppercase">
-                              {`${notification.senderId?.firstName?.charAt(0) || ''}${notification.senderId?.lastName?.charAt(0) || ''}`}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <p className="text-sm">
-                              <span className="font-bold capitalize">
-                                {notification.senderId?.firstName || 'Unknown'}{' '}
-                                {notification.senderId?.lastName || 'User'}
-                              </span>{' '}
-                              {notification.message}
-                            </p>
-                          </div>
-                          <div className="flex items-center">
-                            <p className="mr-2 text-xs text-gray-500">
-                              {timeAgo(notification.createdAt)}
-                            </p>
-                            {!notification.isRead && (
-                              <span
-                                className="cursor-pointer text-lg text-blue-500"
-                                onClick={() =>
-                                  handleMarkAsReadClick(notification._id)
-                                }
-                              >
-                                ●
-                              </span>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </li>
-                  );
-                })
+                    <Card className="w-full max-w-full overflow-hidden sm:w-auto">
+                      <CardContent className="flex items-center px-3 py-2">
+                        <Avatar className="mr-2 size-10">
+                          <AvatarImage
+                            src={notification.senderId?.Avatar || ''}
+                            alt={`${notification.senderId?.firstName || 'Unknown'} ${notification.senderId?.lastName || 'User'}`}
+                          />
+                          <AvatarFallback className="uppercase">
+                            {`${notification.senderId?.firstName?.charAt(0) || ''}${notification.senderId?.lastName?.charAt(0) || ''}`}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <p className="break-words text-sm">
+                            <span className="font-bold capitalize">
+                              {notification.senderId?.firstName ||
+                                'Unknown First Name'}{' '}
+                              {notification.senderId?.lastName ||
+                                'Unknown Last Name'}
+                            </span>{' '}
+                            {notification.message}
+                          </p>
+                        </div>
+                        <div className="flex items-center">
+                          <p className="mr-1 text-xs text-gray-500">
+                            {timeAgo(notification.createdAt)}
+                          </p>
+                          {!notification.isRead && (
+                            <span
+                              className="cursor-pointer text-lg text-blue-500"
+                              onClick={() =>
+                                handleMarkAsReadClick(notification._id)
+                              }
+                            >
+                              ●
+                            </span>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </li>
+                ))
               ) : (
                 <div className="flex items-center justify-start p-4 text-gray-500">
                   <BellOff className="mr-3 size-5 text-gray-400" />
