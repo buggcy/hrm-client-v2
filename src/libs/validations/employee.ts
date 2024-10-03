@@ -72,6 +72,7 @@ const employeeListSchema = z.object({
   Designation: z.string().optional(),
   createdAt: z.string().optional(),
   __v: z.number().optional(),
+  type: z.literal('employee').optional(),
 });
 
 const employeeApiResponseSchema = z.object({
