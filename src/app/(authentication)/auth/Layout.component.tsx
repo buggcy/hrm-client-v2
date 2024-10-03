@@ -20,7 +20,7 @@ export function AuthLayout({
           priority
         />
         <div
-          className={`mx-auto grid gap-6 ${maxWidth ? 'w-full max-w-sm' : ''}`}
+          className={`grid gap-6 ${maxWidth ? 'mx-auto w-full max-w-sm' : ''}`}
         >
           {children}
         </div>

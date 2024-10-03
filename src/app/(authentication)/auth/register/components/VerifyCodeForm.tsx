@@ -414,18 +414,18 @@ export function VerifyCodeForm(): JSX.Element {
   };
 
   return (
-    <Card className="">
+    <Card className="mx-auto w-full md:w-10/12 lg:w-8/12">
       <CardHeader>
         <Tabs
           defaultValue="verify-code"
           value={activeTab}
-          className="flex w-full flex-col items-center"
+          className="flex w-full flex-col"
         >
-          <TabsList className="flex justify-between">
+          <TabsList className="mx-auto grid h-auto w-full grid-cols-1 gap-2 md:h-10 md:w-10/12 md:grid-cols-4 lg:w-9/12">
             <TabsTrigger value="verify-code">Verify Code</TabsTrigger>
             <TabsTrigger value="personal-details">Personal Details</TabsTrigger>
             <TabsTrigger value="kyc">KYC</TabsTrigger>
-            <TabsTrigger value="educational-document">
+            <TabsTrigger className="px-3" value="educational-document">
               Educational Document
             </TabsTrigger>
           </TabsList>
@@ -433,35 +433,23 @@ export function VerifyCodeForm(): JSX.Element {
           <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmitMainForm)}>
               <TabsContent value="personal-details">
-                <div className="mx-auto grid w-full items-center gap-4">
-                  <Details
-                    onNext={() => handleNextTab('additionalInfo', 'kyc')}
-                  />
-                </div>
+                <Details
+                  onNext={() => handleNextTab('additionalInfo', 'kyc')}
+                />
               </TabsContent>
 
               <TabsContent value="kyc">
-                <div className="grid w-full items-center gap-4">
-                  <div className="flex flex-col space-y-1.5">
-                    <KYC
-                      onNext={() =>
-                        handleNextTab('kyc', 'educational-document')
-                      }
-                      onBack={() => handleBackTab('personal-details')}
-                    />
-                  </div>
-                </div>
+                <KYC
+                  onNext={() => handleNextTab('kyc', 'educational-document')}
+                  onBack={() => handleBackTab('personal-details')}
+                />
               </TabsContent>
 
-              <TabsContent value="educational-document">
-                <div className="grid w-full items-center gap-4">
-                  <div className="flex flex-col space-y-1.5">
-                    <ExperienceTable
-                      onBack={() => handleBackTab('kyc')}
-                      mainIsPending={mainIsPending}
-                    />
-                  </div>
-                </div>
+              <TabsContent value="educational-document" className="">
+                <ExperienceTable
+                  onBack={() => handleBackTab('kyc')}
+                  mainIsPending={mainIsPending}
+                />
               </TabsContent>
             </form>
           </FormProvider>

@@ -109,116 +109,115 @@ export function ExperienceTable({
   };
 
   return (
-    <Card className="border-none p-6 shadow-none">
-      <div>
-        <div className="mb-4 flex justify-between">
-          <CardHeader className="mb-4 flex items-center justify-between p-0">
-            <CardTitle className="flex-1 text-right">
-              Education & Experience
-            </CardTitle>
-          </CardHeader>
-          <Button type="button" onClick={handleDialogOpen}>
-            Add More
-          </Button>
-        </div>
-
-        <Table className="mb-4">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Type</TableHead>
-              <TableHead>Start Date</TableHead>
-              <TableHead>End Date</TableHead>
-              <TableHead>Institute/Company</TableHead>
-              <TableHead>Position/Degree</TableHead>
-              <TableHead>Reference No</TableHead>
-              <TableHead>Document</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {educationExperiences.map(
-              (item: EducationExperienceType, index: number) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                  </TableCell>
-                  <TableCell>{item.Start_Date.toDateString()}</TableCell>
-                  <TableCell>{item.End_Date.toDateString()}</TableCell>
-                  <TableCell>{item.Institute}</TableCell>
-                  <TableCell>{item.Position}</TableCell>
-                  <TableCell>{item.referenceNumber}</TableCell>
-                  <TableCell> {item.documentType}</TableCell>
-                  <TableCell>
-                    <Dialog>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className="flex size-8 p-0 data-[state=open]:bg-muted"
-                          >
-                            <MoreHorizontal className="size-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[200px]">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-
-                          <DialogTrigger
-                            asChild
-                            onClick={() => handleEditClick(item)}
-                          >
-                            <DropdownMenuItem>
-                              <Pencil className="mr-2 size-4" />
-                              Edit Details
-                            </DropdownMenuItem>
-                          </DialogTrigger>
-                          <DropdownMenuItem
-                            onClick={() => handleDeleteClick(item)}
-                            className="text-red-600"
-                          >
-                            <Trash2 className="mr-2 size-4" />
-                            Delete Details
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </Dialog>
-                  </TableCell>
-                </TableRow>
-              ),
-            )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={7}>Total Records</TableCell>
-              <TableCell className="text-right">
-                {educationExperiences.length}
-              </TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
-        {errors?.educationalDocument?.educationExperiences && (
-          <span className="text-xs text-red-500">
-            {errors?.educationalDocument?.educationExperiences?.message}
-          </span>
-        )}
-
-        <CardTitle className="mb-2 mt-4 flex">Additional Documents</CardTitle>
-        <Dropzone />
-        {errors?.educationalDocument?.Additional_Documents && (
-          <span className="text-xs text-red-500">
-            {errors?.educationalDocument?.Additional_Documents?.message}
-          </span>
-        )}
-        <div className="flex justify-between pt-8">
-          <Button type="button" variant={'outline'} onClick={onBack}>
-            Back
-          </Button>
-          <LoadingButton loading={mainIsPending} type="submit">
-            Submit
-          </LoadingButton>
-        </div>
+    <Card className="mt-4 border-none shadow-none">
+      <div className="mb-4 flex flex-col justify-between md:flex-row">
+        <CardHeader className="mb-4 flex items-center justify-between p-0">
+          <CardTitle className="flex-1 text-right">
+            Education & Experience
+          </CardTitle>
+        </CardHeader>
+        <Button type="button" onClick={handleDialogOpen}>
+          Add More
+        </Button>
       </div>
+
+      <Table className="">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Type</TableHead>
+            <TableHead>Start Date</TableHead>
+            <TableHead>End Date</TableHead>
+            <TableHead>Institute/Company</TableHead>
+            <TableHead>Position/Degree</TableHead>
+            <TableHead>Reference No</TableHead>
+            <TableHead>Document</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {educationExperiences.map(
+            (item: EducationExperienceType, index: number) => (
+              <TableRow key={index}>
+                <TableCell>
+                  {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                </TableCell>
+                <TableCell>{item.Start_Date.toDateString()}</TableCell>
+                <TableCell>{item.End_Date.toDateString()}</TableCell>
+                <TableCell>{item.Institute}</TableCell>
+                <TableCell>{item.Position}</TableCell>
+                <TableCell>{item.referenceNumber}</TableCell>
+                <TableCell> {item.documentType}</TableCell>
+                <TableCell>
+                  <Dialog>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="flex size-8 p-0 data-[state=open]:bg-muted"
+                        >
+                          <MoreHorizontal className="size-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-[200px]">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+
+                        <DialogTrigger
+                          asChild
+                          onClick={() => handleEditClick(item)}
+                        >
+                          <DropdownMenuItem>
+                            <Pencil className="mr-2 size-4" />
+                            Edit Details
+                          </DropdownMenuItem>
+                        </DialogTrigger>
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteClick(item)}
+                          className="text-red-600"
+                        >
+                          <Trash2 className="mr-2 size-4" />
+                          Delete Details
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </Dialog>
+                </TableCell>
+              </TableRow>
+            ),
+          )}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={7}>Total Records</TableCell>
+            <TableCell className="text-right">
+              {educationExperiences.length}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+      {errors?.educationalDocument?.educationExperiences && (
+        <span className="text-xs text-red-500">
+          {errors?.educationalDocument?.educationExperiences?.message}
+        </span>
+      )}
+
+      <CardTitle className="mb-2 mt-4 flex">Additional Documents</CardTitle>
+      <Dropzone />
+      {errors?.educationalDocument?.Additional_Documents && (
+        <span className="text-xs text-red-500">
+          {errors?.educationalDocument?.Additional_Documents?.message}
+        </span>
+      )}
+      <div className="flex justify-between pt-8">
+        <Button type="button" variant={'outline'} onClick={onBack}>
+          Back
+        </Button>
+        <LoadingButton loading={mainIsPending} type="submit">
+          Submit
+        </LoadingButton>
+      </div>
+
       <EduEpxDialog
         open={dialogOpen}
         onOpenChange={handleDialogClose}

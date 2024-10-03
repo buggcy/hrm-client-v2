@@ -138,7 +138,7 @@ export function Details({ onNext }: { onNext: () => void }) {
                 <Button
                   variant={'outline'}
                   className={cn(
-                    'w-[241.5px] justify-start text-left font-normal',
+                    'justify-start text-left font-normal',
                     !dateOfBirth && 'text-muted-foreground',
                   )}
                 >
@@ -190,6 +190,7 @@ export function Details({ onNext }: { onNext: () => void }) {
                       maritalStatus.slice(1)
                     : 'Select marital status'}
                 </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup className="text-sm">
@@ -207,7 +208,6 @@ export function Details({ onNext }: { onNext: () => void }) {
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
-              <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
             </Select>
             {errors.additionalInfo?.Marital_Status && (
               <span className="text-xs text-red-500">
@@ -229,10 +229,11 @@ export function Details({ onNext }: { onNext: () => void }) {
                 }
               }}
             >
-              <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                 <SelectValue>
                   {bloodGroup ? bloodGroup : 'Select blood group'}
                 </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup className="text-sm">
@@ -286,7 +287,6 @@ export function Details({ onNext }: { onNext: () => void }) {
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
-              <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
             </Select>
             {errors.additionalInfo?.Blood_Group && (
               <span className="text-xs text-red-500">
@@ -307,12 +307,13 @@ export function Details({ onNext }: { onNext: () => void }) {
                 }
               }}
             >
-              <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                 <SelectValue>
                   {gender
                     ? gender.charAt(0).toUpperCase() + gender.slice(1)
                     : 'Select Gender'}
                 </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
                 <SelectContent>
                   <SelectGroup className="text-sm">
                     <SelectItem
@@ -330,8 +331,6 @@ export function Details({ onNext }: { onNext: () => void }) {
                   </SelectGroup>
                 </SelectContent>
               </SelectTrigger>
-
-              <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
             </Select>
             {errors.additionalInfo?.Gender && (
               <span className="text-xs text-red-500">
@@ -348,7 +347,6 @@ export function Details({ onNext }: { onNext: () => void }) {
               id="Nationality"
               {...register('additionalInfo.Nationality')}
               placeholder="Nationality"
-              className="w-[241.5px]"
             />
             {errors.additionalInfo?.Nationality && (
               <span className="text-xs text-red-500">
@@ -417,7 +415,6 @@ export function Details({ onNext }: { onNext: () => void }) {
               id="Family_Occupation"
               {...register('additionalInfo.Family_Occupation')}
               placeholder="Occupation"
-              className="w-[241.5px]"
             />
             {errors.additionalInfo?.Family_Occupation && (
               <span className="text-xs text-red-500">
@@ -467,7 +464,7 @@ export function Details({ onNext }: { onNext: () => void }) {
                   setValue('additionalInfo.Address.country', value)
                 }
               >
-                <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
+                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                   <SelectValue placeholder="Select Country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -508,7 +505,7 @@ export function Details({ onNext }: { onNext: () => void }) {
                   setValue('additionalInfo.Address.province', value)
                 }
               >
-                <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
+                <SelectTrigger className="relative z-50  rounded-md border px-3 py-2 text-left text-sm">
                   <SelectValue placeholder="Select Province" />
                 </SelectTrigger>
                 <SelectContent>
