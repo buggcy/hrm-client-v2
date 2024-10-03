@@ -39,12 +39,6 @@ import { timeAgo } from '@/utils/notification.utills';
 
 type FilterValue = 'all' | 'read' | 'unread';
 
-interface FilterMenuItemProps {
-  value: FilterValue;
-  icon: React.ComponentType<{ className?: string }>;
-  count: number;
-}
-
 const AllNotifications: FunctionComponent = () => {
   const [isMarkingAllAsRead, setIsMarkingAllAsRead] = useState(false);
   const { notifications: storeNotifications, setNotifications } =
@@ -56,18 +50,6 @@ const AllNotifications: FunctionComponent = () => {
     string | null
   >(null);
   const [filter, setFilter] = useState<FilterValue>('all');
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-
-    checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-
-    return () => window.removeEventListener('resize', checkIsMobile);
-  }, []);
 
   useEffect(() => {
     if (fetchedNotifications) {
@@ -126,17 +108,6 @@ const AllNotifications: FunctionComponent = () => {
     );
   }
 
-  const FilterMenuItem: React.FC<FilterMenuItemProps> = ({
-    value,
-    icon: Icon,
-    count,
-  }) => (
-    <DropdownMenuItem onClick={() => setFilter(value)}>
-      <Icon className="mr-2 size-4" />
-      <span className="mr-1 capitalize">{value}</span> ({count})
-    </DropdownMenuItem>
-  );
-
   return (
     <Layout>
       <HighTrafficBanner />
@@ -146,59 +117,38 @@ const AllNotifications: FunctionComponent = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
 
-      <LayoutWrapper className="flex flex-col gap-12 sm:flex-row">
-        <div className={`mt-20 w-1/4 ${isMobile ? 'hidden' : ''}`}>
+      <LayoutWrapper className="flex flex-col gap-4 sm:flex-row sm:gap-12">
+        <div className="w-full sm:w-1/4">
           <Tabs
             value={filter}
             onValueChange={value => setFilter(value as FilterValue)}
+            className="w-full"
           >
-            <TabsList className="flex min-w-48 flex-col space-y-2 bg-transparent p-4">
-              {['all', 'read', 'unread'].map(tabValue => (
-                <div
-                  key={tabValue}
-                  style={{ width: '100%' }}
-                  className="rounded-md"
+            <TabsList className="mt-4 flex w-full justify-between bg-transparent p-0 sm:flex-col sm:space-y-4">
+              {[
+                {
+                  value: 'all',
+                  icon: BadgeCheck,
+                  count: storeNotifications.length,
+                },
+                { value: 'read', icon: Eye, count: readCount },
+                { value: 'unread', icon: Mail, count: unreadCount },
+              ].map(({ value, icon: Icon, count }) => (
+                <TabsTrigger
+                  key={value}
+                  value={value}
+                  className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
                 >
-                  <TabsTrigger
-                    value={tabValue}
-                    className={`flex w-full items-center justify-center rounded-md py-3 data-[state=active]:bg-gray-200 data-[state=active]:text-black ${
-                      filter === tabValue && 'bg-gray-300 text-black'
-                    }`}
-                  >
-                    {tabValue === 'all' && (
-                      <BadgeCheck className="mr-2 text-gray-500" size={17} />
-                    )}
-                    {tabValue === 'read' && (
-                      <Eye className="mr-2 text-gray-500" size={17} />
-                    )}
-                    {tabValue === 'unread' && (
-                      <Mail className="mr-2 text-gray-500" size={17} />
-                    )}
-                    <span
-                      className={
-                        tabValue === 'all'
-                          ? 'pr-5'
-                          : tabValue === 'read'
-                            ? 'pr-2'
-                            : ''
-                      }
-                    >
-                      {tabValue.charAt(0).toUpperCase() + tabValue.slice(1)} (
-                      {tabValue === 'all'
-                        ? storeNotifications.length
-                        : tabValue === 'read'
-                          ? readCount
-                          : unreadCount}
-                      )
-                    </span>
-                  </TabsTrigger>
-                </div>
+                  <Icon className="mr-2 size-4" />
+                  <span className="capitalize">{value}</span>
+                  <span className="ml-1">({count})</span>
+                </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
         </div>
 
-        <div className={`${isMobile ? 'w-full' : 'w-8/12'} min-w-80 p-6`}>
+        <div className="w-full min-w-80 p-6 sm:w-8/12">
           <div className="mb-1 flex items-center justify-between">
             <h2 className="mb-0 text-lg font-bold">{getTitle()}</h2>
             <DropdownMenu>
@@ -213,21 +163,6 @@ const AllNotifications: FunctionComponent = () => {
                   <CheckCircle className="mr-2 size-4" />
                   Mark all as read
                 </DropdownMenuItem>
-                {isMobile && (
-                  <>
-                    <FilterMenuItem
-                      value="all"
-                      icon={BadgeCheck}
-                      count={storeNotifications.length}
-                    />
-                    <FilterMenuItem value="read" icon={Eye} count={readCount} />
-                    <FilterMenuItem
-                      value="unread"
-                      icon={Mail}
-                      count={unreadCount}
-                    />
-                  </>
-                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
