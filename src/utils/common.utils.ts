@@ -56,6 +56,53 @@ export function getQueryParamsString(
     .join('&');
 }
 
+export const getCurrentMonthAndYear = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+};
+
+export function getCurrentMonthName(): string {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  const currentDate = new Date();
+  const currentMonthIndex = currentDate.getMonth();
+  return monthNames[currentMonthIndex];
+}
+export const getTotalWorkingDaysInCurrentMonth = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  let totalWorkingDays = 0;
+
+  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+
+  for (let day = 1; day <= totalDaysInMonth; day++) {
+    const currentDate = new Date(year, month, day);
+    const dayOfWeek = currentDate.getDay();
+
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      totalWorkingDays++;
+    }
+  }
+
+  return totalWorkingDays;
+};
 export function maskedAccountNumber(value: number | string): string {
   const strValue = value.toString();
   return strValue.replace(/.(?=.{3})/g, '*');
