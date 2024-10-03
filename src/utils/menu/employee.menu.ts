@@ -9,6 +9,11 @@ export const employeeMenu: MenuItem[] = [
     href: '/employee/dashboard',
   },
   {
+    title: 'Payroll',
+    icon: Home,
+    href: '/employee/payroll',
+  },
+  {
     title: 'Time Tracking',
     icon: CalendarClock,
     children: [
