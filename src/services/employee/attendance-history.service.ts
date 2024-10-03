@@ -54,7 +54,6 @@ export const getAttendanceHistoryList = async (
 };
 
 export const searchAttedanceHistoryList = async ({
-  query,
   page,
   limit,
   id,
@@ -68,7 +67,6 @@ export const searchAttedanceHistoryList = async ({
   month: number;
   year: number;
 }): Promise<AttendanceHistoryApiResponse> => {
-  console.log('query', query);
   const res = await baseAPI.get(
     `/attendence-history-user-v2?page=${page}&limit=${limit}&id=${id}&month=${month}&year=${year}`,
   );

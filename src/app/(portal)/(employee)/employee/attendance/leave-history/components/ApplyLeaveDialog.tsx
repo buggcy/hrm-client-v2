@@ -264,7 +264,6 @@ export function ApplyLeaveDialog({
   const { mutate, isPending } = useMutation({
     mutationFn: applyLeaveData,
     onError: err => {
-      console.log(err);
       toast({
         title: 'Error',
         description:

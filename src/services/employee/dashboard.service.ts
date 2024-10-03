@@ -25,47 +25,32 @@ export const fetchMonthlyAttendanceChartData = async (
     };
   });
 
-  console.log('Monthly', formattedData);
-
   return formattedData;
 };
 
 export const fetchWeeklyAttendance = async (
   taho_id: string,
 ): Promise<AttendanceData> => {
-  try {
-    const response: AttendanceData = await baseAPI.get(
-      `/attendance-weekly/${taho_id}`,
-    );
-
-    console.log('Employee API response:', response);
-    return response;
-  } catch (error) {
-    console.error('Error fetching attendance data:', error);
-    throw error;
-  }
+  const response: AttendanceData = await baseAPI.get(
+    `/attendance-weekly/${taho_id}`,
+  );
+  return response;
 };
 export const fetchCurrentMonthEvents = async (): Promise<EventData[]> => {
-  try {
-    const response = await baseAPI.get<RawEventData[]>(
-      `/events/list?currentMonth=true&isEnabled=true`,
-    );
-    console.log(response);
-    const events: EventData[] = response.data.map((event: RawEventData) => ({
-      id: event._id,
-      title: event.Event_Name,
-      start: new Date(event.Event_Start),
-      end: new Date(event.Event_End),
-      Event_Discription: event.Event_Discription,
-      type: event.Event_Type,
-      hrId: event.hrId,
-      isEnabled: event.isEnabled,
-    }));
-    return events;
-  } catch (error) {
-    console.error('Error fetching events data:', error);
-    throw error;
-  }
+  const response = await baseAPI.get<RawEventData[]>(
+    `/events/list?currentMonth=true&isEnabled=true`,
+  );
+  const events: EventData[] = response.data.map((event: RawEventData) => ({
+    id: event._id,
+    title: event.Event_Name,
+    start: new Date(event.Event_Start),
+    end: new Date(event.Event_End),
+    Event_Discription: event.Event_Discription,
+    type: event.Event_Type,
+    hrId: event.hrId,
+    isEnabled: event.isEnabled,
+  }));
+  return events;
 };
 
 export const fetchAttendanceReport = async (
@@ -84,18 +69,11 @@ export const fetchAttendanceReport = async (
 };
 
 export const fetchRecentAnnouncements = async () => {
-  try {
-    const response: RecentAnnouncement = await baseAPI.get(`/recent`);
-    console.log('announcnemt results', response);
-    return response;
-  } catch (err) {
-    console.error('Error fetching events data:', err);
-    throw err;
-  }
+  const response: RecentAnnouncement = await baseAPI.get(`/recent`);
+  return response;
 };
 
 export const fetchUpcomingBirthdays = async (): Promise<BirthdayResponse> => {
   const response: BirthdayResponse = await baseAPI.get('/birthdays');
-  console.log(response);
   return response;
 };

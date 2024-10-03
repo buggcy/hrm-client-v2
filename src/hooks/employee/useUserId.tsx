@@ -9,7 +9,6 @@ export const useUserId = (): string | null => {
       const parsedStorage = JSON.parse(authStorage);
       const user = parsedStorage.state?.user;
       const userId: string | null = user?.Tahometer_ID;
-      console.log('userId:', userId);
       setUserId(userId);
     }
   }, []);
