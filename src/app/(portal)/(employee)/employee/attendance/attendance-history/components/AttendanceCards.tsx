@@ -11,6 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { AttendanceChart } from './Charts/attendance-count';
 import { HoursCompletedChart } from './Charts/hours-completed';
@@ -120,9 +126,22 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
           <HoursCompletedChart timeCompleted={card1Data?.timeCompleted} />
         </CardContent>
         <CardFooter>
-          <Button className="w-full" disabled={card1Data?.status !== 'Absent'}>
-            {card1Data?.status === 'Absent' ? 'Mark Present' : 'Marked Present'}
-          </Button>
+          <TooltipProvider disableHoverableContent delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="w-full">
+                  <Button className="w-full" disabled>
+                    {card1Data?.status === 'Absent'
+                      ? 'Mark Present'
+                      : 'Marked Present'}
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Coming Soon</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </CardFooter>
       </Card>
       <div className="grid w-full grid-cols-2 gap-4 lg:max-w-[34%]">

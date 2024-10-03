@@ -1,4 +1,4 @@
-import { Clock9, Home } from 'lucide-react';
+import { CalendarClock, Home, LogOut } from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
 
@@ -9,13 +9,19 @@ export const employeeMenu: MenuItem[] = [
     href: '/employee/dashboard',
   },
   {
-    title: 'Attendance',
-    icon: Clock9,
-    href: '/employee/attendance/attendance-history',
-  },
-  {
-    title: 'Leave',
-    icon: Clock9,
-    href: '/employee/attendance/leave-history',
+    title: 'Time Tracking',
+    icon: CalendarClock,
+    children: [
+      {
+        title: 'Attendance',
+        icon: CalendarClock,
+        href: '/employee/attendance/attendance-history',
+      },
+      {
+        title: 'Leave',
+        icon: LogOut,
+        href: '/employee/attendance/leave-history',
+      },
+    ],
   },
 ];
