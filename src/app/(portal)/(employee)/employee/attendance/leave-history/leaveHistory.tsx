@@ -3,14 +3,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 
+import Header from '@/components/Header/Header';
+import { MonthPickerComponent } from '@/components/MonthPicker';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -23,13 +18,15 @@ import { ApplyLeaveDialog } from './components/ApplyLeaveDialog';
 import LeaveCards from './components/LeaveCards';
 import LeaveHistoryTable from './components/LeaveHistoryTable.component';
 
-interface LeaveHistoryPageProps {
-  date: Date;
-}
+interface LeaveHistoryPageProps {}
 
-const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = ({
-  date,
-}) => {
+const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
+  const [date, setDate] = useState(new Date());
+  const initialDate = new Date();
+
+  const setDateValue = (date: Date | null) => {
+    setDate(date || new Date());
+  };
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -151,18 +148,17 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = ({
     router.push(`?${params.toString()}`);
   };
   return (
-    <>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-0">
-          <CardTitle>Good Afternoon, Sourav!</CardTitle>
-          <Button variant="default" onClick={handleDialogOpen}>
-            Apply Leave Form
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <CardDescription>You have 2 leave requests pending.</CardDescription>
-        </CardContent>
-      </Card>
+    <div className="flex flex-col gap-12">
+      <Header subheading="You have 2 leave requests pending">
+        <MonthPickerComponent
+          setDateValue={setDateValue}
+          initialDate={initialDate}
+        />
+        <Button variant="default" onClick={handleDialogOpen}>
+          Apply Leave Form
+        </Button>
+      </Header>
+
       <LeaveCards date={date} />
       <LeaveHistoryTable
         leaveHistoryList={leaveHistoryList}
@@ -186,7 +182,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = ({
         page={page}
         limit={limit}
       />
-    </>
+    </div>
   );
 };
 
