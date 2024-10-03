@@ -45,6 +45,12 @@ import { cn } from '@/utils';
 
 import { EmployeeLeavesDataApiResponse } from '@/types/leave-history.types';
 
+function getMonthName(monthNumber: number) {
+  const date = new Date();
+  date.setMonth(monthNumber - 1); // Month is 0-based, so subtract 1
+  return date.toLocaleString('default', { month: 'long' }); // Use 'short' for abbreviated month names
+}
+
 function validateLeaveApplication(
   type: string,
   start: Date,
@@ -173,17 +179,19 @@ function validateLeaveApplication(
     const daysInEndMonth = totalDays - daysInStartMonth;
 
     if (daysInStartMonth > remainingStartMonthLeaves) {
+      const month = getMonthName(startMonth);
       toast({
         title: 'Error',
-        description: `Requested leaves exceed remaining leaves for ${startMonth} / ${startYear}.`,
+        description: `Requested leaves exceed remaining leaves for ${month}, ${startYear}.`,
         variant: 'destructive',
       });
       return false;
     }
     if (daysInEndMonth > 0 && daysInEndMonth > remainingEndMonthLeaves) {
+      const month = getMonthName(endMonth);
       toast({
         title: 'Error',
-        description: `Requested leaves exceed remaining leaves for ${endMonth} / ${endYear}.`,
+        description: `Requested leaves exceed remaining leaves for ${month}, ${endYear}.`,
         variant: 'destructive',
       });
       return false;
