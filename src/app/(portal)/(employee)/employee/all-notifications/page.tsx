@@ -1,10 +1,11 @@
 'use client';
 
-import { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
 
 import {
   BadgeCheck,
   BellOff,
+  CheckCircle,
   Eye,
   Loader,
   Mail,
@@ -25,31 +26,32 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useStores } from '@/providers/Store.Provider';
 
 import { useNotificationsEmp } from '@/hooks/useNotification/useNotification';
 import useNotificationActions from '@/hooks/useNotification/useNotificationActions';
+import { AuthStoreType } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/useNotificationStore';
 import { timeAgo } from '@/utils/notification.utills';
 
-import { User } from '@/types/user.types';
+type FilterValue = 'all' | 'read' | 'unread';
+
+interface FilterMenuItemProps {
+  value: FilterValue;
+  icon: React.ComponentType<{ className?: string }>;
+  count: number;
+}
 
 const AllNotifications: FunctionComponent = () => {
-  const [userId, setUserId] = useState<string | null>(null);
+  const { authStore } = useStores() as { authStore: AuthStoreType };
 
-  useEffect(() => {
-    const authStorage = sessionStorage.getItem('auth-storage');
-    if (authStorage) {
-      const parsedStorage = JSON.parse(authStorage);
-      const user: User = parsedStorage?.state?.user;
-      if (user) {
-        setUserId(user.id || null);
-      }
-    }
-  }, []);
+  const { user } = authStore;
 
   const [isMarkingAllAsRead, setIsMarkingAllAsRead] = useState(false);
   const { notifications: storeNotifications, setNotifications } =
@@ -57,13 +59,26 @@ const AllNotifications: FunctionComponent = () => {
   const { handleMarkAsRead, handleAllMarkAsRead } = useNotificationActions();
 
   const { data: fetchedNotifications, isLoading } = useNotificationsEmp(
-    userId ?? '',
+    user?.id ?? '',
   );
 
   const [loadingNotificationId, setLoadingNotificationId] = useState<
     string | null
   >(null);
-  const [filter, setFilter] = useState<'all' | 'read' | 'unread'>('all');
+
+  const [filter, setFilter] = useState<FilterValue>('all');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   useEffect(() => {
     if (fetchedNotifications) {
@@ -122,6 +137,17 @@ const AllNotifications: FunctionComponent = () => {
     );
   }
 
+  const FilterMenuItem: React.FC<FilterMenuItemProps> = ({
+    value,
+    icon: Icon,
+    count,
+  }) => (
+    <DropdownMenuItem onClick={() => setFilter(value)}>
+      <Icon className="mr-2 size-4" />
+      <span className="mr-1 capitalize">{value}</span> ({count})
+    </DropdownMenuItem>
+  );
+
   return (
     <Layout>
       <HighTrafficBanner />
@@ -131,15 +157,13 @@ const AllNotifications: FunctionComponent = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
 
-      <LayoutWrapper className="flex gap-12">
-        <div className="mt-20 w-1/4">
+      <LayoutWrapper className="flex flex-col gap-12 sm:flex-row">
+        <div className={`mt-20 w-1/4 ${isMobile ? 'hidden' : ''}`}>
           <Tabs
             value={filter}
-            onValueChange={value =>
-              setFilter(value as 'all' | 'read' | 'unread')
-            }
+            onValueChange={value => setFilter(value as FilterValue)}
           >
-            <TabsList className="flex flex-col space-y-2 bg-transparent p-4">
+            <TabsList className="flex min-w-48 flex-col space-y-2 bg-transparent p-4">
               {['all', 'read', 'unread'].map(tabValue => (
                 <div
                   key={tabValue}
@@ -185,23 +209,45 @@ const AllNotifications: FunctionComponent = () => {
           </Tabs>
         </div>
 
-        <div className="w-8/12 p-6">
+        <div className={`${isMobile ? 'w-full' : 'w-8/12'} min-w-80 p-6`}>
           <div className="mb-1 flex items-center justify-between">
             <h2 className="mb-0 text-lg font-bold">{getTitle()}</h2>
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-center">
                 <MoreHorizontal className="size-5" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="absolute -left-0 min-w-[150px] -translate-x-full">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleAllReadClick}>
-                  <BadgeCheck className="mr-2 size-4" />
+                  <CheckCircle className="mr-2 size-4" />
                   Mark all as read
                 </DropdownMenuItem>
+                {isMobile && (
+                  <>
+                    <FilterMenuItem
+                      value="all"
+                      icon={BadgeCheck}
+                      count={storeNotifications.length}
+                    />
+                    <FilterMenuItem value="read" icon={Eye} count={readCount} />
+                    <FilterMenuItem
+                      value="unread"
+                      icon={Mail}
+                      count={unreadCount}
+                    />
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
           <hr className="mb-3" />
-          <ScrollArea className="h-96">
+          <ScrollArea
+            className="overflow-y-auto"
+            style={{
+              height: 'calc(100vh - 230px)',
+            }}
+          >
             {isMarkingAllAsRead && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
                 <Loader className="mr-2 animate-spin" />
@@ -210,10 +256,6 @@ const AllNotifications: FunctionComponent = () => {
             <ul className="space-y-2">
               {sortedFilteredNotifications.length > 0 ? (
                 sortedFilteredNotifications.map(notification => {
-                  // Add console.log statements here
-                  console.log('First Name:', notification.senderId?.firstName);
-                  console.log('Last Name:', notification.senderId?.lastName);
-
                   return (
                     <li key={notification._id} className="relative">
                       {loadingNotificationId === notification._id && (

@@ -20,56 +20,46 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useStores } from '@/providers/Store.Provider';
 
 import {
   useNotificationsEmp,
   useNotificationsHR,
 } from '@/hooks/useNotification/useNotification';
 import useNotificationActions from '@/hooks/useNotification/useNotificationActions';
+import { AuthStoreType } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/useNotificationStore';
 import { timeAgo } from '@/utils/notification.utills';
 
 import { Button } from '../ui/button';
 
-import { User } from '@/types/user.types';
-
 const Notification: React.FC = () => {
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+
+  const { user } = authStore;
+
   const [isMarkingAllAsRead, setIsMarkingAllAsRead] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const [loadingNotificationId, setLoadingNotificationId] = useState<
     string | null
   >(null);
-  const [userRole, setUserRole] = useState<number | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
 
   const { setNotifications } = useNotificationStore();
   const { handleMarkAsRead, handleAllMarkAsRead } = useNotificationActions();
 
-  useEffect(() => {
-    const authStorage = sessionStorage.getItem('auth-storage');
-    if (authStorage) {
-      const parsedStorage = JSON.parse(authStorage);
-      const user: User = parsedStorage?.state?.user;
-      if (user) {
-        setUserRole(user.roleId || null);
-        setUserId(user.id || null);
-      }
-    }
-  }, []);
-
   const { data: hrNotifications, isLoading: isLoadingHR } =
     useNotificationsHR();
   const { data: empNotifications, isLoading: isLoadingEmp } =
-    useNotificationsEmp(userId || '');
+    useNotificationsEmp(user?.id || '');
 
   useEffect(() => {
-    if (userRole === 1 && hrNotifications) {
+    if (user?.roleId === 1 && hrNotifications) {
       setNotifications(hrNotifications);
-    } else if (userRole === 2 && empNotifications) {
+    } else if (user?.roleId === 2 && empNotifications) {
       setNotifications(empNotifications);
     }
-  }, [userRole, hrNotifications, empNotifications, setNotifications]);
+  }, [user?.roleId, hrNotifications, empNotifications, setNotifications]);
 
   const { notifications } = useNotificationStore();
 
@@ -99,11 +89,14 @@ const Notification: React.FC = () => {
     setIsMarkingAllAsRead(false);
   };
 
-  if (userRole === null || userId === null) {
+  if (user?.roleId === null || user?.id === null) {
     return <Loader size={24} className="animate-spin" />;
   }
 
-  if ((userRole === 1 && isLoadingHR) || (userRole === 2 && isLoadingEmp)) {
+  if (
+    (user?.roleId === 1 && isLoadingHR) ||
+    (user?.roleId === 2 && isLoadingEmp)
+  ) {
     return <Loader size={24} className="animate-spin" />;
   }
   return (
@@ -161,7 +154,7 @@ const Notification: React.FC = () => {
         </DropdownMenu>
 
         <DropdownMenuSeparator />
-        <ScrollArea className="h-72" style={{ width: '30vw' }}>
+        <ScrollArea className="h-72 w-full">
           {isMarkingAllAsRead && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
               <Loader className="mr-2 animate-spin" />
@@ -179,9 +172,8 @@ const Notification: React.FC = () => {
                   e.preventDefault();
                 }}
                 key={notification._id}
-                className="relative flex items-center p-2"
+                className="relative flex w-full items-center p-2"
                 style={{
-                  width: '29vw',
                   paddingBottom: '0.5rem',
                   paddingTop: '0.5rem',
                   opacity: loadingNotificationId === notification._id ? 0.5 : 1,
@@ -217,15 +209,13 @@ const Notification: React.FC = () => {
                   {timeAgo(notification.createdAt)}
                 </div>
 
-                {!notification.isRead ? (
+                {!notification.isRead && (
                   <span
                     className="cursor-pointer text-lg text-blue-500"
                     onClick={() => handleMarkAsReadClick(notification._id)}
                   >
                     ●
                   </span>
-                ) : (
-                  <span className="text-lg text-white">●</span>
                 )}
               </DropdownMenuItem>
             ))
@@ -237,7 +227,7 @@ const Notification: React.FC = () => {
           <Button asChild className="w-[95%]">
             <Link
               href={
-                userRole === 1
+                user?.roleId === 1
                   ? '/hr/all-notifications'
                   : '/employee/all-notifications'
               }
