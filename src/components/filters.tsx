@@ -90,3 +90,49 @@ export const gender_options = [
     icon: PersonStanding,
   },
 ];
+
+export const attendance_history_status_options = [
+  {
+    value: 'Present',
+    label: 'Present',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Absent',
+    label: 'Absent',
+    icon: XCircle,
+  },
+  {
+    value: 'Leave',
+    label: 'Leave',
+    icon: Circle,
+  },
+  {
+    value: 'Holiday',
+    label: 'Holiday',
+    icon: Circle,
+  },
+];
+
+export const leave_history_status_options = [
+  {
+    value: 'Approved',
+    label: 'Approved',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Rejected',
+    label: 'Rejected',
+    icon: XCircle,
+  },
+  {
+    value: 'Canceled',
+    label: 'Canceled',
+    icon: XCircle,
+  },
+];

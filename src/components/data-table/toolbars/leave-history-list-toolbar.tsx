@@ -15,10 +15,10 @@ import { toast } from '@/components/ui/use-toast';
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import { EmployeeListType } from '@/libs/validations/employee';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
-import { exportEmployeeCSVData } from '@/services/hr/employee.service';
+import { exportLeaveHistoryCSVData } from '@/services/employee/leave-history.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
-import { gender_options } from '../../filters';
+import { leave_history_status_options } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -29,10 +29,10 @@ interface DataTableToolbarProps<TData> {
   searchLoading: boolean;
 }
 
-export function EmployeeListToolbar<
+export function LeaveHistoryListToolbar<
   TData extends
-    | EmployeeListType
     | AttendanceHistoryListType
+    | EmployeeListType
     | LeaveHistoryListType,
 >({
   table,
@@ -46,7 +46,7 @@ export function EmployeeListToolbar<
     .rows.map(row => row.original._id);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: exportEmployeeCSVData,
+    mutationFn: exportLeaveHistoryCSVData,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
@@ -55,9 +55,9 @@ export function EmployeeListToolbar<
         variant: 'destructive',
       });
     },
-    onSuccess: (response: string) => {
+    onSuccess: (response: BlobPart) => {
       const file = new Blob([response]);
-      downloadFile(file, 'Employees.csv');
+      downloadFile(file, 'Leave History.csv');
     },
   });
 
@@ -77,11 +77,11 @@ export function EmployeeListToolbar<
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
-        {table.getColumn('Gender') && (
+        {table.getColumn('Status') && (
           <DataTableFacetedFilter
-            column={table.getColumn('Gender')}
-            title="Gender"
-            options={gender_options}
+            column={table.getColumn('Status')}
+            title="Status"
+            options={leave_history_status_options}
           />
         )}
 
