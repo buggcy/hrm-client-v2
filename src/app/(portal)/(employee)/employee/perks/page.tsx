@@ -59,7 +59,7 @@ const Perk: FunctionComponent<PerkProps> = () => {
           onCloseChange={handleClose}
           type={modelType}
           user={user}
-          perks={modelType === 'add' ? data ?? [] : []}
+          perks={modelType === 'add' ? data : []}
           perkToEdit={null}
         />
       )}
