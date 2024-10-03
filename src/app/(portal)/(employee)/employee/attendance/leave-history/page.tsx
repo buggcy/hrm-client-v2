@@ -8,9 +8,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { MonthPickerComponent } from '@/components/MonthPicker';
 import { Notification } from '@/components/NotificationIcon';
-
 
 import LeaveHistoryPage from './leaveHistory';
 
@@ -22,10 +20,6 @@ const LeaveHistory: FunctionComponent<LeaveHistoryProps> = () => {
       <HighTrafficBanner />
       <LayoutHeader title="Leave">
         <LayoutHeaderButtonsBlock>
-          <MonthPickerComponent
-            setDateValue={setDateValue}
-            initialDate={initialDate}
-          />
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>

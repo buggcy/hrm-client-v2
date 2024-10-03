@@ -83,7 +83,6 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
             initialDate={initialDate}
           />
           <Notification />
-
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-12 px-2">
