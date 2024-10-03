@@ -42,5 +42,6 @@ const perkApiResponseSchema = z.object({
 
 export type PerkApiResponse = z.infer<typeof perkApiResponseSchema>;
 export type PerkListType = z.infer<typeof perkListSchema>;
+export type PerkListArrayType = z.infer<typeof perkListSchema>[] | [];
 
 export { perkApiResponseSchema, perkListSchema, paginationSchema };

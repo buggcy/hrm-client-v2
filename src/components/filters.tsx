@@ -4,8 +4,10 @@ import {
   ArrowUp,
   Bug,
   CheckCircle2,
+  CheckCircleIcon,
   Circle,
   CircleArrowOutUpRight,
+  Cross,
   HelpCircle,
   PackagePlus,
   PersonStanding,
@@ -88,5 +90,28 @@ export const gender_options = [
     value: 'female',
     label: 'Female',
     icon: PersonStanding,
+  },
+];
+
+export const perk_status_options = [
+  {
+    value: 'available',
+    label: 'Available',
+    icon: CircleArrowOutUpRight,
+  },
+  {
+    value: 'pending',
+    label: 'Pending',
+    icon: PersonStanding,
+  },
+  {
+    value: 'rejected',
+    label: 'Rejected',
+    icon: Cross,
+  },
+  {
+    value: 'approved',
+    label: 'Approved',
+    icon: CheckCircleIcon,
   },
 ];

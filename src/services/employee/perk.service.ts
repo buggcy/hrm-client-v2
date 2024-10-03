@@ -1,15 +1,18 @@
 import { AxiosResponse } from 'axios';
 
-import { perkApiResponseSchema } from '@/libs/validations/perk';
+import {
+  PerkApiResponse,
+  perkApiResponseSchema,
+} from '@/libs/validations/perk';
 import { baseAPI, schemaParse } from '@/utils';
 
-import { PerkApiResponse } from '@/types/perk.types';
+import { SuccessMessageResponse } from '../hr/employee.service';
 
 export interface PerkListParams {
   page?: number;
   limit?: number;
   name?: string;
-  amount?: number;
+  amount?: string;
   date?: string;
   status?: string;
 }
@@ -22,7 +25,7 @@ export const getPerkList = async (
     page: 1,
     limit: 5,
     name: '',
-    amount: 0,
+    amount: '',
     status: '',
     date: '',
   };
@@ -57,14 +60,17 @@ export const PerkList = async (id: string): Promise<AxiosResponse> => {
   return res;
 };
 
-export const unAvailPerk = async (
-  employeeId: string,
-  perkId: string,
-): Promise<AxiosResponse> => {
-  const res = await baseAPI.delete(
+export const unAvailPerk = async ({
+  employeeId,
+  perkId,
+}: {
+  employeeId: string;
+  perkId: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
     `/employee/${employeeId}/perks/${perkId}/unavail`,
   );
-  return res;
+  return { message };
 };
 
 export const AvailPerk = async ({
@@ -75,10 +81,26 @@ export const AvailPerk = async ({
   employeeId: string;
   perkId: string;
   formData: FormData;
-}): Promise<AxiosResponse> => {
-  const res = await baseAPI.post(
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
     `/employee/${employeeId}/perks/${perkId}/avail`,
     formData,
   );
-  return res;
+  return { message };
+};
+
+export const searchPerkList = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<PerkApiResponse> => {
+  const { data, pagination }: PerkApiResponse = await baseAPI.get(
+    `/search/perks?page=${page}&limit=${limit}&query=${query}`,
+  );
+
+  return { data, pagination };
 };

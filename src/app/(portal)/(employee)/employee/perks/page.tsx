@@ -1,5 +1,5 @@
 'use client';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, Suspense, useState } from 'react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -25,31 +25,44 @@ const Perk: FunctionComponent<PerkProps> = () => {
   const { data } = useAllPerkQuery(userId as string, {
     enabled: !!userId,
   });
-  console.log('perks data: ', data);
   const [modal, setModal] = useState(false);
-
-  const handleOpen = () => {
-    setModal(true);
-  };
+  const [modelType, setModelType] = useState('add');
 
   const handleClose = () => {
     setModal(false);
   };
+
+  const handleAdd = () => {
+    setModelType('add');
+    setModal(true);
+  };
+
   return (
     <Layout>
       <HighTrafficBanner />
       <LayoutHeader title="Perks & Benefits">
         <LayoutHeaderButtonsBlock>
-          <Button variant="default" onClick={handleOpen}>
+          <Button variant="default" onClick={handleAdd}>
             Apply for Perks
           </Button>
           <ReadDocsButton to="home" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
-        <PerkTable />
+        <Suspense fallback={<div>Loading...</div>}>
+          {user && <PerkTable user={user} />}
+        </Suspense>
       </LayoutWrapper>
-      <PerkModal open={modal} onCloseChange={handleClose} user={user} />
+      {user && (
+        <PerkModal
+          open={modal}
+          onCloseChange={handleClose}
+          type={modelType}
+          user={user}
+          perks={modelType === 'add' ? data ?? [] : []}
+          perkToEdit={null}
+        />
+      )}
     </Layout>
   );
 };

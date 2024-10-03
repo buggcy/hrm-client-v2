@@ -11,7 +11,7 @@ export type PerkActions = {
 
 export type PerkStoreType = PerkState & PerkActions;
 
-export const useEmployeeStore = create<PerkStoreType>()(
+export const usePerkStore = create<PerkStoreType>()(
   devtools(
     persist(
       set => ({
