@@ -1,7 +1,6 @@
 'use client';
 import { FunctionComponent, Suspense } from 'react';
 
-import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
   LayoutHeader,
@@ -17,7 +16,6 @@ interface LeaveHistoryProps {}
 const LeaveHistory: FunctionComponent<LeaveHistoryProps> = () => {
   return (
     <Layout>
-      <HighTrafficBanner />
       <LayoutHeader title="Leave">
         <LayoutHeaderButtonsBlock>
           <Notification />
