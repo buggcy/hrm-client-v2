@@ -1,4 +1,4 @@
-import { CalendarClock, Home, LogOut } from 'lucide-react';
+import { CalendarClock, DollarSignIcon, Home, LogOut } from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
 
@@ -21,6 +21,17 @@ export const employeeMenu: MenuItem[] = [
         title: 'Leave',
         icon: LogOut,
         href: '/employee/attendance/leave-history',
+      },
+    ],
+  },
+  {
+    title: 'Payment',
+    icon: DollarSignIcon,
+    children: [
+      {
+        title: 'Payroll',
+        icon: DollarSignIcon,
+        href: '/employee/payroll',
       },
     ],
   },
