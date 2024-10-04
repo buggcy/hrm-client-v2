@@ -34,8 +34,8 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
             )}
           </Avatar>
           <div className="flex flex-col">
-            <span>{username}</span>
-            <span>{user?.Designation}</span>
+            <span className="dark:text-white">{username}</span>
+            <span className="dark:text-gray-300">{user?.Designation}</span>
           </div>
         </div>
 

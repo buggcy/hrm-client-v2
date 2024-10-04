@@ -104,7 +104,9 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
 
   return (
     <>
-      <div className="mb-2 mt-4 text-base font-normal">Change Password</div>
+      <div className="mb-2 mt-4 text-base font-normal dark:text-white">
+        Change Password
+      </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4 grid grid-cols-12 gap-4">
           <Label
@@ -134,9 +136,9 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
                 onClick={() => setShowOldPassword(!showOldPassword)}
               >
                 {showOldPassword ? (
-                  <EyeOff className="size-5 text-gray-500" />
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <Eye className="size-5 text-gray-500" />
+                  <Eye className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>
@@ -176,9 +178,9 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
                 onClick={() => setShowNewPassword(!showNewPassword)}
               >
                 {showNewPassword ? (
-                  <EyeOff className="size-5 text-gray-500" />
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <Eye className="size-5 text-gray-500" />
+                  <Eye className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>
@@ -218,9 +220,9 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="size-5 text-gray-500" />
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <Eye className="size-5 text-gray-500" />
+                  <Eye className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>

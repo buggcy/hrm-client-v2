@@ -149,9 +149,13 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
 
   return (
     <>
-      <div className="mb-2 mt-4 text-base font-normal">Profile Edit</div>
+      <div className="mb-2 mt-4 text-base font-normal dark:text-white">
+        Profile Edit
+      </div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-2 mt-4 text-xs text-gray-500">Required</div>
+        <div className="mb-2 mt-4 text-xs text-gray-600 dark:text-gray-300">
+          Required
+        </div>
         <div className="mb-4 grid grid-cols-12 gap-4 text-sm">
           <Label
             htmlFor="file"
@@ -234,7 +238,9 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
             {errors.contactNo.message}
           </span>
         )}
-        <div className="mb-2 mt-4 text-xs text-gray-500">Availibility</div>
+        <div className="mb-2 mt-4 text-xs text-gray-600 dark:text-gray-300">
+          Availibility
+        </div>
         <div className="mb-4 grid grid-cols-12 gap-4">
           <Label
             htmlFor="availability"
