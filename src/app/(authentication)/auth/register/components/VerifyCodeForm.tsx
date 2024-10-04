@@ -318,8 +318,6 @@ export function VerifyCodeForm(): JSX.Element {
     mode: 'onChange',
   });
 
-  console.log(methods.getValues());
-
   const { mutate: mainMutate, isPending: mainIsPending } = useMutation({
     mutationFn: registerEmployee,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
