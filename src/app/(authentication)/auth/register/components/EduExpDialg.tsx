@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
-import { CalendarIcon, ChevronDown, Eye } from 'lucide-react';
+import { CalendarIcon, Eye } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -106,13 +106,13 @@ export function EduEpxDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[905px]">
+      <DialogContent className="min-w-max">
         <DialogHeader>
           <DialogTitle>
             {editingItem ? 'Edit' : 'Add'} Education & Experience
           </DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-3 gap-6 pt-4">
+        <div className="grid grid-cols-1 gap-3 pt-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           <div className="flex flex-col">
             <Label htmlFor="type" className="mb-2 text-left">
               Type
@@ -126,7 +126,7 @@ export function EduEpxDialog({
                 }
               }}
             >
-              <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                 <SelectValue>
                   {type
                     ? type.charAt(0).toUpperCase() + type.slice(1)
@@ -149,8 +149,6 @@ export function EduEpxDialog({
                   </SelectGroup>
                 </SelectContent>
               </SelectTrigger>
-
-              <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
             </Select>
             {errors.type && (
               <span className="text-xs text-red-500">
@@ -168,7 +166,7 @@ export function EduEpxDialog({
                 <Button
                   variant={'outline'}
                   className={cn(
-                    'w-[241.5px] justify-start text-left font-normal',
+                    'justify-start text-left font-normal',
                     !start && 'text-muted-foreground',
                   )}
                 >
@@ -205,7 +203,7 @@ export function EduEpxDialog({
                 <Button
                   variant={'outline'}
                   className={cn(
-                    'w-[241.5px] justify-start text-left font-normal',
+                    'justify-start text-left font-normal',
                     !end && 'text-muted-foreground',
                   )}
                 >
@@ -233,7 +231,7 @@ export function EduEpxDialog({
             )}
           </div>
 
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-col">
             <Label htmlFor="Institute" className="mb-2 text-left">
               {type === 'education' ? 'Institue' : 'Company'}
             </Label>
@@ -251,7 +249,7 @@ export function EduEpxDialog({
             )}
           </div>
 
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-col">
             <Label htmlFor="Position" className="mb-2 text-left">
               {type === 'education' ? 'Department' : 'Position'}
             </Label>
@@ -282,7 +280,7 @@ export function EduEpxDialog({
                 }
               }}
             >
-              <SelectTrigger className="relative z-50 w-[241.5px] rounded-md border px-3 py-2 text-left text-sm">
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                 <SelectValue>
                   {documentType ? documentType : 'Select Document Type'}
                 </SelectValue>
@@ -310,8 +308,6 @@ export function EduEpxDialog({
                   </SelectGroup>
                 </SelectContent>
               </SelectTrigger>
-
-              <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
             </Select>
             {errors.documentType && (
               <span className="text-xs text-red-500">
@@ -321,7 +317,7 @@ export function EduEpxDialog({
           </div>
 
           {type === 'experience' && (
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-col">
               <Label htmlFor="referenceNumber" className="mb-2 text-left">
                 Reference Number
               </Label>
@@ -338,7 +334,7 @@ export function EduEpxDialog({
             </div>
           )}
 
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-col">
             <div className="mb-2 flex items-center justify-between">
               <Label className="text-left" htmlFor="Document">
                 Document
@@ -370,7 +366,7 @@ export function EduEpxDialog({
             )}
           </div>
 
-          <DialogFooter className="col-span-3">
+          <DialogFooter className="col-span-1 md:col-span-2 lg:col-span-3">
             <Button
               type="button"
               onClick={() => handleSubmit(onSubmit)()}

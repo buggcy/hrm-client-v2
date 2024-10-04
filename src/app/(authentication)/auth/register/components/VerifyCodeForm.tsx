@@ -14,7 +14,7 @@ import {
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardFooter, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -318,6 +318,8 @@ export function VerifyCodeForm(): JSX.Element {
     mode: 'onChange',
   });
 
+  console.log(methods.getValues());
+
   const { mutate: mainMutate, isPending: mainIsPending } = useMutation({
     mutationFn: registerEmployee,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
@@ -385,16 +387,17 @@ export function VerifyCodeForm(): JSX.Element {
       }
     });
 
-    educationalDocument.Additional_Documents.forEach((file, index) => {
+    educationalDocument.Additional_Documents.forEach(file => {
       if (typeof file !== 'string') {
-        formData.append(`Additional_Documents_${index}`, file);
+        formData.append(`Additional_Documents`, file);
       }
     });
 
-    formData.append(
-      'deletedAdditionalDocuments',
-      JSON.stringify(educationalDocument.deletedAdditionalDocuments),
-    );
+    if (educationalDocument?.deletedAdditionalDocuments?.length) {
+      educationalDocument.deletedAdditionalDocuments.forEach(doc => {
+        formData.append('deletedAdditionalDocuments[]', doc);
+      });
+    }
 
     mainMutate(formData);
   };
@@ -414,57 +417,53 @@ export function VerifyCodeForm(): JSX.Element {
   };
 
   return (
-    <Card className="mx-auto w-full md:w-10/12 lg:w-8/12">
-      <CardHeader>
-        <Tabs
-          defaultValue="verify-code"
-          value={activeTab}
-          className="flex w-full flex-col"
-        >
-          <TabsList className="mx-auto grid h-auto w-full grid-cols-1 gap-2 md:h-10 md:w-10/12 md:grid-cols-4 lg:w-9/12">
-            <TabsTrigger value="verify-code">Verify Code</TabsTrigger>
-            <TabsTrigger value="personal-details">Personal Details</TabsTrigger>
-            <TabsTrigger value="kyc">KYC</TabsTrigger>
-            <TabsTrigger className="px-3" value="educational-document">
-              Educational Document
-            </TabsTrigger>
-          </TabsList>
+    <Card className="mx-auto max-w-xs p-4 sm:max-w-lg md:max-w-screen-sm lg:max-w-screen-lg">
+      <Tabs
+        defaultValue="verify-code"
+        value={activeTab}
+        className="flex w-full flex-col"
+      >
+        <TabsList className="mx-auto my-6 grid h-auto w-full grid-cols-1 gap-2 lg:h-10 lg:w-10/12 lg:grid-cols-4 xl:w-9/12">
+          <TabsTrigger value="verify-code">Verify Code</TabsTrigger>
+          <TabsTrigger value="personal-details">Personal Details</TabsTrigger>
+          <TabsTrigger value="kyc">KYC</TabsTrigger>
+          <TabsTrigger className="px-3" value="educational-document">
+            Educational Document
+          </TabsTrigger>
+        </TabsList>
 
-          <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmitMainForm)}>
-              <TabsContent value="personal-details">
-                <Details
-                  onNext={() => handleNextTab('additionalInfo', 'kyc')}
-                />
-              </TabsContent>
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmitMainForm)}>
+            <TabsContent value="personal-details">
+              <Details onNext={() => handleNextTab('additionalInfo', 'kyc')} />
+            </TabsContent>
 
-              <TabsContent value="kyc">
-                <KYC
-                  onNext={() => handleNextTab('kyc', 'educational-document')}
-                  onBack={() => handleBackTab('personal-details')}
-                />
-              </TabsContent>
+            <TabsContent value="kyc">
+              <KYC
+                onNext={() => handleNextTab('kyc', 'educational-document')}
+                onBack={() => handleBackTab('personal-details')}
+              />
+            </TabsContent>
 
-              <TabsContent value="educational-document" className="">
-                <ExperienceTable
-                  onBack={() => handleBackTab('kyc')}
-                  mainIsPending={mainIsPending}
-                />
-              </TabsContent>
-            </form>
-          </FormProvider>
-        </Tabs>
-      </CardHeader>
+            <TabsContent value="educational-document" className="">
+              <ExperienceTable
+                onBack={() => handleBackTab('kyc')}
+                mainIsPending={mainIsPending}
+              />
+            </TabsContent>
+          </form>
+        </FormProvider>
+      </Tabs>
 
       <CardFooter className="flex flex-col justify-between">
         {activeTab === 'verify-code' && (
           <>
             <form
               onSubmit={codeHandleSubmit(onSubmit)}
-              className="mx-auto mb-8 grid w-9/12 items-center gap-4"
+              className="mx-auto mb-8 grid w-full items-center gap-4 lg:w-9/12"
             >
               <CardTitle className="py-8 text-center">Verify Code</CardTitle>
-              <div className="mx-auto flex w-9/12 flex-col gap-2">
+              <div className="mx-auto flex w-full flex-col gap-2 lg:w-9/12">
                 <Label htmlFor="code">Enter your code</Label>
                 <Input
                   id="code"
@@ -478,7 +477,7 @@ export function VerifyCodeForm(): JSX.Element {
                 )}
               </div>
               <Button
-                className="mx-auto w-9/12"
+                className="mx-auto w-full lg:w-9/12"
                 type="submit"
                 disabled={isPending}
               >
