@@ -15,7 +15,6 @@ interface HeaderProps {
 const Header = ({ subheading, children }: HeaderProps) => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
-  console.log(user);
   const size = 64;
   return (
     <div className="flex w-full flex-col items-center justify-between gap-y-4 md:flex-row">

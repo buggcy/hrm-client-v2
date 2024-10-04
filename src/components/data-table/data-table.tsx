@@ -27,7 +27,10 @@ import {
 } from '@/components/ui/table';
 
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import { EmployeeListType } from '@/libs/validations/employee';
+import {
+  EmployeeListType,
+  EmployeePayrollListType,
+} from '@/libs/validations/employee';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
 import { DataTablePagination } from './data-table-pagination';
@@ -51,6 +54,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<
   TData extends
+    | EmployeePayrollListType
     | EmployeeListType
     | AttendanceHistoryListType
     | LeaveHistoryListType,
@@ -79,10 +83,6 @@ export function DataTable<
       columnVisibility,
       rowSelection,
       columnFilters,
-      // pagination: {
-      //   pageIndex: pagination.page - 1,
-      //   pageSize: pagination.limit,
-      // },
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -166,7 +166,7 @@ export function DataTable<
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {searchLoading ? 'Finding User ...' : 'No results.'}
+                  {searchLoading ? 'Finding Results ...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

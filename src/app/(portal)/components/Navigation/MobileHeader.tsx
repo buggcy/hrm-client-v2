@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { AlignJustify, Home } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
+import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -24,7 +25,7 @@ export const MobileHeader = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Link
         href="/"
         aria-label="Go to Home Page"
@@ -32,41 +33,43 @@ export const MobileHeader = () => {
       >
         <LogoHorizontal />
       </Link>
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          <Button
-            size="icon"
-            variant="outline"
-            className="rounded-full sm:hidden"
+
+      <div className="flex gap-2">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              variant="outline"
+              className="rounded-full sm:hidden"
+            >
+              <AlignJustify className="size-5" />
+              <span className="sr-only">Toggle Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent
+            side="left"
+            className="flex w-full flex-col overflow-y-auto p-4 sm:max-w-xs"
           >
-            <AlignJustify className="size-5" />
-            <span className="sr-only">Toggle Menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent
-          side="left"
-          className="flex w-full flex-col overflow-y-auto p-4 sm:max-w-xs"
-        >
-          <div className="flex size-full min-h-[calc(100dvh-2rem)] flex-col">
-            <nav className="mb-5 grid gap-2">
-              <Link
-                href="/"
-                aria-label="Go to Home Page"
-                className="flex w-fit rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <LogoHorizontal />
-              </Link>
+            <div className="flex size-full min-h-[calc(100dvh-2rem)] flex-col">
+              <nav className="mb-5 grid gap-2">
+                <Link
+                  href="/"
+                  aria-label="Go to Home Page"
+                  className="flex w-fit rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <LogoHorizontal />
+                </Link>
 
-              <Separator className="w-full" />
+                <Separator className="w-full" />
 
-              <MobileNavigationItem
-                title="Home"
-                icon={Home}
-                href="/"
-                active={pathname === '/'}
-                onClick={onClose}
-              />
-              {/* <NavSection title="VIDEO">
+                <MobileNavigationItem
+                  title="Home"
+                  icon={Home}
+                  href="/"
+                  active={pathname === '/'}
+                  onClick={onClose}
+                />
+                {/* <NavSection title="VIDEO">
                 <li className="flex">
                   <MobileNavigationItem
                     title="Video Generation"
@@ -157,24 +160,26 @@ export const MobileHeader = () => {
                   />
                 </li>
               </NavSection> */}
-            </nav>
-            <ul className="mt-auto flex flex-col gap-3">
-              {/* <li>
+              </nav>
+              <ul className="mt-auto flex flex-col gap-3">
+                {/* <li>
                 <QuotasCard className="w-full" />
               </li> */}
-              <li>
-                <NavigationSupportBtn />
-              </li>
-              <li>
-                <Separator />
-              </li>
-              <li className="flex pb-4">
-                <UserPopover />
-              </li>
-            </ul>
-          </div>
-        </SheetContent>
-      </Sheet>
+                <li>
+                  <NavigationSupportBtn />
+                </li>
+                <li>
+                  <Separator />
+                </li>
+                <li className="flex pb-4">
+                  <UserPopover />
+                </li>
+              </ul>
+            </div>
+          </SheetContent>
+        </Sheet>
+        <Notification />
+      </div>
     </header>
   );
 };

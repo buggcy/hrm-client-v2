@@ -7,7 +7,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { ReadDocsButton } from '@/components/ReadDocsButton';
+import { Notification } from '@/components/NotificationIcon';
 
 import LeaveHistoryPage from './leaveHistory';
 
@@ -18,7 +18,7 @@ const LeaveHistory: FunctionComponent<LeaveHistoryProps> = () => {
     <Layout>
       <LayoutHeader title="Leave">
         <LayoutHeaderButtonsBlock>
-          <ReadDocsButton to="home" />
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-4">
