@@ -216,7 +216,7 @@ export function PerkModal({
           </DialogTitle>
         </DialogHeader>
         {(type === 'add' &&
-          perks.some(
+          perks?.some(
             perk =>
               perk.isAvailable &&
               !perk.isAvailed &&
