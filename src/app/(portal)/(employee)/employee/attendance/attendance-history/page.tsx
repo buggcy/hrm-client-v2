@@ -78,10 +78,6 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
       <HighTrafficBanner />
       <LayoutHeader title="Attendance">
         <LayoutHeaderButtonsBlock>
-          <MonthPickerComponent
-            setDateValue={setDateValue}
-            initialDate={initialDate}
-          />
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
