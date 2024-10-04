@@ -3,6 +3,16 @@ import { z } from 'zod';
 export const gender = ['male', 'female'] as const;
 export const approvalStatus = ['Approved', 'Pending', 'Rejected'] as const;
 export const maritalStatus = ['married', 'unmarried'] as const;
+export const bloodgroupStatus = [
+  'A+',
+  'A-',
+  'B+',
+  'B-',
+  'O+',
+  'O-',
+  'AB+',
+  'AB-',
+] as const;
 
 const paginationSchema = z.object({
   page: z.number(),
