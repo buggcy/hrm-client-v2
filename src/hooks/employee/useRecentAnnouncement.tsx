@@ -7,7 +7,7 @@ export const useRecentAnnouncements = () => {
     queryKey: ['recent-announcements'],
     queryFn: () => fetchRecentAnnouncements(),
     refetchInterval: 1000 * 60 * 5,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 };

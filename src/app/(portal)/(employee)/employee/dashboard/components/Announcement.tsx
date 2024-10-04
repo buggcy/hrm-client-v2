@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-import { CheckCircleIcon, Newspaper, Target } from 'lucide-react';
+import { Megaphone } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -39,25 +39,25 @@ const RecentAnnouncements = () => {
     switch (priority) {
       case 'high':
         return {
-          icon: <CheckCircleIcon className="size-6 text-red-500" />,
+          icon: <Megaphone className="size-6 text-red-500" />,
           color: 'text-red-500',
         };
       case 'Medium':
         return {
-          icon: <Newspaper className="size-6 text-blue-500" />,
+          icon: <Megaphone className="size-6 text-blue-500" />,
           color: 'text-blue-500',
         };
       case 'Low':
       default:
         return {
-          icon: <Target className="size-6 text-green-500" />,
+          icon: <Megaphone className="size-6 text-green-500" />,
           color: 'text-green-500',
         };
     }
   };
 
   return (
-    <Card className="mb-2 min-h-[400px] w-full dark:bg-zinc-900">
+    <Card className="flex h-full flex-col dark:bg-zinc-900">
       <CardHeader className="pb-0">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold dark:text-white">
@@ -69,8 +69,8 @@ const RecentAnnouncements = () => {
           </Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="max-h-[300px] space-y-4 overflow-y-auto">
+      <CardContent className="max-h-[300px] flex-1 overflow-y-auto">
+        <div className="space-y-4 overflow-y-auto">
           {isLoading || isFetching ? (
             <div className="text-sm text-gray-500 dark:text-gray-300">
               Loading Announcements
@@ -86,7 +86,10 @@ const RecentAnnouncements = () => {
                   announcement.Priority || 'normal',
                 );
                 return (
-                  <div key={index} className="flex items-start space-x-4 py-2">
+                  <div
+                    key={index}
+                    className="flex max-h-[300px] items-start space-x-4 py-2"
+                  >
                     {icon}
                     <div>
                       <h3 className="text-sm font-semibold dark:text-white">
@@ -106,52 +109,66 @@ const RecentAnnouncements = () => {
                             View Details
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="dark:bg-zinc-900 dark:text-white">
+                        <DialogContent className="rounded-lg p-6 shadow-lg dark:bg-zinc-900 dark:text-white">
                           <DialogHeader>
-                            <DialogTitle>
+                            <DialogTitle className="mb-4 text-2xl font-bold">
                               {announcement.title || 'No Title'}
                             </DialogTitle>
-                            <DialogDescription>
-                              <div className="space-y-2">
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    Description:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {announcement.Description}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    Priority:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {announcement.Priority}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    Start Date:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {new Date(
-                                      announcement.StartDate,
-                                    ).toLocaleString()}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    End Date:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {new Date(
-                                      announcement.EndDate,
-                                    ).toLocaleString()}
-                                  </span>
-                                </div>
-                              </div>
-                            </DialogDescription>
                           </DialogHeader>
+                          <DialogDescription>
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between">
+                                <span className="text-lg font-semibold dark:text-white">
+                                  Priority:
+                                </span>
+                                <span className="text-lg dark:text-gray-300">
+                                  {announcement.Priority}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-lg font-semibold dark:text-white">
+                                  Start Date:
+                                </span>
+                                <span className="text-lg dark:text-gray-300">
+                                  {new Date(
+                                    announcement.StartDate,
+                                  ).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                  })}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-lg font-semibold dark:text-white">
+                                  End Date:
+                                </span>
+                                <span className="text-lg dark:text-gray-300">
+                                  {new Date(
+                                    announcement.EndDate,
+                                  ).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                  })}
+                                </span>
+                              </div>
+                              <div className="mt-4 flex flex-col">
+                                <span className="text-lg font-semibold dark:text-white">
+                                  Description:
+                                </span>
+                                <span
+                                  className="mt-2 text-base dark:text-gray-300"
+                                  style={{
+                                    fontWeight: 'normal',
+                                    fontSize: '1.1rem',
+                                  }}
+                                >
+                                  {announcement.Description}
+                                </span>
+                              </div>
+                            </div>
+                          </DialogDescription>
                           <DialogClose />
                         </DialogContent>
                       </Dialog>
@@ -174,58 +191,84 @@ const RecentAnnouncements = () => {
                   View All Announcements
                 </Button>
               </DialogTrigger>
-              <DialogContent className="dark:bg-zinc-900 dark:text-white">
+              <DialogContent className="rounded-lg p-6 shadow-lg dark:bg-zinc-900 dark:text-white">
                 <DialogHeader>
-                  <DialogTitle>All Recent Announcements</DialogTitle>
-                  <DialogDescription>
-                    <div className="space-y-4">
-                      {announcementArray.length === 0 ? (
-                        <div className="py-6 text-gray-700 dark:text-gray-300">
-                          No recent announcements.
-                        </div>
-                      ) : (
-                        announcementArray.map((announcement, index) => (
-                          <div
-                            key={index}
-                            className="rounded-md bg-white p-4 shadow-md dark:bg-zinc-900"
-                          >
-                            <div className="flex items-center space-x-4">
-                              {
-                                getIconAndColor(
-                                  announcement.Priority || 'normal',
-                                ).icon
-                              }
-                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                {announcement.title || 'No Title'}
-                              </h3>
-                            </div>
-                            <div className="mt-4">
-                              <p className="text-sm text-gray-500 dark:text-gray-300">
-                                Description:{' '}
-                                {announcement.Description || 'No Description'}
-                              </p>
-                              <p className="text-sm text-gray-500 dark:text-gray-300">
-                                Priority: {announcement.Priority}
-                              </p>
-                              <p className="text-sm text-gray-500 dark:text-gray-300">
-                                Start Date:{' '}
-                                {new Date(
-                                  announcement.StartDate,
-                                ).toLocaleString()}
-                              </p>
-                              <p className="text-sm text-gray-500 dark:text-gray-300">
-                                End Date:{' '}
-                                {new Date(
-                                  announcement.EndDate,
-                                ).toLocaleString()}
-                              </p>
+                  <DialogTitle className="mb-4 text-2xl font-bold">
+                    All Recent Announcements
+                  </DialogTitle>
+                </DialogHeader>
+                <DialogDescription>
+                  <div className="max-h-96 space-y-4 overflow-y-auto">
+                    {announcementArray.length === 0 ? (
+                      <div className="py-6 text-gray-700 dark:text-gray-300">
+                        No recent announcements.
+                      </div>
+                    ) : (
+                      announcementArray.map((announcement, index) => (
+                        <div
+                          key={index}
+                          className="rounded-md bg-gray-100 p-4 shadow-md dark:bg-zinc-800"
+                        >
+                          <div className="flex items-center space-x-4">
+                            {
+                              getIconAndColor(announcement.Priority || 'normal')
+                                .icon
+                            }
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                              {announcement.title || 'No Title'}
+                            </h3>
+                          </div>
+                          <div className="mt-4 space-y-2">
+                            <p className="text-base dark:text-gray-300">
+                              <span className="font-semibold dark:text-white">
+                                Priority:
+                              </span>{' '}
+                              {announcement.Priority}
+                            </p>
+                            <p className="text-base dark:text-gray-300">
+                              <span className="font-semibold dark:text-white">
+                                Start Date:
+                              </span>{' '}
+                              {new Date(
+                                announcement.StartDate,
+                              ).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })}
+                            </p>
+                            <p className="text-base dark:text-gray-300">
+                              <span className="font-semibold dark:text-white">
+                                End Date:
+                              </span>{' '}
+                              {new Date(
+                                announcement.EndDate,
+                              ).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })}
+                            </p>
+                            <div className="mt-4 flex flex-col">
+                              <span className="text-lg font-semibold dark:text-white">
+                                Description:
+                              </span>
+                              <span
+                                className="mt-2 text-base dark:text-gray-300"
+                                style={{
+                                  fontWeight: 'normal',
+                                  fontSize: '1.1rem',
+                                }}
+                              >
+                                {announcement.Description}
+                              </span>
                             </div>
                           </div>
-                        ))
-                      )}
-                    </div>
-                  </DialogDescription>
-                </DialogHeader>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </DialogDescription>
                 <DialogClose />
               </DialogContent>
             </Dialog>

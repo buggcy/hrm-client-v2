@@ -4,7 +4,9 @@ export interface Birthday {
   lastName: string;
   DOB: string;
   Avatar?: string;
+  daysUntilBirthday: number;
 }
+
 export interface BirthdayResponse {
   message: string;
   page: number;

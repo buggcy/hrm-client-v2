@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { format } from 'date-fns';
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 
 import {
@@ -8,7 +9,7 @@ import {
   CardDescription,
   CardHeader,
 } from '@/components/ui/card';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer } from '@/components/ui/chart';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { useAttendanceData } from '@/hooks/employee/useAttendenceData.hook';
@@ -109,8 +110,32 @@ export function BChart() {
               label={{ value: 'Hours', angle: -90, position: 'insideLeft' }}
             />
             <Tooltip
-              content={<ChartTooltipContent />}
+              labelFormatter={(name, payload) => {
+                if (payload && payload.length > 0) {
+                  const item = payload[0].payload as ChartData; // Ensure payload is of type ChartData
+                  let date: Date;
+
+                  if (item.date instanceof Date) {
+                    date = item.date;
+                  } else {
+                    date = new Date(item.date);
+                  }
+
+                  if (!isNaN(date.getTime())) {
+                    // Check if the date is valid
+                    return format(date, 'MMMM dd');
+                  }
+                }
+                return name;
+              }}
               formatter={(value: number) => `${value} Hours`}
+              contentStyle={{
+                backgroundColor: '#fff',
+                border: '1px solid #ccc',
+                borderRadius: '0.375rem',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              }}
+              itemStyle={{ color: '#000' }}
             />
             <Bar dataKey="Hours" fill="#30BBF2" barSize={20} />
           </BarChart>

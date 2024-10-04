@@ -8,8 +8,8 @@ export const useEventsData = () => {
   return useQuery<EventData[], Error>({
     queryKey: ['events'],
     queryFn: fetchCurrentMonthEvents,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
   });
 };
