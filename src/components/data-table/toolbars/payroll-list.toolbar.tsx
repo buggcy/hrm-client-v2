@@ -12,16 +12,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
-import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import {
-  EmployeeListType,
-  EmployeePayrollListType,
-} from '@/libs/validations/employee';
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
-import { exportAttendanceHistoryCSVData } from '@/services/employee/attendance-history.service';
+import { EmployeeListType } from '@/libs/validations/employee';
+import { exportEmployeePayrollCSVData } from '@/services/employee/employeePayroll.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
-import { attendance_history_status_options } from '../../filters';
+import { gender_options } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -32,13 +27,7 @@ interface DataTableToolbarProps<TData> {
   searchLoading: boolean;
 }
 
-export function AttendanceHistoryListToolbar<
-  TData extends
-    | AttendanceHistoryListType
-    | EmployeeListType
-    | EmployeePayrollListType
-    | LeaveHistoryListType,
->({
+export function EmployeeListToolbar<TData extends EmployeeListType>({
   table,
   searchTerm,
   onSearch,
@@ -50,7 +39,7 @@ export function AttendanceHistoryListToolbar<
     .rows.map(row => row.original._id);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: exportAttendanceHistoryCSVData,
+    mutationFn: exportEmployeePayrollCSVData,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
@@ -61,7 +50,7 @@ export function AttendanceHistoryListToolbar<
     },
     onSuccess: (response: BlobPart) => {
       const file = new Blob([response]);
-      downloadFile(file, 'Attendance History.csv');
+      downloadFile(file, 'Employees.csv');
     },
   });
 
@@ -81,11 +70,11 @@ export function AttendanceHistoryListToolbar<
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
-        {table.getColumn('Status') && (
+        {table.getColumn('Gender') && (
           <DataTableFacetedFilter
-            column={table.getColumn('Status')}
-            title="Status"
-            options={attendance_history_status_options}
+            column={table.getColumn('Gender')}
+            title="Gender"
+            options={gender_options}
           />
         )}
 

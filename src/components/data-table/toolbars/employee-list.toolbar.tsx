@@ -13,7 +13,10 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import { EmployeeListType } from '@/libs/validations/employee';
+import {
+  EmployeeListType,
+  EmployeePayrollListType,
+} from '@/libs/validations/employee';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
@@ -33,6 +36,7 @@ export function EmployeeListToolbar<
   TData extends
     | EmployeeListType
     | AttendanceHistoryListType
+    | EmployeePayrollListType
     | LeaveHistoryListType,
 >({
   table,

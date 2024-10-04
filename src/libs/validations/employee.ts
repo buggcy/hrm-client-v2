@@ -40,6 +40,18 @@ const positionSchema = z.object({
   _id: z.string(),
   timestamp: z.string(),
 });
+const emp_Id_Schema = z.object({
+  Avatar: z.string().optional(),
+  firstName: z.string(),
+  lastName: z.string(),
+  _id: z.string(),
+});
+const payrollIncrementSchema = z.object({
+  title: z.string(),
+  amount: z.number(),
+  date: z.string(),
+  _id: z.string(),
+});
 
 const employeeListSchema = z.object({
   _id: z.string(),
@@ -85,14 +97,49 @@ const employeeListSchema = z.object({
   type: z.literal('employee').optional(),
 });
 
+const employeePayrollSchema = z.object({
+  _id: z.string(),
+  Emp_ID: emp_Id_Schema,
+  User_ID: z.string().optional(),
+  Employee_Name: z.string().optional(),
+  Date: z.string().optional(),
+  Basic_Salary: z.number().optional(),
+  Tax_Amount: z.number().optional(),
+  Absent_Deduction: z.number().optional(),
+  Today_Days_Present: z.number().optional(),
+  Total_Absent: z.number().optional(),
+  Total_Leaves: z.number().optional(),
+  Late: z.number().optional(),
+  Total_Minutes_Monthly: z.number().optional(),
+  Total_Remaining_Minutes: z.number().optional(),
+  Net_Salary: z.number().optional(),
+  Total_SalaryDeducton: z.number().optional(),
+  Total_Working_Minutes: z.number().optional(),
+  Pay_Status: z.string().optional(),
+  Paid_Amount: z.number().optional(),
+  Working_Days: z.number().optional(),
+  isDeleted: z.boolean().optional(),
+  Increments: z.array(payrollIncrementSchema).optional(),
+  __v: z.number().optional(),
+  type: z.literal('employeePayroll').optional(),
+});
+
 const employeeApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeeListSchema),
+});
+const employeePayrollApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(employeePayrollSchema),
 });
 
 export type EmployeeApiResponse = z.infer<typeof employeeApiResponseSchema>;
 export type EmployeeListType = z.infer<typeof employeeListSchema>;
 export type EmployeeListArrayType = z.infer<typeof employeeListSchema>[] | [];
+export type EmployeePayrollListType = z.infer<typeof employeePayrollSchema>;
+export type EmployeePayrollArrayType =
+  | z.infer<typeof employeePayrollSchema>[]
+  | [];
 
 export {
   employeeApiResponseSchema,
@@ -100,4 +147,6 @@ export {
   paginationSchema,
   addressSchema,
   positionSchema,
+  employeePayrollSchema,
+  employeePayrollApiResponseSchema,
 };
