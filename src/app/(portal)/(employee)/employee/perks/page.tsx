@@ -9,7 +9,6 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { ReadDocsButton } from '@/components/ReadDocsButton';
-import { Button } from '@/components/ui/button';
 
 import { useAllPerkQuery } from '@/hooks/employee/usePerkList.hook';
 import { useAuthStore } from '@/stores/auth';
@@ -42,15 +41,12 @@ const Perk: FunctionComponent<PerkProps> = () => {
       <HighTrafficBanner />
       <LayoutHeader title="Perks & Benefits">
         <LayoutHeaderButtonsBlock>
-          <Button variant="default" onClick={handleAdd}>
-            Apply for Perks
-          </Button>
           <ReadDocsButton to="home" />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
         <Suspense fallback={<div>Loading...</div>}>
-          {user && <PerkTable user={user} />}
+          {user && <PerkTable user={user} handleAdd={handleAdd} />}
         </Suspense>
       </LayoutWrapper>
       {user && (

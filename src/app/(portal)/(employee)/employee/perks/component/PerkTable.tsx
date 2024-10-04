@@ -8,6 +8,7 @@ import { AxiosError } from 'axios';
 import { employeePerkListColumns } from '@/components/data-table/columns/employee-perk-list.columns';
 import { EmployeePerkDataTable } from '@/components/data-table/data-table-employee-perk';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -18,10 +19,12 @@ import { PerkStoreType } from '@/stores/employee/perks';
 
 import { MessageErrorResponse } from '@/types';
 import { User } from '@/types/user.types';
+
 interface PerkTableProps {
   user: User;
+  handleAdd: () => void;
 }
-const PerkTable: FunctionComponent<PerkTableProps> = ({ user }) => {
+const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { perkStore } = useStores() as { perkStore: PerkStoreType };
@@ -118,6 +121,12 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user }) => {
 
   return (
     <>
+      <div className="flex w-full flex-col items-center justify-end gap-y-4 md:flex-row">
+        <Button variant="default" onClick={handleAdd}>
+          Apply for Perks
+        </Button>
+      </div>
+
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (

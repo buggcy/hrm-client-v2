@@ -4,10 +4,8 @@ import {
   ArrowUp,
   Bug,
   CheckCircle2,
-  CheckCircleIcon,
   Circle,
   CircleArrowOutUpRight,
-  Cross,
   HelpCircle,
   PackagePlus,
   PersonStanding,
@@ -102,17 +100,17 @@ export const perk_status_options = [
   {
     value: 'pending',
     label: 'Pending',
-    icon: PersonStanding,
+    icon: Circle,
   },
   {
     value: 'rejected',
     label: 'Rejected',
-    icon: Cross,
+    icon: XCircle,
   },
   {
     value: 'approved',
     label: 'Approved',
-    icon: CheckCircleIcon,
+    icon: CheckCircle2,
   },
 ];
 export const attendance_history_status_options = [

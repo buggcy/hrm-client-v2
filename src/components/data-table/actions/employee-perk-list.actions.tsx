@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
-import { Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Eye, MoreHorizontal, Pencil, XCircle } from 'lucide-react';
 
 import ConfirmDialog from '@/components/modals/cancel-modal';
 import { Button } from '@/components/ui/button';
@@ -120,7 +120,7 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
                 className="text-red-600"
                 onSelect={() => setShowDeleteDialog(true)}
               >
-                <Trash2 className="mr-2 size-4" />
+                <XCircle className="mr-2 size-4" />
                 Cancel Request
               </DropdownMenuItem>
             </>
