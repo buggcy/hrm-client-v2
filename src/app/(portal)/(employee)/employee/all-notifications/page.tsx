@@ -30,7 +30,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -177,18 +176,14 @@ const AllNotifications: FunctionComponent = () => {
             </DropdownMenu>
           </div>
           <hr className="mb-3" />
-          <ScrollArea
-            className="overflow-y-auto"
-            style={{
-              height: 'calc(100vh - 230px)',
-            }}
-          >
-            {isMarkingAllAsRead && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
-                <Loader className="mr-2 animate-spin" />
-              </div>
-            )}
-            <ul className="w-full max-w-full space-y-2 overflow-hidden sm:w-auto">
+
+          <ul className="w-full space-y-2 overflow-hidden">
+            <div className="h-[calc(100vh-210px)] overflow-y-auto">
+              {isMarkingAllAsRead && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
+                  <Loader className="mr-2 animate-spin" />
+                </div>
+              )}
               {sortedFilteredNotifications.length > 0 ? (
                 sortedFilteredNotifications.map(notification => (
                   <li key={notification._id} className="relative">
@@ -198,7 +193,7 @@ const AllNotifications: FunctionComponent = () => {
                       </div>
                     )}
 
-                    <Card className="w-full max-w-full overflow-hidden sm:w-auto">
+                    <Card className="w-full overflow-hidden">
                       <CardContent className="flex items-center px-3 py-2">
                         <Avatar className="mr-2 size-10">
                           <AvatarImage
@@ -212,15 +207,13 @@ const AllNotifications: FunctionComponent = () => {
                         <div className="flex-1">
                           <p className="break-words text-sm">
                             <span className="font-bold capitalize">
-                              {notification.senderId?.firstName ||
-                                'Unknown First Name'}{' '}
-                              {notification.senderId?.lastName ||
-                                'Unknown Last Name'}
+                              {notification.senderId?.firstName || ''}{' '}
+                              {notification.senderId?.lastName || ''}
                             </span>{' '}
                             {notification.message}
                           </p>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex w-10 items-center justify-end">
                           <p className="mr-1 text-xs text-gray-500">
                             {timeAgo(notification.createdAt)}
                           </p>
@@ -247,8 +240,8 @@ const AllNotifications: FunctionComponent = () => {
                   </p>
                 </div>
               )}
-            </ul>
-          </ScrollArea>
+            </div>
+          </ul>
         </div>
       </LayoutWrapper>
     </Layout>
