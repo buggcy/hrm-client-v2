@@ -8,6 +8,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
+import { Notification } from '@/components/NotificationIcon';
 
 import RecentAnnouncements from './components/Announcement';
 import { BChart } from './components/BarChart/BarChart';
@@ -15,7 +16,6 @@ import BirthdaysUpcoming from './components/Birthdays';
 import DashboardHeader from './components/dashboardHeader';
 import EmployeeCard from './components/Employeecard';
 import UpcomingEvents from './components/UpcomingEvents';
-
 interface EmployeeDashboardProps {}
 
 const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
@@ -24,7 +24,7 @@ const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
       <HighTrafficBanner />
       <LayoutHeader title="Dashboard">
         <LayoutHeaderButtonsBlock>
-          <button className="text-black">View Docs</button>
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-5">

@@ -6,7 +6,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { ReadDocsButton } from '@/components/ReadDocsButton';
+import { Notification } from '@/components/NotificationIcon';
 
 import { useReadEmployeeRecordQuery } from '@/hooks/employee/useEmployeeList.hook';
 import { useAuthStore } from '@/stores/auth';
@@ -25,7 +25,7 @@ export default function MyProfile() {
       <HighTrafficBanner />
       <LayoutHeader title="My Profile">
         <LayoutHeaderButtonsBlock>
-          <ReadDocsButton to="home" />
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
