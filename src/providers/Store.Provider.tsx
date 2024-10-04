@@ -8,6 +8,7 @@ import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
 import { useEmployeeStore } from '@/stores/hr/employee';
 
 import { useAuthStore } from '../stores/auth';
+import { useNotificationStore } from '../stores/useNotificationStore';
 
 interface StoreContextType {
   authStore: ReturnType<typeof useAuthStore>;
@@ -15,6 +16,7 @@ interface StoreContextType {
   employeePayrollStore: ReturnType<typeof useEmployeePayrollStore>;
   attendanceHistoryStore: ReturnType<typeof useAttendanceHistoryStore>;
   leaveHistoryStore: ReturnType<typeof useLeaveHistoryStore>;
+  notificationStore: ReturnType<typeof useNotificationStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -25,6 +27,8 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const employeePayrollStore = useEmployeePayrollStore();
   const attendanceHistoryStore = useAttendanceHistoryStore();
   const leaveHistoryStore = useLeaveHistoryStore();
+  const notificationStore = useNotificationStore();
+
   return (
     <StoreContext.Provider
       value={{
@@ -33,6 +37,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         employeePayrollStore,
         attendanceHistoryStore,
         leaveHistoryStore,
+        notificationStore,
       }}
     >
       {children}
