@@ -1,5 +1,6 @@
 import { FunctionComponent, Suspense } from 'react';
 
+import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
@@ -24,6 +25,7 @@ const Payroll: FunctionComponent<PayrollProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-6">
+        <Header subheading="From Clock-In to Cash Out — Your Payroll Journey"></Header>
         <PayrollCards />
         <Suspense fallback={<div>Loeading...</div>}>
           <PayrollTable />
