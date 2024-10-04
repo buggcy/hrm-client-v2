@@ -1,4 +1,4 @@
-import { Gift, Home } from 'lucide-react';
+import { CalendarClock, Gift, Home, LogOut } from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
 
@@ -12,5 +12,21 @@ export const employeeMenu: MenuItem[] = [
     title: 'Perks & Benefits',
     icon: Gift,
     href: '/employee/perks',
+  },
+  {
+    title: 'Time Tracking',
+    icon: CalendarClock,
+    children: [
+      {
+        title: 'Attendance',
+        icon: CalendarClock,
+        href: '/employee/attendance/attendance-history',
+      },
+      {
+        title: 'Leave',
+        icon: LogOut,
+        href: '/employee/attendance/leave-history',
+      },
+    ],
   },
 ];

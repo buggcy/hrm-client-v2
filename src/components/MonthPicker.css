@@ -1,0 +1,24 @@
+.react-datepicker {
+  background-color: hsl(var(--background));
+}
+
+.react-datepicker__header {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.react-datepicker__month {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  margin: 0 !important;
+  padding: 0.4rem;
+}
+
+.react-datepicker__month-text--keyboard-selected {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.react-datepicker__month-text {
+  padding: 16px;
+}
