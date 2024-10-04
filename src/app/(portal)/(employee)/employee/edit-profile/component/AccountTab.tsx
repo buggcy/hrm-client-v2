@@ -21,27 +21,44 @@ import { User } from '@/types/user.types';
 interface UserProps {
   user: User;
 }
+
 const FormSchema = z
   .object({
     oldPassword: z.string().min(1, 'Old Password is required'),
     newPassword: z
       .string()
-      .min(8, 'Password must be at least 8 characters long')
-      .max(64, 'Password cannot exceed 64 characters')
+      .min(8, { message: 'Password must be at least 8 characters long' })
+      .max(64, { message: 'Password cannot exceed 64 characters' })
       .regex(/^\S+$/, 'Password cannot contain whitespace')
-      .regex(
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/,
-        'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character',
-      ),
+      .refine(value => /[A-Z]/.test(value), {
+        message: 'Password must contain at least 1 uppercase letter',
+      })
+      .refine(value => /[a-z]/.test(value), {
+        message: 'Password must contain at least 1 lowercase letter',
+      })
+      .refine(value => /\d/.test(value), {
+        message: 'Password must contain at least 1 digit',
+      })
+      .refine(value => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value), {
+        message: 'Password must contain at least 1 special character',
+      }),
     confirmPassword: z
       .string()
-      .min(8, 'Password must be at least 8 characters long')
-      .max(64, 'Password cannot exceed 64 characters')
+      .min(8, { message: 'Password must be at least 8 characters long' })
+      .max(64, { message: 'Password cannot exceed 64 characters' })
       .regex(/^\S+$/, 'Password cannot contain whitespace')
-      .regex(
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/,
-        'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character',
-      ),
+      .refine(value => /[A-Z]/.test(value), {
+        message: 'Password must contain at least 1 uppercase letter',
+      })
+      .refine(value => /[a-z]/.test(value), {
+        message: 'Password must contain at least 1 lowercase letter',
+      })
+      .refine(value => /\d/.test(value), {
+        message: 'Password must contain at least 1 digit',
+      })
+      .refine(value => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value), {
+        message: 'Password must contain at least 1 special character',
+      }),
   })
   .superRefine(({ confirmPassword, newPassword }, ctx) => {
     if (confirmPassword !== newPassword) {
