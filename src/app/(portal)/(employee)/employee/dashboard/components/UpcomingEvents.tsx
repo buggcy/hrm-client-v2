@@ -1,10 +1,13 @@
 'use client';
-import { useEffect, useState } from 'react';
 
-import { Briefcase, Building } from 'lucide-react';
+import { useState } from 'react';
 
+import { Briefcase, Building, Gift } from 'lucide-react';
+
+import { Avatar } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   Dialog,
   DialogClose,
@@ -16,15 +19,43 @@ import {
 } from '@/components/ui/dialog';
 
 import { useEventsData } from '@/hooks/employee/useEventData';
+import { useUpcomingBirthdays } from '@/hooks/employee/useUpcomingBirthdays.hook';
 
+import { Birthday } from '@/types/Birthday.types';
 import { EventData } from '@/types/events.types';
 
-const UpcomingEvents = () => {
-  const { data: eventsData, isLoading, isFetching } = useEventsData();
-  useEffect(() => {}, [eventsData]);
+// Fixing the types for merged data to support both Birthday and Event types
+type CombinedData = EventData | Birthday;
+
+const EventsAndBirthdays = () => {
+  const {
+    data: eventsData,
+    isLoading: isLoadingEvents,
+    isFetching: isFetchingEvents,
+  } = useEventsData();
+  const {
+    data: birthdayData,
+    isLoading: isLoadingBirthdays,
+    error: birthdayError,
+  } = useUpcomingBirthdays();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [, setSelectedEvent] = useState<EventData | null>(null);
-  const events = isLoading || isFetching ? [] : eventsData || [];
+
+  const events = isLoadingEvents || isFetchingEvents ? [] : eventsData || [];
+  const upcomingBirthdays =
+    isLoadingBirthdays || birthdayError ? [] : birthdayData?.data || [];
+
+  // Merge and sort the events and birthdays by date
+  const combinedData = [...upcomingBirthdays, ...events].sort((a, b) => {
+    const dateA = (a as Birthday).DOB
+      ? new Date((a as Birthday).DOB)
+      : new Date((a as EventData).start);
+    const dateB = (b as Birthday).DOB
+      ? new Date((b as Birthday).DOB)
+      : new Date((b as EventData).start);
+    return dateA.getTime() - dateB.getTime();
+  });
 
   const getEventIcon = (eventType: string) => {
     switch (eventType.toLowerCase()) {
@@ -46,167 +77,208 @@ const UpcomingEvents = () => {
   };
 
   return (
-    <Card className="mb-2 px-6 py-9 dark:bg-zinc-900">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold dark:text-white">
-          Upcoming Events
-        </h2>
-        <button className="rounded-xl border-red-100 bg-primary px-3 py-1 text-sm text-white">
-          {events.length || '0'} Upcoming
-        </button>
-      </div>
-
-      <div className="max-h-28 space-y-4 overflow-y-auto">
-        <hr className="border-gray-200 p-2 dark:border-gray-700" />
-        {isLoading || isFetching ? (
-          <div className="flex items-start space-x-4">
-            <div>
-              <h3 className="ml-2 text-sm font-semibold text-gray-900 dark:text-gray-300">
-                No Recent Events
-              </h3>
+    <Card className="min-h-[370px] dark:bg-zinc-900">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold dark:text-white">
+            Birthdays & Events
+          </h2>
+          <Badge variant="outline">{combinedData.length || '0'} Upcoming</Badge>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="h-[205px] space-y-4 overflow-y-auto">
+          {combinedData.length === 0 ? (
+            <div className="text-gray-500 dark:text-gray-300">
+              No upcoming birthdays or events.
             </div>
-          </div>
-        ) : events.length === 0 ? (
-          <div className="text-gray-500 dark:text-gray-300">
-            No upcoming events.
-          </div>
-        ) : (
-          events.map((event: EventData, index) => (
-            <div key={index} className="flex items-start space-x-4">
-              {getEventIcon(event.type)}
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {event.title || 'No Title'}
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-300">
-                  {event.type || 'No Type'}
-                </p>
-                <Dialog>
-                  <DialogTrigger>
-                    <Button
-                      className="text-left"
-                      variant="link"
-                      onClick={() => handleEventClick(event)}
-                    >
-                      View Details
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="dark:text-white">
-                    <DialogHeader>
-                      <DialogTitle className="dark:text-white">
-                        Event Details
-                      </DialogTitle>
-                      <DialogDescription className="dark:text-gray-300">
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="justify-center text-sm font-semibold dark:text-white">
-                              Title:
-                            </span>
-                            <span className="justify-center text-sm dark:text-gray-300">
-                              {event.title}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="justify-center text-sm font-semibold dark:text-white">
-                              Description:
-                            </span>
-                            <span className="justify-center text-sm dark:text-gray-300">
-                              {event.Event_Discription}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="font-semibold dark:text-white">
-                              Start Date:
-                            </span>
-                            <span className="dark:text-gray-300">
-                              {new Date(event.start).toLocaleString()}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="font-semibold dark:text-white">
-                              End Date:
-                            </span>
-                            <span className="dark:text-gray-300">
-                              {new Date(event.end).toLocaleString()}
-                            </span>
-                          </div>
+          ) : (
+            combinedData.map((item: CombinedData, index) => (
+              <div key={index} className="flex items-start space-x-4">
+                {'DOB' in item ? (
+                  // Render Birthday
+                  <>
+                    <Avatar className="size-6">
+                      {item.Avatar ? (
+                        <img
+                          src={item.Avatar}
+                          alt={`${item.firstName} ${item.lastName}`}
+                          className="rounded-full"
+                        />
+                      ) : (
+                        <div className="flex size-6 items-center justify-center rounded-full bg-blue-400 text-white">
+                          {item.firstName[0]}
+                          {item.lastName[0]}
                         </div>
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogClose />
-                  </DialogContent>
-                </Dialog>
+                      )}
+                    </Avatar>
+                    <div className="-ml-4">
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {item.firstName} {item.lastName}
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-300">
+                        {new Date(item.DOB).toLocaleDateString('en-US', {
+                          day: 'numeric',
+                          month: 'long',
+                        })}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  // Render Event
+                  <>
+                    {getEventIcon(item.type)}
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {item.title || 'No Title'}
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-300">
+                        {item.type || 'No Type'}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-300">
+                        {new Date(item.start).toLocaleDateString('en-US', {
+                          day: 'numeric',
+                          month: 'long',
+                        })}
+                      </p>
+                      <Dialog>
+                        <DialogTrigger>
+                          <Button
+                            className="text-left"
+                            variant="link"
+                            onClick={() => handleEventClick(item)}
+                          >
+                            View Details
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="dark:text-white">
+                          <DialogHeader>
+                            <DialogTitle className="dark:text-white">
+                              Event Details
+                            </DialogTitle>
+                            <DialogDescription className="dark:text-gray-300">
+                              <div className="space-y-2">
+                                <div className="flex justify-between">
+                                  <span className="text-sm font-semibold dark:text-white">
+                                    Title:
+                                  </span>
+                                  <span className="text-sm dark:text-gray-300">
+                                    {item.title}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-sm font-semibold dark:text-white">
+                                    Description:
+                                  </span>
+                                  <span className="text-sm dark:text-gray-300">
+                                    {item.Event_Discription}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold dark:text-white">
+                                    Start Date:
+                                  </span>
+                                  <span className="dark:text-gray-300">
+                                    {new Date(item.start).toLocaleString()}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold dark:text-white">
+                                    End Date:
+                                  </span>
+                                  <span className="dark:text-gray-300">
+                                    {new Date(item.end).toLocaleString()}
+                                  </span>
+                                </div>
+                              </div>
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogClose />
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </>
+                )}
               </div>
-            </div>
-          ))
+            ))
+          )}
+        </div>
+        {combinedData?.length > 0 && (
+          <div className="mt-6">
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="secondary"
+                  className="w-full bg-blue-100 text-primary dark:bg-gray-600 dark:text-white"
+                  onClick={() => setIsDialogOpen(true)}
+                >
+                  View All Events & Birthdays
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="dark:bg-zinc-900 dark:text-white">
+                <DialogHeader>
+                  <DialogTitle className="dark:text-white">
+                    All Upcoming Birthdays & Events
+                  </DialogTitle>
+                  <DialogDescription className="dark:text-gray-300">
+                    <div className="space-y-4">
+                      {combinedData.length === 0 ? (
+                        <div className="text-gray-500 dark:text-gray-300">
+                          No upcoming events.
+                        </div>
+                      ) : (
+                        combinedData.map((item, index) => (
+                          <div
+                            key={index}
+                            className="rounded-md bg-white p-4 shadow-md dark:bg-zinc-900"
+                          >
+                            <div className="flex items-center space-x-4">
+                              {'DOB' in item ? (
+                                <Gift className="size-6 text-blue-500 dark:text-blue-300" />
+                              ) : (
+                                getEventIcon(item.type)
+                              )}
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                {'DOB' in item
+                                  ? `${item.firstName} ${item.lastName}`
+                                  : item.title || 'No Title'}
+                              </h3>
+                            </div>
+                            <div className="mt-4">
+                              <p className="text-sm text-gray-500 dark:text-gray-300">
+                                {'DOB' in item
+                                  ? new Date(item.DOB).toLocaleDateString(
+                                      'en-US',
+                                      {
+                                        day: 'numeric',
+                                        month: 'long',
+                                      },
+                                    )
+                                  : item.type || 'No Type'}
+                              </p>
+                              {'start' in item && (
+                                <p className="text-sm text-gray-500 dark:text-gray-300">
+                                  {Intl.DateTimeFormat('en-US', {
+                                    dateStyle: 'full',
+                                    timeStyle: 'short',
+                                  }).format(new Date(item.start))}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogClose />
+              </DialogContent>
+            </Dialog>
+          </div>
         )}
-      </div>
-
-      <div className="mt-6">
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button
-              variant="secondary"
-              className="w-full bg-blue-100 text-primary dark:bg-gray-600 dark:text-white"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              View All Events
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="dark:bg-zinc-900 dark:text-white">
-            <DialogHeader>
-              <DialogTitle className="dark:text-white">
-                All Upcoming Events
-              </DialogTitle>
-              <DialogDescription className="dark:text-gray-300">
-                <div className="space-y-4">
-                  {isLoading || isFetching ? (
-                    <div className="flex items-start space-x-4">
-                      <div>
-                        <h3 className="ml-2 text-sm font-semibold text-gray-900 dark:text-gray-300">
-                          No Recent Events
-                        </h3>
-                      </div>
-                    </div>
-                  ) : events.length === 0 ? (
-                    <div className="text-gray-500 dark:text-gray-300">
-                      No upcoming events.
-                    </div>
-                  ) : (
-                    events.map((event, index) => (
-                      <div
-                        key={index}
-                        className="rounded-md bg-white p-4 shadow-md dark:bg-zinc-900"
-                      >
-                        <div className="flex items-center space-x-4">
-                          {getEventIcon(event.type)}
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            {event.title || 'No Title'}
-                          </h3>
-                        </div>
-                        <div className="mt-4">
-                          <p className="text-sm text-gray-500 dark:text-gray-300">
-                            {event.type || 'No Type'}
-                          </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-300">
-                            {Intl.DateTimeFormat('en-US', {
-                              dateStyle: 'full',
-                              timeStyle: 'short',
-                            }).format(new Date(event.start))}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </DialogDescription>
-            </DialogHeader>
-            <DialogClose />
-          </DialogContent>
-        </Dialog>
-      </div>
+      </CardContent>
     </Card>
   );
 };
 
-export default UpcomingEvents;
+export default EventsAndBirthdays;

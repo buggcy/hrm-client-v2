@@ -62,27 +62,25 @@ export function BChart() {
       <CardHeader className="flex justify-between">
         <div className="flex w-full items-center">
           <CardDescription className="mr-4 grow text-lg font-bold text-black dark:text-white">
-            {isMonthlyView
-              ? `${currentMonthName} Attendance Record`
-              : `${currentMonthName} Attendance Record`}
+            Attendance Record of {currentMonthName}
           </CardDescription>
           <div className="ml-4 flex items-center">
             <Tabs
               value={isMonthlyView ? 'monthly' : 'weekly'}
               onValueChange={value => setIsMonthlyView(value === 'monthly')}
             >
-              <TabsList className="rounded-xl shadow-sm transition">
+              <TabsList className="rounded-lg shadow-sm transition">
                 <TabsTrigger
                   value="monthly"
-                  className={`${isMonthlyView ? 'rounded-xl text-white' : 'rounded-2xl bg-gray-100 text-gray-700'} p-2`}
+                  className={`${isMonthlyView ? 'rounded-lg text-white' : 'rounded-lg bg-gray-100 text-gray-700'} p-2`}
                 >
-                  Monthly
+                  monthly
                 </TabsTrigger>
                 <TabsTrigger
                   value="weekly"
-                  className={`${!isMonthlyView ? 'rounded-xl text-white' : 'rounded-xl bg-gray-100 text-gray-700'} p-2`}
+                  className={`${!isMonthlyView ? 'rounded-lg text-white' : 'rounded-lg bg-gray-100 text-gray-700'} p-2`}
                 >
-                  Weekly
+                  weekly
                 </TabsTrigger>
               </TabsList>
             </Tabs>

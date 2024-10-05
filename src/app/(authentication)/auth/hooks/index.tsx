@@ -41,7 +41,7 @@ export const createHandleAuthError =
         title:
           'Looking for the Buggcy Business Portal? Please login via the link below.',
         description: nonDeveloperToastDescription,
-        variant: 'destructive',
+        variant: 'error',
       });
     } else
       toast({
