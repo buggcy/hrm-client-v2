@@ -47,13 +47,14 @@ export default function DeleteDialog({
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on deleting record!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       setRefetchEmployeeList(true);
       showActionToggle(false);

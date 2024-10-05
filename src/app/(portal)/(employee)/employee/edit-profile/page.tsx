@@ -8,7 +8,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { ReadDocsButton } from '@/components/ReadDocsButton';
+import { Notification } from '@/components/NotificationIcon';
 
 import { useAuthStore } from '@/stores/auth';
 
@@ -24,7 +24,7 @@ const EditProfile = () => {
         <HighTrafficBanner />
         <LayoutHeader title="Edit Profile">
           <LayoutHeaderButtonsBlock>
-            <ReadDocsButton to="home" />
+            <Notification />
           </LayoutHeaderButtonsBlock>
         </LayoutHeader>
         <LayoutWrapper className="flex flex-col gap-10">

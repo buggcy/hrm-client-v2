@@ -13,7 +13,7 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { MonthPickerComponent } from '@/components/MonthPicker';
-import { ReadDocsButton } from '@/components/ReadDocsButton';
+import { Notification } from '@/components/NotificationIcon';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -78,7 +78,7 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
       <HighTrafficBanner />
       <LayoutHeader title="Attendance">
         <LayoutHeaderButtonsBlock>
-          <ReadDocsButton to="home" />
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-12 px-2">
