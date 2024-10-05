@@ -5,6 +5,8 @@ import {
   getPerkList,
   PerkList,
   PerkListParams,
+  PerkParams,
+  postPerkList,
 } from '@/services/employee/perk.service';
 
 import { UseQueryConfig } from '@/types';
@@ -33,3 +35,18 @@ export const useAllPerkQuery = (id: string, config: UseQueryConfig = {}) =>
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<AxiosResponse, Error>;
+
+export const usePerkListPostQuery = (
+  id: string,
+  params: PerkParams,
+  status: string[],
+  config: UseQueryConfig = {},
+) =>
+  useQuery({
+    queryKey: ['perkPostList', id, params, status],
+    queryFn: () => postPerkList(params, id, status),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<PerkApiResponse, Error>;

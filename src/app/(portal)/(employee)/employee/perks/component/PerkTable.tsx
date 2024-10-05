@@ -8,6 +8,7 @@ import { AxiosError } from 'axios';
 import { employeePerkListColumns } from '@/components/data-table/columns/employee-perk-list.columns';
 import { EmployeePerkDataTable } from '@/components/data-table/data-table-employee-perk';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import Header from '@/components/Header/Header';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
@@ -121,12 +122,11 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
 
   return (
     <>
-      <div className="flex w-full flex-col items-center justify-end gap-y-4 md:flex-row">
+      <Header subheading="Elevate Your Lifestyle — Discover Perks Designed for You!">
         <Button variant="default" onClick={handleAdd}>
           Apply for Perks
         </Button>
-      </div>
-
+      </Header>
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (

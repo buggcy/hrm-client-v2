@@ -17,6 +17,11 @@ export interface PerkListParams {
   status?: string;
 }
 
+export interface PerkParams {
+  page?: number;
+  limit?: number;
+}
+
 export const getPerkList = async (
   params: PerkListParams = {},
   id: string,
@@ -47,6 +52,44 @@ export const getPerkList = async (
   try {
     const response = await baseAPI.get(
       `/employee/${id}/perks?${queryParams.toString()}`,
+    );
+    return schemaParse(perkApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching perks and benefits list:', error);
+    throw error;
+  }
+};
+
+export const postPerkList = async (
+  params: PerkParams = {},
+  id: string,
+  status: string[] = [],
+): Promise<PerkApiResponse> => {
+  const defaultParams: PerkParams = {
+    page: 1,
+    limit: 5,
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+  const body = {
+    status: status.length > 0 ? status : undefined,
+  };
+  try {
+    const response = await baseAPI.post(
+      `/all/employee/${id}/perks?${queryParams.toString()}`,
+      body,
     );
     return schemaParse(perkApiResponseSchema)(response);
   } catch (error) {
