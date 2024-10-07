@@ -18,7 +18,10 @@ export const AuthProvider = ({ children }: ParentReactNode) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const allowedRoutes = useMemo(() => ['/profile', '/all-notifications'], []);
+  const allowedRoutes = useMemo(
+    () => ['/profile', '/all-notifications', '/profile-setting'],
+    [],
+  );
 
   useEffect(() => {
     const cookieToken = Cookies.get('hrmsToken');

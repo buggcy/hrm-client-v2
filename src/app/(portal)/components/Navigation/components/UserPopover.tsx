@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 
@@ -11,6 +12,16 @@ import {
   SunIcon,
 } from 'lucide-react';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,12 +36,11 @@ import { useStores } from '@/providers/Store.Provider';
 import { logout as logoutFn } from '@/services';
 import { AuthStoreType } from '@/stores/auth';
 
-const TERMS_LINK = 'https://www.tavus.io/terms-of-service';
-const PRIVACY_LINK = 'https://www.tavus.io/privacy-policy';
-
 export const UserPopover = () => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user, resetSession } = authStore;
+
+  const [logoutDialog, setLogoutDialog] = useState<boolean>(false);
 
   const { theme, setTheme } = useTheme();
   const { mutate: logout, isPending } = useMutation({
@@ -43,6 +53,11 @@ export const UserPopover = () => {
   };
 
   const username = `${user?.firstName} ${user?.lastName}`;
+
+  const confirmLogot = () => {
+    handleLogout();
+    setLogoutDialog(false);
+  };
 
   return (
     <div>
@@ -122,45 +137,24 @@ export const UserPopover = () => {
                 className="w-full justify-start p-2"
                 asChild
               >
+                <Link href="/profile-setting">Profile Setting</Link>
+              </Button>
+            </li>
+            <li>
+              <Button
+                variant="ghost"
+                className="w-full justify-start p-2"
+                asChild
+              >
                 <Link href="/all-notifications">Notifications</Link>
               </Button>
             </li>
+
             <li>
               <Button
                 variant="ghost"
                 className="w-full justify-start p-2"
-                asChild
-              >
-                <a href={TERMS_LINK} target="_blank">
-                  Terms of Service
-                </a>
-              </Button>
-            </li>
-            <li>
-              <Button
-                variant="ghost"
-                className="w-full justify-start p-2"
-                asChild
-              >
-                <a href={PRIVACY_LINK} target="_blank">
-                  Privacy Policy
-                </a>
-              </Button>
-            </li>
-            <li>
-              <Button
-                variant="ghost"
-                className="w-full justify-start p-2"
-                asChild
-              >
-                <Link href="/billing">Billing</Link>
-              </Button>
-            </li>
-            <li>
-              <Button
-                variant="ghost"
-                className="w-full justify-start p-2"
-                onClick={handleLogout}
+                onClick={() => setLogoutDialog(true)}
                 disabled={isPending}
               >
                 <LogOut className="mr-1 size-4" />
@@ -173,6 +167,24 @@ export const UserPopover = () => {
           </ul>
         </PopoverContent>
       </Popover>
+
+      <AlertDialog open={logoutDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will log you out of your account. Do you want to
+              continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setLogoutDialog(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmLogot}>Logout</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
