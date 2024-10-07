@@ -14,6 +14,7 @@ import { toast } from '@/components/ui/use-toast';
 
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import { EmployeeListType } from '@/libs/validations/employee';
+import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { exportAttendanceHistoryCSVData } from '@/services/employee/attendance-history.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
@@ -31,6 +32,7 @@ interface DataTableToolbarProps<TData> {
 
 export function AttendanceHistoryListToolbar<
   TData extends
+    | PolicyType
     | AttendanceHistoryListType
     | EmployeeListType
     | LeaveHistoryListType,

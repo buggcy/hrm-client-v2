@@ -28,6 +28,7 @@ import {
 
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import { EmployeeListType } from '@/libs/validations/employee';
+import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
 import { DataTablePagination } from './data-table-pagination';
@@ -51,6 +52,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<
   TData extends
+    | PolicyType
     | EmployeeListType
     | AttendanceHistoryListType
     | LeaveHistoryListType,
