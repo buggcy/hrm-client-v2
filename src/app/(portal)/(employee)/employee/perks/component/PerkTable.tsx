@@ -9,6 +9,7 @@ import { employeePerkListColumns } from '@/components/data-table/columns/employe
 import { EmployeePerkDataTable } from '@/components/data-table/data-table-employee-perk';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import Header from '@/components/Header/Header';
+import { MonthPickerComponent } from '@/components/MonthPicker';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
@@ -17,6 +18,8 @@ import { usePerkListQuery } from '@/hooks/employee/usePerkList.hook';
 import { PerkListArrayType } from '@/libs/validations/perk';
 import { searchPerkList } from '@/services/employee/perk.service';
 import { PerkStoreType } from '@/stores/employee/perks';
+
+import PerkCards from './PerksCards';
 
 import { MessageErrorResponse } from '@/types';
 import { User } from '@/types/user.types';
@@ -34,11 +37,12 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
-
+  const [date, setDate] = useState(new Date());
+  const initialDate = new Date();
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
-
+  console.log('date: ', date);
   const {
     data: perkList,
     isLoading,
@@ -120,13 +124,22 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
     ? searchPerkData?.pagination?.totalPages || 0
     : perkList?.pagination?.totalPages || 0;
 
+  const setDateValue = (date: Date | null) => {
+    setDate(date || new Date());
+  };
   return (
     <>
       <Header subheading="Elevate Your Lifestyle — Discover Perks Designed for You!">
+        <MonthPickerComponent
+          setDateValue={setDateValue}
+          initialDate={initialDate}
+        />
         <Button variant="default" onClick={handleAdd}>
           Apply for Perks
         </Button>
       </Header>
+
+      <PerkCards />
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (
