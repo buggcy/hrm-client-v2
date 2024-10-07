@@ -74,7 +74,7 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
   return (
     <Card className="flex h-full flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle className="text-[16px] lg:text-[20px] xl:text-[28px]">
+        <CardTitle className="text-[16px] lg:text-[20px] xl:text-[27px]">
           Salary Distribution
         </CardTitle>
         <CardDescription className="text-[12px] lg:text-[13px] xl:text-[16px]">
@@ -89,8 +89,8 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
           <RadialBarChart
             data={chartData}
             endAngle={360}
-            innerRadius={80}
-            outerRadius={130}
+            innerRadius={70}
+            outerRadius={110}
           >
             <ChartTooltip
               cursor={false}
@@ -104,14 +104,14 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
                       <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) - 5}
-                          className="fill-foreground text-lg font-bold"
+                          y={(viewBox.cy || 0) - 1}
+                          className="fill-foreground text-[17px] font-bold"
                         >
                           {formatCurrency(netSalary)}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 12}
+                          y={(viewBox.cy || 0) + 18}
                           className="fill-muted-foreground"
                         >
                           Net Salary
@@ -144,9 +144,8 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 text-sm font-medium leading-none">
-          Total Deductions: {totalDeductions.toLocaleString()}{' '}
-          <tspan className="text-xs">Rs.</tspan>
+        <div className="text-sm font-medium leading-none">
+          Total Deductions: Rs. {totalDeductions.toLocaleString()}
         </div>
 
         <div className="text-sm leading-none text-muted-foreground">
