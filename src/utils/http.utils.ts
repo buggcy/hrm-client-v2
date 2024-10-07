@@ -13,9 +13,9 @@ const defaultHeaders = {
   'x-api-key': xApiKey,
 };
 
-const addBearerToken = async (config: InternalAxiosRequestConfig) => {
+const addBearerToken = (config: InternalAxiosRequestConfig) => {
   try {
-    const token = await getToken();
+    const token = getToken();
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
@@ -25,8 +25,8 @@ const addBearerToken = async (config: InternalAxiosRequestConfig) => {
   return config;
 };
 
-const onRequestFulfilled = async (config: InternalAxiosRequestConfig) => {
-  const token = await getToken();
+const onRequestFulfilled = (config: InternalAxiosRequestConfig) => {
+  const token = getToken();
 
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
   if (config.data instanceof FormData)
