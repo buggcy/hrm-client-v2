@@ -38,7 +38,7 @@ export const signInWithEmailAndPassword = async ({
   password: string;
 }): Promise<AuthResponse> => {
   const { token }: AuthResponse = await baseAPI.post('/login', {
-    email,
+    email: email.toLowerCase(),
     password,
   });
 
@@ -50,7 +50,9 @@ export const sendPasswordResetEmail = async ({
 }: {
   email: string;
 }): Promise<AxiosResponse> => {
-  const res = await baseAPI.post('/forgot-password', { email });
+  const res = await baseAPI.post('/forgot-password', {
+    email: email.toLowerCase(),
+  });
   return res;
 };
 
@@ -63,7 +65,11 @@ export const sendDataForResetPassword = async ({
   password: string;
   otp: string;
 }): Promise<AxiosResponse> => {
-  const res = await baseAPI.post('/reset-password', { email, password, otp });
+  const res = await baseAPI.post('/reset-password', {
+    email: email.toLowerCase(),
+    password,
+    otp,
+  });
   return res;
 };
 

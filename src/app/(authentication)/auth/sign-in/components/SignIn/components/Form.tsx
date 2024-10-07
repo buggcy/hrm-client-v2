@@ -73,7 +73,6 @@ export function SignInForm() {
 
   return (
     <Form {...form}>
-      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <FormField
           control={form.control}

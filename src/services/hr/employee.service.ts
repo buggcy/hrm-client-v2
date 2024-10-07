@@ -90,13 +90,26 @@ export const approvalEmployeeList = async (): Promise<
   return res;
 };
 
-export const addEmployeeData = async (
-  data: AddEmployeeFormData,
-): Promise<SuccessMessageResponse> => {
-  const { message }: SuccessMessageResponse = await baseAPI.post(
-    `/employee`,
-    data,
-  );
+export const addEmployeeData = async ({
+  firstName,
+  lastName,
+  email,
+  companyEmail,
+  contactNo,
+  basicSalary,
+  Joining_Date,
+  Designation,
+}: AddEmployeeFormData): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(`/employee`, {
+    firstName,
+    lastName,
+    email: email.toLowerCase(),
+    companyEmail: companyEmail.toLowerCase(),
+    contactNo,
+    basicSalary,
+    Joining_Date,
+    Designation,
+  });
   return { message };
 };
 
