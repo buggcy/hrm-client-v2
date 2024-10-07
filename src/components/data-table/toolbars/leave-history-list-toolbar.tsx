@@ -13,7 +13,10 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import { EmployeeListType } from '@/libs/validations/employee';
+import {
+  EmployeeListType,
+  EmployeePayrollListType,
+} from '@/libs/validations/employee';
 import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { exportLeaveHistoryCSVData } from '@/services/employee/leave-history.service';
@@ -35,6 +38,7 @@ export function LeaveHistoryListToolbar<
     | PolicyType
     | AttendanceHistoryListType
     | EmployeeListType
+    | EmployeePayrollListType
     | LeaveHistoryListType,
 >({
   table,

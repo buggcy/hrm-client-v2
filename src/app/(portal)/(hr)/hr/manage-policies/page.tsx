@@ -22,7 +22,7 @@ import { useFetchAllCategories } from '@/hooks/usepolicyQuery';
 import { PolicyDialog } from './components/AddPolicyModal';
 import PolicyTable from './components/PolicyTable.components';
 
-export default function ManageEmployeesPage() {
+export default function ManagePoliciesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [category, setCategory] = useState<string>('');

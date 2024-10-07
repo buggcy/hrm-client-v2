@@ -29,7 +29,7 @@ export function DeleteReplicaDialog({ id }: { id: IReplica['replica_id'] }) {
     onError: () => {
       toast({
         title: 'Failed to delete replica',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

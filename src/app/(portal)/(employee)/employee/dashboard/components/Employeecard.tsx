@@ -1,3 +1,4 @@
+'use client';
 import { useEffect } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,15 +33,15 @@ const EmployeeCard = () => {
   const noOfAbsents = attendanceReport?.noOfAbsents || 0;
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-      <Card className="rounded-lg p-4 dark:bg-zinc-900">
+      <Card className="rounded-lg p-0 dark:bg-zinc-900">
         <CardHeader>
-          <div className="flex justify-between">
+          <div className="flex flex-row items-center justify-between">
             <CardTitle className="text-lg font-bold dark:text-white">
               Attendance
             </CardTitle>
             <a
-              href="#"
-              className="text-blue-600 hover:underline dark:text-blue-400"
+              href="/attendance/attendance-history"
+              className="flex justify-between align-middle text-xs text-blue-600 hover:underline dark:text-blue-400"
             >
               View Stats
             </a>
@@ -48,22 +49,22 @@ const EmployeeCard = () => {
         </CardHeader>
 
         <CardContent>
-          <hr className="my-2 border-gray-200 dark:border-gray-700" />
+          <hr className="mb-4 mt-0 border-gray-200 dark:border-gray-700" />
           <div className="flex items-center justify-between">
             <div>
-              <Typography className="py-2 text-sm font-normal text-gray-500 dark:text-gray-300">
+              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
                 <strong className="text-black dark:text-white">
                   {todayTotalHours}
                 </strong>{' '}
                 Total Hours
               </Typography>
-              <Typography className="py-2 text-sm font-normal text-gray-500 dark:text-gray-300">
+              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
                 <strong className="text-black dark:text-white">
                   {totalHoursOfWeek}
                 </strong>{' '}
                 Total Weekly Hours
               </Typography>
-              <Typography className="py-2 text-sm font-normal text-gray-500 dark:text-gray-300">
+              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
                 <strong className="text-black dark:text-white">
                   {todayStartTime}
                 </strong>{' '}
@@ -80,37 +81,37 @@ const EmployeeCard = () => {
         </CardContent>
       </Card>
 
-      <Card className="rounded-lg p-4 dark:bg-zinc-900">
+      <Card className="rounded-lg p-0 dark:bg-zinc-900">
         <CardHeader>
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-bold dark:text-white">
               Leave Records
             </CardTitle>
             <a
-              href="#"
-              className="text-blue-600 hover:underline dark:text-blue-400"
+              href="/attendance/leave-history"
+              className="text-xs text-blue-600 hover:underline dark:text-blue-400"
             >
               View Stats
             </a>
           </div>
         </CardHeader>
         <CardContent>
-          <hr className="my-2 border-gray-200 dark:border-gray-700" />
+          <hr className="mb-3 mt-0 border-gray-200 dark:border-gray-700" />
           <div className="flex items-center justify-between">
             <div>
-              <Typography className="py-2 text-sm font-normal text-gray-500 dark:text-gray-300">
+              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
                 <strong className="text-black dark:text-white">
                   {noOfPresents}
                 </strong>{' '}
                 Total Presents
               </Typography>
-              <Typography className="py-2 text-sm font-normal text-gray-500 dark:text-gray-300">
+              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
                 <strong className="text-black dark:text-white">
                   {noOfLeaves}
                 </strong>{' '}
                 Total Leaves
               </Typography>
-              <Typography className="py-2 text-sm font-normal text-gray-500 dark:text-gray-300">
+              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
                 <strong className="text-black dark:text-white">
                   {noOfAbsents}
                 </strong>{' '}

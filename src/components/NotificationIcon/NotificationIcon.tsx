@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 
@@ -117,10 +118,7 @@ const Notification: React.FC = () => {
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent
-        style={{ width: '30vw' }}
-        className="absolute -left-0 min-w-[300px] -translate-x-full"
-      >
+      <DropdownMenuContent className="absolute left-2 min-w-[350px] -translate-x-full md:left-6 md:min-w-max">
         <DropdownMenu>
           <div className="flex items-center justify-between p-2">
             <h1 className="font-bold">Notifications</h1>
@@ -131,7 +129,7 @@ const Notification: React.FC = () => {
                 </button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent className="absolute -left-0 min-w-[170px] -translate-x-full">
+              <DropdownMenuContent className="min-w-max -translate-x-full">
                 <div className="mr-1 flex items-center justify-between">
                   <DropdownMenuLabel>Activity Feed</DropdownMenuLabel>
                   <span className="text-sm text-gray-500">

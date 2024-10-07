@@ -5,47 +5,56 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { employeeListColumns } from '@/components/data-table/columns/employee-list.columns';
+import { employeePayrollColumns } from '@/components/data-table/columns/employeePayroll.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useEmployeeListQuery } from '@/hooks/employee/useEmployeeList.hook';
-import { EmployeeListArrayType } from '@/libs/validations/employee';
-import { searchEmployeeList } from '@/services/hr/employee.service';
-import { EmployeeStoreType } from '@/stores/hr/employee';
+import { usePayrollQuery } from '@/hooks/payroll/usePayroll.hook';
+import { EmployeePayrollListType } from '@/libs/validations/employee';
+import { searchEmployeePayrollList } from '@/services/employee/employeePayroll.service';
+import { AuthStoreType } from '@/stores/auth';
+import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
 
 import { MessageErrorResponse } from '@/types';
 
-const EmployeeTable: FunctionComponent = () => {
+const PayrollTable: FunctionComponent = () => {
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
-  const { setRefetchEmployeeList, refetchEmployeeList } = employeeStore;
-
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
-  const initialSearchTerm = searchParams.get('search') || '';
 
+  const { employeePayrollStore } = useStores() as {
+    employeePayrollStore: EmployeePayrollStoreType;
+  };
+  const { setRefetchEmployeePayrollList, refetchEmployeePayrollList } =
+    employeePayrollStore;
+  const initialSearchTerm = searchParams.get('search') || '';
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
 
   const {
-    data: employeeList,
+    data: payrollList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = useEmployeeListQuery({ page, limit });
+  } = usePayrollQuery({
+    page,
+    limit,
+    userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
+  });
 
   const {
     mutate,
     isPending,
-    data: searchEmployeeData,
+    data: searchPayrollEmployeeData,
   } = useMutation({
-    mutationFn: searchEmployeeList,
+    mutationFn: searchEmployeePayrollList,
     onError: (err: unknown) => {
       const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({
@@ -53,7 +62,7 @@ const EmployeeTable: FunctionComponent = () => {
         description:
           axiosError?.response?.data?.message ||
           'Error on fetching search data!',
-        variant: 'error',
+        variant: 'destructive',
       });
     },
   });
@@ -76,17 +85,29 @@ const EmployeeTable: FunctionComponent = () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
+  }, [debouncedSearchTerm, page, limit, refetch, mutate]);
 
   useEffect(() => {
-    if (refetchEmployeeList) {
+    void (async () => {
+      await refetch();
+    })();
+  }, [page, limit, refetch]);
+
+  useEffect(() => {
+    if (refetchEmployeePayrollList) {
       void (async () => {
         await refetch();
       })();
 
-      setRefetchEmployeeList(false);
+      setRefetchEmployeePayrollList(false);
     }
-  }, [refetchEmployeeList, setRefetchEmployeeList, refetch]);
+  }, [
+    refetchEmployeePayrollList,
+    page,
+    limit,
+    setRefetchEmployeePayrollList,
+    refetch,
+  ]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -106,23 +127,23 @@ const EmployeeTable: FunctionComponent = () => {
       </div>
     );
 
-  const tableData: EmployeeListArrayType = debouncedSearchTerm
-    ? searchEmployeeData?.data || []
-    : employeeList?.data || [];
+  const tableData: EmployeePayrollListType[] = debouncedSearchTerm
+    ? ((searchPayrollEmployeeData?.data || []) as EmployeePayrollListType[])
+    : ((payrollList?.data || []) as EmployeePayrollListType[]);
 
-  const tablePageCount: number = debouncedSearchTerm
-    ? searchEmployeeData?.pagination?.totalPages || 0
-    : employeeList?.pagination?.totalPages || 0;
+  const tablePageCount: number | undefined = debouncedSearchTerm
+    ? searchPayrollEmployeeData?.pagination?.totalPages || 0
+    : payrollList?.pagination?.totalPages || 0;
 
   return (
     <>
       {isLoading || isFetching ? (
-        <DataTableLoading columnCount={7} rowCount={limit} />
+        <DataTableLoading columnCount={9} rowCount={limit} />
       ) : (
-        <DataTable
+        <DataTable<EmployeePayrollListType, undefined>
           searchLoading={isPending}
           data={tableData || []}
-          columns={employeeListColumns}
+          columns={employeePayrollColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
@@ -137,4 +158,4 @@ const EmployeeTable: FunctionComponent = () => {
   );
 };
 
-export default EmployeeTable;
+export default PayrollTable;

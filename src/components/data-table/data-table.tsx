@@ -27,13 +27,17 @@ import {
 } from '@/components/ui/table';
 
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import { EmployeeListType } from '@/libs/validations/employee';
+import {
+  EmployeeListType,
+  EmployeePayrollListType,
+} from '@/libs/validations/employee';
 import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
 import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
+import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
 
 interface DataTableProps<TData, TValue> {
@@ -53,6 +57,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<
   TData extends
     | PolicyType
+    | EmployeePayrollListType
     | EmployeeListType
     | AttendanceHistoryListType
     | LeaveHistoryListType,
@@ -81,10 +86,6 @@ export function DataTable<
       columnVisibility,
       rowSelection,
       columnFilters,
-      // pagination: {
-      //   pageIndex: pagination.page - 1,
-      //   pageSize: pagination.limit,
-      // },
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -103,7 +104,14 @@ export function DataTable<
   const dataType = data[0]?.type;
   return (
     <div className="space-y-4">
-      {dataType === 'employee' ? (
+      {dataType === 'hrPolicy' ? (
+        <HrPolicyToolbar
+          table={table}
+          searchTerm={searchTerm}
+          onSearch={onSearch}
+          searchLoading={searchLoading}
+        />
+      ) : dataType === 'employee' ? (
         <EmployeeListToolbar
           table={table}
           searchTerm={searchTerm}
@@ -168,7 +176,7 @@ export function DataTable<
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {searchLoading ? 'Finding User ...' : 'No results.'}
+                  {searchLoading ? 'Finding Results ...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

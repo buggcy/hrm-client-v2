@@ -12,14 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
-import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import {
-  EmployeeListType,
-  EmployeePayrollListType,
-} from '@/libs/validations/employee';
-import { PolicyType } from '@/libs/validations/hr-policy';
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
-import { exportEmployeeCSVData } from '@/services/hr/employee.service';
+import { EmployeeListType } from '@/libs/validations/employee';
+import { exportEmployeePayrollCSVData } from '@/services/employee/employeePayroll.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
 import { gender_options } from '../../filters';
@@ -33,14 +27,7 @@ interface DataTableToolbarProps<TData> {
   searchLoading: boolean;
 }
 
-export function EmployeeListToolbar<
-  TData extends
-    | PolicyType
-    | EmployeeListType
-    | AttendanceHistoryListType
-    | EmployeePayrollListType
-    | LeaveHistoryListType,
->({
+export function EmployeeListToolbar<TData extends EmployeeListType>({
   table,
   searchTerm,
   onSearch,
@@ -52,16 +39,16 @@ export function EmployeeListToolbar<
     .rows.map(row => row.original._id);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: exportEmployeeCSVData,
+    mutationFn: exportEmployeePayrollCSVData,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
         description:
           err?.response?.data?.error || 'Error on exporting employees!',
-        variant: 'error',
+        variant: 'destructive',
       });
     },
-    onSuccess: (response: string) => {
+    onSuccess: (response: BlobPart) => {
       const file = new Blob([response]);
       downloadFile(file, 'Employees.csv');
     },

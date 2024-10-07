@@ -35,7 +35,6 @@ import { AuthStoreType } from '@/stores/auth';
 
 import { MessageErrorResponse } from '@/types';
 
-// Define the validation schema using Zod
 const addPolicySchema = z.object({
   category: z.string().min(1, 'Please select a category'),
   file: z

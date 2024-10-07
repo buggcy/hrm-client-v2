@@ -12,6 +12,7 @@ import {
   MoreHorizontal,
 } from 'lucide-react';
 
+import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
@@ -30,7 +31,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -128,14 +128,15 @@ const AllNotifications: FunctionComponent = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
 
-      <LayoutWrapper className="flex flex-col gap-4 sm:flex-row sm:gap-12">
-        <div className="w-full sm:w-1/4">
+      <LayoutWrapper className="flex flex-col gap-4">
+        <Header subheading="You’ve got new updates! Take a quick look to stay informed."></Header>
+        <div className="grid grid-cols-1 gap-12 py-4 md:grid-cols-12 md:py-2">
           <Tabs
             value={filter}
             onValueChange={value => setFilter(value as FilterValue)}
-            className="w-full"
+            className="col-span-3"
           >
-            <TabsList className="flex w-full justify-between bg-transparent p-0 sm:mt-4 sm:flex-col sm:space-y-4">
+            <TabsList className="flex w-full justify-between bg-transparent p-0 md:flex-col md:space-y-4">
               {[
                 {
                   value: 'all',
@@ -157,98 +158,91 @@ const AllNotifications: FunctionComponent = () => {
               ))}
             </TabsList>
           </Tabs>
-        </div>
+          <div className="col-span-9">
+            <div className="mb-1 flex items-center justify-between">
+              <h2 className="mb-0 text-lg font-bold">{getTitle()}</h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center justify-center">
+                  <MoreHorizontal className="size-5" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="absolute -left-0 min-w-[150px] -translate-x-full">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleAllReadClick}>
+                    <CheckCircle className="mr-2 size-4" />
+                    Mark all as read
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <hr className="mb-3" />
 
-        <div className="w-full min-w-80 px-0 py-4 sm:w-8/12">
-          <div className="mb-1 flex items-center justify-between">
-            <h2 className="mb-0 text-lg font-bold">{getTitle()}</h2>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-center">
-                <MoreHorizontal className="size-5" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="absolute -left-0 min-w-[150px] -translate-x-full">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleAllReadClick}>
-                  <CheckCircle className="mr-2 size-4" />
-                  Mark all as read
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <hr className="mb-3" />
-          <ScrollArea
-            className="overflow-y-auto"
-            style={{
-              height: 'calc(100vh - 230px)',
-            }}
-          >
-            {isMarkingAllAsRead && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
-                <Loader className="mr-2 animate-spin" />
+            <ul className="w-full space-y-2 overflow-hidden">
+              <div className="flex h-[calc(100vh-210px)] flex-col gap-1 overflow-y-auto">
+                {isMarkingAllAsRead && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
+                    <Loader className="mr-2 animate-spin" />
+                  </div>
+                )}
+                {sortedFilteredNotifications.length > 0 ? (
+                  sortedFilteredNotifications.map(notification => (
+                    <li key={notification._id} className="relative">
+                      {loadingNotificationId === notification._id && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
+                          <Loader className="mr-2 animate-spin" />
+                        </div>
+                      )}
+
+                      <Card className="w-full overflow-hidden">
+                        <CardContent className="flex items-center px-3 py-2">
+                          <Avatar className="mr-2 size-10">
+                            <AvatarImage
+                              src={notification.senderId?.Avatar || ''}
+                              alt={`${notification.senderId?.firstName || 'Unknown'} ${notification.senderId?.lastName || 'User'}`}
+                            />
+                            <AvatarFallback className="uppercase">
+                              {`${notification.senderId?.firstName?.charAt(0) || ''}${notification.senderId?.lastName?.charAt(0) || ''}`}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="break-words text-sm">
+                              <span className="font-bold capitalize">
+                                {notification.senderId?.firstName || ''}{' '}
+                                {notification.senderId?.lastName || ''}
+                              </span>{' '}
+                              {notification.message}
+                            </p>
+                          </div>
+                          <div className="flex w-10 items-center justify-end">
+                            <p className="mr-1 text-xs text-gray-500">
+                              {timeAgo(notification.createdAt)}
+                            </p>
+                            {!notification.isRead && (
+                              <span
+                                className="cursor-pointer text-lg text-blue-500"
+                                onClick={() =>
+                                  handleMarkAsReadClick(notification._id)
+                                }
+                              >
+                                ●
+                              </span>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </li>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-start p-4 text-gray-500">
+                    <BellOff className="mr-3 size-5 text-gray-400" />
+                    <p className="text-sm font-medium">
+                      No notifications available
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
-            <ul className="w-full max-w-full space-y-2 overflow-hidden sm:w-auto">
-              {sortedFilteredNotifications.length > 0 ? (
-                sortedFilteredNotifications.map(notification => (
-                  <li key={notification._id} className="relative">
-                    {loadingNotificationId === notification._id && (
-                      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
-                        <Loader className="mr-2 animate-spin" />
-                      </div>
-                    )}
-
-                    <Card className="w-full max-w-full overflow-hidden sm:w-auto">
-                      <CardContent className="flex items-center px-3 py-2">
-                        <Avatar className="mr-2 size-10">
-                          <AvatarImage
-                            src={notification.senderId?.Avatar || ''}
-                            alt={`${notification.senderId?.firstName || 'Unknown'} ${notification.senderId?.lastName || 'User'}`}
-                          />
-                          <AvatarFallback className="uppercase">
-                            {`${notification.senderId?.firstName?.charAt(0) || ''}${notification.senderId?.lastName?.charAt(0) || ''}`}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <p className="break-words text-sm">
-                            <span className="font-bold capitalize">
-                              {notification.senderId?.firstName ||
-                                'Unknown First Name'}{' '}
-                              {notification.senderId?.lastName ||
-                                'Unknown Last Name'}
-                            </span>{' '}
-                            {notification.message}
-                          </p>
-                        </div>
-                        <div className="flex items-center">
-                          <p className="mr-1 text-xs text-gray-500">
-                            {timeAgo(notification.createdAt)}
-                          </p>
-                          {!notification.isRead && (
-                            <span
-                              className="cursor-pointer text-lg text-blue-500"
-                              onClick={() =>
-                                handleMarkAsReadClick(notification._id)
-                              }
-                            >
-                              ●
-                            </span>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </li>
-                ))
-              ) : (
-                <div className="flex items-center justify-start p-4 text-gray-500">
-                  <BellOff className="mr-3 size-5 text-gray-400" />
-                  <p className="text-sm font-medium">
-                    No notifications available
-                  </p>
-                </div>
-              )}
             </ul>
-          </ScrollArea>
+          </div>
         </div>
       </LayoutWrapper>
     </Layout>

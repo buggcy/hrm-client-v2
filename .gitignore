@@ -50,3 +50,5 @@ next-env.d.ts
 .sentryclirc
 
 .env
+
+package-lock.json
