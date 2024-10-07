@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 
 import { queryClient } from '@/libs';
 import { baseAPI } from '@/utils';
@@ -98,19 +99,8 @@ export const registerEmployee = async (
 };
 
 export const getToken = () => {
-  const authStorage = sessionStorage.getItem('auth-storage');
-
-  if (authStorage) {
-    try {
-      const parsedData = JSON.parse(authStorage);
-      return parsedData?.state?.token || null;
-    } catch (error) {
-      console.error('Failed to parse auth-storage:', error);
-      return null;
-    }
-  }
-
-  return null;
+  const token = Cookies.get('hrmsToken');
+  return token || null;
 };
 
 export function logout(): Promise<void> {

@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
@@ -37,6 +38,7 @@ export const useAuthStore = create<AuthStoreType>()(
         },
         setToken: (token: string) => set({ token }),
         resetSession: () => {
+          Cookies.remove('hrmsToken');
           set({ token: null });
           set({ user: null });
         },

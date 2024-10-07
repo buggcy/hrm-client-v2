@@ -113,7 +113,7 @@ export const UserPopover = () => {
                 className="w-full justify-start p-2"
                 asChild
               >
-                <Link href="/employee/profile">My Profile</Link>
+                <Link href="/profile">My Profile</Link>
               </Button>
             </li>
             <li>
@@ -122,15 +122,7 @@ export const UserPopover = () => {
                 className="w-full justify-start p-2"
                 asChild
               >
-                <Link
-                  href={
-                    user?.roleId === 1
-                      ? '/hr/all-notifications'
-                      : '/employee/all-notifications'
-                  }
-                >
-                  Notifications
-                </Link>
+                <Link href="/all-notifications">Notifications</Link>
               </Button>
             </li>
             <li>
