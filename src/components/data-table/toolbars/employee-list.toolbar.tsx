@@ -2,6 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
+import { AxiosError } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
@@ -11,10 +12,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
+import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
+import {
+  EmployeeListType,
+  EmployeePayrollListType,
+} from '@/libs/validations/employee';
+import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
 import { gender_options } from '../../filters';
+
+import { MessageErrorResponseWithError } from '@/types';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -23,7 +32,13 @@ interface DataTableToolbarProps<TData> {
   searchLoading: boolean;
 }
 
-export function EmployeeListToolbar<TData>({
+export function EmployeeListToolbar<
+  TData extends
+    | EmployeeListType
+    | AttendanceHistoryListType
+    | EmployeePayrollListType
+    | LeaveHistoryListType,
+>({
   table,
   searchTerm,
   onSearch,
@@ -36,17 +51,17 @@ export function EmployeeListToolbar<TData>({
 
   const { mutate, isPending } = useMutation({
     mutationFn: exportEmployeeCSVData,
-    onError: err => {
+    onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
         description:
           err?.response?.data?.error || 'Error on exporting employees!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
-    onSuccess: response => {
-      const fileBlob = new Blob([response]);
-      downloadFile(fileBlob, 'Employees.csv');
+    onSuccess: (response: string) => {
+      const file = new Blob([response]);
+      downloadFile(file, 'Employees.csv');
     },
   });
 

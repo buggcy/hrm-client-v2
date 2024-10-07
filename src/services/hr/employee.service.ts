@@ -3,12 +3,11 @@ import { AxiosResponse } from 'axios';
 import { ApprovalEmployeeType } from '@/app/(portal)/(hr)/hr/approval/ApprovalCard/ApprovalCard';
 import { AddEmployeeFormData } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
 import {
+  EmployeeApiResponse,
   employeeApiResponseSchema,
   EmployeeListType,
 } from '@/libs/validations/employee';
 import { baseAPI, schemaParse } from '@/utils';
-
-import { EmployeeApiResponse } from '@/types/employee.types';
 
 export interface EmployeeListParams {
   page?: number;
@@ -21,6 +20,14 @@ export interface EmployeeListParams {
   designation?: string;
   companyEmail?: string;
 }
+
+export interface EditProfileResponse {
+  message: string;
+  token: string;
+}
+export type SuccessMessageResponse = {
+  message: string;
+};
 
 export const getEmployeeList = async (
   params: EmployeeListParams = {},
@@ -68,11 +75,12 @@ export const searchEmployeeList = async ({
   query: string;
   page: number;
   limit: number;
-}): Promise<AxiosResponse<EmployeeApiResponse>> => {
-  const res = await baseAPI.get(
+}): Promise<EmployeeApiResponse> => {
+  const { data, pagination }: EmployeeApiResponse = await baseAPI.get(
     `/user/search?page=${page}&limit=${limit}&query=${query}`,
   );
-  return res;
+
+  return { data, pagination };
 };
 
 export const approvalEmployeeList = async (): Promise<
@@ -84,28 +92,77 @@ export const approvalEmployeeList = async (): Promise<
 
 export const addEmployeeData = async (
   data: AddEmployeeFormData,
-): Promise<AxiosResponse> => {
-  const res = await baseAPI.post(`/employee`, data);
-  return res;
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/employee`,
+    data,
+  );
+  return { message };
 };
 
 export const exportEmployeeCSVData = async (
   ids: Array<string>,
-): Promise<AxiosResponse> => {
+): Promise<string> => {
   const res = await baseAPI.post(`/user/export-csv`, { ids });
-  return res;
+  return res.data;
 };
 
 export const deleteEmployeeRecord = async (
   id: string,
-): Promise<AxiosResponse> => {
-  const res = await baseAPI.delete(`/employee/${id}`);
-  return res;
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/employee/${id}`,
+  );
+
+  return { message };
 };
 
 export const employeeApprovalRequest = async (
   data: ApprovalEmployeeType,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/approve-employee`,
+    data,
+  );
+  return { message };
+};
+
+export const ReadEmployeeRecord = async (
+  id: string,
 ): Promise<AxiosResponse> => {
-  const res = await baseAPI.post(`/approve-employee`, data);
+  const res = await baseAPI.get(`/employee/${id}`);
   return res;
+};
+
+export const ChangePassword = async ({
+  id,
+  oldPassword,
+  newPassword,
+}: {
+  id: string;
+  oldPassword: string;
+  newPassword: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/change-password/${id}`,
+    {
+      oldPassword,
+      newPassword,
+    },
+  );
+  return { message };
+};
+
+export const EditProfile = async ({
+  id,
+  formData,
+}: {
+  id: string;
+  formData: FormData;
+}): Promise<EditProfileResponse> => {
+  const { message, token }: EditProfileResponse = await baseAPI.put(
+    `/employee/edit/profile/${id}`,
+    formData,
+  );
+  return { message, token };
 };

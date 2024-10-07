@@ -35,3 +35,11 @@ export interface SuccessResponse {
   message?: string;
   email?: string;
 }
+
+export interface MessageErrorResponse {
+  message: string;
+}
+
+export interface MessageErrorResponseWithError {
+  error: string;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, Suspense } from 'react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -19,12 +19,14 @@ const SignIn: FC = () => {
         </p>
       </div>
       <div className="space-y-4">
-        <SignInForm />
+        <Suspense fallback={<div>Loading...</div>}>
+          <SignInForm />
+        </Suspense>
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{' '}
         <Button asChild variant="link" className="p-0">
-          <Link href="/auth/sign-up" className="underline">
+          <Link href="/auth/register" className="underline">
             Sign up
           </Link>
         </Button>

@@ -3,6 +3,11 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '@/libs';
 import { baseAPI } from '@/utils';
 
+import { VerifyCodeResponseType } from '@/types/auth.types';
+
+type AuthResponse = {
+  token: string;
+};
 export class CustomError extends Error {
   constructor(message: string) {
     super(message);
@@ -30,9 +35,13 @@ export const signInWithEmailAndPassword = async ({
 }: {
   email: string;
   password: string;
-}): Promise<AxiosResponse> => {
-  const res = await baseAPI.post('/login', { email, password });
-  return res;
+}): Promise<AuthResponse> => {
+  const { token }: AuthResponse = await baseAPI.post('/login', {
+    email,
+    password,
+  });
+
+  return { token };
 };
 
 export const sendPasswordResetEmail = async ({
@@ -62,6 +71,32 @@ export const getTypes = async (): Promise<AxiosResponse> => {
   return res;
 };
 
+export const verifyRegisterCode = async ({
+  code,
+}: {
+  code: string;
+}): Promise<VerifyCodeResponseType> => {
+  const {
+    employee,
+    educationExperiences,
+    additionalDocuments,
+    kyc,
+  }: VerifyCodeResponseType = await baseAPI.post('/verify', {
+    uniqueCode: code,
+  });
+  return { employee, educationExperiences, additionalDocuments, kyc };
+};
+
+export const registerEmployee = async (
+  formData: FormData,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.post(
+    '/Signup/update-details-add-experience',
+    formData,
+  );
+  return res;
+};
+
 export const getToken = () => {
   const authStorage = sessionStorage.getItem('auth-storage');
 
@@ -78,8 +113,11 @@ export const getToken = () => {
   return null;
 };
 
-export function logout() {
-  queryClient.clear();
-  localStorage.clear();
-  sessionStorage.clear();
+export function logout(): Promise<void> {
+  return new Promise(resolve => {
+    queryClient.clear();
+    localStorage.clear();
+    sessionStorage.clear();
+    resolve();
+  });
 }

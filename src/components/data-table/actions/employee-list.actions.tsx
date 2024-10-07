@@ -17,15 +17,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { EmployeeListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
 
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
+interface DataTableRowActionsProps {
+  row: Row<EmployeeListType>;
 }
 
-export function EmployeeListRowActions<TData>({
-  row,
-}: DataTableRowActionsProps<TData>) {
+export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
