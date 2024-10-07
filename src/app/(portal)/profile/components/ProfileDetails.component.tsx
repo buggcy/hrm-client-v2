@@ -49,7 +49,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
               {user?.Designation || ''}
             </div>
           </div>
-          <Link href="/employee/edit-profile">
+          <Link href="/profile-setting">
             <Button
               variant="ghost"
               className="w-full border border-gray-300 bg-transparent text-black dark:text-white"

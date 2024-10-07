@@ -1,0 +1,159 @@
+'use client';
+
+import * as React from 'react';
+
+import { useMutation } from '@tanstack/react-query';
+import { Row } from '@tanstack/react-table';
+import { AxiosError } from 'axios';
+import { Eye, MoreHorizontal, Pencil, XCircle } from 'lucide-react';
+
+import ConfirmDialog from '@/components/modals/cancel-modal';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
+import { useStores } from '@/providers/Store.Provider';
+
+import { PerkModal } from '@/app/(portal)/(employee)/employee/perks/component/PerkModal';
+import { useAllPerkQuery } from '@/hooks/employee/usePerkList.hook';
+import { PerkListType } from '@/libs/validations/perk';
+import { unAvailPerk } from '@/services/employee/perk.service';
+import { useAuthStore } from '@/stores/auth';
+import { PerkStoreType } from '@/stores/employee/perks';
+
+import { MessageErrorResponse } from '@/types';
+
+interface DataTableRowActionsProps {
+  row: Row<PerkListType>;
+}
+
+export function PerkListRowActions({ row }: DataTableRowActionsProps) {
+  const [dialogContent] = React.useState<React.ReactNode | null>(null);
+  const [modal, setModal] = React.useState(false);
+  const [modelType, setModelType] = React.useState('');
+  const [selectedPerk, setSelectedPerk] = React.useState<PerkListType | null>(
+    null,
+  );
+  const [showDeleteDialog, setShowDeleteDialog] =
+    React.useState<boolean>(false);
+  const data = row.original;
+  const { user } = useAuthStore();
+  const userId: string | undefined = user?.id;
+  const { perkStore } = useStores() as { perkStore: PerkStoreType };
+  const { setRefetchPerkList } = perkStore;
+  const { refetch } = useAllPerkQuery(userId as string, {
+    enabled: !!userId,
+  });
+  const { mutate, isPending } = useMutation({
+    mutationFn: unAvailPerk,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description: err?.response?.data?.message || 'Error on cancel request!',
+        variant: 'destructive',
+      });
+    },
+    onSuccess: async response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+      });
+      setRefetchPerkList(true);
+      await refetch();
+      setShowDeleteDialog(false);
+    },
+  });
+  const handleDelete = () => {
+    if (userId && data?._id) {
+      const payload = {
+        employeeId: userId,
+        perkId: data._id,
+      };
+
+      mutate(payload);
+    }
+  };
+  const handleClose = () => {
+    setModal(false);
+  };
+  const handleEdit = (perk: PerkListType) => {
+    setSelectedPerk(perk);
+    setModelType('edit');
+    setModal(true);
+  };
+  return (
+    <Dialog>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="flex size-8 p-0 data-[state=open]:bg-muted"
+          >
+            <MoreHorizontal className="size-4" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[200px]">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {row?.getValue('hrApproval') === 'pending' ? (
+            <>
+              {' '}
+              <DropdownMenuItem>
+                <Eye className="mr-2 size-4" />
+                View Request
+              </DropdownMenuItem>
+              <DialogTrigger asChild onClick={() => handleEdit(data)}>
+                <DropdownMenuItem>
+                  <Pencil className="mr-2 size-4" />
+                  Edit Request
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DropdownMenuItem
+                className="text-red-600"
+                onSelect={() => setShowDeleteDialog(true)}
+              >
+                <XCircle className="mr-2 size-4" />
+                Cancel Request
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <>
+              {' '}
+              <DropdownMenuItem>
+                <Eye className="mr-2 size-4" />
+                View Request
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
+      <ConfirmDialog
+        isOpen={showDeleteDialog}
+        showActionToggle={setShowDeleteDialog}
+        title={'Confirm Request'}
+        isPending={isPending}
+        description={'Are your sure you want to cancel this request?'}
+        handleDelete={handleDelete}
+      />
+      {user && (
+        <PerkModal
+          open={modal}
+          onCloseChange={handleClose}
+          type={modelType}
+          user={user}
+          perks={[]}
+          perkToEdit={modelType === 'edit' ? selectedPerk : null}
+        />
+      )}
+    </Dialog>
+  );
+}

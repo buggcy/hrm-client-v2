@@ -13,8 +13,8 @@ export interface AttendanceHistoryListParams {
   id?: string;
   page?: number;
   limit?: number;
-  month?: number;
-  year?: number;
+  from?: string;
+  to?: string;
 }
 
 export const getAttendanceHistoryList = async (
@@ -24,8 +24,8 @@ export const getAttendanceHistoryList = async (
     id: '',
     page: 1,
     limit: 5,
-    month: 9,
-    year: 2024,
+    from: '',
+    to: '',
   };
 
   const mergedParams = { ...defaultParams, ...params };
@@ -57,33 +57,33 @@ export const searchAttedanceHistoryList = async ({
   page,
   limit,
   id,
-  month,
-  year,
+  from = new Date(),
+  to = new Date(),
 }: {
   query: string;
   page: number;
   limit: number;
   id: string;
-  month: number;
-  year: number;
+  from?: Date;
+  to?: Date;
 }): Promise<AttendanceHistoryApiResponse> => {
   const res = await baseAPI.get(
-    `/attendence-history-user-v2?page=${page}&limit=${limit}&id=${id}&month=${month}&year=${year}`,
+    `/attendence-history-user-v2?page=${page}&limit=${limit}&id=${id}&from=${from?.toISOString()}&to=${to?.toISOString()}`,
   );
   return schemaParse(attendanceHistoryApiResponseSchema)(res);
 };
 
 export const getAttendanceHistoryStats = async ({
   id,
-  month,
-  year,
+  from = '',
+  to = '',
 }: {
   id: string;
-  month: number;
-  year: number;
+  from?: string;
+  to?: string;
 }): Promise<AttendanceApiResponse> => {
   const res = await baseAPI.get(
-    `/attendance-stats-v2?userId=${id}&month=${month}&year=${year}`,
+    `/attendance-stats-v2?userId=${id}&from=${from}&to=${to}`,
   );
   return schemaParse(AttendanceStatsApiResponseSchema)(res);
 };

@@ -1,12 +1,14 @@
 import { AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 
 import { queryClient } from '@/libs';
 import { baseAPI } from '@/utils';
 
+import { VerifyCodeResponseType } from '@/types/auth.types';
+
 type AuthResponse = {
   token: string;
 };
-
 export class CustomError extends Error {
   constructor(message: string) {
     super(message);
@@ -36,7 +38,7 @@ export const signInWithEmailAndPassword = async ({
   password: string;
 }): Promise<AuthResponse> => {
   const { token }: AuthResponse = await baseAPI.post('/login', {
-    email,
+    email: email.toLowerCase(),
     password,
   });
 
@@ -48,7 +50,9 @@ export const sendPasswordResetEmail = async ({
 }: {
   email: string;
 }): Promise<AxiosResponse> => {
-  const res = await baseAPI.post('/forgot-password', { email });
+  const res = await baseAPI.post('/forgot-password', {
+    email: email.toLowerCase(),
+  });
   return res;
 };
 
@@ -61,7 +65,11 @@ export const sendDataForResetPassword = async ({
   password: string;
   otp: string;
 }): Promise<AxiosResponse> => {
-  const res = await baseAPI.post('/reset-password', { email, password, otp });
+  const res = await baseAPI.post('/reset-password', {
+    email: email.toLowerCase(),
+    password,
+    otp,
+  });
   return res;
 };
 
@@ -70,20 +78,35 @@ export const getTypes = async (): Promise<AxiosResponse> => {
   return res;
 };
 
+export const verifyRegisterCode = async ({
+  code,
+}: {
+  code: string;
+}): Promise<VerifyCodeResponseType> => {
+  const {
+    employee,
+    educationExperiences,
+    additionalDocuments,
+    kyc,
+  }: VerifyCodeResponseType = await baseAPI.post('/verify', {
+    uniqueCode: code,
+  });
+  return { employee, educationExperiences, additionalDocuments, kyc };
+};
+
+export const registerEmployee = async (
+  formData: FormData,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.post(
+    '/Signup/update-details-add-experience',
+    formData,
+  );
+  return res;
+};
+
 export const getToken = () => {
-  const authStorage = sessionStorage.getItem('auth-storage');
-
-  if (authStorage) {
-    try {
-      const parsedData = JSON.parse(authStorage);
-      return parsedData?.state?.token || null;
-    } catch (error) {
-      console.error('Failed to parse auth-storage:', error);
-      return null;
-    }
-  }
-
-  return null;
+  const token = Cookies.get('hrmsToken');
+  return token || null;
 };
 
 export function logout(): Promise<void> {

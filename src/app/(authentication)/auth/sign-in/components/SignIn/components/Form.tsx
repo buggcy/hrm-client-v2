@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -53,6 +54,7 @@ export function SignInForm() {
         ' If the issue persists, try resetting your password or contact our support team for assistance.',
     }),
     onSuccess: (response: AuthResponse) => {
+      Cookies.set('hrmsToken', response?.token, { expires: 1 });
       setUser(response?.token);
     },
   });
@@ -71,7 +73,6 @@ export function SignInForm() {
 
   return (
     <Form {...form}>
-      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <FormField
           control={form.control}
