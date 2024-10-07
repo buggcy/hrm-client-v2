@@ -40,16 +40,16 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
           </div>
           <div className="mb-4 text-center">
             <a
-              className="text-lg font-semibold text-gray-800 hover:underline"
+              className="text-lg font-semibold capitalize text-gray-800 hover:underline"
               href="#"
             >
               {user?.firstName || '-'} {user?.lastName || '-'}
             </a>
-            <div className="mt-2 text-center text-gray-600">
+            <div className="mt-2 text-center capitalize text-gray-600">
               {user?.Designation || ''}
             </div>
           </div>
-          <Link href="/employee/edit-profile">
+          <Link href="/profile-setting">
             <Button
               variant="ghost"
               className="w-full border border-gray-300 bg-transparent text-black"

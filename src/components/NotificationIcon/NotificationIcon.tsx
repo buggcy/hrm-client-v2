@@ -223,13 +223,7 @@ const Notification: React.FC = () => {
         <DropdownMenuSeparator />
         <div className="my-2 flex justify-center">
           <Button asChild className="w-[95%]">
-            <Link
-              href={
-                user?.roleId === 1
-                  ? '/hr/all-notifications'
-                  : '/employee/all-notifications'
-              }
-            >
+            <Link href="/all-notifications">
               <ArrowLeft className="mr-2 size-4" />
               View All Notifications
             </Link>

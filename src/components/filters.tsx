@@ -91,6 +91,28 @@ export const gender_options = [
   },
 ];
 
+export const perk_status_options = [
+  {
+    value: 'available',
+    label: 'Available',
+    icon: CircleArrowOutUpRight,
+  },
+  {
+    value: 'pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'rejected',
+    label: 'Rejected',
+    icon: XCircle,
+  },
+  {
+    value: 'approved',
+    label: 'Approved',
+    icon: CheckCircle2,
+  },
+];
 export const attendance_history_status_options = [
   {
     value: 'Present',

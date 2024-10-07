@@ -1,4 +1,10 @@
-import { CalendarClock, DollarSignIcon, Home, LogOut } from 'lucide-react';
+import {
+  CalendarClock,
+  DollarSignIcon,
+  Gift,
+  Home,
+  LogOut,
+} from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
 
@@ -28,6 +34,11 @@ export const employeeMenu: MenuItem[] = [
     title: 'Payment',
     icon: DollarSignIcon,
     children: [
+      {
+        title: 'Perks & Benefits',
+        icon: Gift,
+        href: '/employee/perks',
+      },
       {
         title: 'Payroll',
         icon: DollarSignIcon,

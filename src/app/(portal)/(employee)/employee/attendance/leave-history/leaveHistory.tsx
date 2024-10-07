@@ -3,8 +3,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
-import { MonthPickerComponent } from '@/components/MonthPicker';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
@@ -21,12 +21,8 @@ import LeaveHistoryTable from './components/LeaveHistoryTable.component';
 interface LeaveHistoryPageProps {}
 
 const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
-  const [date, setDate] = useState(new Date());
-  const initialDate = new Date();
-
-  const setDateValue = (date: Date | null) => {
-    setDate(date || new Date());
-  };
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -35,9 +31,6 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
-
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
   const searchParams = useSearchParams();
@@ -66,8 +59,8 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
     page,
     limit,
     id: user?.id,
-    month,
-    year,
+    from: selectedDate?.from?.toISOString(),
+    to: selectedDate?.to?.toISOString(),
   });
 
   const {
@@ -89,8 +82,8 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
         page,
         limit,
         id: user?.id ? user.id : '',
-        month,
-        year,
+        from: selectedDate?.from?.toISOString(),
+        to: selectedDate?.to?.toISOString(),
       }),
     onError: err => {
       toast({
@@ -150,16 +143,18 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   return (
     <div className="flex flex-col gap-12">
       <Header subheading="You have 2 leave requests pending">
-        <MonthPickerComponent
-          setDateValue={setDateValue}
-          initialDate={initialDate}
+        <DateRangePicker
+          timeRange={timeRange}
+          selectedDate={selectedDate}
+          setTimeRange={setTimeRange}
+          setDate={handleSetDate}
         />
         <Button variant="default" onClick={handleDialogOpen}>
           Apply Leave Form
         </Button>
       </Header>
 
-      <LeaveCards date={date} />
+      <LeaveCards date={selectedDate} />
       <LeaveHistoryTable
         leaveHistoryList={leaveHistoryList}
         isLoading={isLoading}

@@ -1,9 +1,10 @@
 'use client';
 
-import { FunctionComponent, Suspense, useEffect, useState } from 'react';
+import { FunctionComponent, Suspense, useEffect } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -12,7 +13,6 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { MonthPickerComponent } from '@/components/MonthPicker';
 import { Notification } from '@/components/NotificationIcon';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
@@ -26,8 +26,8 @@ import AttendanceHistoryTable from './components/AttendanceHistoryTable.componen
 interface EmployeeDashboardProps {}
 
 const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
-  const [date, setDate] = useState(new Date());
-  const initialDate = new Date();
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
@@ -38,17 +38,17 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
   } = useMutation({
     mutationFn: ({
       id,
-      month,
-      year,
+      from,
+      to,
     }: {
       id: string;
-      month: number;
-      year: number;
+      from?: string;
+      to?: string;
     }) =>
       getAttendanceHistoryStats({
         id,
-        month,
-        year,
+        from,
+        to,
       }),
     onError: err => {
       toast({
@@ -63,15 +63,11 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     if (user) {
       mutate({
         id: user?.Tahometer_ID ? user.Tahometer_ID : '',
-        month: date.getMonth() + 1,
-        year: date.getFullYear(),
+        from: selectedDate?.from?.toISOString(),
+        to: selectedDate?.to?.toISOString(),
       });
     }
-  }, [date, user, mutate]);
-
-  const setDateValue = (date: Date | null) => {
-    setDate(date || new Date());
-  };
+  }, [selectedDate, user, mutate]);
 
   return (
     <Layout>
@@ -83,14 +79,16 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-12 px-2">
         <Header subheading="You are 15 minutes late today!">
-          <MonthPickerComponent
-            setDateValue={setDateValue}
-            initialDate={initialDate}
+          <DateRangePicker
+            timeRange={timeRange}
+            selectedDate={selectedDate}
+            setTimeRange={setTimeRange}
+            setDate={handleSetDate}
           />
         </Header>
         <AttendanceCards data={attendanceHistoryStats} isPending={isPending} />
         <Suspense fallback={<div>Loading...</div>}>
-          <AttendanceHistoryTable date={date} />
+          <AttendanceHistoryTable dates={selectedDate} />
         </Suspense>
       </LayoutWrapper>
     </Layout>
