@@ -8,7 +8,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { ReadDocsButton } from '@/components/ReadDocsButton';
+import { Notification } from '@/components/NotificationIcon';
 
 import { useAllPerkQuery } from '@/hooks/employee/usePerkList.hook';
 import { useAuthStore } from '@/stores/auth';
@@ -41,7 +41,7 @@ const Perk: FunctionComponent<PerkProps> = () => {
       <HighTrafficBanner />
       <LayoutHeader title="Perks & Benefits">
         <LayoutHeaderButtonsBlock>
-          <ReadDocsButton to="home" />
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">

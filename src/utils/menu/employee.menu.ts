@@ -15,11 +15,6 @@ export const employeeMenu: MenuItem[] = [
     href: '/employee/dashboard',
   },
   {
-    title: 'Perks & Benefits',
-    icon: Gift,
-    href: '/employee/perks',
-  },
-  {
     title: 'Time Tracking',
     icon: CalendarClock,
     children: [
@@ -39,6 +34,11 @@ export const employeeMenu: MenuItem[] = [
     title: 'Payment',
     icon: DollarSignIcon,
     children: [
+      {
+        title: 'Perks & Benefits',
+        icon: Gift,
+        href: '/employee/perks',
+      },
       {
         title: 'Payroll',
         icon: DollarSignIcon,
