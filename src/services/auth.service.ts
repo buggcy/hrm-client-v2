@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 
 import { queryClient } from '@/libs';
 import { baseAPI } from '@/utils';
@@ -37,7 +38,7 @@ export const signInWithEmailAndPassword = async ({
   password: string;
 }): Promise<AuthResponse> => {
   const { token }: AuthResponse = await baseAPI.post('/login', {
-    email,
+    email: email.toLowerCase(),
     password,
   });
 
@@ -49,7 +50,9 @@ export const sendPasswordResetEmail = async ({
 }: {
   email: string;
 }): Promise<AxiosResponse> => {
-  const res = await baseAPI.post('/forgot-password', { email });
+  const res = await baseAPI.post('/forgot-password', {
+    email: email.toLowerCase(),
+  });
   return res;
 };
 
@@ -62,7 +65,11 @@ export const sendDataForResetPassword = async ({
   password: string;
   otp: string;
 }): Promise<AxiosResponse> => {
-  const res = await baseAPI.post('/reset-password', { email, password, otp });
+  const res = await baseAPI.post('/reset-password', {
+    email: email.toLowerCase(),
+    password,
+    otp,
+  });
   return res;
 };
 
@@ -98,19 +105,8 @@ export const registerEmployee = async (
 };
 
 export const getToken = () => {
-  const authStorage = sessionStorage.getItem('auth-storage');
-
-  if (authStorage) {
-    try {
-      const parsedData = JSON.parse(authStorage);
-      return parsedData?.state?.token || null;
-    } catch (error) {
-      console.error('Failed to parse auth-storage:', error);
-      return null;
-    }
-  }
-
-  return null;
+  const token = Cookies.get('hrmsToken');
+  return token || null;
 };
 
 export function logout(): Promise<void> {

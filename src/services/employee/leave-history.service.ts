@@ -17,8 +17,8 @@ export interface LeaveHistoryListParams {
   id?: string;
   page?: number;
   limit?: number;
-  month?: number;
-  year?: number;
+  from?: string;
+  to?: string;
   Title?: string;
   Description?: string;
   Status?: string;
@@ -33,8 +33,8 @@ export const getLeaveHistoryList = async (
     id: '',
     page: 1,
     limit: 5,
-    month: 0,
-    year: 0,
+    from: '',
+    to: '',
     Title: '',
     Description: '',
     Status: '',
@@ -72,30 +72,34 @@ export const searchLeaveHistoryList = async ({
   page,
   limit,
   id,
-  month,
-  year,
+  from = '',
+  to = '',
 }: {
   query: string;
   page: number;
   limit: number;
   id: string;
-  month: number;
-  year: number;
+  from?: string;
+  to?: string;
 }): Promise<LeaveHistoryApiResponse> => {
   const res = await baseAPI.get(
-    `/leave/all-v2?page=${page}&limit=${limit}&id=${id}&month=${month}&year=${year}&Title=${query}`,
+    `/leave/all-v2?page=${page}&limit=${limit}&id=${id}&from=${from}&to=${to}&Title=${query}`,
   );
   return schemaParse(leaveHistoryApiResponseSchema)(res);
 };
 
 export const getLeaveHistoryStats = async ({
   id,
-  year,
+  from = '',
+  to = '',
 }: {
   id: string;
-  year: number;
+  from?: string;
+  to?: string;
 }): Promise<LeaveApiResponse> => {
-  const res = await baseAPI.get(`/leave/stats-v2?userId=${id}&year=${year}`);
+  const res = await baseAPI.get(
+    `/leave/stats-v2?userId=${id}&from=${from}&to=${to}`,
+  );
   return schemaParse(leaveApiResponseSchema)(res);
 };
 
