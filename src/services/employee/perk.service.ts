@@ -3,6 +3,8 @@ import { AxiosResponse } from 'axios';
 import {
   PerkApiResponse,
   perkApiResponseSchema,
+  PerkRecordApiResponse,
+  perkRecordApiResponseSchema,
 } from '@/libs/validations/perk';
 import { baseAPI, schemaParse } from '@/utils';
 
@@ -20,6 +22,13 @@ export interface PerkListParams {
 export interface PerkParams {
   page?: number;
   limit?: number;
+  month?: number;
+  year?: number;
+}
+
+export interface PerkRecordParams {
+  month?: number;
+  year?: number;
 }
 
 export const getPerkList = async (
@@ -146,4 +155,38 @@ export const searchPerkList = async ({
   );
 
   return { data, pagination };
+};
+
+export const getPerkRecords = async (
+  params: PerkRecordParams = {},
+  id: string,
+): Promise<PerkRecordApiResponse> => {
+  const defaultParams: PerkParams = {
+    month: 0,
+    year: 0,
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(
+      `/records/${id}/perks?${queryParams.toString()}`,
+    );
+    return schemaParse(perkRecordApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching perks and benefits records:', error);
+    throw error;
+  }
 };

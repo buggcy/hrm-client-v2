@@ -30,3 +30,33 @@ export interface PerkApiResponse {
   pagination: Pagination;
   data: Perk[];
 }
+
+export interface PerkRecords {
+  totalRecords: number;
+  totalAvailablePerks: number;
+  totalPendingPerks: number;
+  totalRejectedPerks: number;
+  totalApprovedPerks: number;
+}
+
+export interface PerkAverage {
+  averageIncrementAmount: number;
+  averageDecrementAmount: number;
+}
+
+export interface AvailablePerks {
+  _id: string;
+  perksId: {
+    _id: string;
+    name: string;
+  };
+  assignedIncrementAmount: number;
+  hrApproval: 'approved' | 'rejected' | 'pending' | 'available';
+  incrementAmount: number;
+  isAvailed: boolean;
+}
+export interface PerkRecordApiResponse {
+  records: PerkRecords;
+  averages: PerkAverage;
+  availableData: AvailablePerks[];
+}

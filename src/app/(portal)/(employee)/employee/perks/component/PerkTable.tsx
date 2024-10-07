@@ -14,7 +14,10 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { usePerkListQuery } from '@/hooks/employee/usePerkList.hook';
+import {
+  usePerkListPostQuery,
+  usePerkRecordQuery,
+} from '@/hooks/employee/usePerkList.hook';
 import { PerkListArrayType } from '@/libs/validations/perk';
 import { searchPerkList } from '@/services/employee/perk.service';
 import { PerkStoreType } from '@/stores/employee/perks';
@@ -38,18 +41,25 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
   const [date, setDate] = useState(new Date());
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
   const initialDate = new Date();
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
-  console.log('date: ', date);
+  const [status] = useState<string[]>([]);
   const {
-    data: perkList,
+    data: perkPostList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = usePerkListQuery(userId, { page, limit });
+  } = usePerkListPostQuery(userId, { page, limit, month, year }, status);
+
+  const { data: perkRecords, refetch: refetchRecord } = usePerkRecordQuery(
+    userId,
+    { month, year },
+  );
 
   const {
     mutate,
@@ -68,6 +78,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
       });
     },
   });
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -88,20 +99,23 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
     }
   }, [debouncedSearchTerm, refetch, mutate, page, limit]);
 
-  useEffect(() => {}, [perkList]);
-
+  useEffect(() => {}, [perkPostList, month, year, date]);
+  useEffect(() => {}, [perkRecords, month, year, date]);
   useEffect(() => {
     if (refetchPerkList) {
       void (async () => {
         await refetch();
+        await refetchRecord();
       })();
 
       setRefetchPerkList(false);
     }
-  }, [refetchPerkList, setRefetchPerkList, refetch]);
+  }, [refetchPerkList, setRefetchPerkList, refetch, refetchRecord]);
+
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
+
   const handlePaginationChange = (newPage: number, newLimit: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
@@ -118,11 +132,11 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
 
   const tableData: PerkListArrayType = debouncedSearchTerm
     ? searchPerkData?.data || []
-    : perkList?.data || [];
+    : perkPostList?.data || [];
 
   const tablePageCount: number = debouncedSearchTerm
     ? searchPerkData?.pagination?.totalPages || 0
-    : perkList?.pagination?.totalPages || 0;
+    : perkPostList?.pagination?.totalPages || 0;
 
   const setDateValue = (date: Date | null) => {
     setDate(date || new Date());
@@ -139,7 +153,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
         </Button>
       </Header>
 
-      <PerkCards />
+      <PerkCards records={perkRecords} month={month} />
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (
