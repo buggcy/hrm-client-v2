@@ -19,12 +19,20 @@ export const policyService = {
   },
 
   fetchAllPolicies: async (
-    params: PolicyQueryParamsType,
+    params: PolicyQueryParamsType & { categories?: string[] },
   ): Promise<PolicyApiResponse> => {
-    const { page, limit, category } = params;
-    const response = await baseAPI.get<PolicyApiResponse>(
-      `/policyV2?page=${page}&limit=${limit}&category=${category}`,
-    );
+    const { page, limit, category, categories } = params;
+    let url = `/policyV2?page=${page}&limit=${limit}`;
+
+    if (category) {
+      url += `&category=${category}`;
+    }
+
+    if (categories && categories.length > 0) {
+      url += `&categories=${categories.join(',')}`;
+    }
+
+    const response = await baseAPI.get<PolicyApiResponse>(url);
     return policyApiResponseSchema.parse(response);
   },
 

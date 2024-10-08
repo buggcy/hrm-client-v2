@@ -3,12 +3,9 @@
 import type { Table } from '@tanstack/react-table';
 import { X } from 'lucide-react';
 
-import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-import { gender_options } from '../../filters';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -30,13 +27,6 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn('Gender') && (
-          <DataTableFacetedFilter
-            column={table.getColumn('Gender')}
-            title="Gender"
-            options={gender_options}
-          />
-        )}
 
         {isFiltered && (
           <Button

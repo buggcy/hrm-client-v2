@@ -31,6 +31,8 @@ interface DataTableToolbarProps<TData> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function EmployeeListToolbar<
@@ -45,6 +47,8 @@ export function EmployeeListToolbar<
   searchTerm,
   onSearch,
   searchLoading,
+  setFilterValue,
+  filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const selectedRowIds: string[] = table
@@ -83,20 +87,21 @@ export function EmployeeListToolbar<
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
-        {table.getColumn('Gender') && (
-          <DataTableFacetedFilter
-            column={table.getColumn('Gender')}
-            title="Gender"
-            options={gender_options}
-          />
-        )}
 
-        {(isFiltered || searchTerm) && (
+        <DataTableFacetedFilter
+          onFilterChange={setFilterValue}
+          title="Gender"
+          options={gender_options}
+          filterValue={filterValue}
+        />
+
+        {(isFiltered || searchTerm || filterValue.length > 0) && (
           <Button
             variant="ghost"
             onClick={() => {
               table.resetColumnFilters();
               onSearch('');
+              setFilterValue([]);
             }}
             className="h-8 px-2 lg:px-3"
           >

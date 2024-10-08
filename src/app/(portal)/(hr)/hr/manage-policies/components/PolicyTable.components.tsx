@@ -28,6 +28,7 @@ const PolicyTable: React.FC<PolicyTableProps> = ({
   const initialSearchTerm = searchParams.get('search') || '';
 
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
+  const [categories, setCategories] = useState<string[]>([]);
 
   const {
     data: policyList,
@@ -35,7 +36,12 @@ const PolicyTable: React.FC<PolicyTableProps> = ({
     isFetching,
     error,
     refetch,
-  } = useFetchAllPolicies({ page, limit, category: category });
+  } = useFetchAllPolicies({
+    page,
+    limit,
+    category: categories.length > 0 ? categories[0] : category,
+    categories,
+  });
 
   useEffect(() => {
     const fetchPolicies = async () => {
@@ -47,7 +53,7 @@ const PolicyTable: React.FC<PolicyTableProps> = ({
     };
 
     void fetchPolicies();
-  }, [category, refetch]);
+  }, [category, categories, refetch]);
 
   const filteredData = useMemo(() => {
     if (!policyList?.data) return [];
@@ -108,7 +114,9 @@ const PolicyTable: React.FC<PolicyTableProps> = ({
           searchTerm={searchTerm}
           onSearch={handleSearchChange}
           searchLoading={isFetching}
-          toolbar="hrPolicy"
+          toolbarType="hrPolicy"
+          filterValue={categories}
+          setFilterValue={setCategories}
         />
       </div>
     </>

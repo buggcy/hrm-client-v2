@@ -29,6 +29,8 @@ interface DataTableToolbarProps<TData> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function HrPolicyToolbar<
@@ -43,6 +45,8 @@ export function HrPolicyToolbar<
   searchTerm,
   onSearch,
   searchLoading,
+  setFilterValue,
+  filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
@@ -91,9 +95,10 @@ export function HrPolicyToolbar<
         />
         {table.getColumn('category') && (
           <DataTableFacetedFilter
-            column={table.getColumn('category')}
             title="Category"
             options={hr_policies_categories}
+            filterValue={filterValue}
+            onFilterChange={setFilterValue}
           />
         )}
         {(isFiltered || searchTerm) && (
