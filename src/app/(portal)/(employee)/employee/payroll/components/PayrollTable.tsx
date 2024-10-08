@@ -152,6 +152,9 @@ const PayrollTable: FunctionComponent = () => {
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
+          toolbarType="payrollList"
+          setFilterValue={(value: string[]) => console.log(value)}
+          filterValue={[]}
         />
       )}
     </>

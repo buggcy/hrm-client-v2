@@ -5,7 +5,6 @@ import type { Table } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
-import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
@@ -15,8 +14,6 @@ import { toast } from '@/components/ui/use-toast';
 import { EmployeeListType } from '@/libs/validations/employee';
 import { exportEmployeePayrollCSVData } from '@/services/employee/employeePayroll.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
-
-import { gender_options } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -70,13 +67,6 @@ export function EmployeeListToolbar<TData extends EmployeeListType>({
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
-        {table.getColumn('Gender') && (
-          <DataTableFacetedFilter
-            column={table.getColumn('Gender')}
-            title="Gender"
-            options={gender_options}
-          />
-        )}
 
         {(isFiltered || searchTerm) && (
           <Button
