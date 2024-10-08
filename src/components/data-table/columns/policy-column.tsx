@@ -1,7 +1,6 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { File, FileImage, FileText } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -46,32 +45,23 @@ export const policyColumn: ColumnDef<PolicyType>[] = [
       const fileNameWithExtension = segments?.pop() || '';
       const [fileName, fileExtension] = fileNameWithExtension.split('.');
 
-      const fileIcon = (extension: string) => {
-        switch (extension?.toLowerCase()) {
-          case 'pdf':
-          case 'docx':
-            return <FileText className="size-5" />;
-          case 'jpg':
-          case 'png':
-          case 'gif':
-          case 'jpeg':
-            return <FileImage className="size-5" />;
-          default:
-            return <File className="size-5" />;
-        }
+      const isImage = (fileExtension: string) => {
+        return ['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(
+          fileExtension.toLowerCase(),
+        );
       };
-
       return (
         <div className="flex items-center space-x-2">
-          <div className="flex size-8 items-center justify-center rounded bg-gray-200 p-2">
-            {fileIcon(fileExtension)}
-          </div>
+          <Avatar className="size-10">
+            {isImage(fileExtension) && fileUrl ? (
+              <AvatarImage src={fileUrl} alt={fileName} />
+            ) : (
+              <AvatarFallback>{fileExtension.toUpperCase()}</AvatarFallback>
+            )}
+          </Avatar>
           <div className="flex flex-col">
             <span className="max-w-[500px] truncate font-medium capitalize">
               {fileName}
-            </span>
-            <span className="text-sm text-gray-500">
-              {fileExtension?.toUpperCase()}
             </span>
           </div>
         </div>

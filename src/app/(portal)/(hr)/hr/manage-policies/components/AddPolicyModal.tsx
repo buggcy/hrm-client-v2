@@ -147,7 +147,7 @@ export function PolicyDialog({
                       <SelectItem value="Company Policy">
                         Company Policy
                       </SelectItem>
-                      <SelectItem value="Attendance Policy">
+                      <SelectItem value="Attendence Policy">
                         Attendance Policy
                       </SelectItem>
                       <SelectItem value="Personnel Policy">

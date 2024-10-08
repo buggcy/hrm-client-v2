@@ -11,17 +11,12 @@ import {
 } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 
-import { useFetchAllCategories } from '@/hooks/usepolicyQuery';
-
 import { PolicyDialog } from './components/AddPolicyModal';
 import PolicyTable from './components/PolicyTable.components';
 
 export default function ManagePoliciesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [category, setCategory] = useState<string>('');
-  const [title, setTitle] = useState<string>('All Policy Category');
-
-  const { data, isLoading, error } = useFetchAllCategories();
+  const category: string = '';
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -29,11 +24,6 @@ export default function ManagePoliciesPage() {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-  };
-
-  const handleCategoryChange = (selectedCategory: string, newTitle: string) => {
-    setCategory(selectedCategory);
-    setTitle(newTitle);
   };
 
   return (
@@ -45,17 +35,11 @@ export default function ManagePoliciesPage() {
           </Button>
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper wrapperClassName="flex flex-1">
+      <LayoutWrapper className="flex flex-col gap-10">
         <Suspense fallback={<div>Loading...</div>}>
           <PolicyTable
             category={category}
             handleDialogOpen={handleDialogOpen}
-            title={title}
-            setTitle={setTitle}
-            data={data}
-            isLoading={isLoading}
-            error={error}
-            handleCategoryChange={handleCategoryChange}
           />
         </Suspense>
       </LayoutWrapper>

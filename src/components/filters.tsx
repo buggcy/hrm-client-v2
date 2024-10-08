@@ -3,9 +3,11 @@ import {
   ArrowRight,
   ArrowUp,
   Bug,
+  CheckCircle,
   CheckCircle2,
   Circle,
   CircleArrowOutUpRight,
+  FileText,
   HelpCircle,
   PackagePlus,
   PersonStanding,
@@ -156,5 +158,62 @@ export const leave_history_status_options = [
     value: 'Canceled',
     label: 'Canceled',
     icon: XCircle,
+  },
+];
+export const hr_policies_categories = [
+  {
+    value: 'Company Policy',
+    label: 'Company Policy',
+    icon: FileText,
+  },
+  {
+    value: 'Attendence Policy',
+    label: 'Attendence Policy',
+    icon: CheckCircle,
+  },
+  {
+    value: 'Personnel Policy',
+    label: 'Personnel Policy',
+    icon: Circle,
+  },
+  {
+    value: 'Safety Policy',
+    label: 'Safety Policy',
+    icon: Circle,
+  },
+  {
+    value: 'Technology Policy',
+    label: 'Technology Policy',
+    icon: Circle,
+  },
+  {
+    value: 'Privacy Policy',
+    label: 'Privacy Policy',
+    icon: Circle,
+  },
+  {
+    value: 'Payment Policy',
+    label: 'Payment Policy',
+    icon: Circle,
+  },
+  {
+    value: 'Confidentiality Policy',
+    label: 'Confidentiality Policy',
+    icon: Circle,
+  },
+  {
+    value: 'Performance Policy',
+    label: 'Employee Performance Policy',
+    icon: Circle,
+  },
+  {
+    value: 'Retention Policy',
+    label: 'Retention Policy',
+    icon: Circle,
+  },
+  {
+    value: 'Disciplinary Policy',
+    label: 'Disciplinary Action Policy',
+    icon: Circle,
   },
 ];

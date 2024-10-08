@@ -1,18 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { BadgePlus, ChevronDown, ChevronUp } from 'lucide-react';
+import { BadgePlus } from 'lucide-react';
 
 import { policyColumn } from '@/components/data-table/columns/policy-column';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 import { useFetchAllPolicies } from '@/hooks/usepolicyQuery';
 import { PolicyType } from '@/libs/validations/hr-policy';
@@ -20,23 +14,12 @@ import { PolicyType } from '@/libs/validations/hr-policy';
 interface PolicyTableProps {
   category: string;
   handleDialogOpen: () => void;
-  title: string;
-  setTitle: (title: string) => void;
-  data: { message: string; categories: string[] } | undefined;
-  isLoading: boolean;
-  error: Error | null;
-  handleCategoryChange: (selectedCategory: string, newTitle: string) => void;
 }
 
 const PolicyTable: React.FC<PolicyTableProps> = ({
   category,
   handleDialogOpen,
-  title,
-  data,
-  isLoading,
-  handleCategoryChange,
 }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -85,10 +68,6 @@ const PolicyTable: React.FC<PolicyTableProps> = ({
     router.push(`/hr/manage-policies?${newSearchParams.toString()}`);
   };
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
-
   if (isPoliciesLoading)
     return <DataTableLoading columnCount={5} rowCount={limit} />;
 
@@ -106,49 +85,8 @@ const PolicyTable: React.FC<PolicyTableProps> = ({
 
   return (
     <>
-      <div className="mb-4 flex items-center justify-end gap-2">
-        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" onClick={toggleDropdown}>
-              {title}
-              {dropdownOpen ? (
-                <ChevronUp className="ml-2 size-4" />
-              ) : (
-                <ChevronDown className="ml-2 size-4" />
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuItem
-              onClick={() => handleCategoryChange('', 'All Policy Category')}
-            >
-              All Categories
-            </DropdownMenuItem>
-            {isLoading ? (
-              <DropdownMenuItem disabled>
-                Loading categories...
-              </DropdownMenuItem>
-            ) : error ? (
-              <DropdownMenuItem disabled>
-                Error loading categories
-              </DropdownMenuItem>
-            ) : data ? (
-              data.categories.map((cat: string) => (
-                <DropdownMenuItem
-                  key={cat}
-                  onClick={() => handleCategoryChange(cat, cat)}
-                >
-                  {cat}
-                </DropdownMenuItem>
-              ))
-            ) : (
-              <DropdownMenuItem disabled>
-                No categories available
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Button onClick={handleDialogOpen}>
+      <div className="flex w-full flex-col items-center justify-end gap-y-4 md:flex-row">
+        <Button variant="default" onClick={handleDialogOpen}>
           <BadgePlus className="mr-2 size-4" /> Add Policy
         </Button>
       </div>

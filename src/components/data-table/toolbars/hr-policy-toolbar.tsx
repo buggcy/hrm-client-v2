@@ -21,7 +21,7 @@ import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
-import { gender_options } from '../../filters';
+import { hr_policies_categories } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -79,14 +79,13 @@ export function HrPolicyToolbar<
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
-        {table.getColumn('Gender') && (
+        {table.getColumn('category') && (
           <DataTableFacetedFilter
-            column={table.getColumn('Gender')}
-            title="Gender"
-            options={gender_options}
+            column={table.getColumn('category')}
+            title="Category"
+            options={hr_policies_categories}
           />
         )}
-
         {(isFiltered || searchTerm) && (
           <Button
             variant="ghost"
