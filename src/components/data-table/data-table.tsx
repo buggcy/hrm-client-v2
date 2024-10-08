@@ -50,6 +50,9 @@ interface DataTableProps<TData, TValue> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  toolbarType: string;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function DataTable<
@@ -66,6 +69,9 @@ export function DataTable<
   onSearch,
   searchTerm,
   searchLoading,
+  toolbarType,
+  setFilterValue,
+  filterValue,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -98,31 +104,58 @@ export function DataTable<
     manualPagination: true,
   });
 
-  const dataType = data[0]?.type;
+  const getToolBar = () => {
+    switch (toolbarType) {
+      case 'employeeList':
+        return (
+          <EmployeeListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+          />
+        );
+
+      case 'attendanceHistory':
+        return (
+          <AttendanceHistoryListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+          />
+        );
+
+      case 'leaveHistory':
+        return (
+          <LeaveHistoryListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+          />
+        );
+
+      case 'payrollList':
+        return (
+          <LeaveHistoryListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-4">
-      {dataType === 'employee' ? (
-        <EmployeeListToolbar
-          table={table}
-          searchTerm={searchTerm}
-          onSearch={onSearch}
-          searchLoading={searchLoading}
-        />
-      ) : dataType === 'attendanceHistory' ? (
-        <AttendanceHistoryListToolbar
-          table={table}
-          searchTerm={searchTerm}
-          onSearch={onSearch}
-          searchLoading={searchLoading}
-        />
-      ) : (
-        <LeaveHistoryListToolbar
-          table={table}
-          searchTerm={searchTerm}
-          onSearch={onSearch}
-          searchLoading={searchLoading}
-        />
-      )}
+      {getToolBar()}
       <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>
