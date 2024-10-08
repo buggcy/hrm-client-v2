@@ -130,16 +130,6 @@ export const policyColumn: ColumnDef<PolicyType>[] = [
     },
   },
   {
-    accessorKey: 'updatedAt',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
-    ),
-    cell: ({ row }) => {
-      const updatedAt = new Date(row.getValue('updatedAt')).toDateString();
-      return <div>{updatedAt}</div>;
-    },
-  },
-  {
     id: 'actions',
     cell: ({ row }) => <PolicyListRowActions row={row} />,
   },

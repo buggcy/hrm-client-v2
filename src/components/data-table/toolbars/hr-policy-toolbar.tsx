@@ -3,11 +3,10 @@
 import { useMutation } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
-import { FileDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
-import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
@@ -47,10 +46,13 @@ export function HrPolicyToolbar<
   searchLoading,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const selectedRowIds: string[] = table
     .getSelectedRowModel()
     .rows.map(row => row.original._id);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutate, isPending } = useMutation({
     mutationFn: exportEmployeeCSVData,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
@@ -66,12 +68,6 @@ export function HrPolicyToolbar<
       downloadFile(file, 'Employees.csv');
     },
   });
-
-  const handleExport = () => {
-    if (selectedRowIds.length > 0) {
-      mutate(selectedRowIds);
-    }
-  };
 
   return (
     <div className="flex items-center justify-between">
@@ -105,18 +101,6 @@ export function HrPolicyToolbar<
           </Button>
         )}
       </div>
-      {selectedRowIds.length > 0 && (
-        <LoadingButton
-          variant="outline"
-          size="sm"
-          className="ml-auto mr-2 flex h-8"
-          onClick={handleExport}
-          disabled={isPending}
-          loading={isPending}
-        >
-          <FileDown className="mr-2 size-4" />
-        </LoadingButton>
-      )}
       <DataTableViewOptions table={table} />
     </div>
   );

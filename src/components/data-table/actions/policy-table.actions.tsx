@@ -17,14 +17,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { useDeletePolicy } from '@/hooks/usepolicyQuery';
 import { PolicyType } from '@/libs/validations/hr-policy';
-import { policyService } from '@/services/hr/policies.service';
 
 interface DataTableRowActionsProps {
   row: Row<PolicyType>;
 }
 
 export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
+  const { mutateAsync } = useDeletePolicy();
+
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
@@ -37,6 +39,19 @@ export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
     } else {
       console.error('File URL is not available');
     }
+  };
+
+  const handleDelete = (id: string): Promise<{ message: string }> => {
+    return new Promise((resolve, reject) => {
+      void mutateAsync(id, {
+        onSuccess: data => {
+          resolve(data);
+        },
+        onError: error => {
+          reject(error);
+        },
+      });
+    });
   };
 
   return (
@@ -74,7 +89,7 @@ export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
         id={data._id}
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
-        mutationFunc={policyService.deletePolicy}
+        mutationFunc={handleDelete}
       />
     </Dialog>
   );

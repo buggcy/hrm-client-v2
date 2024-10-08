@@ -52,6 +52,7 @@ interface DataTableProps<TData, TValue> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  toolbar?: string;
 }
 
 export function DataTable<
@@ -69,6 +70,7 @@ export function DataTable<
   onSearch,
   searchTerm,
   searchLoading,
+  toolbar,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -100,25 +102,23 @@ export function DataTable<
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
   });
-
-  const dataType = data[0]?.type;
   return (
     <div className="space-y-4">
-      {dataType === 'hrPolicy' ? (
+      {toolbar === 'hrPolicy' ? (
         <HrPolicyToolbar
           table={table}
           searchTerm={searchTerm}
           onSearch={onSearch}
           searchLoading={searchLoading}
         />
-      ) : dataType === 'employee' ? (
+      ) : toolbar === 'employee' ? (
         <EmployeeListToolbar
           table={table}
           searchTerm={searchTerm}
           onSearch={onSearch}
           searchLoading={searchLoading}
         />
-      ) : dataType === 'attendanceHistory' ? (
+      ) : toolbar === 'attendanceHistory' ? (
         <AttendanceHistoryListToolbar
           table={table}
           searchTerm={searchTerm}

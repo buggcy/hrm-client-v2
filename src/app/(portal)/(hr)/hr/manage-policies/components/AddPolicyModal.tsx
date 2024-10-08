@@ -30,7 +30,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useTypesQuery } from '@/hooks/types.hook';
-import { policyService } from '@/services/hr/policies.service';
+import { useAddPolicy } from '@/hooks/usepolicyQuery';
 import { AuthStoreType } from '@/stores/auth';
 
 import { MessageErrorResponse } from '@/types';
@@ -69,9 +69,11 @@ export function PolicyDialog({
   onOpenChange,
   onCloseChange,
 }: DialogDemoProps) {
+  const { mutateAsync } = useAddPolicy();
   const { isLoading } = useTypesQuery();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
+
   const {
     control,
     handleSubmit,
@@ -87,7 +89,7 @@ export function PolicyDialog({
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: policyService.addPolicy,
+    mutationFn: mutateAsync,
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',

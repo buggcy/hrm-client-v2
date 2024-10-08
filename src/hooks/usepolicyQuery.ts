@@ -65,13 +65,12 @@ export const useAddPolicy = () => {
   return useMutation<SuccessMessageResponse, Error, FormData>({
     mutationFn: policyService.addPolicy,
     onSuccess: data => {
-      // Capture the data from the successful response
-      console.log('Success data:', data); // Log the success data if needed
+      console.log('Success data:', data);
       void queryClient.invalidateQueries({ queryKey: ['policies'] });
       void queryClient.invalidateQueries({ queryKey: ['allPolicies'] });
     },
     onError: error => {
-      console.error('Error:', error); // Handle error if needed
+      console.error('Error:', error);
     },
   });
 };
