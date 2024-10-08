@@ -20,6 +20,8 @@ const recordSchema = z.object({
   totalPendingPerks: z.number(),
   totalRejectedPerks: z.number(),
   totalApprovedPerks: z.number(),
+  totalIncrementAmount: z.number(),
+  totalDecrementAmount: z.number(),
 });
 
 const averageSchema = z.object({

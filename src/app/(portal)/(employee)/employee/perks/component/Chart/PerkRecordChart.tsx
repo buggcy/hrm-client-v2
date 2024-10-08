@@ -12,20 +12,7 @@ import {
 import { PerkRecords } from '@/types/perk.types';
 
 export const description = 'A radial chart with stacked sections';
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+
 const chartConfig = {
   approved: {
     label: 'Approved',
@@ -41,20 +28,18 @@ const chartConfig = {
   },
   available: {
     label: 'Available',
-    color: 'hsl(var(--chart-4))',
+    color: '#30BBF2',
   },
 } satisfies ChartConfig;
 
 interface PerkRecordChartProps {
   data: PerkRecords | undefined;
-  month?: number;
 }
 
-export function PerkRecordChart({ data, month }: PerkRecordChartProps) {
-  const monthName = month !== undefined ? monthNames[month - 1] : '';
+export function PerkRecordChart({ data }: PerkRecordChartProps) {
   const chartData = [
     {
-      month: monthName,
+      month: 'january',
       approved: data?.totalApprovedPerks,
       pending: data?.totalPendingPerks,
       rejected: data?.totalRejectedPerks,

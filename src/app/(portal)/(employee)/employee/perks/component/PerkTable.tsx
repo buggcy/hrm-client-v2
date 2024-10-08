@@ -8,8 +8,8 @@ import { AxiosError } from 'axios';
 import { employeePerkListColumns } from '@/components/data-table/columns/employee-perk-list.columns';
 import { EmployeePerkDataTable } from '@/components/data-table/data-table-employee-perk';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
-import { MonthPickerComponent } from '@/components/MonthPicker';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
@@ -21,6 +21,7 @@ import {
 import { PerkListArrayType } from '@/libs/validations/perk';
 import { searchPerkList } from '@/services/employee/perk.service';
 import { PerkStoreType } from '@/stores/employee/perks';
+import { formatedDate } from '@/utils';
 
 import PerkCards from './PerksCards';
 
@@ -40,10 +41,9 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
-  const [date, setDate] = useState(new Date());
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const initialDate = new Date();
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
+
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
@@ -54,11 +54,23 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
     isFetching,
     error,
     refetch,
-  } = usePerkListPostQuery(userId, { page, limit, month, year }, status);
+  } = usePerkListPostQuery(
+    userId,
+    {
+      page,
+      limit,
+      from: formatedDate(selectedDate?.from),
+      to: formatedDate(selectedDate?.to),
+    },
+    status,
+  );
 
   const { data: perkRecords, refetch: refetchRecord } = usePerkRecordQuery(
     userId,
-    { month, year },
+    {
+      from: formatedDate(selectedDate?.from),
+      to: formatedDate(selectedDate?.to),
+    },
   );
 
   const {
@@ -99,8 +111,8 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
     }
   }, [debouncedSearchTerm, refetch, mutate, page, limit]);
 
-  useEffect(() => {}, [perkPostList, month, year, date]);
-  useEffect(() => {}, [perkRecords, month, year, date]);
+  useEffect(() => {}, [perkPostList, selectedDate]);
+  useEffect(() => {}, [perkRecords, selectedDate]);
   useEffect(() => {
     if (refetchPerkList) {
       void (async () => {
@@ -138,22 +150,21 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
     ? searchPerkData?.pagination?.totalPages || 0
     : perkPostList?.pagination?.totalPages || 0;
 
-  const setDateValue = (date: Date | null) => {
-    setDate(date || new Date());
-  };
   return (
     <>
       <Header subheading="Elevate Your Lifestyle — Discover Perks Designed for You!">
-        <MonthPickerComponent
-          setDateValue={setDateValue}
-          initialDate={initialDate}
+        <DateRangePicker
+          timeRange={timeRange}
+          selectedDate={selectedDate}
+          setTimeRange={setTimeRange}
+          setDate={handleSetDate}
         />
         <Button variant="default" onClick={handleAdd}>
           Apply for Perks
         </Button>
       </Header>
 
-      <PerkCards records={perkRecords} month={month} />
+      <PerkCards records={perkRecords} />
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (

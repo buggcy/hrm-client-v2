@@ -1,12 +1,7 @@
 import { FunctionComponent } from 'react';
 
 import { Tooltip } from '@radix-ui/react-tooltip';
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Circle,
-  CircleArrowOutUpRight,
-} from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Plus } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import {
@@ -28,7 +23,6 @@ import { PerkRecordChart } from './Chart/PerkRecordChart';
 
 interface PerkCardProps {
   records?: PerkRecordApiResponse;
-  month?: number;
 }
 interface MiddleCardsProps {
   icon: JSX.Element;
@@ -57,13 +51,21 @@ const MiddleCards: FunctionComponent<MiddleCardsProps> = ({
     </Card>
   );
 };
-const PerkCards: FunctionComponent<PerkCardProps> = ({ records, month }) => {
+const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
   const MiddleCardsData = [
     {
       icon: <ArrowUpRight color="#4779e5" />,
       title: 'Average Increment',
       value: records?.averages
         ? String(records?.averages?.averageIncrementAmount) || '0'
+        : '0',
+      color: '',
+    },
+    {
+      icon: <Plus color="#4779e5" />,
+      title: 'Total Increment',
+      value: records?.records
+        ? String(records?.records?.totalIncrementAmount) || '0'
         : '0',
       color: '',
     },
@@ -75,16 +77,13 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records, month }) => {
         : '0',
       color: '',
     },
+
     {
-      icon: <CircleArrowOutUpRight color="#B0B0B0" />,
-      title: '',
-      value: '',
-      color: '',
-    },
-    {
-      icon: <Circle color="#FFCC00" />,
-      title: '',
-      value: '',
+      icon: <Plus color="#FF0000" />,
+      title: 'Total Decrement',
+      value: records?.records
+        ? String(records?.records?.totalDecrementAmount) || '0'
+        : '0',
       color: '',
     },
   ];
@@ -198,7 +197,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records, month }) => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
+              <div className="size-2 rounded-full bg-[#30BBF2]"></div>
               <p className="font-semibold">
                 {records?.records?.totalAvailablePerks}{' '}
                 <span className="text-sm font-medium text-slate-400">
@@ -207,7 +206,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records, month }) => {
               </p>
             </div>
           </div>
-          <PerkRecordChart data={records?.records} month={month} />
+          <PerkRecordChart data={records?.records} />
         </CardContent>
       </Card>
     </section>

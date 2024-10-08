@@ -37,6 +37,8 @@ export interface PerkRecords {
   totalPendingPerks: number;
   totalRejectedPerks: number;
   totalApprovedPerks: number;
+  totalIncrementAmount: number;
+  totalDecrementAmount: number;
 }
 
 export interface PerkAverage {

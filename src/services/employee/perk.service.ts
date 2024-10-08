@@ -22,13 +22,13 @@ export interface PerkListParams {
 export interface PerkParams {
   page?: number;
   limit?: number;
-  month?: number;
-  year?: number;
+  from?: string;
+  to?: string;
 }
 
 export interface PerkRecordParams {
-  month?: number;
-  year?: number;
+  from?: string;
+  to?: string;
 }
 
 export const getPerkList = async (
@@ -77,6 +77,8 @@ export const postPerkList = async (
   const defaultParams: PerkParams = {
     page: 1,
     limit: 5,
+    from: '',
+    to: '',
   };
 
   const mergedParams = { ...defaultParams, ...params };
@@ -161,9 +163,9 @@ export const getPerkRecords = async (
   params: PerkRecordParams = {},
   id: string,
 ): Promise<PerkRecordApiResponse> => {
-  const defaultParams: PerkParams = {
-    month: 0,
-    year: 0,
+  const defaultParams: PerkRecordParams = {
+    from: '',
+    to: '',
   };
 
   const mergedParams = { ...defaultParams, ...params };
