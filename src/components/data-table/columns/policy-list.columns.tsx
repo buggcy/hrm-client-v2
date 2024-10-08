@@ -45,34 +45,38 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
       const segments = fileUrl.split("/");
       const fileNameWithExtension = segments.pop();
       const [fileName, fileExtension] = fileNameWithExtension.split('.');
-  
+      const isImageFile = (extension: string) => {
+        return ['jpg', 'png', 'gif', 'jpeg'].includes(extension.toLowerCase());
+      };
       const fileIcon = (extension: string) => {
-        switch(extension.toLowerCase()) {
+        switch (extension.toLowerCase()) {
           case 'pdf':
           case 'docx':
-            return <FileText className="h-5 w-5" />;
-          case 'jpg':
-          case 'png':
-          case 'gif':
-          case 'jpeg':
-            return <FileImage className="h-5 w-5" />;
+            return <FileText className="h-6 w-6" />;
           default:
-            return <File className="h-5 w-5" />;
+            return <File className="h-6 w-6" />;
         }
       };
   
       return (
-        <div className="flex flex-col items-start space-y-1">
-          <div className="flex items-center space-x-2">
-            <span className="text-lg">{fileIcon(fileExtension)}</span>
-            <div className="flex flex-col">
-              <span className="max-w-[500px] truncate font-medium capitalize">
-                {fileName}
-              </span>
-              <span className="text-sm text-gray-500 self-start">
-                {fileExtension.toUpperCase()}
-              </span>
-            </div>
+        <div className="flex items-center space-x-2">
+          <Avatar className="size-8 bg-gray-200 rounded-full border border-gray-300 overflow-hidden">
+            {isImageFile(fileExtension) ? (
+              <AvatarImage src={fileUrl} alt={`${fileName}`} className="object-cover w-full h-full" />
+            ) : (
+              <AvatarFallback className="uppercase text-xl">
+                {fileIcon(fileExtension)}
+              </AvatarFallback>
+            )}
+          </Avatar>
+  
+          <div className="flex flex-col">
+            <span className="max-w-[500px] truncate font-medium capitalize">
+              {fileName}
+            </span>
+            <span className="text-sm text-gray-500 self-start">
+              {fileExtension.toUpperCase()}
+            </span>
           </div>
         </div>
       );
@@ -133,7 +137,6 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
       );
     },
   },
-  
 
   {
     accessorKey: 'file',
