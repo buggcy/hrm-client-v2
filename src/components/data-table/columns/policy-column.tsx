@@ -1,6 +1,11 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import {
+  AiOutlineFilePdf,
+  AiOutlineFileText,
+  AiOutlineFileWord,
+} from 'react-icons/ai';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -50,18 +55,36 @@ export const policyColumn: ColumnDef<PolicyType>[] = [
           fileExtension.toLowerCase(),
         );
       };
+
+      const getIconForFileType = (fileExtension: string) => {
+        switch (fileExtension.toLowerCase()) {
+          case 'pdf':
+            return <AiOutlineFilePdf className="size-4 text-red-500" />;
+          case 'doc':
+          case 'docx':
+            return <AiOutlineFileWord className="size-4 text-blue-500" />;
+          default:
+            return <AiOutlineFileText className="size-4 text-gray-500" />;
+        }
+      };
+
       return (
         <div className="flex items-center space-x-2">
-          <Avatar className="size-10">
+          <Avatar className="size-9">
             {isImage(fileExtension) && fileUrl ? (
               <AvatarImage src={fileUrl} alt={fileName} />
             ) : (
-              <AvatarFallback>{fileExtension.toUpperCase()}</AvatarFallback>
+              <AvatarFallback>
+                {getIconForFileType(fileExtension)}
+              </AvatarFallback>
             )}
           </Avatar>
           <div className="flex flex-col">
             <span className="max-w-[500px] truncate font-medium capitalize">
               {fileName}
+            </span>
+            <span className="max-w-[500px] truncate font-normal capitalize">
+              {fileExtension.toUpperCase()}
             </span>
           </div>
         </div>

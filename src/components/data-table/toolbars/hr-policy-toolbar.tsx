@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
+import { useFetchAllCategories } from '@/hooks/usepolicyQuery';
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import {
   EmployeeListType,
@@ -20,8 +21,6 @@ import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
-
-import { hr_policies_categories } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -51,6 +50,17 @@ export function HrPolicyToolbar<
   const selectedRowIds: string[] = table
     .getSelectedRowModel()
     .rows.map(row => row.original._id);
+
+  const { data: categoriesData } = useFetchAllCategories();
+
+  const hr_policies_categories = (categoriesData?.categories || []).map(
+    category => {
+      return {
+        value: category,
+        label: category,
+      };
+    },
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutate, isPending } = useMutation({
