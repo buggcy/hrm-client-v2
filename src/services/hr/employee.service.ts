@@ -12,13 +12,7 @@ import { baseAPI, schemaParse } from '@/utils';
 export interface EmployeeListParams {
   page?: number;
   limit?: number;
-  name?: string;
-  email?: string;
-  gender?: string;
-  dob?: string;
-  contactNo?: string;
-  designation?: string;
-  companyEmail?: string;
+  gender?: string[];
 }
 
 export interface EditProfileResponse {
@@ -35,31 +29,13 @@ export const getEmployeeList = async (
   const defaultParams: EmployeeListParams = {
     page: 1,
     limit: 5,
-    name: '',
-    email: '',
-    gender: '',
-    dob: '',
-    contactNo: '',
-    designation: '',
-    companyEmail: '',
+    gender: [],
   };
 
   const mergedParams = { ...defaultParams, ...params };
 
-  const queryParams = new URLSearchParams(
-    Object.entries(mergedParams).reduce(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value.toString();
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    ),
-  );
-
   try {
-    const response = await baseAPI.get(`/employee?${queryParams.toString()}`);
+    const response = await baseAPI.post(`/v2/employee`, mergedParams);
     return schemaParse(employeeApiResponseSchema)(response);
   } catch (error) {
     console.error('Error fetching employee list:', error);
@@ -71,13 +47,16 @@ export const searchEmployeeList = async ({
   query,
   page,
   limit,
+  gender,
 }: {
   query: string;
   page: number;
   limit: number;
+  gender: string[];
 }): Promise<EmployeeApiResponse> => {
-  const { data, pagination }: EmployeeApiResponse = await baseAPI.get(
-    `/user/search?page=${page}&limit=${limit}&query=${query}`,
+  const { data, pagination }: EmployeeApiResponse = await baseAPI.post(
+    `/v2/employee/search`,
+    { query, page, limit, gender },
   );
 
   return { data, pagination };
@@ -90,13 +69,26 @@ export const approvalEmployeeList = async (): Promise<
   return res;
 };
 
-export const addEmployeeData = async (
-  data: AddEmployeeFormData,
-): Promise<SuccessMessageResponse> => {
-  const { message }: SuccessMessageResponse = await baseAPI.post(
-    `/employee`,
-    data,
-  );
+export const addEmployeeData = async ({
+  firstName,
+  lastName,
+  email,
+  companyEmail,
+  contactNo,
+  basicSalary,
+  Joining_Date,
+  Designation,
+}: AddEmployeeFormData): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(`/employee`, {
+    firstName,
+    lastName,
+    email: email.toLowerCase(),
+    companyEmail: companyEmail.toLowerCase(),
+    contactNo,
+    basicSalary,
+    Joining_Date,
+    Designation,
+  });
   return { message };
 };
 

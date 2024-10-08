@@ -26,17 +26,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import {
-  EmployeeListType,
-  EmployeePayrollListType,
-} from '@/libs/validations/employee';
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import { PerkListType } from '@/libs/validations/perk';
 
 import { DataTablePagination } from './data-table-pagination';
-import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
-import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
-import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
+import { EmployeePerkListToolbar } from './toolbars/employee-perk-list.toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -50,28 +43,15 @@ interface DataTableProps<TData, TValue> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
-  toolbarType: string;
-  setFilterValue: (value: string[]) => void;
-  filterValue: string[];
 }
 
-export function DataTable<
-  TData extends
-    | EmployeePayrollListType
-    | EmployeeListType
-    | AttendanceHistoryListType
-    | LeaveHistoryListType,
-  TValue,
->({
+export function EmployeePerkDataTable<TData extends PerkListType, TValue>({
   columns,
   data,
   pagination,
+  searchLoading,
   onSearch,
   searchTerm,
-  searchLoading,
-  toolbarType,
-  setFilterValue,
-  filterValue,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -89,6 +69,10 @@ export function DataTable<
       columnVisibility,
       rowSelection,
       columnFilters,
+      // pagination: {
+      //   pageIndex: pagination.page - 1,
+      //   pageSize: pagination.limit,
+      // },
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -101,61 +85,16 @@ export function DataTable<
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    manualPagination: true,
   });
-
-  const getToolBar = () => {
-    switch (toolbarType) {
-      case 'employeeList':
-        return (
-          <EmployeeListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-            setFilterValue={setFilterValue}
-            filterValue={filterValue}
-          />
-        );
-
-      case 'attendanceHistory':
-        return (
-          <AttendanceHistoryListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-          />
-        );
-
-      case 'leaveHistory':
-        return (
-          <LeaveHistoryListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-          />
-        );
-
-      case 'payrollList':
-        return (
-          <LeaveHistoryListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-          />
-        );
-
-      default:
-        return null;
-    }
-  };
 
   return (
     <div className="space-y-4">
-      {getToolBar()}
+      <EmployeePerkListToolbar
+        table={table}
+        searchLoading={searchLoading}
+        onSearch={onSearch}
+        searchTerm={searchTerm}
+      />
       <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>
@@ -199,7 +138,7 @@ export function DataTable<
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {searchLoading ? 'Finding Results ...' : 'No results.'}
+                  {searchLoading ? 'Finding Perks ...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

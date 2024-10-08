@@ -62,6 +62,9 @@ const EmployeeTable: FunctionComponent = () => {
             throw new Error('Function not implemented.');
           }}
           searchLoading={false}
+          toolbarType={'employeeList'}
+          setFilterValue={(value: string[]) => console.log(value)}
+          filterValue={[]}
         />
       )}
     </>

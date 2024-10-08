@@ -5,56 +5,53 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { employeePayrollColumns } from '@/components/data-table/columns/employeePayroll.columns';
-import { DataTable } from '@/components/data-table/data-table';
+import { employeePerkListColumns } from '@/components/data-table/columns/employee-perk-list.columns';
+import { EmployeePerkDataTable } from '@/components/data-table/data-table-employee-perk';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { usePayrollQuery } from '@/hooks/payroll/usePayroll.hook';
-import { EmployeePayrollListType } from '@/libs/validations/employee';
-import { searchEmployeePayrollList } from '@/services/employee/employeePayroll.service';
-import { AuthStoreType } from '@/stores/auth';
-import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
+import { usePerkListQuery } from '@/hooks/employee/usePerkList.hook';
+import { PerkListArrayType } from '@/libs/validations/perk';
+import { searchPerkList } from '@/services/employee/perk.service';
+import { PerkStoreType } from '@/stores/employee/perks';
 
 import { MessageErrorResponse } from '@/types';
+import { User } from '@/types/user.types';
 
-const PayrollTable: FunctionComponent = () => {
-  const { authStore } = useStores() as { authStore: AuthStoreType };
-  const { user } = authStore;
+interface PerkTableProps {
+  user: User;
+  handleAdd: () => void;
+}
+const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { perkStore } = useStores() as { perkStore: PerkStoreType };
+  const { setRefetchPerkList, refetchPerkList } = perkStore;
+  const userId = typeof user?.id === 'string' ? user.id : '';
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
-
-  const { employeePayrollStore } = useStores() as {
-    employeePayrollStore: EmployeePayrollStoreType;
-  };
-  const { setRefetchEmployeePayrollList, refetchEmployeePayrollList } =
-    employeePayrollStore;
   const initialSearchTerm = searchParams.get('search') || '';
+
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
 
   const {
-    data: payrollList,
+    data: perkList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = usePayrollQuery({
-    page,
-    limit,
-    userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
-  });
+  } = usePerkListQuery(userId, { page, limit });
 
   const {
     mutate,
     isPending,
-    data: searchPayrollEmployeeData,
+    data: searchPerkData,
   } = useMutation({
-    mutationFn: searchEmployeePayrollList,
+    mutationFn: searchPerkList,
     onError: (err: unknown) => {
       const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({
@@ -66,7 +63,6 @@ const PayrollTable: FunctionComponent = () => {
       });
     },
   });
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -85,34 +81,22 @@ const PayrollTable: FunctionComponent = () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
+
+  useEffect(() => {}, [perkList]);
 
   useEffect(() => {
-    void (async () => {
-      await refetch();
-    })();
-  }, [page, limit, refetch]);
-
-  useEffect(() => {
-    if (refetchEmployeePayrollList) {
+    if (refetchPerkList) {
       void (async () => {
         await refetch();
       })();
 
-      setRefetchEmployeePayrollList(false);
+      setRefetchPerkList(false);
     }
-  }, [
-    refetchEmployeePayrollList,
-    page,
-    limit,
-    setRefetchEmployeePayrollList,
-    refetch,
-  ]);
-
+  }, [refetchPerkList, setRefetchPerkList, refetch]);
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
-
   const handlePaginationChange = (newPage: number, newLimit: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
@@ -127,23 +111,29 @@ const PayrollTable: FunctionComponent = () => {
       </div>
     );
 
-  const tableData: EmployeePayrollListType[] = debouncedSearchTerm
-    ? ((searchPayrollEmployeeData?.data || []) as EmployeePayrollListType[])
-    : ((payrollList?.data || []) as EmployeePayrollListType[]);
+  const tableData: PerkListArrayType = debouncedSearchTerm
+    ? searchPerkData?.data || []
+    : perkList?.data || [];
 
-  const tablePageCount: number | undefined = debouncedSearchTerm
-    ? searchPayrollEmployeeData?.pagination?.totalPages || 0
-    : payrollList?.pagination?.totalPages || 0;
+  const tablePageCount: number = debouncedSearchTerm
+    ? searchPerkData?.pagination?.totalPages || 0
+    : perkList?.pagination?.totalPages || 0;
 
   return (
     <>
+      <div className="flex w-full flex-col items-center justify-end gap-y-4 md:flex-row">
+        <Button variant="default" onClick={handleAdd}>
+          Apply for Perks
+        </Button>
+      </div>
+
       {isLoading || isFetching ? (
-        <DataTableLoading columnCount={9} rowCount={limit} />
+        <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (
-        <DataTable<EmployeePayrollListType, undefined>
+        <EmployeePerkDataTable
           searchLoading={isPending}
           data={tableData || []}
-          columns={employeePayrollColumns}
+          columns={employeePerkListColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
@@ -152,13 +142,10 @@ const PayrollTable: FunctionComponent = () => {
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
-          toolbarType="payrollList"
-          setFilterValue={(value: string[]) => console.log(value)}
-          filterValue={[]}
         />
       )}
     </>
   );
 };
 
-export default PayrollTable;
+export default PerkTable;
