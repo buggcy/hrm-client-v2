@@ -332,6 +332,7 @@ export function PerkModal({
                 </Button>
                 <Button
                   variant="ghostSecondary"
+                  type="button"
                   onClick={() => onCloseChange(false)}
                 >
                   Close

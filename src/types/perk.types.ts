@@ -56,6 +56,8 @@ export interface AvailablePerks {
   hrApproval: 'approved' | 'rejected' | 'pending' | 'available';
   incrementAmount: number;
   isAvailed: boolean;
+  assignedDecrementAmount: number;
+  decrementAmount: number;
 }
 export interface PerkRecordApiResponse {
   records: PerkRecords;

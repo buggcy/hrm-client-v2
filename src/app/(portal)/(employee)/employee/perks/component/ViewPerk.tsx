@@ -47,7 +47,9 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
               <p className="text-base font-bold">Perk Name</p>
             </div>
             <div className="w-6/12">
-              <p>{viewData?.name}</p>
+              <p className="text-gray-600 dark:text-gray-300">
+                {viewData?.name}
+              </p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
@@ -55,7 +57,9 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
               <p className="text-base font-bold">Assigned Amount</p>
             </div>
             <div className="w-6/12">
-              <p>{viewData?.assignedIncrementAmount} PKR</p>
+              <p className="text-gray-600 dark:text-gray-300">
+                {viewData?.assignedIncrementAmount} PKR
+              </p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
@@ -63,7 +67,7 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
               <p className="text-base font-bold">Applied Date</p>
             </div>
             <div className="w-6/12">
-              <p>
+              <p className="text-gray-600 dark:text-gray-300">
                 {viewData?.dateApplied
                   ? new Date(viewData.dateApplied).toDateString()
                   : 'N/A'}
@@ -72,7 +76,9 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
           </div>
           <div className="flex flex-col justify-between">
             <p className="text-base font-bold">Perk Description</p>
-            <p className="p-3 text-justify">{viewData?.description}</p>
+            <p className="p-3 text-justify text-gray-600 dark:text-gray-300">
+              {viewData?.description}
+            </p>
           </div>
           <DialogFooter>
             <Button

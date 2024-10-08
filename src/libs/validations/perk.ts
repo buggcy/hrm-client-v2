@@ -41,6 +41,8 @@ const availablePerkSchema = z.object({
   assignedIncrementAmount: z.number(),
   incrementAmount: z.number(),
   isAvailed: z.boolean(),
+  assignedDecrementAmount: z.number(),
+  decrementAmount: z.number(),
 });
 
 const perkListSchema = z.object({

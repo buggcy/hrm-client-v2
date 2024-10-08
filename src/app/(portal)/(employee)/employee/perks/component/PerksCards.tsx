@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react';
 
 import { Tooltip } from '@radix-ui/react-tooltip';
-import { ArrowDownRight, ArrowUpRight, Plus } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Minus, Plus } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import {
@@ -79,7 +79,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
     },
 
     {
-      icon: <Plus color="#FF0000" />,
+      icon: <Minus color="#FF0000" />,
       title: 'Total Decrement',
       value: records?.records
         ? String(records?.records?.totalDecrementAmount) || '0'
@@ -102,11 +102,17 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
           <div className="my-2 flex max-h-[180px] flex-col gap-4 overflow-y-auto">
             {records?.availableData && records.availableData.length > 0 ? (
               records.availableData.map(perk => {
-                const { assignedIncrementAmount, incrementAmount, perksId } =
-                  perk;
-                const amountDifference =
+                const {
+                  assignedIncrementAmount,
+                  incrementAmount,
+                  perksId,
+                  decrementAmount,
+                  assignedDecrementAmount,
+                } = perk;
+                const amountIncDifference =
                   assignedIncrementAmount - incrementAmount;
-
+                const amountDecrDifference =
+                  assignedDecrementAmount - decrementAmount;
                 return (
                   <>
                     <div
@@ -115,33 +121,65 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
                     >
                       <div className="mb-2 flex items-center justify-between">
                         <p className="text-lg font-semibold">{perksId?.name}</p>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Badge
-                                variant="outline"
-                                className={`text-sm ${amountDifference < 0 ? 'text-red-500' : 'text-green-500'}`}
-                              >
-                                {`₨ : ${amountDifference}`}
-                              </Badge>
-                            </TooltipTrigger>
-                            <TooltipContent>Remaining</TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                        <div>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-sm ${amountIncDifference < 0 ? 'text-red-500' : 'text-green-500'}`}
+                                >
+                                  {`₨ : ${amountIncDifference}`}
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                Remaining Increment
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Badge
+                                  variant="outline"
+                                  className={`ml-1 text-sm text-red-500`}
+                                >
+                                  {`₨ : ${amountDecrDifference}`}
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                Remaining Decrement
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                       </div>
+
                       <div className="flex justify-between text-gray-700">
-                        <p>
-                          <span className="text-sm dark:text-white">
-                            Assigned:{' '}
-                          </span>
-                          <span className="font-semibold dark:text-gray-300">{`₨ ${assignedIncrementAmount}`}</span>
-                        </p>
-                        <p>
-                          <span className="text-sm dark:text-white">
-                            Used:{' '}
-                          </span>
-                          <span className="font-semibold dark:text-gray-300">{`₨ ${incrementAmount}`}</span>
-                        </p>
+                        <div>
+                          <div className="flex flex-row justify-between">
+                            <p className="text-sm dark:text-white">
+                              Increment{' '}
+                            </p>
+                            <span className="ml-2 text-sm font-semibold dark:text-gray-300">{`₨ ${assignedIncrementAmount}`}</span>
+                          </div>
+                          <div className="flex flex-row justify-between">
+                            <p className="text-sm dark:text-white">Used </p>
+                            <span className="text-sm font-semibold dark:text-gray-300">{`₨ ${incrementAmount}`}</span>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex flex-row justify-between">
+                            <p className="text-sm dark:text-white">
+                              Decrement{' '}
+                            </p>
+                            <span className="ml-2 text-sm font-semibold dark:text-gray-300">{`₨ ${assignedDecrementAmount}`}</span>
+                          </div>
+                          <div className="flex flex-row justify-between">
+                            <p className="text-sm dark:text-white">Deducted </p>
+                            <span className="text-sm font-semibold dark:text-gray-300">{`₨ ${decrementAmount}`}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </>
