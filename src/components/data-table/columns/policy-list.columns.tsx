@@ -85,8 +85,8 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
       <DataTableColumnHeader column={column} title="Updated By" />
     ),
     cell: ({ row }) => {
-        const userId = row.getValue("userId");
-        const firstName: string = userId?.firstName
+      const userId = row.getValue("userId");
+      const firstName: string = userId?.firstName
       const first = firstName;
       const lastName = userId?.lastName;
       const avatar = userId?.Avatar;
@@ -143,7 +143,7 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
     cell: ({ row }) => {
       return (
         <Button variant='outline'>
-          <Link href={row.getValue("file")}>View</Link>
+          <Link href={row.getValue("file")} rel="noopener noreferrer" target="_blank">View</Link>
         </Button>
       );
     },
