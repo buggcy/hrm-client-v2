@@ -26,15 +26,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import {
-  EmployeeListType,
-  EmployeePayrollListType,
-} from '@/libs/validations/employee';
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import DataTableType from '@/libs/validations/data-table-type';
 
 import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
+import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
 
@@ -55,14 +51,7 @@ interface DataTableProps<TData, TValue> {
   filterValue: string[];
 }
 
-export function DataTable<
-  TData extends
-    | EmployeePayrollListType
-    | EmployeeListType
-    | AttendanceHistoryListType
-    | LeaveHistoryListType,
-  TValue,
->({
+export function DataTable<TData extends DataTableType, TValue>({
   columns,
   data,
   pagination,
@@ -141,6 +130,15 @@ export function DataTable<
       case 'payrollList':
         return (
           <LeaveHistoryListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+          />
+        );
+      case 'attendanceList':
+        return (
+          <AttendanceListToolbar
             table={table}
             searchTerm={searchTerm}
             onSearch={onSearch}
