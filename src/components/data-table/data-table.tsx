@@ -36,6 +36,7 @@ import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
+import { HrAnnouncementToolbar } from './toolbars/hr-announcement-toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
 
 interface DataTableProps<TData, TValue> {
@@ -145,6 +146,18 @@ export function DataTable<
             searchTerm={searchTerm}
             onSearch={onSearch}
             searchLoading={searchLoading}
+          />
+        );
+
+      case 'hrAnnouncement':
+        return (
+          <HrAnnouncementToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
           />
         );
 
