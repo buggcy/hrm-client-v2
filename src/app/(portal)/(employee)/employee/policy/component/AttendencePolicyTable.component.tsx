@@ -72,18 +72,19 @@ const AttendencePolicyTable: FunctionComponent = () => {
         <DataTableLoading columnCount={7} rowCount={limit} />
       ) : (
         <DataTable
-          data={tableData || []}
-          columns={policyListColumns}
-          pagination={{
-            pageCount: tablePageCount || 1,
-            page: page,
-            limit: limit,
-            onPaginationChange: handlePaginationChange,
-          }}
-          searchTerm={''}
-          onSearch={handleSearchChange}
-          searchLoading={false}
-        />
+            data={tableData || []}
+            columns={policyListColumns}
+            pagination={{
+              pageCount: tablePageCount || 1,
+              page: page,
+              limit: limit,
+              onPaginationChange: handlePaginationChange,
+            }}
+            searchTerm={''}
+            onSearch={handleSearchChange}
+            filterValue={[]} searchLoading={false} toolbarType={''} setFilterValue={function (value: string[]): void {
+              throw new Error('Function not implemented.');
+            } }        />
       )}
     </>
   );

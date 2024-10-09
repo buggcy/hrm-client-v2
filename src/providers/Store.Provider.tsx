@@ -6,6 +6,8 @@ import { useAttendanceHistoryStore } from '@/stores/employee/attendance-history'
 import { useEmployeePayrollStore } from '@/stores/employee/employeePayroll';
 import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
 import { useEmployeeStore } from '@/stores/hr/employee';
+import { usePolicyStore } from '@/stores/employee/policies';
+import { usePerkStore } from '@/stores/employee/perks';
 
 import { useAuthStore } from '../stores/auth';
 import { useNotificationStore } from '../stores/useNotificationStore';
@@ -17,6 +19,8 @@ interface StoreContextType {
   attendanceHistoryStore: ReturnType<typeof useAttendanceHistoryStore>;
   leaveHistoryStore: ReturnType<typeof useLeaveHistoryStore>;
   notificationStore: ReturnType<typeof useNotificationStore>;
+  policyStore: ReturnType<typeof usePolicyStore>;
+  perkStore: ReturnType<typeof usePerkStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);

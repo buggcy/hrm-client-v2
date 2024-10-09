@@ -1,6 +1,10 @@
 import {
   CalendarClock,
   DollarSignIcon,
+  Home,
+  LogOut,
+  Gift,
+  Siren,
 } from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
