@@ -30,10 +30,6 @@ const chartConfig = {
     label: 'Available',
     color: '#30BBF2',
   },
-  canceled: {
-    label: 'Canceled',
-    color: 'hsl(var(--chart-4))',
-  },
 } satisfies ChartConfig;
 
 interface PerkRecordChartProps {
@@ -48,7 +44,6 @@ export function PerkRecordChart({ data }: PerkRecordChartProps) {
       pending: data?.totalPendingPerks,
       rejected: data?.totalRejectedPerks,
       available: data?.totalAvailablePerks,
-      canceled: data?.totalCanceledPerks,
     },
   ];
 
@@ -121,12 +116,6 @@ export function PerkRecordChart({ data }: PerkRecordChartProps) {
         <RadialBar
           dataKey="available"
           fill="var(--color-available)"
-          stackId="a"
-          className="stroke-transparent stroke-2"
-        />
-        <RadialBar
-          dataKey="canceled"
-          fill="var(--color-canceled)"
           stackId="a"
           className="stroke-transparent stroke-2"
         />

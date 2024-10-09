@@ -342,15 +342,6 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
                 </span>
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
-              <p className="font-semibold">
-                {records?.records?.totalCanceledPerks}{' '}
-                <span className="text-sm font-medium text-slate-400">
-                  Canceled
-                </span>
-              </p>
-            </div>
           </div>
           <PerkRecordChart data={records?.records} />
         </CardContent>

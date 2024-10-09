@@ -36,9 +36,7 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
                     ? 'destructive'
                     : viewData?.hrApproval === 'pending'
                       ? 'progress'
-                      : viewData?.hrApproval === 'canceled'
-                        ? 'error'
-                        : 'default'
+                      : 'default'
               }
             >
               {viewData?.hrApproval}
@@ -46,40 +44,40 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
           </div>
           <div className="flex flex-row justify-between">
             <div className="w-6/12">
-              <p className="text-base font-bold">Perk Name</p>
+              <p className="text-sm font-bold">Perk Name</p>
             </div>
             <div className="w-6/12">
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.name}
               </p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="w-6/12">
-              <p className="text-base font-bold">Assigned Amount</p>
+              <p className="text-sm font-bold">Assigned Amount</p>
             </div>
             <div className="w-6/12">
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.assignedIncrementAmount} PKR
               </p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="w-6/12">
-              <p className="text-base font-bold">Deducted Amount</p>
+              <p className="text-sm font-bold">Deducted Amount</p>
             </div>
             <div className="w-6/12">
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.assignedDecrementAmount} PKR
               </p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="w-6/12">
-              <p className="text-base font-bold">Applied Date</p>
+              <p className="text-sm font-bold">Applied Date</p>
             </div>
             <div className="w-6/12">
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.dateApplied
                   ? new Date(viewData.dateApplied).toDateString()
                   : 'N/A'}
@@ -87,8 +85,8 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
             </div>
           </div>
           <div className="flex flex-col justify-between">
-            <p className="text-base font-bold">Perk Description</p>
-            <p className="p-3 text-justify text-gray-600 dark:text-gray-300">
+            <p className="text-sm font-bold">Perk Description</p>
+            <p className="p-3 text-justify text-sm text-gray-600 dark:text-gray-300">
               {viewData?.description}
             </p>
           </div>

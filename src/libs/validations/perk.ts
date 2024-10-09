@@ -5,7 +5,6 @@ export const hrApproval = [
   'rejected',
   'pending',
   'available',
-  'canceled',
 ] as const;
 
 const paginationSchema = z.object({
@@ -21,7 +20,6 @@ const recordSchema = z.object({
   totalPendingPerks: z.number(),
   totalRejectedPerks: z.number(),
   totalApprovedPerks: z.number(),
-  totalCanceledPerks: z.number(),
   totalIncrementAmount: z.number(),
   totalDecrementAmount: z.number(),
 });

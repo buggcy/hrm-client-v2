@@ -15,7 +15,7 @@ export interface Perk {
   decrementAmount: number;
   description: string;
   document: string;
-  hrApproval: 'approved' | 'rejected' | 'pending' | 'available' | 'canceled';
+  hrApproval: 'approved' | 'rejected' | 'pending' | 'available';
   incrementAmount: number;
   isAvailable: boolean;
   isAvailed: boolean;
@@ -37,7 +37,6 @@ export interface PerkRecords {
   totalPendingPerks: number;
   totalRejectedPerks: number;
   totalApprovedPerks: number;
-  totalCanceledPerks: number;
   totalIncrementAmount: number;
   totalDecrementAmount: number;
 }
@@ -60,7 +59,7 @@ export interface AvailablePerks {
     __v: number;
   };
   assignedIncrementAmount: number;
-  hrApproval: 'approved' | 'rejected' | 'pending' | 'available' | 'canceled';
+  hrApproval: 'approved' | 'rejected' | 'pending' | 'available';
   incrementAmount: number;
   isAvailed: boolean;
   assignedDecrementAmount: number;
