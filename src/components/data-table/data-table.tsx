@@ -37,6 +37,7 @@ import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
+import { UnapprovedEmployeeToolbar } from './toolbars/unapproved-employee.toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -109,6 +110,18 @@ export function DataTable<
       case 'employeeList':
         return (
           <EmployeeListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+          />
+        );
+
+      case 'unapprovedEmployeeList':
+        return (
+          <UnapprovedEmployeeToolbar
             table={table}
             searchTerm={searchTerm}
             onSearch={onSearch}

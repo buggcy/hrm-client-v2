@@ -1,4 +1,4 @@
-import { BadgeCheck, Home, UserCog2 } from 'lucide-react';
+import { Home, UserCog, UserCog2, UserPlus } from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
 
@@ -13,9 +13,14 @@ export const hrMenu: MenuItem[] = [
     icon: UserCog2,
     children: [
       {
-        title: 'Manage Employees',
-        icon: BadgeCheck,
+        title: 'Employees',
+        icon: UserCog,
         href: '/hr/manage-employees',
+      },
+      {
+        title: 'Add Employees',
+        icon: UserPlus,
+        href: '/hr/add-employees',
       },
     ],
   },

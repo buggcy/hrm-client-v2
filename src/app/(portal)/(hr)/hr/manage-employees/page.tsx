@@ -2,14 +2,13 @@
 import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
 
-import { Bell } from 'lucide-react';
-
 import {
   Layout,
   LayoutHeader,
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
+import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 
 import { useApprovalEmployeeQuery } from '@/hooks/employee/useApprovalEmployee.hook';
@@ -46,9 +45,7 @@ export default function ManageEmployeesPage() {
             </Link>
           </Button>
 
-          <Button variant="outline" size="icon" className="rounded-full">
-            <Bell className="size-5" />
-          </Button>
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">

@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Circle,
   CircleArrowOutUpRight,
+  CircleFadingPlus,
   HelpCircle,
   PackagePlus,
   PersonStanding,
@@ -156,5 +157,28 @@ export const leave_history_status_options = [
     value: 'Canceled',
     label: 'Canceled',
     icon: XCircle,
+  },
+];
+
+export const employee_status = [
+  {
+    value: 'tba',
+    label: 'To Be Added',
+    icon: CircleFadingPlus,
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Rejected',
+    label: 'Rejected',
+    icon: XCircle,
+  },
+  {
+    value: 'Approved',
+    label: 'Approved',
+    icon: CheckCircle2,
   },
 ];

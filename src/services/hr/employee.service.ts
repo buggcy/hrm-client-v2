@@ -13,6 +13,7 @@ export interface EmployeeListParams {
   page?: number;
   limit?: number;
   gender?: string[];
+  isApproved?: string[];
 }
 
 export interface EditProfileResponse {
@@ -43,6 +44,29 @@ export const getEmployeeList = async (
   }
 };
 
+export const getUnapprovedEmployeeList = async (
+  params: EmployeeListParams = {},
+): Promise<EmployeeApiResponse> => {
+  const defaultParams: EmployeeListParams = {
+    page: 1,
+    limit: 5,
+    isApproved: [],
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  try {
+    const response = await baseAPI.post(
+      `/v2/employee/unapproved`,
+      mergedParams,
+    );
+    return schemaParse(employeeApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching employee list:', error);
+    throw error;
+  }
+};
+
 export const searchEmployeeList = async ({
   query,
   page,
@@ -57,6 +81,25 @@ export const searchEmployeeList = async ({
   const { data, pagination }: EmployeeApiResponse = await baseAPI.post(
     `/v2/employee/search`,
     { query, page, limit, gender },
+  );
+
+  return { data, pagination };
+};
+
+export const unapprovedSearchEmployeeList = async ({
+  query,
+  page,
+  limit,
+  isApproved,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+  isApproved: string[];
+}): Promise<EmployeeApiResponse> => {
+  const { data, pagination }: EmployeeApiResponse = await baseAPI.post(
+    `/v2/employee/unapproved/search`,
+    { query, page, limit, isApproved },
   );
 
   return { data, pagination };
