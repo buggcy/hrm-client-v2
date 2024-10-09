@@ -11,6 +11,7 @@ import {
   PersonStanding,
   ScrollText,
   Timer,
+  X,
   XCircle,
 } from 'lucide-react';
 
@@ -111,6 +112,11 @@ export const perk_status_options = [
     value: 'approved',
     label: 'Approved',
     icon: CheckCircle2,
+  },
+  {
+    value: 'canceled',
+    label: 'Canceled',
+    icon: X,
   },
 ];
 export const attendance_history_status_options = [

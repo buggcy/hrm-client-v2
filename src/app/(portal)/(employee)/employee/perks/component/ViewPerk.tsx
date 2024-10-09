@@ -35,8 +35,10 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
                   : viewData?.hrApproval === 'rejected'
                     ? 'destructive'
                     : viewData?.hrApproval === 'pending'
-                      ? 'outline'
-                      : 'default'
+                      ? 'progress'
+                      : viewData?.hrApproval === 'canceled'
+                        ? 'error'
+                        : 'default'
               }
             >
               {viewData?.hrApproval}
@@ -59,6 +61,16 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
             <div className="w-6/12">
               <p className="text-gray-600 dark:text-gray-300">
                 {viewData?.assignedIncrementAmount} PKR
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="w-6/12">
+              <p className="text-base font-bold">Deducted Amount</p>
+            </div>
+            <div className="w-6/12">
+              <p className="text-gray-600 dark:text-gray-300">
+                {viewData?.assignedDecrementAmount} PKR
               </p>
             </div>
           </div>

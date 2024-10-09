@@ -5,6 +5,7 @@ export const hrApproval = [
   'rejected',
   'pending',
   'available',
+  'canceled',
 ] as const;
 
 const paginationSchema = z.object({
@@ -20,6 +21,7 @@ const recordSchema = z.object({
   totalPendingPerks: z.number(),
   totalRejectedPerks: z.number(),
   totalApprovedPerks: z.number(),
+  totalCanceledPerks: z.number(),
   totalIncrementAmount: z.number(),
   totalDecrementAmount: z.number(),
 });
@@ -32,6 +34,12 @@ const averageSchema = z.object({
 const perksIdSchema = z.object({
   _id: z.string(),
   name: z.string(),
+  description: z.string(),
+  salaryIncrement: z.boolean(),
+  salaryDecrement: z.boolean(),
+  __v: z.number(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 const availablePerkSchema = z.object({
@@ -75,6 +83,7 @@ const perkRecordApiResponseSchema = z.object({
   records: recordSchema,
   averages: averageSchema,
   availableData: z.array(availablePerkSchema),
+  approvedData: z.array(availablePerkSchema),
 });
 
 export type PerkApiResponse = z.infer<typeof perkApiResponseSchema>;
