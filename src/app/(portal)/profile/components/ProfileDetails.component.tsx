@@ -2,6 +2,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 import moment from 'moment';
 
@@ -22,6 +23,8 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
   user,
   currentUser,
 }) => {
+  const searchParams = useSearchParams();
+  const userIdFromParams = searchParams.get('userId');
   return (
     <>
       <Card>
@@ -49,14 +52,16 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
               {user?.Designation || ''}
             </div>
           </div>
-          <Link href="/profile-setting">
-            <Button
-              variant="ghost"
-              className="w-full border border-gray-300 bg-transparent text-black"
-            >
-              Edit Profile
-            </Button>
-          </Link>
+          {!userIdFromParams && (
+            <Link href="/profile-setting">
+              <Button
+                variant="ghost"
+                className="w-full border border-gray-300 bg-transparent text-black"
+              >
+                Edit Profile
+              </Button>
+            </Link>
+          )}
 
           <div className="my-4 border-b border-gray-300" />
 

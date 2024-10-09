@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Row } from '@tanstack/react-table';
 import { Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
@@ -30,8 +31,14 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
     React.useState<boolean>(false);
   const data = row.original;
 
+  const router = useRouter();
+
   const handleEditClick = () => {
     // setDialogContent(<EditDialog task={data} />);
+  };
+
+  const handleViewDetails = () => {
+    router.push(`/profile?userId=${data._id}`);
   };
 
   return (
@@ -50,7 +57,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DialogTrigger asChild onClick={() => {}}>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleViewDetails}>
               <Eye className="mr-2 size-4" />
               View Details
             </DropdownMenuItem>
