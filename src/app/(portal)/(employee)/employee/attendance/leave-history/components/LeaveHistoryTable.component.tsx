@@ -71,6 +71,9 @@ const LeaveHistoryTable: FunctionComponent<LeaveHistoryTableProps> = ({
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
+          toolbarType="leaveHistory"
+          setFilterValue={(value: string[]) => console.log(value)}
+          filterValue={[]}
         />
       )}
     </>

@@ -27,6 +27,7 @@ const EmployeeTable: FunctionComponent = () => {
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
+  const [genderFilter, setGenderFilter] = useState<string[]>([]);
 
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
@@ -38,7 +39,7 @@ const EmployeeTable: FunctionComponent = () => {
     isFetching,
     error,
     refetch,
-  } = useEmployeeListQuery({ page, limit });
+  } = useEmployeeListQuery({ page, limit, gender: genderFilter });
 
   const {
     mutate,
@@ -70,13 +71,13 @@ const EmployeeTable: FunctionComponent = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({ query: debouncedSearchTerm, page, limit, gender: genderFilter });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit, genderFilter]);
 
   useEffect(() => {
     if (refetchEmployeeList) {
@@ -87,6 +88,12 @@ const EmployeeTable: FunctionComponent = () => {
       setRefetchEmployeeList(false);
     }
   }, [refetchEmployeeList, setRefetchEmployeeList, refetch]);
+
+  useEffect(() => {
+    void (async () => {
+      await refetch();
+    })();
+  }, [genderFilter, refetch]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -131,6 +138,9 @@ const EmployeeTable: FunctionComponent = () => {
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
+          toolbarType={'employeeList'}
+          setFilterValue={setGenderFilter}
+          filterValue={genderFilter}
         />
       )}
     </>
