@@ -130,7 +130,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
                           className="flex flex-col rounded-lg border border-gray-200 p-2 dark:dark:border-gray-300 dark:text-white"
                         >
                           <div className="mb-2 flex items-center justify-between">
-                            <p className="text-lg font-semibold">
+                            <p className="text-base font-semibold">
                               {perksId?.name}
                             </p>
                             <div>
@@ -204,7 +204,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
                           className="flex flex-col rounded-lg border border-gray-200 p-2 dark:dark:border-gray-300 dark:text-white"
                         >
                           <div className="mb-2 flex items-center justify-between">
-                            <p className="text-lg font-semibold">
+                            <p className="text-base font-semibold">
                               {perksId?.name}
                             </p>
                             <div>
