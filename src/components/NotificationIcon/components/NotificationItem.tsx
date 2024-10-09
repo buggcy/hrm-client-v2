@@ -59,13 +59,15 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
       {timeAgo(notification.createdAt)}
     </div>
 
-    {!notification.isRead && (
+    {!notification.isRead ? (
       <span
         className="cursor-pointer text-lg text-blue-500"
         onClick={() => handleMarkAsReadClick(notification._id)}
       >
         ●
       </span>
+    ) : (
+      <span className="text-lg text-transparent">●</span>
     )}
   </DropdownMenuItem>
 );

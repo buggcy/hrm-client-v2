@@ -29,7 +29,7 @@ export const NotificationHeader: React.FC<NotificationHeaderProps> = ({
             <MoreHorizontal size={24} />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="min-w-max -translate-x-full">
+        <DropdownMenuContent className="min-w-max -translate-x-18">
           <div className="mr-1 flex items-center justify-between">
             <DropdownMenuLabel>Activity Feed</DropdownMenuLabel>
             <span className="text-sm text-gray-500">
