@@ -3,31 +3,15 @@ import { AxiosResponse } from 'axios';
 
 import { PerkRecordApiResponse } from '@/libs/validations/perk';
 import {
-  getPerkList,
   getPerkRecords,
   PerkList,
   PerkListParams,
-  PerkParams,
   PerkRecordParams,
   postPerkList,
 } from '@/services/employee/perk.service';
 
 import { UseQueryConfig } from '@/types';
 import { PerkApiResponse } from '@/types/perk.types';
-
-export const usePerkListQuery = (
-  id: string,
-  params: PerkListParams,
-  config: UseQueryConfig = {},
-) =>
-  useQuery({
-    queryKey: ['perkList', id, params],
-    queryFn: () => getPerkList(params, id),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchInterval: 1000 * 60 * 5,
-    ...config,
-  }) as UseQueryResult<PerkApiResponse, Error>;
 
 export const useAllPerkQuery = (id: string, config: UseQueryConfig = {}) =>
   useQuery({
@@ -41,13 +25,12 @@ export const useAllPerkQuery = (id: string, config: UseQueryConfig = {}) =>
 
 export const usePerkListPostQuery = (
   id: string,
-  params: PerkParams,
-  status: string[],
+  params: PerkListParams,
   config: UseQueryConfig = {},
 ) =>
   useQuery({
-    queryKey: ['perkPostList', id, params, status],
-    queryFn: () => postPerkList(params, id, status),
+    queryKey: ['perkPostList', id, params],
+    queryFn: () => postPerkList(params, id),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,

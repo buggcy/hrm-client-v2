@@ -43,6 +43,9 @@ interface DataTableProps<TData, TValue> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  toolbarType: string;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function EmployeePerkDataTable<TData extends PerkListType, TValue>({
@@ -52,6 +55,9 @@ export function EmployeePerkDataTable<TData extends PerkListType, TValue>({
   searchLoading,
   onSearch,
   searchTerm,
+  toolbarType,
+  setFilterValue,
+  filterValue,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -69,10 +75,6 @@ export function EmployeePerkDataTable<TData extends PerkListType, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
-      // pagination: {
-      //   pageIndex: pagination.page - 1,
-      //   pageSize: pagination.limit,
-      // },
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -86,15 +88,27 @@ export function EmployeePerkDataTable<TData extends PerkListType, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+  const getToolBar = () => {
+    switch (toolbarType) {
+      case 'perkPostList':
+        return (
+          <EmployeePerkListToolbar
+            table={table}
+            searchLoading={searchLoading}
+            onSearch={onSearch}
+            searchTerm={searchTerm}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+          />
+        );
 
+      default:
+        return null;
+    }
+  };
   return (
     <div className="space-y-4">
-      <EmployeePerkListToolbar
-        table={table}
-        searchLoading={searchLoading}
-        onSearch={onSearch}
-        searchTerm={searchTerm}
-      />
+      {getToolBar()}
       <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>

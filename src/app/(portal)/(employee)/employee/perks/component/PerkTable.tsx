@@ -47,23 +47,21 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
-  const [status] = useState<string[]>([]);
+  const [status, setStatus] = useState<string[]>([]);
+
   const {
     data: perkPostList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = usePerkListPostQuery(
-    userId,
-    {
-      page,
-      limit,
-      from: formatedDate(selectedDate?.from),
-      to: formatedDate(selectedDate?.to),
-    },
+  } = usePerkListPostQuery(userId, {
+    page,
+    limit,
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
     status,
-  );
+  });
 
   const { data: perkRecords, refetch: refetchRecord } = usePerkRecordQuery(
     userId,
@@ -109,7 +107,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit, status]);
 
   useEffect(() => {}, [perkPostList, selectedDate]);
   useEffect(() => {}, [perkRecords, selectedDate]);
@@ -122,7 +120,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
 
       setRefetchPerkList(false);
     }
-  }, [refetchPerkList, setRefetchPerkList, refetch, refetchRecord]);
+  }, [refetchPerkList, setRefetchPerkList, refetch, refetchRecord, status]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -180,6 +178,9 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
+          toolbarType={'perkPostList'}
+          setFilterValue={setStatus}
+          filterValue={status}
         />
       )}
     </>

@@ -13,17 +13,9 @@ import { SuccessMessageResponse } from '../hr/employee.service';
 export interface PerkListParams {
   page?: number;
   limit?: number;
-  name?: string;
-  amount?: string;
-  date?: string;
-  status?: string;
-}
-
-export interface PerkParams {
-  page?: number;
-  limit?: number;
   from?: string;
   to?: string;
+  status?: string[];
 }
 
 export interface PerkRecordParams {
@@ -31,76 +23,24 @@ export interface PerkRecordParams {
   to?: string;
 }
 
-export const getPerkList = async (
+export const postPerkList = async (
   params: PerkListParams = {},
   id: string,
 ): Promise<PerkApiResponse> => {
   const defaultParams: PerkListParams = {
     page: 1,
     limit: 5,
-    name: '',
-    amount: '',
-    status: '',
-    date: '',
-  };
-
-  const mergedParams = { ...defaultParams, ...params };
-
-  const queryParams = new URLSearchParams(
-    Object.entries(mergedParams).reduce(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value.toString();
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    ),
-  );
-
-  try {
-    const response = await baseAPI.get(
-      `/employee/${id}/perks?${queryParams.toString()}`,
-    );
-    return schemaParse(perkApiResponseSchema)(response);
-  } catch (error) {
-    console.error('Error fetching perks and benefits list:', error);
-    throw error;
-  }
-};
-
-export const postPerkList = async (
-  params: PerkParams = {},
-  id: string,
-  status: string[] = [],
-): Promise<PerkApiResponse> => {
-  const defaultParams: PerkParams = {
-    page: 1,
-    limit: 5,
     from: '',
     to: '',
+    status: [],
   };
 
   const mergedParams = { ...defaultParams, ...params };
 
-  const queryParams = new URLSearchParams(
-    Object.entries(mergedParams).reduce(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value.toString();
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    ),
-  );
-  const body = {
-    status: status.length > 0 ? status : undefined,
-  };
   try {
     const response = await baseAPI.post(
-      `/all/employee/${id}/perks?${queryParams.toString()}`,
-      body,
+      `/v2/employee/${id}/perks`,
+      mergedParams,
     );
     return schemaParse(perkApiResponseSchema)(response);
   } catch (error) {
