@@ -12,7 +12,7 @@ import { Notification } from '@/components/NotificationIcon';
 
 import { fetchAnnouncements } from '@/services/hr/announcement.service';
 
-import EmployeeTable from './components/HrAnnouncementTable';
+import HrAnnouncementTable from './components/HrAnnouncementTable';
 
 interface HrManageAnnouncementmeProps {}
 
@@ -31,7 +31,7 @@ const HrManageAnnouncement: FunctionComponent<
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
         <Suspense fallback={<div>Loading...</div>}>
-          <EmployeeTable />
+          <HrAnnouncementTable />
         </Suspense>
       </LayoutWrapper>
     </Layout>

@@ -18,7 +18,7 @@ import { EmployeeStoreType } from '@/stores/hr/employee';
 
 import { MessageErrorResponse } from '@/types';
 
-const EmployeeTable: FunctionComponent = () => {
+const HrAnnouncementTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
@@ -147,4 +147,4 @@ const EmployeeTable: FunctionComponent = () => {
   );
 };
 
-export default EmployeeTable;
+export default HrAnnouncementTable;
