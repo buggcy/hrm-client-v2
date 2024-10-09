@@ -1,6 +1,9 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { PolicyListParams,getPolicyList } from '@/services/employee/policy.service';
+import {
+  getPolicyList,
+  PolicyListParams,
+} from '@/services/employee/policy.service';
 
 import { UseQueryConfig } from '@/types';
 import { PolicyApiResponse } from '@/types/policies.types';

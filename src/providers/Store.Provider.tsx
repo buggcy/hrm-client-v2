@@ -5,10 +5,10 @@ import React, { createContext, ReactNode, useContext } from 'react';
 import { useAttendanceHistoryStore } from '@/stores/employee/attendance-history';
 import { useEmployeePayrollStore } from '@/stores/employee/employeePayroll';
 import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
+import { usePolicyStore } from '@/stores/employee/policies';
 import { useEmployeeStore } from '@/stores/hr/employee';
 
 import { useAuthStore } from '../stores/auth';
-import { usePolicyStore } from '@/stores/employee/policies';
 import { useNotificationStore } from '../stores/useNotificationStore';
 
 interface StoreContextType {

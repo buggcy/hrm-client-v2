@@ -1,14 +1,12 @@
-import { AxiosResponse } from 'axios';
 import { policyApiResponseSchema } from '@/libs/validations/policies';
-import { PolicyApiResponse } from '@/types/policies.types';
-
 import { baseAPI, schemaParse } from '@/utils';
 
+import { PolicyApiResponse } from '@/types/policies.types';
 
 export interface PolicyListParams {
   page?: number;
   limit?: number;
-  category?:string;
+  category?: string;
 }
 
 export const getPolicyList = async (

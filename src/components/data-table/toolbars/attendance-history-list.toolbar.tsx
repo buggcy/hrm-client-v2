@@ -1,5 +1,4 @@
 'use client';
-
 import { useMutation } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
@@ -18,6 +17,7 @@ import {
   EmployeePayrollListType,
 } from '@/libs/validations/employee';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import { PolicyListType } from '@/libs/validations/policies';
 import { exportAttendanceHistoryCSVData } from '@/services/employee/attendance-history.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
@@ -37,7 +37,8 @@ export function AttendanceHistoryListToolbar<
     | AttendanceHistoryListType
     | EmployeeListType
     | EmployeePayrollListType
-    | LeaveHistoryListType,
+    | LeaveHistoryListType
+    | PolicyListType,
 >({
   table,
   searchTerm,

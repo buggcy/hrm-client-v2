@@ -1,13 +1,10 @@
 'use client';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-import { useMutation } from '@tanstack/react-query';
 
 import { policyListColumns } from '@/components/data-table/columns/policy-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
-import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { usePolicyListQuery } from '@/hooks/policies/usePolicyList.hook';
@@ -33,14 +30,14 @@ const AttendencePolicyTable: FunctionComponent = () => {
 
   useEffect(() => {
     void (async () => {
-        await refetch({ page, limit, category: 'Attendence Policy' });
-      })();
+      await refetch();
+    })();
   }, [page, limit, refetch]);
 
   useEffect(() => {
     if (refetchPolicyList) {
       void (async () => {
-        await refetch({ page, limit, category: 'Attendence Policy' });
+        await refetch();
       })();
 
       setRefetchPolicyList(false);
@@ -61,9 +58,13 @@ const AttendencePolicyTable: FunctionComponent = () => {
       </div>
     );
 
-  const tableData: PolicyListType = policyList?.data;
+  const tableData: PolicyListType[] = (policyList?.data ||
+    []) as PolicyListType[];
 
-  const tablePageCount: number = policyList?.pagination.totalPages;
+  const tablePageCount: number | undefined = policyList?.pagination.totalPages;
+  const handleSearchChange = (term: string) => {
+    console.log(term);
+  };
 
   return (
     <>
@@ -79,6 +80,9 @@ const AttendencePolicyTable: FunctionComponent = () => {
             limit: limit,
             onPaginationChange: handlePaginationChange,
           }}
+          searchTerm={''}
+          onSearch={handleSearchChange}
+          searchLoading={false}
         />
       )}
     </>

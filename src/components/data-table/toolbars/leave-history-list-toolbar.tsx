@@ -18,6 +18,7 @@ import {
   EmployeePayrollListType,
 } from '@/libs/validations/employee';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import { PolicyListType } from '@/libs/validations/policies';
 import { exportLeaveHistoryCSVData } from '@/services/employee/leave-history.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
@@ -37,7 +38,8 @@ export function LeaveHistoryListToolbar<
     | AttendanceHistoryListType
     | EmployeeListType
     | EmployeePayrollListType
-    | LeaveHistoryListType,
+    | LeaveHistoryListType
+    | PolicyListType,
 >({
   table,
   searchTerm,

@@ -1,17 +1,13 @@
 'use client';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-import { useMutation } from '@tanstack/react-query';
 
 import { policyListColumns } from '@/components/data-table/columns/policy-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
-import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { usePolicyListQuery } from '@/hooks/policies/usePolicyList.hook';
-import { PolicyListType } from '@/libs/validations/policies';
 import { PolicyStoreType } from '@/stores/employee/policies';
 
 const TechnologyPolicyTable: FunctionComponent = () => {
@@ -33,14 +29,14 @@ const TechnologyPolicyTable: FunctionComponent = () => {
 
   useEffect(() => {
     void (async () => {
-        await refetch({ page, limit, category: 'Technology Policy' });
-      })();
+      await refetch();
+    })();
   }, [page, limit, refetch]);
 
   useEffect(() => {
     if (refetchPolicyList) {
       void (async () => {
-        await refetch({ page, limit, category: 'Technology Policy' });
+        await refetch();
       })();
 
       setRefetchPolicyList(false);
@@ -61,9 +57,12 @@ const TechnologyPolicyTable: FunctionComponent = () => {
       </div>
     );
 
-  const tableData: PolicyListType = policyList?.data;
+  const tableData = policyList?.data;
 
-  const tablePageCount: number = policyList?.pagination.totalPages;
+  const tablePageCount = policyList?.pagination.totalPages;
+  const handleSearchChange = (term: string) => {
+    console.log(term);
+  };
 
   return (
     <>
@@ -79,6 +78,9 @@ const TechnologyPolicyTable: FunctionComponent = () => {
             limit: limit,
             onPaginationChange: handlePaginationChange,
           }}
+          searchTerm={''}
+          onSearch={handleSearchChange}
+          searchLoading={false}
         />
       )}
     </>

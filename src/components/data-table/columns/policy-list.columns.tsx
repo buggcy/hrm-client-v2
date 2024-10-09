@@ -1,16 +1,16 @@
 'use client';
+import Link from 'next/link';
 
 import { ColumnDef } from '@tanstack/react-table';
+import { File, FileText } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { PolicyListType } from '@/libs/validations/policies';
 
 import { DataTableColumnHeader } from '../data-table-column-header';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { FileText, FileImage, File } from 'lucide-react';
 
 export const policyListColumns: ColumnDef<PolicyListType>[] = [
   {
@@ -41,40 +41,47 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
       <DataTableColumnHeader column={column} title="File" />
     ),
     cell: ({ row }) => {
-      const fileUrl = row.getValue("file");
-      const segments = fileUrl.split("/");
+      const fileUrl: string = row.getValue('file');
+      const segments = fileUrl.split('/');
       const fileNameWithExtension = segments.pop();
-      const [fileName, fileExtension] = fileNameWithExtension.split('.');
+      const [fileName = 'unknown', fileExtension = ''] =
+        fileNameWithExtension?.split('.') || [];
+
       const isImageFile = (extension: string) => {
         return ['jpg', 'png', 'gif', 'jpeg'].includes(extension.toLowerCase());
       };
+
       const fileIcon = (extension: string) => {
         switch (extension.toLowerCase()) {
           case 'pdf':
           case 'docx':
-            return <FileText className="h-6 w-6" />;
+            return <FileText className="size-4 font-normal text-gray-400" />;
           default:
-            return <File className="h-6 w-6" />;
+            return <File className="size-4 font-normal text-gray-400" />;
         }
       };
-  
+
       return (
         <div className="flex items-center space-x-2">
-          <Avatar className="size-8 bg-gray-200 rounded-full border border-gray-300 overflow-hidden">
+          <Avatar className="size-8 overflow-hidden rounded-full border border-gray-300 bg-gray-200">
             {isImageFile(fileExtension) ? (
-              <AvatarImage src={fileUrl} alt={`${fileName}`} className="object-cover w-full h-full" />
+              <AvatarImage
+                src={fileUrl}
+                alt={`${fileName}`}
+                className="size-full object-cover"
+              />
             ) : (
-              <AvatarFallback className="uppercase text-xl">
+              <AvatarFallback className="text-xl uppercase">
                 {fileIcon(fileExtension)}
               </AvatarFallback>
             )}
           </Avatar>
-  
+
           <div className="flex flex-col">
             <span className="max-w-[500px] truncate font-medium capitalize">
               {fileName}
             </span>
-            <span className="text-sm text-gray-500 self-start">
+            <span className="self-start text-sm text-gray-500">
               {fileExtension.toUpperCase()}
             </span>
           </div>
@@ -82,19 +89,23 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
       );
     },
   },
-  
+
   {
     accessorKey: 'userId',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Updated By" />
     ),
     cell: ({ row }) => {
-      const userId = row.getValue("userId");
-      const firstName: string = userId?.firstName
-      const first = firstName;
+      const userId = row.getValue<{
+        firstName: string;
+        lastName: string;
+        Avatar: string;
+      }>('userId');
+
+      const firstName = userId?.firstName;
       const lastName = userId?.lastName;
       const avatar = userId?.Avatar;
-      const initials = `${first?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
+      const initials = `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
 
       return (
         <div className="flex items-center space-x-2">
@@ -119,15 +130,15 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
     cell: ({ row }) => {
       const date = new Date(row.getValue('updatedAt'));
       const formattedDate = new Intl.DateTimeFormat('en-US', {
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: '2-digit', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        hour12: true
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
       }).format(date);
-  
+
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
@@ -145,8 +156,14 @@ export const policyListColumns: ColumnDef<PolicyListType>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <Button variant='outline'>
-          <Link href={row.getValue("file")} rel="noopener noreferrer" target="_blank">View</Link>
+        <Button variant="outline">
+          <Link
+            href={row.getValue('file')}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            View
+          </Link>
         </Button>
       );
     },

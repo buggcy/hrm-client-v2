@@ -16,10 +16,7 @@ export const usePolicyStore = create<PolicyStoreType>()(
     persist(
       set => ({
         refetchPolicyList: false,
-
-        // Actions
-        setRefetchPolicyList: (res: boolean) =>
-          set({ refetchPolicyList: res }),
+        setRefetchPolicyList: (res: boolean) => set({ refetchPolicyList: res }),
       }),
       {
         name: 'policy-storage',

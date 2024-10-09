@@ -32,6 +32,7 @@ import {
   EmployeePayrollListType,
 } from '@/libs/validations/employee';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import { PolicyListType } from '@/libs/validations/policies';
 
 import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
@@ -57,7 +58,8 @@ export function DataTable<
     | EmployeePayrollListType
     | EmployeeListType
     | AttendanceHistoryListType
-    | LeaveHistoryListType,
+    | LeaveHistoryListType
+    | PolicyListType,
   TValue,
 >({
   columns,
