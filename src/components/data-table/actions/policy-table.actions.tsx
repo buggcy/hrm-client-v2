@@ -72,7 +72,7 @@ export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
           <DialogTrigger asChild onClick={() => {}}>
             <DropdownMenuItem onClick={handleViewDetails}>
               <Eye className="mr-2 size-4" />
-              View Details
+              View Policy
             </DropdownMenuItem>
           </DialogTrigger>
           <DropdownMenuItem
