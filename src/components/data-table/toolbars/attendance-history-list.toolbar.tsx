@@ -4,7 +4,6 @@ import type { Table } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
-import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
@@ -20,8 +19,6 @@ import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { PolicyListType } from '@/libs/validations/policies';
 import { exportAttendanceHistoryCSVData } from '@/services/employee/attendance-history.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
-
-import { attendance_history_status_options } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -82,13 +79,6 @@ export function AttendanceHistoryListToolbar<
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
-        {table.getColumn('Status') && (
-          <DataTableFacetedFilter
-            column={table.getColumn('Status')}
-            title="Status"
-            options={attendance_history_status_options}
-          />
-        )}
 
         {(isFiltered || searchTerm) && (
           <Button

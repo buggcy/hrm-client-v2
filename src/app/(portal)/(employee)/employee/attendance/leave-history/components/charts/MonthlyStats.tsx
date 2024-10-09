@@ -50,7 +50,7 @@ const MonthlyStats: FunctionComponent<MothlyStatsProps> = ({ data }) => {
       <CardContent className="h-full grow">
         <ChartContainer
           config={chartConfig}
-          className="h-3/4 min-h-[100px] w-full"
+          className="h-5/6 min-h-[100px] w-full lg:h-3/4"
         >
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />

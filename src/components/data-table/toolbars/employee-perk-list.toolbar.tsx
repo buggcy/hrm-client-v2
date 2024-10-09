@@ -7,31 +7,40 @@ import { DataTableViewOptions } from '@/components/data-table/data-table-view-op
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+import { PerkListType } from '@/libs/validations/perk';
+
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  searchLoading: boolean;
+  searchTerm: string;
+  onSearch: (term: string) => void;
 }
 
-export function DataTableToolbar<TData>({
+export function EmployeePerkListToolbar<TData extends PerkListType>({
   table,
+  searchTerm,
+  onSearch,
+  searchLoading,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter tasks..."
-          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-          onChange={event =>
-            table.getColumn('title')?.setFilterValue(event.target.value)
-          }
-          className="h-8 w-[150px] lg:w-[250px]"
+          placeholder="Filter ..."
+          inputClassName="h-8 w-[150px] lg:w-[250px]"
+          value={searchTerm}
+          onChange={event => onSearch(event.target.value)}
+          loading={searchLoading}
         />
 
-        {isFiltered && (
+        {(isFiltered || searchTerm) && (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              table.resetColumnFilters();
+              onSearch('');
+            }}
             className="h-8 px-2 lg:px-3"
           >
             Reset

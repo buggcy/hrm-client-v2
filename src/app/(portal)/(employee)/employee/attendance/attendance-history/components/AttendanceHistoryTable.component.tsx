@@ -3,6 +3,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
+import { DateRange } from 'react-day-picker';
 
 import { attendanceHistoryListColumns } from '@/components/data-table/columns/attendance-history-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
@@ -17,14 +18,12 @@ import { AuthStoreType } from '@/stores/auth';
 import { AttendanceHistoryStoreType } from '@/stores/employee/attendance-history';
 
 interface AttendanceHistoryTableProps {
-  date: Date;
+  dates?: DateRange;
 }
 
 const AttendanceHistoryTable: FunctionComponent<
   AttendanceHistoryTableProps
-> = ({ date }) => {
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
+> = ({ dates }) => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
   const searchParams = useSearchParams();
@@ -53,8 +52,8 @@ const AttendanceHistoryTable: FunctionComponent<
     page,
     limit,
     id: user?.Tahometer_ID,
-    month,
-    year,
+    from: dates?.from?.toISOString(),
+    to: dates?.to?.toISOString(),
   });
 
   const {
@@ -76,8 +75,8 @@ const AttendanceHistoryTable: FunctionComponent<
         page,
         limit,
         id: user?.Tahometer_ID ? user.Tahometer_ID : '',
-        month,
-        year,
+        from: dates?.from,
+        to: dates?.to,
       }),
     onError: err => {
       toast({
@@ -161,6 +160,9 @@ const AttendanceHistoryTable: FunctionComponent<
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
+          toolbarType="attendanceHistory"
+          setFilterValue={(value: string[]) => console.log(value)}
+          filterValue={[]}
         />
       )}
     </>
