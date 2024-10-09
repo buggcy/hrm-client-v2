@@ -1,11 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  AiOutlineFilePdf,
-  AiOutlineFileText,
-  AiOutlineFileWord,
-} from 'react-icons/ai';
+import { File, FileText } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -42,48 +38,50 @@ export const policyColumn: ColumnDef<PolicyType>[] = [
   {
     accessorKey: 'file',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Policy File" />
+      <DataTableColumnHeader column={column} title="File" />
     ),
     cell: ({ row }) => {
       const fileUrl: string = row.getValue('file');
-      const segments = fileUrl?.split('/');
-      const fileNameWithExtension = segments?.pop() || '';
-      const [fileName, fileExtension] = fileNameWithExtension.split('.');
+      const segments = fileUrl.split('/');
+      const fileNameWithExtension = segments.pop();
+      const [fileName = 'unknown', fileExtension = ''] =
+        fileNameWithExtension?.split('.') || [];
 
-      const isImage = (fileExtension: string) => {
-        return ['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(
-          fileExtension.toLowerCase(),
-        );
+      const isImageFile = (extension: string) => {
+        return ['jpg', 'png', 'gif', 'jpeg'].includes(extension.toLowerCase());
       };
 
-      const getIconForFileType = (fileExtension: string) => {
-        switch (fileExtension.toLowerCase()) {
+      const fileIcon = (extension: string) => {
+        switch (extension.toLowerCase()) {
           case 'pdf':
-            return <AiOutlineFilePdf className="size-4 text-red-500" />;
-          case 'doc':
           case 'docx':
-            return <AiOutlineFileWord className="size-4 text-blue-500" />;
+            return <FileText className="size-4 font-normal text-gray-400" />;
           default:
-            return <AiOutlineFileText className="size-4 text-gray-500" />;
+            return <File className="size-4 font-normal text-gray-400" />;
         }
       };
 
       return (
         <div className="flex items-center space-x-2">
-          <Avatar className="size-9">
-            {isImage(fileExtension) && fileUrl ? (
-              <AvatarImage src={fileUrl} alt={fileName} />
+          <Avatar className="size-8 overflow-hidden rounded-full border border-gray-300 p-1">
+            {isImageFile(fileExtension) ? (
+              <AvatarImage
+                src={fileUrl}
+                alt={`${fileName}`}
+                className="size-full object-cover"
+              />
             ) : (
-              <AvatarFallback>
-                {getIconForFileType(fileExtension)}
+              <AvatarFallback className="text-xl uppercase">
+                {fileIcon(fileExtension)}
               </AvatarFallback>
             )}
           </Avatar>
+
           <div className="flex flex-col">
             <span className="max-w-[500px] truncate font-medium capitalize">
               {fileName}
             </span>
-            <span className="max-w-[500px] truncate font-normal capitalize">
+            <span className="self-start text-sm text-gray-500">
               {fileExtension.toUpperCase()}
             </span>
           </div>
