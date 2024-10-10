@@ -12,10 +12,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
+import DataTableType from '@/libs/validations/data-table-type';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
-import { DataTableDataType } from '../data-table';
 import { employee_status } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
@@ -29,7 +29,7 @@ interface DataTableToolbarProps<TData> {
   filterValue: string[];
 }
 
-export function UnapprovedEmployeeToolbar<TData extends DataTableDataType>({
+export function UnapprovedEmployeeToolbar<TData extends DataTableType>({
   table,
   searchTerm,
   onSearch,
