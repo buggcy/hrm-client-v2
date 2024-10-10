@@ -58,16 +58,14 @@ interface DataTableProps<TData, TValue> {
   filterValue: string[];
   toolbar?: string;
 }
+export type DataTableDataType =
+  | EmployeeListType
+  | AttendanceHistoryListType
+  | LeaveHistoryListType
+  | PolicyType
+  | EmployeePayrollListType;
 
-export function DataTable<
-  TData extends
-    | PolicyType
-    | EmployeePayrollListType
-    | EmployeeListType
-    | AttendanceHistoryListType
-    | LeaveHistoryListType,
-  TValue,
->({
+export function DataTable<TData extends DataTableDataType, TValue>({
   columns,
   data,
   pagination,
@@ -123,18 +121,6 @@ export function DataTable<
           />
         );
 
-      case 'hrPolicy':
-        return (
-          <HrPolicyToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-            filterValue={filterValue}
-            setFilterValue={setFilterValue}
-          />
-        );
-
       case 'unapprovedEmployeeList':
         return (
           <UnapprovedEmployeeToolbar
@@ -144,6 +130,18 @@ export function DataTable<
             searchLoading={searchLoading}
             setFilterValue={setFilterValue}
             filterValue={filterValue}
+          />
+        );
+
+      case 'hrPolicy':
+        return (
+          <HrPolicyToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
           />
         );
 

@@ -1,4 +1,4 @@
-import { Home, UserCog, UserCog2, UserPlus } from 'lucide-react';
+import { BadgeCheck, Home, UserCog, UserCog2, UserPlus } from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
 

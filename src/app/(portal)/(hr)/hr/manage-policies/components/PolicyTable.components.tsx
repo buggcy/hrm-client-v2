@@ -41,7 +41,6 @@ const PolicyTable: React.FC<PolicyTableProps> = ({
     page,
     limit,
     category: categories.length > 0 ? categories[0] : category,
-    categories,
   });
 
   useEffect(() => {
