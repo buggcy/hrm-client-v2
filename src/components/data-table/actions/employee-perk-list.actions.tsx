@@ -22,6 +22,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { PerkModal } from '@/app/(portal)/(employee)/employee/perks/component/PerkModal';
+import ViewPerk from '@/app/(portal)/(employee)/employee/perks/component/ViewPerk';
 import { useAllPerkQuery } from '@/hooks/employee/usePerkList.hook';
 import { PerkListType } from '@/libs/validations/perk';
 import { unAvailPerk } from '@/services/employee/perk.service';
@@ -37,6 +38,7 @@ interface DataTableRowActionsProps {
 export function PerkListRowActions({ row }: DataTableRowActionsProps) {
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [modal, setModal] = React.useState(false);
+  const [isView, setIsView] = React.useState(false);
   const [modelType, setModelType] = React.useState('');
   const [selectedPerk, setSelectedPerk] = React.useState<PerkListType | null>(
     null,
@@ -83,10 +85,18 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
   const handleClose = () => {
     setModal(false);
   };
+  const viewToggle = () => {
+    setIsView(false);
+  };
   const handleEdit = (perk: PerkListType) => {
     setSelectedPerk(perk);
     setModelType('edit');
     setModal(true);
+  };
+
+  const handleView = (perk: PerkListType) => {
+    setSelectedPerk(perk);
+    setIsView(true);
   };
   return (
     <Dialog>
@@ -106,7 +116,7 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
           {row?.getValue('hrApproval') === 'pending' ? (
             <>
               {' '}
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleView(data)}>
                 <Eye className="mr-2 size-4" />
                 View Request
               </DropdownMenuItem>
@@ -127,7 +137,7 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
           ) : (
             <>
               {' '}
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleView(data)}>
                 <Eye className="mr-2 size-4" />
                 View Request
               </DropdownMenuItem>
@@ -154,6 +164,11 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
           perkToEdit={modelType === 'edit' ? selectedPerk : null}
         />
       )}
+      <ViewPerk
+        open={isView}
+        onCloseChange={viewToggle}
+        viewData={selectedPerk}
+      />
     </Dialog>
   );
 }

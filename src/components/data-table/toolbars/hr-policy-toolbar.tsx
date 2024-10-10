@@ -3,14 +3,15 @@
 import { useMutation } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
-import { FileDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
+import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
-import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
+import { useFetchAllCategories } from '@/hooks/usepolicyQuery';
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import {
   EmployeeListType,
@@ -18,7 +19,7 @@ import {
 } from '@/libs/validations/employee';
 import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
-import { exportLeaveHistoryCSVData } from '@/services/employee/leave-history.service';
+import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
 import { MessageErrorResponseWithError } from '@/types';
@@ -28,13 +29,15 @@ interface DataTableToolbarProps<TData> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
-export function LeaveHistoryListToolbar<
+export function HrPolicyToolbar<
   TData extends
     | PolicyType
-    | AttendanceHistoryListType
     | EmployeeListType
+    | AttendanceHistoryListType
     | EmployeePayrollListType
     | LeaveHistoryListType,
 >({
@@ -42,33 +45,43 @@ export function LeaveHistoryListToolbar<
   searchTerm,
   onSearch,
   searchLoading,
+  setFilterValue,
+  filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const selectedRowIds: string[] = table
     .getSelectedRowModel()
     .rows.map(row => row.original._id);
 
+  const { data: categoriesData } = useFetchAllCategories();
+
+  const hr_policies_categories = (categoriesData?.categories || []).map(
+    category => {
+      return {
+        value: category,
+        label: category,
+      };
+    },
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutate, isPending } = useMutation({
-    mutationFn: exportLeaveHistoryCSVData,
+    mutationFn: exportEmployeeCSVData,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
         description:
           err?.response?.data?.error || 'Error on exporting employees!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
-    onSuccess: (response: BlobPart) => {
+    onSuccess: (response: string) => {
       const file = new Blob([response]);
-      downloadFile(file, 'Leave History.csv');
+      downloadFile(file, 'Employees.csv');
     },
   });
-
-  const handleExport = () => {
-    if (selectedRowIds.length > 0) {
-      mutate(selectedRowIds);
-    }
-  };
 
   return (
     <div className="flex items-center justify-between">
@@ -80,7 +93,14 @@ export function LeaveHistoryListToolbar<
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
-
+        {table.getColumn('category') && (
+          <DataTableFacetedFilter
+            title="Category"
+            options={hr_policies_categories}
+            filterValue={filterValue}
+            onFilterChange={setFilterValue}
+          />
+        )}
         {(isFiltered || searchTerm) && (
           <Button
             variant="ghost"
@@ -95,19 +115,6 @@ export function LeaveHistoryListToolbar<
           </Button>
         )}
       </div>
-      {selectedRowIds.length > 0 && (
-        <LoadingButton
-          variant="outline"
-          size="sm"
-          className="ml-auto mr-2 flex h-8"
-          onClick={handleExport}
-          disabled={isPending}
-          loading={isPending}
-        >
-          <FileDown className="mr-2 size-4" />
-          Export
-        </LoadingButton>
-      )}
       <DataTableViewOptions table={table} />
     </div>
   );

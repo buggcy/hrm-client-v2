@@ -17,6 +17,7 @@ import {
   EmployeeListType,
   EmployeePayrollListType,
 } from '@/libs/validations/employee';
+import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
@@ -36,6 +37,7 @@ interface DataTableToolbarProps<TData> {
 
 export function EmployeeListToolbar<
   TData extends
+    | PolicyType
     | EmployeeListType
     | AttendanceHistoryListType
     | EmployeePayrollListType
