@@ -18,5 +18,5 @@ export interface NotificationStore {
 export interface NotificationQueryResult {
   data?: Notification[];
   isLoading: boolean;
-  error?: Error | null; // Allow error to be null as well
+  error?: Error | null;
 }

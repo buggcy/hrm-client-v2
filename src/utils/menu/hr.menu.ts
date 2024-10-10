@@ -24,4 +24,15 @@ export const hrMenu: MenuItem[] = [
       },
     ],
   },
+  {
+    title: 'Manage Policy',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Policy',
+        icon: BadgeCheck,
+        href: '/hr/manage-policies',
+      },
+    ],
+  },
 ];
