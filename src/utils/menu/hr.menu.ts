@@ -20,6 +20,17 @@ export const hrMenu: MenuItem[] = [
     ],
   },
   {
+    title: 'Manage Leave',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Leave',
+        icon: BadgeCheck,
+        href: '/hr/manage-leave',
+      },
+    ],
+  },
+  {
     title: 'Manage Policy',
     icon: UserCog2,
     children: [
