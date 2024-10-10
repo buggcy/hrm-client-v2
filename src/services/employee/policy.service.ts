@@ -1,7 +1,7 @@
-import { policyApiResponseSchema } from '@/libs/validations/policies';
+import { policyApiResponseSchema, PolicyCategoryApiResponseSchema } from '@/libs/validations/policies';
 import { baseAPI, schemaParse } from '@/utils';
 
-import { PolicyApiResponse } from '@/types/policies.types';
+import { PolicyApiResponse, PolicyCategoryApiResponse } from '@/types/policies.types';
 
 export interface PolicyListParams {
   page?: number;
@@ -37,6 +37,15 @@ export const getPolicyList = async (
     return schemaParse(policyApiResponseSchema)(response);
   } catch (error) {
     console.error('Error fetching employee list:', error);
+    throw error;
+  }
+};
+export const getCategoryList = async (): Promise<PolicyCategoryApiResponse> => {
+  try {
+    const response = await baseAPI.get('/policy/category');
+    return schemaParse(PolicyCategoryApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching policy categories:', error);
     throw error;
   }
 };

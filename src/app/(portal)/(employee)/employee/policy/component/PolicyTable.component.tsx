@@ -7,11 +7,15 @@ import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
+
 import { usePolicyListQuery } from '@/hooks/policies/usePolicyList.hook';
 import { PolicyListType } from '@/libs/validations/policies';
 import { PolicyStoreType } from '@/stores/employee/policies';
+interface PolicyTableProps {
+  category: string;
+}
 
-const AttendencePolicyTable: FunctionComponent = () => {
+const PolicyTable: FunctionComponent<PolicyTableProps> = ({ category }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { policyStore } = useStores() as { policyStore: PolicyStoreType };
@@ -26,7 +30,7 @@ const AttendencePolicyTable: FunctionComponent = () => {
     isFetching,
     error,
     refetch,
-  } = usePolicyListQuery({ page, limit, category: 'Attendence Policy' });
+  } = usePolicyListQuery({ page, limit, category});
 
   useEffect(() => {
     void (async () => {
@@ -90,4 +94,4 @@ const AttendencePolicyTable: FunctionComponent = () => {
   );
 };
 
-export default AttendencePolicyTable;
+export default PolicyTable;

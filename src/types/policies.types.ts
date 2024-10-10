@@ -27,3 +27,8 @@ export interface PolicyApiResponse {
   pagination: Pagination;
   data: Policy[];
 }
+
+export interface PolicyCategoryApiResponse{
+  categories?: string[];
+  message?: string;
+}

@@ -30,12 +30,17 @@ const policyApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(policyListSchema),
 });
+const PolicyCategoryApiResponseSchema = z.object({
+  categories: z.array(z.string()).optional(),
+  message: z.string().optional(),
+})
 
 export type PolicyApiResponse = z.infer<typeof policyApiResponseSchema>;
 export type PolicyListType = z.infer<typeof policyListSchema>;
 
 export {
   policyApiResponseSchema,
+  PolicyCategoryApiResponseSchema,
   policyListSchema,
   paginationSchema,
   userIdSchema,
