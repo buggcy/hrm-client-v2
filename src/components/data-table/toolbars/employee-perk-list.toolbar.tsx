@@ -4,16 +4,21 @@ import type { Table } from '@tanstack/react-table';
 import { X } from 'lucide-react';
 
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
+import { perk_status_options } from '@/components/filters';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import { PerkListType } from '@/libs/validations/perk';
+
+import { DataTableFacetedFilter } from '../data-table-faceted-filter';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   searchLoading: boolean;
   searchTerm: string;
   onSearch: (term: string) => void;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function EmployeePerkListToolbar<TData extends PerkListType>({
@@ -21,6 +26,8 @@ export function EmployeePerkListToolbar<TData extends PerkListType>({
   searchTerm,
   onSearch,
   searchLoading,
+  setFilterValue,
+  filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   return (
@@ -33,7 +40,12 @@ export function EmployeePerkListToolbar<TData extends PerkListType>({
           onChange={event => onSearch(event.target.value)}
           loading={searchLoading}
         />
-
+        <DataTableFacetedFilter
+          onFilterChange={setFilterValue}
+          title="Status"
+          options={perk_status_options}
+          filterValue={filterValue}
+        />
         {(isFiltered || searchTerm) && (
           <Button
             variant="ghost"

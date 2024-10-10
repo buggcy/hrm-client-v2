@@ -80,6 +80,8 @@ export function PerkModal({
     formState: { errors },
     setValue,
     getValues,
+    setError,
+    clearErrors,
     reset,
   } = useForm<PerkFormData>({
     resolver: zodResolver(FormSchema),
@@ -120,31 +122,33 @@ export function PerkModal({
     const fileInput = document.getElementById('file') as HTMLInputElement;
     const file = fileInput?.files ? fileInput.files[0] : null;
     if (type === 'add' && !file) {
-      toast({
-        title: 'Error',
-        description: 'Proof Document is Required!',
-        variant: 'destructive',
+      setError('file', {
+        type: 'manual',
+        message: 'Proof Document is Required!',
       });
       return;
     }
     const fileError = validateFile(file);
     if (fileError) {
-      toast({
-        title: 'File Error',
-        description: fileError,
-        variant: 'destructive',
+      setError('file', {
+        type: 'manual',
+        message: fileError,
       });
       return;
+    } else {
+      clearErrors('file');
     }
+
     const assignedIncrementAmount = getValues('assignedIncrement') || 0;
 
     if (Number(data?.increment) > assignedIncrementAmount) {
-      toast({
-        title: 'Error',
-        description: 'Requested Amount Exceeds Assigned Max Amount',
-        variant: 'destructive',
+      setError('increment', {
+        type: 'manual',
+        message: 'Requested Amount Exceeds Assigned Max Amount',
       });
       return;
+    } else {
+      clearErrors('increment');
     }
     const formData = new FormData();
     formData.append('incrementAmount', data?.increment);
@@ -219,7 +223,6 @@ export function PerkModal({
           perks?.some(
             perk =>
               perk.isAvailable &&
-              !perk.isAvailed &&
               perk.hrApproval === 'available' &&
               perk.salaryIncrement,
           )) ||
@@ -248,7 +251,6 @@ export function PerkModal({
                                 .filter(
                                   perk =>
                                     perk.isAvailable &&
-                                    !perk.isAvailed &&
                                     perk.hrApproval === 'available' &&
                                     perk.salaryIncrement,
                                 )
@@ -309,6 +311,12 @@ export function PerkModal({
                           />
                         )}
                       />
+
+                      {errors.file && (
+                        <span className="text-sm text-red-500">
+                          {errors.file.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </>
@@ -324,6 +332,7 @@ export function PerkModal({
                 </Button>
                 <Button
                   variant="ghostSecondary"
+                  type="button"
                   onClick={() => onCloseChange(false)}
                 >
                   Close

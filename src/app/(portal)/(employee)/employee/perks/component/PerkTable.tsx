@@ -8,14 +8,22 @@ import { AxiosError } from 'axios';
 import { employeePerkListColumns } from '@/components/data-table/columns/employee-perk-list.columns';
 import { EmployeePerkDataTable } from '@/components/data-table/data-table-employee-perk';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
+import Header from '@/components/Header/Header';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { usePerkListQuery } from '@/hooks/employee/usePerkList.hook';
+import {
+  usePerkListPostQuery,
+  usePerkRecordQuery,
+} from '@/hooks/employee/usePerkList.hook';
 import { PerkListArrayType } from '@/libs/validations/perk';
 import { searchPerkList } from '@/services/employee/perk.service';
 import { PerkStoreType } from '@/stores/employee/perks';
+import { formatedDate } from '@/utils';
+
+import PerkCards from './PerksCards';
 
 import { MessageErrorResponse } from '@/types';
 import { User } from '@/types/user.types';
@@ -33,18 +41,35 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
 
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
+  const [status, setStatus] = useState<string[]>([]);
 
   const {
-    data: perkList,
+    data: perkPostList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = usePerkListQuery(userId, { page, limit });
+  } = usePerkListPostQuery(userId, {
+    page,
+    limit,
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
+    status,
+  });
+
+  const { data: perkRecords, refetch: refetchRecord } = usePerkRecordQuery(
+    userId,
+    {
+      from: formatedDate(selectedDate?.from),
+      to: formatedDate(selectedDate?.to),
+    },
+  );
 
   const {
     mutate,
@@ -63,6 +88,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
       });
     },
   });
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -81,22 +107,25 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit, status]);
 
-  useEffect(() => {}, [perkList]);
-
+  useEffect(() => {}, [perkPostList, selectedDate]);
+  useEffect(() => {}, [perkRecords, selectedDate]);
   useEffect(() => {
     if (refetchPerkList) {
       void (async () => {
         await refetch();
+        await refetchRecord();
       })();
 
       setRefetchPerkList(false);
     }
-  }, [refetchPerkList, setRefetchPerkList, refetch]);
+  }, [refetchPerkList, setRefetchPerkList, refetch, refetchRecord, status]);
+
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
+
   const handlePaginationChange = (newPage: number, newLimit: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
@@ -113,20 +142,27 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
 
   const tableData: PerkListArrayType = debouncedSearchTerm
     ? searchPerkData?.data || []
-    : perkList?.data || [];
+    : perkPostList?.data || [];
 
   const tablePageCount: number = debouncedSearchTerm
     ? searchPerkData?.pagination?.totalPages || 0
-    : perkList?.pagination?.totalPages || 0;
+    : perkPostList?.pagination?.totalPages || 0;
 
   return (
     <>
-      <div className="flex w-full flex-col items-center justify-end gap-y-4 md:flex-row">
+      <Header subheading="Elevate Your Lifestyle — Discover Perks Designed for You!">
+        <DateRangePicker
+          timeRange={timeRange}
+          selectedDate={selectedDate}
+          setTimeRange={setTimeRange}
+          setDate={handleSetDate}
+        />
         <Button variant="default" onClick={handleAdd}>
           Apply for Perks
         </Button>
-      </div>
+      </Header>
 
+      <PerkCards records={perkRecords} />
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (
@@ -142,6 +178,9 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
+          toolbarType={'perkPostList'}
+          setFilterValue={setStatus}
+          filterValue={status}
         />
       )}
     </>
