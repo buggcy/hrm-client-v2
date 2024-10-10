@@ -31,6 +31,9 @@ export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
   const data = row.original;
+  const setRefetch = (value: boolean) => {
+    return value;
+  };
 
   const handleViewDetails = () => {
     const fileUrl = data.file;
@@ -90,6 +93,7 @@ export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
         mutationFunc={handleDelete}
+        setRefetch={setRefetch}
       />
     </Dialog>
   );

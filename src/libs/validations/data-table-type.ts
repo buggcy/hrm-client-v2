@@ -4,9 +4,11 @@ import {
   EmployeeListType,
   EmployeePayrollListType,
 } from '@/libs/validations/employee';
+import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
 type DataTableType =
+  | PolicyType
   | AttendanceHistoryListType
   | AttendanceListType
   | EmployeeListType
