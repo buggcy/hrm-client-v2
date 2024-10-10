@@ -1,6 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 
+import { KeyRound, Pencil } from 'lucide-react';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -40,30 +42,32 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
         </div>
 
         <div className="mt-3 flex flex-wrap">
-          <div
-            className="mb-2 w-full px-4 md:w-4/12 lg:w-4/12"
-            style={{ height: '100px' }}
-          >
+          <div className="mb-2 w-full px-0 py-1 md:w-4/12 md:px-4 lg:w-4/12 lg:px-4">
             {' '}
             <Tabs
               value={activeTab}
               onValueChange={handleTabChange}
-              className="flex h-full flex-col"
+              className="col-span-3"
             >
-              <TabsList className="mb-2 flex size-full flex-col border-r p-0.5">
+              <TabsList className="flex w-full justify-between bg-transparent p-0 md:flex-col md:space-y-4">
                 <TabsTrigger
-                  className="mb-2 h-12 w-full text-left"
+                  className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
                   value="profile"
                 >
-                  Profile Edit
+                  <Pencil className="mr-2 size-4" />
+                  <span className="capitalize">Profile Edit</span>
                 </TabsTrigger>
-                <TabsTrigger className="h-12 w-full text-left" value="account">
-                  Account Edit
+                <TabsTrigger
+                  className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
+                  value="account"
+                >
+                  <KeyRound className="mr-2 size-4" />
+                  <span className="capitalize">Account Edit</span>
                 </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
-          <div className="w-full px-4 md:w-8/12 lg:w-8/12">
+          <div className="w-full px-0 md:w-8/12 md:px-4 lg:w-8/12 lg:px-4">
             <Card>
               {activeTab === 'profile' && (
                 <CardContent>
