@@ -5,7 +5,6 @@ import type { Table } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
-import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
@@ -13,10 +12,8 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
 import DataTableType from '@/libs/validations/data-table-type';
-import { exportEmployeeCSVData } from '@/services/hr/employee.service';
+import { exportAttendanceHistoryCSVData } from '@/services/employee/attendance-history.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
-
-import { gender_options } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -25,17 +22,13 @@ interface DataTableToolbarProps<TData> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
-  setFilterValue: (value: string[]) => void;
-  filterValue: string[];
 }
 
-export function EmployeeListToolbar<TData extends DataTableType>({
+export function AttendanceListToolbar<TData extends DataTableType>({
   table,
   searchTerm,
   onSearch,
   searchLoading,
-  setFilterValue,
-  filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const selectedRowIds: string[] = table
@@ -43,18 +36,18 @@ export function EmployeeListToolbar<TData extends DataTableType>({
     .rows.map(row => row.original._id);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: exportEmployeeCSVData,
+    mutationFn: exportAttendanceHistoryCSVData,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
         description:
           err?.response?.data?.error || 'Error on exporting employees!',
-        variant: 'error',
+        variant: 'destructive',
       });
     },
-    onSuccess: (response: string) => {
+    onSuccess: (response: BlobPart) => {
       const file = new Blob([response]);
-      downloadFile(file, 'Employees.csv');
+      downloadFile(file, 'Attendance History.csv');
     },
   });
 
@@ -75,20 +68,12 @@ export function EmployeeListToolbar<TData extends DataTableType>({
           loading={searchLoading}
         />
 
-        <DataTableFacetedFilter
-          onFilterChange={setFilterValue}
-          title="Gender"
-          options={gender_options}
-          filterValue={filterValue}
-        />
-
-        {(isFiltered || searchTerm || filterValue.length > 0) && (
+        {(isFiltered || searchTerm) && (
           <Button
             variant="ghost"
             onClick={() => {
               table.resetColumnFilters();
               onSearch('');
-              setFilterValue([]);
             }}
             className="h-8 px-2 lg:px-3"
           >
