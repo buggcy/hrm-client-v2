@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -35,9 +35,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
+import { useStores } from '@/providers/Store.Provider';
 
 import { useTypesQuery } from '@/hooks/types.hook';
-import { addEmployeeData } from '@/services/hr/employee.service';
+import { EmployeeListType } from '@/libs/validations/employee';
+import {
+  addEmployeeData,
+  updateTBAEmployeeData,
+} from '@/services/hr/employee.service';
+import { EmployeeStoreType } from '@/stores/hr/employee';
 import { cn } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
@@ -59,18 +65,22 @@ const addEmployeeSchema = z.object({
 
 export type AddEmployeeFormData = z.infer<typeof addEmployeeSchema>;
 
-interface DialogDemoProps {
+interface AddEmployeeDialogProps {
   open: boolean;
   onOpenChange: () => void;
   onCloseChange: () => void;
+  editData?: EmployeeListType;
 }
 
-export function DialogDemo({
+export function AddEmployeeDialog({
   open,
   onOpenChange,
   onCloseChange,
-}: DialogDemoProps) {
+  editData,
+}: AddEmployeeDialogProps) {
   const { data: types, isLoading } = useTypesQuery();
+  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
+  const { setRefetchEmployeeList } = employeeStore;
 
   const {
     control,
@@ -91,8 +101,23 @@ export function DialogDemo({
     },
   });
 
+  useEffect(() => {
+    if (editData) {
+      reset({
+        firstName: editData.firstName,
+        lastName: editData.lastName,
+        email: editData.email,
+        companyEmail: editData.companyEmail,
+        contactNo: editData.contactNo,
+        basicSalary: editData.basicSalary.toString(),
+        Joining_Date: new Date(editData?.Joining_Date || ''),
+        Designation: editData.Designation,
+      });
+    }
+  }, [editData, reset]);
+
   const { mutate, isPending } = useMutation({
-    mutationFn: addEmployeeData,
+    mutationFn: editData ? updateTBAEmployeeData : addEmployeeData,
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
@@ -109,18 +134,21 @@ export function DialogDemo({
       });
       reset();
       onCloseChange();
+      setRefetchEmployeeList(true);
     },
   });
 
   const onSubmit = (data: AddEmployeeFormData) => {
-    mutate(data);
+    editData ? mutate({ data, id: editData?._id }) : mutate({ data, id: '' });
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="h-[470px] sm:max-w-[905px]">
         <DialogHeader>
-          <DialogTitle>Add Employee</DialogTitle>
+          <DialogTitle>
+            {editData ? 'Edit Employee' : 'Add Employee'}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 py-4">
           <div className="flex flex-wrap gap-8">
@@ -342,7 +370,7 @@ export function DialogDemo({
 
           <DialogFooter>
             <Button type="submit" disabled={isLoading || isPending}>
-              Add Employee
+              {editData ? 'Edit Employee' : 'Add Employee'}
             </Button>
           </DialogFooter>
         </form>

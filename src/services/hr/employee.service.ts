@@ -113,25 +113,53 @@ export const approvalEmployeeList = async (): Promise<
 };
 
 export const addEmployeeData = async ({
-  firstName,
-  lastName,
-  email,
-  companyEmail,
-  contactNo,
-  basicSalary,
-  Joining_Date,
-  Designation,
-}: AddEmployeeFormData): Promise<SuccessMessageResponse> => {
+  data,
+}: {
+  data: AddEmployeeFormData;
+  id: string;
+}): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.post(`/employee`, {
-    firstName,
-    lastName,
-    email: email.toLowerCase(),
-    companyEmail: companyEmail.toLowerCase(),
-    contactNo,
-    basicSalary,
-    Joining_Date,
-    Designation,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email.toLowerCase(),
+    companyEmail: data.companyEmail.toLowerCase(),
+    contactNo: data.contactNo,
+    basicSalary: data.basicSalary,
+    Joining_Date: data.Joining_Date,
+    Designation: data.Designation,
   });
+  return { message };
+};
+
+export const updateTBAEmployeeData = async ({
+  data,
+  id,
+}: {
+  data: AddEmployeeFormData;
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/employee/${id}`,
+    {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email.toLowerCase(),
+      companyEmail: data.companyEmail.toLowerCase(),
+      contactNo: data.contactNo,
+      basicSalary: data.basicSalary,
+      Joining_Date: data.Joining_Date,
+      Designation: data.Designation,
+    },
+  );
+  return { message };
+};
+
+export const resendEmployeeInvitation = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/employee/resendcode/${id}`,
+  );
   return { message };
 };
 
