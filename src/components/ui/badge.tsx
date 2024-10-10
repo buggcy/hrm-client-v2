@@ -22,6 +22,8 @@ const badgeVariants = cva(
         'label-error': 'border-transparent bg-transparent pr-1 text-error',
         label:
           'h-fit rounded border-transparent bg-accent font-medium text-muted-foreground',
+        warning:
+          'border-transparent bg-error-foreground text-[hsl(var(--chart-2))]',
       },
     },
     defaultVariants: {

@@ -13,6 +13,7 @@ import {
   AttendanceUser,
 } from '@/libs/validations/attendance-list';
 
+import { AttendanceRowActions } from '../actions/attendance-list.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
 export const attendanceListColumns: ColumnDef<AttendanceListType>[] = [
@@ -199,5 +200,10 @@ export const attendanceListColumns: ColumnDef<AttendanceListType>[] = [
         </div>
       );
     },
+  },
+
+  {
+    id: 'actions',
+    cell: ({ row }) => <AttendanceRowActions row={row} />,
   },
 ];

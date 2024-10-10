@@ -1,6 +1,6 @@
 'use client';
 
-import { FunctionComponent, Suspense } from 'react';
+import { FunctionComponent, Suspense, useState } from 'react';
 
 import { Plus } from 'lucide-react';
 
@@ -17,6 +17,7 @@ import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 
 import AttendanceCharts from './components/AttendanceCharts';
+import { AttendanceDialog } from './components/AttendanceDialog';
 import AttendanceListTable from './components/AttendanceListTable.component';
 
 interface HrAttendanceListProps {}
@@ -24,6 +25,16 @@ interface HrAttendanceListProps {}
 const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
 
   return (
     <Layout>
@@ -41,7 +52,10 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
             setTimeRange={setTimeRange}
             setDate={handleSetDate}
           />
-          <Button className="flex items-center gap-1">
+          <Button
+            className="flex items-center gap-1"
+            onClick={handleDialogOpen}
+          >
             <Plus size={16} /> Add Attendance
           </Button>
         </Header>
@@ -50,6 +64,12 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
           <AttendanceListTable dates={selectedDate} />
         </Suspense>
       </LayoutWrapper>
+      <AttendanceDialog
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        onCloseChange={handleDialogClose}
+        type={'add'}
+      />
     </Layout>
   );
 };
