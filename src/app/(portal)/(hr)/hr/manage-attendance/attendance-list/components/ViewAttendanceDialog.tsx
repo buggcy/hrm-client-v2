@@ -59,7 +59,6 @@ export function ViewAttendanceDialog({
   const status = data?.Status;
   const date = data?.date ? new Date(data.date) : new Date();
   const breaks: AttendanceBreaks[] = data?.breaks;
-  console.log(breaks);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-fit p-8">
