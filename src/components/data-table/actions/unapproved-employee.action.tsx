@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/components/ui/use-toast';
+import { useStores } from '@/providers/Store.Provider';
 
 import { AddEmployeeDialog } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
 import { EmployeeListType } from '@/libs/validations/employee';
@@ -27,6 +28,7 @@ import {
   deleteEmployeeRecord,
   resendEmployeeInvitation,
 } from '@/services/hr/employee.service';
+import { EmployeeStoreType } from '@/stores/hr/employee';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -39,6 +41,9 @@ export function UnapprovedEmployeeRowActions({
 }: DataTableRowActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
+
+  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
+  const { setRefetchEmployeeList } = employeeStore;
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -137,6 +142,7 @@ export function UnapprovedEmployeeRowActions({
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
         mutationFunc={deleteEmployeeRecord}
+        setRefetch={setRefetchEmployeeList}
       />
     </Dialog>
   );
