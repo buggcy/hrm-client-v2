@@ -32,6 +32,7 @@ import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
 import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
+import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
 
 interface DataTableProps<TData, TValue> {
@@ -49,6 +50,7 @@ interface DataTableProps<TData, TValue> {
   toolbarType: string;
   setFilterValue: (value: string[]) => void;
   filterValue: string[];
+  toolbar?: string;
 }
 
 export function DataTable<TData extends DataTableType, TValue>({
@@ -104,6 +106,18 @@ export function DataTable<TData extends DataTableType, TValue>({
             searchLoading={searchLoading}
             setFilterValue={setFilterValue}
             filterValue={filterValue}
+          />
+        );
+
+      case 'hrPolicy':
+        return (
+          <HrPolicyToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
           />
         );
 

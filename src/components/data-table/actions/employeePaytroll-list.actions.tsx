@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { Row } from '@tanstack/react-table';
 import { Eye, MoreHorizontal } from 'lucide-react';
+import ReactDOM from 'react-dom';
 
 import DeleteDialog from '@/components/modals/delete-modal';
 import { Button } from '@/components/ui/button';
@@ -18,8 +19,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useStores } from '@/providers/Store.Provider';
 
+import Payslip from '@/app/(portal)/(employee)/employee/payroll/components/Payslip/Payslip';
 import { EmployeePayrollListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
+import { AuthStoreType } from '@/stores/auth';
 import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
 
 interface DataTableRowActionsProps {
@@ -38,6 +41,66 @@ export function EmployeePayrollListRowActions({
     React.useState<boolean>(false);
   const data = row.original;
 
+  const formatDate = (dateString: string): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const today = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
+
+  const handleViewPayslip = () => {
+    const newWindow = window.open('', '_blank');
+    if (!newWindow) {
+      alert('Please allow popups for this website');
+      return;
+    }
+
+    const payslipData = data;
+
+    newWindow.document.body.innerHTML = `<div id="payslip-root"></div>`;
+
+    const link = newWindow.document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href =
+      'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
+    newWindow.document.head.appendChild(link);
+    // eslint-disable-next-line react/no-deprecated
+    ReactDOM.render(
+      <Payslip
+        payslipDate={data.Date ? formatDate(data.Date) : 'N/A'}
+        date={today || ''}
+        employeeName={data.Employee_Name || 'N/A'}
+        employeeDesignation={user?.Designation || 'N/A'}
+        employeeDepartment={'N/A'}
+        basicSalary={data.Basic_Salary || 0}
+        absentDeduction={data.Absent_Deduction || 0}
+        incentivePay={0}
+        professionalTax={0}
+        houseRentAllowance={0}
+        loan={0}
+        mealAllowance={0}
+        totalEarnings={0}
+        totalAfterTax={data.Tax_Amount || 0}
+        salaryDeduction={data.Total_SalaryDeducton || 0}
+        paymentStatus={data.Pay_Status || 'N/A'}
+        {...payslipData}
+      />,
+      newWindow.document.getElementById('payslip-root'),
+    );
+  };
+
   return (
     <Dialog>
       <DropdownMenu>
@@ -53,10 +116,10 @@ export function EmployeePayrollListRowActions({
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DialogTrigger asChild onClick={() => {}}>
+          <DialogTrigger asChild onClick={handleViewPayslip}>
             <DropdownMenuItem>
               <Eye className="mr-2 size-4" />
-              View Details
+              View Payslip
             </DropdownMenuItem>
           </DialogTrigger>
         </DropdownMenuContent>
