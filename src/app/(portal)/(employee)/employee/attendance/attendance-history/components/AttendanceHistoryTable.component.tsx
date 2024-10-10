@@ -160,6 +160,9 @@ const AttendanceHistoryTable: FunctionComponent<
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
+          toolbarType="attendanceHistory"
+          setFilterValue={(value: string[]) => console.log(value)}
+          filterValue={[]}
         />
       )}
     </>

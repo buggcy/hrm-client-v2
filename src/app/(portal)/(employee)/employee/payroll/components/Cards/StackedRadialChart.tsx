@@ -89,8 +89,8 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
           <RadialBarChart
             data={chartData}
             endAngle={360}
-            innerRadius={80}
-            outerRadius={130}
+            innerRadius={70}
+            outerRadius={110}
           >
             <ChartTooltip
               cursor={false}
@@ -104,14 +104,14 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
                       <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) - 5}
+                          y={(viewBox.cy || 0) - 1}
                           className="fill-foreground text-lg font-bold"
                         >
                           {formatCurrency(netSalary)}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 12}
+                          y={(viewBox.cy || 0) + 18}
                           className="fill-muted-foreground"
                         >
                           Net Salary
@@ -145,8 +145,7 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 text-sm font-medium leading-none">
-          Total Deductions: {totalDeductions.toLocaleString()}{' '}
-          <tspan className="text-xs">Rs.</tspan>
+          Total Deductions: Rs. {totalDeductions.toLocaleString()}{' '}
         </div>
 
         <div className="text-sm leading-none text-muted-foreground">
