@@ -79,25 +79,29 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
         )}
         {activeTab === 'Education' && (
           <CardContent>
-            <div className="mb-2 mt-4 text-sm font-bold">Education</div>
+            <div className="mb-2 mt-4 text-sm font-bold dark:text-white">
+              Education
+            </div>
             {educationExperiences?.length > 0 ? (
               <EducationTab
                 educationExperiences={educationExperiences}
                 type={'education'}
               />
             ) : (
-              <p className="mt-3 text-center text-gray-600">
+              <p className="mt-3 text-center text-gray-600 dark:text-gray-300">
                 {'Currently No Education Available!'}
               </p>
             )}
-            <div className="mb-2 mt-4 text-sm font-bold">Experience</div>
+            <div className="mb-2 mt-4 text-sm font-bold dark:text-white">
+              Experience
+            </div>
             {educationExperiences?.length > 0 ? (
               <EducationTab
                 educationExperiences={educationExperiences}
                 type={'experience'}
               />
             ) : (
-              <p className="mt-3 text-center text-gray-600">
+              <p className="mt-3 text-center text-gray-600 dark:text-gray-300">
                 {'Currently No Experience Available!'}
               </p>
             )}

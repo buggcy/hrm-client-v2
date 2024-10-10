@@ -177,3 +177,26 @@ export const employee_status = [
     icon: CheckCircle2,
   },
 ];
+
+export const attendance_list_status_options = [
+  {
+    value: 'Present',
+    label: 'Present',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Absent',
+    label: 'Absent',
+    icon: XCircle,
+  },
+  {
+    value: 'Leave',
+    label: 'Leave',
+    icon: Circle,
+  },
+  {
+    value: 'Holiday',
+    label: 'Holiday',
+    icon: Circle,
+  },
+];

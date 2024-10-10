@@ -17,15 +17,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useStores } from '@/providers/Store.Provider';
 
 import { EmployeeListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
-
+import { EmployeeStoreType } from '@/stores/hr/employee';
 interface DataTableRowActionsProps {
   row: Row<EmployeeListType>;
 }
 
 export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
+  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
+  const { setRefetchEmployeeList } = employeeStore;
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
@@ -83,6 +86,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
         mutationFunc={deleteEmployeeRecord}
+        setRefetch={setRefetchEmployeeList}
       />
     </Dialog>
   );
