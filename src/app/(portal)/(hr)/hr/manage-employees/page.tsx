@@ -1,6 +1,7 @@
 'use client';
 import React, { Suspense } from 'react';
 
+import Header from '@/components/Header/Header';
 import {
   Layout,
   LayoutHeader,
@@ -22,7 +23,8 @@ export default function ManageEmployeesPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
-        <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Header subheading="Transforming employee management into a journey of growth and success."></Header>
+        <div className="my-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <BChart /> <PChart />
         </div>
         <Suspense fallback={<div>Loading...</div>}>
