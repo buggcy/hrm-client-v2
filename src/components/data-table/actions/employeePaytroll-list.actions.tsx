@@ -23,6 +23,7 @@ import Payslip from '@/app/(portal)/(employee)/employee/payroll/components/Paysl
 import { EmployeePayrollListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
 import { AuthStoreType } from '@/stores/auth';
+import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
 
 interface DataTableRowActionsProps {
   row: Row<EmployeePayrollListType>;
@@ -31,6 +32,10 @@ interface DataTableRowActionsProps {
 export function EmployeePayrollListRowActions({
   row,
 }: DataTableRowActionsProps) {
+  const { employeePayrollStore } = useStores() as {
+    employeePayrollStore: EmployeePayrollStoreType;
+  };
+  const { setRefetchEmployeePayrollList } = employeePayrollStore;
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
@@ -125,6 +130,7 @@ export function EmployeePayrollListRowActions({
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
         mutationFunc={deleteEmployeeRecord}
+        setRefetch={setRefetchEmployeePayrollList}
       />
     </Dialog>
   );

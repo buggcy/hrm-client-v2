@@ -58,11 +58,11 @@ const AdditionalTab: React.FC<AdditionalTabsProps> = ({
                         <img
                           src={documentUrl}
                           alt="Document_Img"
-                          className="mr-3 size-8 rounded-full border border-gray-300 object-cover"
+                          className="mr-3 size-8 rounded-full border border-gray-600 object-cover dark:border-gray-300"
                         />
                       )}
                       <div>
-                        <div className="font-semibold text-gray-800">
+                        <div className="font-semibold text-gray-600 dark:text-white">
                           {decodeURIComponent(
                             String(documentUrl)
                               ?.split('/')
@@ -70,7 +70,7 @@ const AdditionalTab: React.FC<AdditionalTabsProps> = ({
                               ?.split('.')[0] || '',
                           )}
                         </div>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-600 dark:text-gray-300">
                           {documentUrl?.split('.')?.pop()}
                         </span>
                       </div>
@@ -118,7 +118,7 @@ const AdditionalTab: React.FC<AdditionalTabsProps> = ({
           </TableFooter>
         </Table>
       ) : (
-        <p className="mt-3 text-center text-gray-600">
+        <p className="mt-3 text-center text-gray-600 dark:text-gray-300">
           Currently No Additional Documents Available!
         </p>
       )}

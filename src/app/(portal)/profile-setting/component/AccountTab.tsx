@@ -21,27 +21,44 @@ import { User } from '@/types/user.types';
 interface UserProps {
   user: User;
 }
+
 const FormSchema = z
   .object({
     oldPassword: z.string().min(1, 'Old Password is required'),
     newPassword: z
       .string()
-      .min(8, 'Password must be at least 8 characters long')
-      .max(64, 'Password cannot exceed 64 characters')
+      .min(8, { message: 'Password must be at least 8 characters long' })
+      .max(64, { message: 'Password cannot exceed 64 characters' })
       .regex(/^\S+$/, 'Password cannot contain whitespace')
-      .regex(
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/,
-        'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character',
-      ),
+      .refine(value => /[A-Z]/.test(value), {
+        message: 'Password must contain at least 1 uppercase letter',
+      })
+      .refine(value => /[a-z]/.test(value), {
+        message: 'Password must contain at least 1 lowercase letter',
+      })
+      .refine(value => /\d/.test(value), {
+        message: 'Password must contain at least 1 digit',
+      })
+      .refine(value => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value), {
+        message: 'Password must contain at least 1 special character',
+      }),
     confirmPassword: z
       .string()
-      .min(8, 'Password must be at least 8 characters long')
-      .max(64, 'Password cannot exceed 64 characters')
+      .min(8, { message: 'Password must be at least 8 characters long' })
+      .max(64, { message: 'Password cannot exceed 64 characters' })
       .regex(/^\S+$/, 'Password cannot contain whitespace')
-      .regex(
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/,
-        'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character',
-      ),
+      .refine(value => /[A-Z]/.test(value), {
+        message: 'Password must contain at least 1 uppercase letter',
+      })
+      .refine(value => /[a-z]/.test(value), {
+        message: 'Password must contain at least 1 lowercase letter',
+      })
+      .refine(value => /\d/.test(value), {
+        message: 'Password must contain at least 1 digit',
+      })
+      .refine(value => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value), {
+        message: 'Password must contain at least 1 special character',
+      }),
   })
   .superRefine(({ confirmPassword, newPassword }, ctx) => {
     if (confirmPassword !== newPassword) {
@@ -104,7 +121,9 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
 
   return (
     <>
-      <div className="mb-2 mt-4 text-base font-normal">Change Password</div>
+      <div className="mb-2 mt-4 text-base font-normal dark:text-white">
+        Change Password
+      </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4 grid grid-cols-12 gap-4">
           <Label
@@ -134,9 +153,9 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
                 onClick={() => setShowOldPassword(!showOldPassword)}
               >
                 {showOldPassword ? (
-                  <EyeOff className="size-5 text-gray-500" />
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <Eye className="size-5 text-gray-500" />
+                  <Eye className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>
@@ -176,9 +195,9 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
                 onClick={() => setShowNewPassword(!showNewPassword)}
               >
                 {showNewPassword ? (
-                  <EyeOff className="size-5 text-gray-500" />
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <Eye className="size-5 text-gray-500" />
+                  <Eye className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>
@@ -218,9 +237,9 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="size-5 text-gray-500" />
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <Eye className="size-5 text-gray-500" />
+                  <Eye className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>

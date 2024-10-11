@@ -33,10 +33,13 @@ import {
 } from '@/libs/validations/employee';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { PolicyListType } from '@/libs/validations/policies';
+import DataTableType from '@/libs/validations/data-table-type';
 
 import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
+import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
+import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
 
 interface DataTableProps<TData, TValue> {
@@ -54,6 +57,7 @@ interface DataTableProps<TData, TValue> {
   toolbarType: string;
   setFilterValue: (value: string[]) => void;
   filterValue: string[];
+  toolbar?: string;
 }
 
 export function DataTable<
@@ -65,6 +69,7 @@ export function DataTable<
     | PolicyListType,
   TValue,
 >({
+export function DataTable<TData extends DataTableType, TValue>({
   columns,
   data,
   pagination,
@@ -120,6 +125,18 @@ export function DataTable<
           />
         );
 
+      case 'hrPolicy':
+        return (
+          <HrPolicyToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
+          />
+        );
+
       case 'attendanceHistory':
         return (
           <AttendanceHistoryListToolbar
@@ -143,6 +160,15 @@ export function DataTable<
       case 'payrollList':
         return (
           <LeaveHistoryListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+          />
+        );
+      case 'attendanceList':
+        return (
+          <AttendanceListToolbar
             table={table}
             searchTerm={searchTerm}
             onSearch={onSearch}

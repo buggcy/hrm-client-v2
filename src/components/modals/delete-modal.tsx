@@ -15,10 +15,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useStores } from '@/providers/Store.Provider';
 
 import { SuccessMessageResponse } from '@/services/hr/employee.service';
-import { EmployeeStoreType } from '@/stores/hr/employee';
 
 import { toast } from '../ui/use-toast';
 
@@ -29,6 +27,7 @@ type DeleteProps = {
   isOpen: boolean;
   showActionToggle: (open: boolean) => void;
   mutationFunc: (id: string) => Promise<SuccessMessageResponse>;
+  setRefetch: (refetch: boolean) => void;
 };
 
 export default function DeleteDialog({
@@ -36,10 +35,8 @@ export default function DeleteDialog({
   isOpen,
   showActionToggle,
   mutationFunc,
+  setRefetch,
 }: DeleteProps) {
-  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
-  const { setRefetchEmployeeList } = employeeStore;
-
   const { mutate, isPending } = useMutation({
     mutationFn: mutationFunc,
     onError: (err: AxiosError<MessageErrorResponse>) => {
@@ -56,7 +53,7 @@ export default function DeleteDialog({
         description: response?.message,
         variant: 'success',
       });
-      setRefetchEmployeeList(true);
+      setRefetch(true);
       showActionToggle(false);
     },
   });
