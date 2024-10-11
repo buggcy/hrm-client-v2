@@ -60,7 +60,7 @@ const Policypage: FunctionComponent<EmployeePolicyProps> = () => {
               onValueChange={value => setSelectedCategory(value)}
             >
               <div className="flex flex-col items-start md:flex-row md:space-x-6">
-                <TabsList className="mb-4 mt-[106px] flex w-full flex-row space-x-2 bg-transparent p-0 md:mb-0 md:w-1/4 md:flex-col md:space-x-0 md:space-y-2">
+                <TabsList className="mb-4 mt-40 flex w-full flex-col space-y-2 bg-transparent p-0 md:mb-0 md:w-1/4 md:flex-col md:space-x-0 md:space-y-2">
                   {categories.map(category => (
                     <TabsTrigger
                       key={category}
