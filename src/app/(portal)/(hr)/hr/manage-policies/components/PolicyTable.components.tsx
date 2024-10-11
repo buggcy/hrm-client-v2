@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { BadgePlus } from 'lucide-react';
-
 import { policyColumn } from '@/components/data-table/columns/policy-column';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
@@ -94,7 +92,7 @@ const PolicyTable: React.FC<PolicyTableProps> = ({
       <div className="flex flex-col gap-12">
         <Header subheading="Guiding our team with clarity and respect.">
           <Button variant="default" onClick={handleDialogOpen}>
-            <BadgePlus className="mr-2 size-4" /> Add Policy
+            Add Policy
           </Button>
         </Header>
       </div>
