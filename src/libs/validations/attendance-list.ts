@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-const card1DataSchema = z.object({
-  totalPresent: z.number(),
-  totalAbsent: z.number(),
-  totalLeave: z.number(),
-});
-
 const dayTypeSchema = z.object({
   Present: z.number(),
   Absent: z.number(),
@@ -39,9 +33,14 @@ const card3DataSchema = z.object({
 });
 
 const AttendanceListStatsApiResponseSchema = z.object({
-  card1Data: card1DataSchema,
   card2Data: card2DataSchema,
   card3Data: card3DataSchema,
+});
+
+const AttendanceDistributionStatsApiResponseSchema = z.object({
+  totalPresent: z.number(),
+  totalAbsent: z.number(),
+  totalLeave: z.number(),
 });
 
 export const attendance_history_status = [
@@ -198,4 +197,5 @@ export {
   attendanceListSchema,
   attendanceUsersApiResponseSchema,
   userDateAttendanceSchema,
+  AttendanceDistributionStatsApiResponseSchema,
 };

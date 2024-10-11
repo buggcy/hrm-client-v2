@@ -1,9 +1,12 @@
 import {
   BadgeCheck,
   CalendarDays,
+  ClipboardCheck,
   ClipboardList,
+  Gift,
   Home,
   Mail,
+  Medal,
   UserCog2,
 } from 'lucide-react';
 
@@ -55,6 +58,27 @@ export const hrMenu: MenuItem[] = [
         title: 'Leave Requests',
         icon: Mail,
         href: '/hr/manage-attendance/leave-requests',
+      },
+    ],
+  },
+  {
+    title: 'Manage Perks',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Add Perks',
+        icon: Gift,
+        href: '/hr/manage-perks/add-perks',
+      },
+      {
+        title: 'Award Perks',
+        icon: Medal,
+        href: '/hr/manage-perks/award-perks',
+      },
+      {
+        title: 'Perk Requests',
+        icon: ClipboardCheck,
+        href: '/hr/manage-perks/perk-requests',
       },
     ],
   },
