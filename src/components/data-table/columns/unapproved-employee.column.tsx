@@ -2,17 +2,17 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { gender_options } from '@/components/filters';
+import { employee_status } from '@/components/filters';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { EmployeeListType } from '@/libs/validations/employee';
 
-import { EmployeeListRowActions } from '../actions/employee-list.actions';
+import { UnapprovedEmployeeRowActions } from '../actions/unapproved-employee.action';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
-export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
+export const unapprovedEmployeeColumns: ColumnDef<EmployeeListType>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -94,17 +94,22 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
   },
 
   {
-    accessorKey: 'DOB',
+    accessorKey: 'Joining_Date',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date of Birth" />
+      <DataTableColumnHeader column={column} title="Joining Date" />
     ),
     cell: ({ row }) => {
-      const dob = new Date(Date.parse(row.getValue('DOB')));
+      const joinDateValue = row.getValue('Joining_Date');
+
+      if (!joinDateValue) {
+        return <span className="italic text-gray-500">No Date Available</span>;
+      }
+      const joinDate = new Date(Date.parse(row.getValue('Joining_Date')));
 
       const currentDate = new Date();
-      let ageYears = currentDate.getFullYear() - dob.getFullYear();
-      let ageMonths = currentDate.getMonth() - dob.getMonth();
-      let ageDays = currentDate.getDate() - dob.getDate();
+      let ageYears = currentDate.getFullYear() - joinDate.getFullYear();
+      let ageMonths = currentDate.getMonth() - joinDate.getMonth();
+      let ageDays = currentDate.getDate() - joinDate.getDate();
 
       if (ageDays < 0) {
         ageMonths -= 1;
@@ -125,40 +130,34 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
         <div className="flex space-x-2">
           <Badge variant="outline">{`${ageYears}Y ${ageMonths}M`}</Badge>
           <span className="max-w-[500px] truncate font-medium">
-            {dob.toDateString()}
+            {joinDate.toDateString()}
           </span>
         </div>
       );
     },
   },
 
-  {
-    accessorKey: 'Gender',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Gender" />
-    ),
-    cell: ({ row }) => {
-      const status = gender_options.find(
-        status => status.value === row.getValue('Gender'),
-      );
+  //   {
+  //     accessorKey: 'basicSalary',
+  //     header: ({ column }) => (
+  //       <DataTableColumnHeader column={column} title="Basic Salary" />
+  //     ),
+  //     cell: ({ row }) => {
+  //       const salary = Number(row.getValue('basicSalary'));
 
-      if (!status) {
-        return null;
-      }
+  //       const formattedSalary = !isNaN(salary)
+  //         ? new Intl.NumberFormat('en-IN').format(salary)
+  //         : 'N/A';
 
-      return (
-        <div className="flex w-[100px] items-center">
-          {status.icon && (
-            <status.icon className="mr-2 size-4 text-muted-foreground" />
-          )}
-          <span>{status.label}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
+  //       return (
+  //         <div className="flex space-x-2">
+  //           <span className="max-w-[500px] truncate font-medium">
+  //             RS {formattedSalary}
+  //           </span>
+  //         </div>
+  //       );
+  //     },
+  //   },
 
   {
     accessorKey: 'Designation',
@@ -177,7 +176,35 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
   },
 
   {
+    accessorKey: 'isApproved',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status = employee_status.find(
+        status => status.value === row.getValue('isApproved'),
+      );
+
+      if (!status) {
+        return null;
+      }
+
+      return (
+        <div className="flex w-[120px] items-center">
+          {status.icon && (
+            <status.icon className="mr-2 size-4 text-muted-foreground" />
+          )}
+          <span>{status.label}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+
+  {
     id: 'actions',
-    cell: ({ row }) => <EmployeeListRowActions row={row} />,
+    cell: ({ row }) => <UnapprovedEmployeeRowActions row={row} />,
   },
 ];

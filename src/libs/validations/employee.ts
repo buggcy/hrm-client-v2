@@ -1,7 +1,12 @@
 import { z } from 'zod';
 
 export const gender = ['male', 'female'] as const;
-export const approvalStatus = ['Approved', 'Pending', 'Rejected'] as const;
+export const approvalStatus = [
+  'Approved',
+  'Pending',
+  'Rejected',
+  'tba',
+] as const;
 export const maritalStatus = ['married', 'unmarried'] as const;
 export const bloodgroupStatus = [
   'A+',

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -34,6 +35,9 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
   additionalDocuments,
 }) => {
   const [activeTab, setActiveTab] = useState<string>('Overview');
+  const searchParams = useSearchParams();
+  const userIdFromParams = searchParams.get('userId');
+
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   };
@@ -44,7 +48,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
           <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Overview">
             Overview
           </TabsTrigger>
-          {currentUser?.roleId === 2 ? (
+          {currentUser?.roleId === 2 || userIdFromParams ? (
             <>
               <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Kyc">
                 Kyc

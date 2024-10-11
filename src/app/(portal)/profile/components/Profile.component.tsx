@@ -38,7 +38,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
     <>
       <div className="flex flex-wrap">
         <div className="w-full p-4 md:w-4/12 lg:w-4/12">
-          <ProfileDetails user={employee} currentUser={currentUser} />
+          <ProfileDetails user={employee} />
         </div>
         <div className="w-full p-4 md:w-8/12 lg:w-8/12">
           <ProfileTabs

@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 
-// import { GoogleAnalytics } from '@next/third-parties/google';
-// import '@/libs/analytics';
 import '@/libs/i18n';
 
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider, QueryClientProvider, ThemeProvider } from '@/providers';
 import { StoreProvider } from '@/providers/Store.Provider';
 
-// import { GA_ID } from '@/constants';
 import { cn } from '@/utils';
 
 import './globals.css';
@@ -24,7 +21,6 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  // TODO: change to variable
   themeColor: '#F230AB',
   width: 'device-width',
   initialScale: 1,
@@ -56,7 +52,6 @@ export default function RootLayout({
             </ThemeProvider>
           </StoreProvider>
         </QueryClientProvider>
-        {/* {GA_ID && <GoogleAnalytics gaId={GA_ID} />} */}
         <Toaster />
       </body>
     </html>
