@@ -68,6 +68,7 @@ export interface AnnualLeaveRecord {
 }
 
 export interface EmployeeLeavesDataApiResponse {
+  _id: string;
   userId: string;
   allowedCasualLeaves: number;
   allowedSickLeaves: number;
@@ -78,4 +79,5 @@ export interface EmployeeLeavesDataApiResponse {
   extraLeaves: ExtraLeave[];
   createdAt: string;
   updatedAt: string;
+  __v: number;
 }

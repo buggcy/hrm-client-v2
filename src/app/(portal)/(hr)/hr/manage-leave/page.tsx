@@ -11,6 +11,8 @@ import {
 } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 
+import EmployeeList from './component/EmployeeList';
+
 export default function ManageLeavePage() {
   return (
     <Layout>
@@ -23,7 +25,7 @@ export default function ManageLeavePage() {
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
         <Suspense fallback={<div>Loading...</div>}>
-          <p>Manage Leave</p>
+          <EmployeeList />
         </Suspense>
       </LayoutWrapper>
     </Layout>
