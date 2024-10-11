@@ -11,7 +11,6 @@ import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
-
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import {
   EmployeeListType,
@@ -19,6 +18,7 @@ import {
 } from '@/libs/validations/employee';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import { PolicyListType } from '@/libs/validations/policies';
+import DataTableType from '@/libs/validations/data-table-type';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
@@ -34,7 +34,6 @@ interface DataTableToolbarProps<TData> {
   setFilterValue: (value: string[]) => void;
   filterValue: string[];
 }
-
 export function EmployeeListToolbar<
   TData extends
     | EmployeeListType
@@ -43,6 +42,7 @@ export function EmployeeListToolbar<
     | LeaveHistoryListType
     | PolicyListType,
 >({
+export function EmployeeListToolbar<TData extends DataTableType>({
   table,
   searchTerm,
   onSearch,

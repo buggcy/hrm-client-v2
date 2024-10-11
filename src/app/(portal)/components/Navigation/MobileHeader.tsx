@@ -4,20 +4,31 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { AlignJustify, Home } from 'lucide-react';
+import { AlignJustify } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useStores } from '@/providers/Store.Provider';
+
+import { AuthStoreType } from '@/stores/auth';
+import { employeeMenu } from '@/utils/menu/employee.menu';
+import { hrMenu } from '@/utils/menu/hr.menu';
 
 import { MobileNavigationItem } from './components/MobileNavigationItem';
+import { NavSection } from './components/NavSection';
 import { NavigationSupportBtn } from './components/SupportButton';
 import { UserPopover } from './components/UserPopover';
 
+import { MenuItem } from '@/types/menu';
+
 export const MobileHeader = () => {
   const pathname = usePathname();
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
+  const menuItems: MenuItem[] = user?.roleId === 1 ? hrMenu : employeeMenu;
   const [open, setOpen] = useState(false);
 
   const onClose = useCallback(() => {
@@ -61,105 +72,33 @@ export const MobileHeader = () => {
                 </Link>
 
                 <Separator className="w-full" />
-
-                <MobileNavigationItem
-                  title="Home"
-                  icon={Home}
-                  href="/"
-                  active={pathname === '/'}
-                  onClick={onClose}
-                />
-                {/* <NavSection title="VIDEO">
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="Video Generation"
-                    icon={Video}
-                    href="/videos/create"
-                    active={pathname === '/videos/create'}
-                    onClick={onClose}
-                  />
-                </li>
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="Video Library"
-                    icon={ListVideo}
-                    href="/videos"
-                    active={pathname === '/videos'}
-                    onClick={onClose}
-                  />
-                </li>
-              </NavSection>
-              <NavSection title="REPLICA">
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="Replica Generation"
-                    icon={Users}
-                    href="/replicas/create"
-                    active={pathname === '/replicas/create'}
-                    onClick={onClose}
-                  />
-                </li>
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="Replica Library"
-                    icon={ReplicaIcon}
-                    href="/replicas"
-                    active={pathname === '/replicas'}
-                    onClick={onClose}
-                  />
-                </li>
-              </NavSection>
-              <NavSection title="CONVERSATION">
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="Create Conversation"
-                    icon={MonitorDot}
-                    href="/conversations/create"
-                    active={pathname === '/conversations/create'}
-                    onClick={onClose}
-                  />
-                </li>
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="Conversation Library"
-                    icon={MessageCircle}
-                    href="/conversations"
-                    active={pathname === '/conversations'}
-                    onClick={onClose}
-                  />
-                </li>
-              </NavSection>
-              <NavSection title="PERSONA">
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="Create Persona"
-                    icon={UserRoundPlus}
-                    href="/personas/create"
-                    active={pathname === '/personas/create'}
-                    onClick={onClose}
-                  />
-                </li>
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="Persona Library"
-                    icon={User}
-                    href="/personas"
-                    active={pathname === '/personas'}
-                    onClick={onClose}
-                  />
-                </li>
-              </NavSection>
-              <NavSection>
-                <li className="flex">
-                  <MobileNavigationItem
-                    title="API Keys"
-                    icon={Key}
-                    href="/api-keys"
-                    active={pathname === '/api-keys'}
-                    onClick={onClose}
-                  />
-                </li>
-              </NavSection> */}
+                {menuItems.map(item =>
+                  item.children ? (
+                    <NavSection title={item.title} key={item.title}>
+                      {item.children.map(child => (
+                        <li className="flex" key={child.href}>
+                          <MobileNavigationItem
+                            title={child.title}
+                            icon={child.icon}
+                            href={child.href!}
+                            active={pathname === child.href}
+                            onClick={onClose}
+                          />
+                        </li>
+                      ))}
+                    </NavSection>
+                  ) : (
+                    <li className="flex" key={item.href}>
+                      <MobileNavigationItem
+                        title={item.title}
+                        icon={item.icon}
+                        href={item.href!}
+                        active={pathname === item.href}
+                        onClick={onClose}
+                      />
+                    </li>
+                  ),
+                )}
               </nav>
               <ul className="mt-auto flex flex-col gap-3">
                 {/* <li>

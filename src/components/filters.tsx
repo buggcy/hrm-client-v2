@@ -93,11 +93,6 @@ export const gender_options = [
 
 export const perk_status_options = [
   {
-    value: 'available',
-    label: 'Available',
-    icon: CircleArrowOutUpRight,
-  },
-  {
     value: 'pending',
     label: 'Pending',
     icon: Circle,
@@ -156,5 +151,28 @@ export const leave_history_status_options = [
     value: 'Canceled',
     label: 'Canceled',
     icon: XCircle,
+  },
+];
+
+export const attendance_list_status_options = [
+  {
+    value: 'Present',
+    label: 'Present',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Absent',
+    label: 'Absent',
+    icon: XCircle,
+  },
+  {
+    value: 'Leave',
+    label: 'Leave',
+    icon: Circle,
+  },
+  {
+    value: 'Holiday',
+    label: 'Holiday',
+    icon: Circle,
   },
 ];

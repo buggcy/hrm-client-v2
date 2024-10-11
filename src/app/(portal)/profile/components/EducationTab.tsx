@@ -106,7 +106,10 @@ const EducationTab: React.FC<EducationTabProps> = ({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-gray-500">
+                  <TableCell
+                    colSpan={5}
+                    className="text-center text-gray-500 dark:text-gray-300"
+                  >
                     No Education Provided!
                   </TableCell>
                 </TableRow>
@@ -189,7 +192,10 @@ const EducationTab: React.FC<EducationTabProps> = ({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-gray-500">
+                <TableCell
+                  colSpan={6}
+                  className="text-center text-gray-500 dark:text-gray-300"
+                >
                   No Experience Provided!
                 </TableCell>
               </TableRow>
