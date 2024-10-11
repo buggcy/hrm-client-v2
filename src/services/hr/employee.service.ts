@@ -13,6 +13,7 @@ export interface EmployeeListParams {
   page?: number;
   limit?: number;
   gender?: string[];
+  isApproved?: string[];
 }
 
 export interface EditProfileResponse {
@@ -43,6 +44,29 @@ export const getEmployeeList = async (
   }
 };
 
+export const getUnapprovedEmployeeList = async (
+  params: EmployeeListParams = {},
+): Promise<EmployeeApiResponse> => {
+  const defaultParams: EmployeeListParams = {
+    page: 1,
+    limit: 5,
+    isApproved: [],
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  try {
+    const response = await baseAPI.post(
+      `/v2/employee/unapproved`,
+      mergedParams,
+    );
+    return schemaParse(employeeApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching employee list:', error);
+    throw error;
+  }
+};
+
 export const searchEmployeeList = async ({
   query,
   page,
@@ -62,6 +86,25 @@ export const searchEmployeeList = async ({
   return { data, pagination };
 };
 
+export const unapprovedSearchEmployeeList = async ({
+  query,
+  page,
+  limit,
+  isApproved,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+  isApproved: string[];
+}): Promise<EmployeeApiResponse> => {
+  const { data, pagination }: EmployeeApiResponse = await baseAPI.post(
+    `/v2/employee/unapproved/search`,
+    { query, page, limit, isApproved },
+  );
+
+  return { data, pagination };
+};
+
 export const approvalEmployeeList = async (): Promise<
   AxiosResponse<EmployeeListType[]>
 > => {
@@ -70,25 +113,53 @@ export const approvalEmployeeList = async (): Promise<
 };
 
 export const addEmployeeData = async ({
-  firstName,
-  lastName,
-  email,
-  companyEmail,
-  contactNo,
-  basicSalary,
-  Joining_Date,
-  Designation,
-}: AddEmployeeFormData): Promise<SuccessMessageResponse> => {
+  data,
+}: {
+  data: AddEmployeeFormData;
+  id: string;
+}): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.post(`/employee`, {
-    firstName,
-    lastName,
-    email: email.toLowerCase(),
-    companyEmail: companyEmail.toLowerCase(),
-    contactNo,
-    basicSalary,
-    Joining_Date,
-    Designation,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email.toLowerCase(),
+    companyEmail: data.companyEmail.toLowerCase(),
+    contactNo: data.contactNo,
+    basicSalary: data.basicSalary,
+    Joining_Date: data.Joining_Date,
+    Designation: data.Designation,
   });
+  return { message };
+};
+
+export const updateTBAEmployeeData = async ({
+  data,
+  id,
+}: {
+  data: AddEmployeeFormData;
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/employee/${id}`,
+    {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email.toLowerCase(),
+      companyEmail: data.companyEmail.toLowerCase(),
+      contactNo: data.contactNo,
+      basicSalary: data.basicSalary,
+      Joining_Date: data.Joining_Date,
+      Designation: data.Designation,
+    },
+  );
+  return { message };
+};
+
+export const resendEmployeeInvitation = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/employee/resendcode/${id}`,
+  );
   return { message };
 };
 

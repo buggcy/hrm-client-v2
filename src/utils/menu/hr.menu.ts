@@ -1,4 +1,14 @@
-import { BadgeCheck, Clock, Home, UserCog2 } from 'lucide-react';
+import {
+  BadgeCheck,
+  CalendarDays,
+  ClipboardList,
+  Clock,
+  Home,
+  Mail,
+  UserCog,
+  UserCog2,
+  UserPlus,
+} from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
 
@@ -13,9 +23,35 @@ export const hrMenu: MenuItem[] = [
     icon: UserCog2,
     children: [
       {
-        title: 'Manage Employees',
-        icon: BadgeCheck,
+        title: 'Employees',
+        icon: UserCog,
         href: '/hr/manage-employees',
+      },
+      {
+        title: 'Add Employees',
+        icon: UserPlus,
+        href: '/hr/add-employees',
+      },
+    ],
+  },
+  {
+    title: 'Manage Attendance',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Attendance List',
+        icon: ClipboardList,
+        href: '/hr/manage-attendance/attendance-list',
+      },
+      {
+        title: 'Leave List',
+        icon: CalendarDays,
+        href: '/hr/manage-attendance/leave-list',
+      },
+      {
+        title: 'Leave Requests',
+        icon: Mail,
+        href: '/hr/manage-attendance/leave-requests',
       },
     ],
   },

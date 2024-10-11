@@ -18,6 +18,7 @@ import { useReadEmployeeRecordQuery } from '@/hooks/employee/useEmployeeList.hoo
 import { useTypesQuery } from '@/hooks/types.hook';
 import { EditProfile } from '@/services/hr/employee.service';
 import { useAuthStore } from '@/stores/auth';
+import { validateFile } from '@/utils/fileValidation.utils';
 
 import { MessageErrorResponse } from '@/types';
 import { User } from '@/types/user.types';
@@ -69,30 +70,6 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
     }
   }, [data, reset]);
 
-  const validateFile = (file: File | null) => {
-    const validTypes = [
-      'image/jpeg',
-      'image/gif',
-      'image/png',
-      'image/svg+xml',
-      'image/jpg',
-      'video/quicktime',
-      'video/x-msvideo',
-    ];
-
-    const maxSize = 200 * 1024; // 200KB
-
-    let error = '';
-
-    if (file && !validTypes.includes(file.type)) {
-      error =
-        'Invalid file type. Only JPG, SVG, JPEG, GIF, PNG, MOV, and AVI are allowed.';
-    } else if (file && file.size > maxSize) {
-      error = 'File size exceeds the 200KB limit.';
-    }
-
-    return error;
-  };
   const { setUser } = useAuthStore();
   const { mutate, isPending } = useMutation({
     mutationFn: EditProfile,
@@ -149,9 +126,13 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
 
   return (
     <>
-      <div className="mb-2 mt-4 text-base font-normal">Profile Edit</div>
+      <div className="mb-2 mt-4 text-base font-normal dark:text-white">
+        Profile Edit
+      </div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-2 mt-4 text-xs text-gray-500">Required</div>
+        <div className="mb-2 mt-4 text-xs text-gray-600 dark:text-gray-300">
+          Required
+        </div>
         <div className="mb-4 grid grid-cols-12 gap-4 text-sm">
           <Label
             htmlFor="file"
@@ -234,7 +215,9 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
             {errors.contactNo.message}
           </span>
         )}
-        <div className="mb-2 mt-4 text-xs text-gray-500">Availibility</div>
+        <div className="mb-2 mt-4 text-xs text-gray-600 dark:text-gray-300">
+          Availibility
+        </div>
         <div className="mb-4 grid grid-cols-12 gap-4">
           <Label
             htmlFor="availability"
