@@ -34,6 +34,7 @@ import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
+import { UnapprovedEmployeeToolbar } from './toolbars/unapproved-employee.toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -100,6 +101,18 @@ export function DataTable<TData extends DataTableType, TValue>({
       case 'employeeList':
         return (
           <EmployeeListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+          />
+        );
+
+      case 'unapprovedEmployeeList':
+        return (
+          <UnapprovedEmployeeToolbar
             table={table}
             searchTerm={searchTerm}
             onSearch={onSearch}

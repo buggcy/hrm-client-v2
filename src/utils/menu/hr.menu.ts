@@ -4,7 +4,9 @@ import {
   ClipboardList,
   Home,
   Mail,
+  UserCog,
   UserCog2,
+  UserPlus,
 } from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
@@ -20,20 +22,14 @@ export const hrMenu: MenuItem[] = [
     icon: UserCog2,
     children: [
       {
-        title: 'Manage Employees',
-        icon: BadgeCheck,
+        title: 'Employees',
+        icon: UserCog,
         href: '/hr/manage-employees',
       },
-    ],
-  },
-  {
-    title: 'Manage Policy',
-    icon: UserCog2,
-    children: [
       {
-        title: 'Manage Policy',
-        icon: BadgeCheck,
-        href: '/hr/manage-policies',
+        title: 'Add Employees',
+        icon: UserPlus,
+        href: '/hr/add-employees',
       },
     ],
   },
@@ -55,6 +51,17 @@ export const hrMenu: MenuItem[] = [
         title: 'Leave Requests',
         icon: Mail,
         href: '/hr/manage-attendance/leave-requests',
+      },
+    ],
+  },
+  {
+    title: 'Manage Policy',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Policy',
+        icon: BadgeCheck,
+        href: '/hr/manage-policies',
       },
     ],
   },

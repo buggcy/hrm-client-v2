@@ -2,6 +2,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 import moment from 'moment';
 
@@ -11,29 +12,26 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 import { Employee } from '@/types/employee.types';
-import { User } from '@/types/user.types';
 
 interface ProfileDetailsProps {
   user: Employee;
-  currentUser: User;
 }
 
-const ProfileDetails: React.FC<ProfileDetailsProps> = ({
-  user,
-  currentUser,
-}) => {
+const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
+  const searchParams = useSearchParams();
+  const userIdFromParams = searchParams.get('userId');
   return (
     <>
       <Card>
         <CardContent>
           <div className="my-3 flex justify-center">
             <Avatar className="size-16">
-              {currentUser?.Avatar ? (
-                <AvatarImage src={currentUser?.Avatar} alt="User Avatar" />
+              {user?.Avatar ? (
+                <AvatarImage src={user?.Avatar} alt="User Avatar" />
               ) : (
                 <AvatarFallback>
-                  {currentUser?.firstName?.charAt(0)}
-                  {currentUser?.lastName?.charAt(0)}
+                  {user?.firstName?.charAt(0)}
+                  {user?.lastName?.charAt(0)}
                 </AvatarFallback>
               )}
             </Avatar>
@@ -49,14 +47,16 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
               {user?.Designation || ''}
             </div>
           </div>
-          <Link href="/profile-setting">
-            <Button
-              variant="ghost"
-              className="w-full border border-gray-300 bg-transparent text-black dark:text-white"
-            >
-              Edit Profile
-            </Button>
-          </Link>
+          {!userIdFromParams && (
+            <Link href="/profile-setting">
+              <Button
+                variant="ghost"
+                className="w-full border border-gray-300 bg-transparent text-black"
+              >
+                Edit Profile
+              </Button>
+            </Link>
+          )}
 
           <div className="my-4 border-b border-gray-300" />
 
@@ -64,7 +64,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
             Summary
           </div>
           <p className="dark:text-gray-300">
-            {currentUser?.profileDescription || 'No Summary available'}
+            {user?.profileDescription || 'No Summary available'}
           </p>
 
           <div className="my-4 border-b border-gray-300" />
@@ -73,7 +73,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
               Current Status
             </div>
             <div className="text-left">
-              <Badge>{currentUser?.Current_Status || 'unknown'}</Badge>
+              <Badge>{user?.Current_Status || 'unknown'}</Badge>
             </div>
           </div>
           <div className="my-4 border-b border-gray-300" />
@@ -85,13 +85,13 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
             <div className="flex justify-between">
               <dt className="font-medium">Phone</dt>
               <dd className="leading-relaxed text-gray-600 dark:text-gray-300">
-                {currentUser?.contactNo || '-'}
+                {user?.contactNo || '-'}
               </dd>
             </div>
             <div className="flex justify-between">
               <dt className="font-medium">Email</dt>
               <dd className="leading-relaxed text-gray-600 dark:text-gray-300">
-                {currentUser?.email || '-'}
+                {user?.email || '-'}
               </dd>
             </div>
             <div className="flex justify-between">

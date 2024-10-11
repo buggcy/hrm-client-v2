@@ -22,7 +22,7 @@ export const policyService = {
     params: PolicyQueryParamsType & { categories?: string[] },
   ): Promise<PolicyApiResponse> => {
     const { page, limit, category, categories } = params;
-    let url = `/policyV2?page=${page}&limit=${limit}`;
+    let url = `/policy-v2?page=${page}&limit=${limit}`;
 
     if (category) {
       url += `&category=${category}`;
