@@ -4,6 +4,7 @@ import {
   Gift,
   Home,
   LogOut,
+  Shield,
   Siren,
 } from 'lucide-react';
 
@@ -50,6 +51,12 @@ export const employeeMenu: MenuItem[] = [
   {
     title: 'Policies',
     icon: Siren,
-    href: '/employee/policy',
+    children: [
+      {
+        title: 'Policies',
+        icon: Shield,
+        href: '/employee/policy',
+      },
+    ],
   },
 ];
