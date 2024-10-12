@@ -34,6 +34,17 @@ export const hrMenu: MenuItem[] = [
     ],
   },
   {
+    title: 'Manage Events',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Events',
+        icon: BadgeCheck,
+        href: '/hr/manage-events',
+      },
+    ],
+  },
+  {
     title: 'Manage Attendance',
     icon: UserCog2,
     children: [

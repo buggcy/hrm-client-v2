@@ -3,12 +3,14 @@ import { AttendanceListType } from '@/libs/validations/attendance-list';
 import {
   EmployeeListType,
   EmployeePayrollListType,
+  HrEventsListType,
 } from '@/libs/validations/employee';
 import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
 type DataTableType =
   | PolicyType
+  | HrEventsListType
   | AttendanceHistoryListType
   | AttendanceListType
   | EmployeeListType

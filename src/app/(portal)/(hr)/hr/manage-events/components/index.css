@@ -1,0 +1,46 @@
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+.rbc-month-row,
+.rbc-header,
+.rbc-time-view {
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.rbc-month-view {
+  border: 0px !important;
+}
+
+.rbc-day-bg,
+.rbc-time-header-content {
+  border-left: 1px solid hsl(var(--border)) !important;
+}
+
+.rbc-events-container {
+  border-left: 1px solid hsl(var(--border)) !important;
+}
+.rbc-time-content,
+.rbc-day-slot,
+.rbc-time-slot {
+  border-top: 1px solid hsl(var(--border)) !important;
+}
+
+.event-style {
+  background-color: #e7f7fd;
+  border-radius: 4px;
+  color: hsl(var(--primary));
+  font-size: 14px;
+}
+
+.dark .event-style {
+  background-color: hsl(var(--primary));
+  color: #e7f7fd;
+}
+
+.rbc-time-header.rbc-overflowing {
+  border-right: 1px solid hsl(var(--border)) !important;
+}
+.rbc-timeslot-group {
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}
