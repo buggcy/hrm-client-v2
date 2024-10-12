@@ -152,7 +152,7 @@ export function LeaveListDataTable<TData extends LeaveListType, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {searchLoading ? 'Finding Perks ...' : 'No results.'}
+                  {searchLoading ? 'Finding Leaves ...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}
