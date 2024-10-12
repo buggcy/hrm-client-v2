@@ -11,43 +11,42 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-export const description = 'A radial chart with stacked sections';
+import { LeaveListRecords } from '@/types/hr-leave-list.types';
 
-const chartData = [
-  {
-    month: 'january',
-    pending: 4,
-    approved: 2,
-    rejected: 3,
-    cancelled: 1,
-  },
-];
+export const description = 'A radial chart with stacked sections';
 
 const chartConfig = {
   approved: {
     label: 'Approved',
     color: 'hsl(var(--chart-1))',
   },
+  pending: {
+    label: 'Pending',
+    color: 'hsl(var(--chart-2))',
+  },
   rejected: {
     label: 'Rejected',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-3))',
   },
   cancelled: {
     label: 'Cancelled',
-    color: 'hsl(var(--chart-3))',
-  },
-  pending: {
-    label: 'Pending',
     color: 'hsl(var(--chart-4))',
   },
 } satisfies ChartConfig;
-
-export function LeavesDistributionChart() {
-  const totalVisitors =
-    chartData[0].approved +
-    chartData[0].rejected +
-    chartData[0].cancelled +
-    chartData[0].pending;
+interface LeaveListRecordChartProps {
+  data: LeaveListRecords | undefined;
+}
+export function LeavesDistributionChart({ data }: LeaveListRecordChartProps) {
+  const chartData = [
+    {
+      month: 'january',
+      pending: data?.pendingCount,
+      approved: data?.approvedCount,
+      rejected: data?.rejectedCount,
+      cancelled: data?.canceledCount,
+    },
+  ];
+  const totalVisitors = data?.totalCount || 0;
 
   return (
     <Card className="flex flex-col">
@@ -60,8 +59,8 @@ export function LeavesDistributionChart() {
             <div className="flex items-center gap-2">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
               <p className="font-semibold">
-                2{' '}
-                <span className="text-sm font-medium text-slate-400">
+                {data?.approvedCount}
+                <span className="ml-1 text-sm font-medium text-slate-400">
                   Approved
                 </span>
               </p>
@@ -69,27 +68,27 @@ export function LeavesDistributionChart() {
             <div className="flex items-center gap-2">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
               <p className="font-semibold">
-                3{' '}
-                <span className="text-sm font-medium text-slate-400">
-                  Rejected
+                {data?.pendingCount}
+                <span className="ml-1 text-sm font-medium text-slate-400">
+                  Pending
                 </span>
               </p>
             </div>
             <div className="flex items-center gap-2">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
               <p className="font-semibold">
-                1{' '}
-                <span className="text-sm font-medium text-slate-400">
-                  Cancelled
+                {data?.rejectedCount}
+                <span className="ml-1 text-sm font-medium text-slate-400">
+                  Rejected
                 </span>
               </p>
             </div>
             <div className="flex items-center gap-2">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
               <p className="font-semibold">
-                4{' '}
-                <span className="text-sm font-medium text-slate-400">
-                  Pending
+                {data?.canceledCount}
+                <span className="ml-1 text-sm font-medium text-slate-400">
+                  Cancelled
                 </span>
               </p>
             </div>
@@ -163,7 +162,7 @@ export function LeavesDistributionChart() {
             </RadialBarChart>
           </ChartContainer>
         </div>
-        <Button>Approve All</Button>
+        <Button disabled>Approve All</Button>
       </CardContent>
     </Card>
   );
