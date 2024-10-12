@@ -114,7 +114,10 @@ export default function AcceptRejectLeaveDialog({
                     <div className="grid gap-8 py-4">
                       <div className="flex flex-wrap">
                         <div className="flex flex-1 flex-col">
-                          <Label htmlFor="reason" className="mb-2 text-left">
+                          <Label
+                            htmlFor="reason"
+                            className="mb-2 text-left dark:text-white"
+                          >
                             Rejection Reason
                           </Label>
                           <Controller
