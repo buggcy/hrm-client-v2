@@ -1,34 +1,44 @@
-import { AxiosResponse } from 'axios';
-
+import {
+  AnnouncementApiResponse,
+  announcementApiResponseSchema,
+  PolicyQueryParamsType,
+} from '@/libs/validations/hr-announcement';
 import { baseAPI } from '@/utils';
 
 import { IAnnouncement } from '@/types/hr-announcement.types';
 
-// Fetch all announcements with query parameters
-const fetchAnnouncements = async () => {
-  const response: AxiosResponse<IAnnouncement[]> =
-    await baseAPI.get('/announcements');
-  console.log('response from service', response);
-  return response;
+const fetchAnnouncements = async (
+  params?: PolicyQueryParamsType,
+): Promise<AnnouncementApiResponse> => {
+  const response: AnnouncementApiResponse = await baseAPI.get(
+    '/announcements',
+    {
+      params: params || {},
+    },
+  );
+  console.log(
+    'fetchAnnouncements response:',
+    announcementApiResponseSchema.parse(response),
+  );
+  return announcementApiResponseSchema.parse(response);
 };
 
 // Fetch a single announcement by ID
 const fetchAnnouncementById = async (id: string): Promise<IAnnouncement> => {
-  const response: AxiosResponse<IAnnouncement> = await baseAPI.get(
-    `/announcements/${id}`,
-  );
-  return response.data;
+  const response: IAnnouncement = await baseAPI.get(`/announcements/${id}`);
+  console.log('fetchAnnouncementById response:', response);
+
+  return response;
 };
 
 // Add a new announcement
 const addAnnouncement = async (
   values: IAnnouncement,
 ): Promise<IAnnouncement> => {
-  const response: AxiosResponse<IAnnouncement> = await baseAPI.post(
-    '/announcements',
-    values,
-  );
-  return response.data;
+  const response: IAnnouncement = await baseAPI.post('/announcements', values);
+  console.log('Fetched announcement response:', response);
+
+  return response;
 };
 
 // Update an existing announcement by ID
@@ -36,11 +46,13 @@ const updateAnnouncement = async (
   id: string,
   values: Partial<IAnnouncement>,
 ): Promise<IAnnouncement> => {
-  const response: AxiosResponse<IAnnouncement> = await baseAPI.put(
+  const response: IAnnouncement = await baseAPI.put(
     `/announcements/${id}`,
     values,
   );
-  return response.data;
+  console.log('updateAnnouncement response:', response);
+
+  return response;
 };
 
 // Delete an announcement by ID
@@ -58,12 +70,22 @@ const searchAnnouncements = async (params: {
   page: number;
   limit: number;
   query: string;
-}): Promise<IAnnouncement[]> => {
-  const response: AxiosResponse<IAnnouncement[]> = await baseAPI.get(
+  priority?: string[];
+  isEnabled?: string[];
+}): Promise<AnnouncementApiResponse> => {
+  const response: AnnouncementApiResponse = await baseAPI.get(
     '/announcement/search',
-    { params },
+    {
+      params: {
+        ...params,
+        ...(params.priority && { priority: params.priority }),
+        ...(params.isEnabled && { status: params.isEnabled }),
+      },
+    },
   );
-  return response.data;
+  console.log('searchAnnouncements response:', response.data);
+
+  return response;
 };
 
 export {

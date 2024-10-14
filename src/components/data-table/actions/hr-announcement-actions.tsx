@@ -17,11 +17,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { EmployeeListType } from '@/libs/validations/employee';
+import { AnnouncementType } from '@/libs/validations/hr-announcement';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
 
 interface DataTableRowActionsProps {
-  row: Row<EmployeeListType>;
+  row: Row<AnnouncementType>;
 }
 
 export function HrAnnouncementRowActions({ row }: DataTableRowActionsProps) {

@@ -6,6 +6,10 @@ import {
 } from '@tanstack/react-query';
 
 import {
+  AnnouncementApiResponse,
+  PolicyQueryParamsType,
+} from '@/libs/validations/hr-announcement';
+import {
   addAnnouncement,
   deleteAllAnnouncements,
   deleteAnnouncement,
@@ -13,33 +17,28 @@ import {
   fetchAnnouncements,
   searchAnnouncements,
   updateAnnouncement,
-} from '@/services/hr/announcement.service'; // Adjust the import path according to your file structure
+} from '@/services/hr/announcement.service';
 
-import { UseQueryConfig } from '@/types'; // Assuming you have these types defined
-import {
-  AnnouncementApiResponse,
-  IAnnouncement,
-} from '@/types/hr-announcement.types';
+import { UseQueryConfig } from '@/types';
+import { IAnnouncement } from '@/types/hr-announcement.types';
 
-// Hook to fetch all announcements
-export const useAnnouncementsQuery = (config: UseQueryConfig = {}) =>
-  useQuery({
-    queryKey: ['announcements'],
-    queryFn: fetchAnnouncements,
+export const useAnnouncementsQuery = (params: PolicyQueryParamsType = {}) => {
+  return useQuery<AnnouncementApiResponse, Error>({
+    queryKey: ['announcements', params],
+    queryFn: () => fetchAnnouncements(params),
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchInterval: 1000 * 60 * 5,
-    ...config,
-  }) as UseQueryResult<AnnouncementApiResponse, Error>;
+  });
+};
 
-// Hook to fetch a single announcement by ID
 export const useAnnouncementQuery = (
   id: string,
   config: UseQueryConfig = {},
 ) => {
   return useQuery({
-    queryKey: ['announcement', id], // Fixed the query key to be unique for each ID
-    queryFn: () => fetchAnnouncementById(id), // Added the call to fetchAnnouncementById
+    queryKey: ['announcement', id],
+    queryFn: () => fetchAnnouncementById(id),
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchInterval: 1000 * 60 * 5,
@@ -54,7 +53,6 @@ export const useAddAnnouncementMutation = () => {
   }) as UseMutationResult<IAnnouncement, Error, IAnnouncement>;
 };
 
-// Hook to update an existing announcement
 export const useUpdateAnnouncementMutation = () => {
   return useMutation({
     mutationFn: ({
@@ -71,23 +69,26 @@ export const useUpdateAnnouncementMutation = () => {
   >;
 };
 
-// Hook to delete an announcement
 export const useDeleteAnnouncementMutation = () => {
   return useMutation({
     mutationFn: deleteAnnouncement,
   }) as UseMutationResult<void, Error, string>;
 };
 
-// Hook to delete multiple announcements
 export const useDeleteAllAnnouncementsMutation = () => {
   return useMutation({
     mutationFn: deleteAllAnnouncements,
   }) as UseMutationResult<void, Error, string[]>;
 };
 
-// Hook to search announcements
 export const useSearchAnnouncementsQuery = (
-  params: { page: number; limit: number; query: string },
+  params: {
+    page: number;
+    limit: number;
+    query: string;
+    priority?: string[];
+    status?: string[];
+  },
   config: UseQueryConfig = {},
 ) => {
   return useQuery({

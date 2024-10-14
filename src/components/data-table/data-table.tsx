@@ -31,6 +31,7 @@ import {
   EmployeeListType,
   EmployeePayrollListType,
 } from '@/libs/validations/employee';
+import { AnnouncementType } from '@/libs/validations/hr-announcement';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
 import { DataTablePagination } from './data-table-pagination';
@@ -52,8 +53,11 @@ interface DataTableProps<TData, TValue> {
   onSearch: (term: string) => void;
   searchLoading: boolean;
   toolbarType: string;
-  setFilterValue: (value: string[]) => void;
-  filterValue: string[];
+  setFilterValue: (
+    type: 'priority' | 'isEnabled' | 'gender',
+    value: string[],
+  ) => void;
+  filterValue: { priority?: string[]; status?: string[]; gender?: string[] };
 }
 
 export function DataTable<
@@ -61,7 +65,8 @@ export function DataTable<
     | EmployeePayrollListType
     | EmployeeListType
     | AttendanceHistoryListType
-    | LeaveHistoryListType,
+    | LeaveHistoryListType
+    | AnnouncementType,
   TValue,
 >({
   columns,
@@ -114,8 +119,8 @@ export function DataTable<
             searchTerm={searchTerm}
             onSearch={onSearch}
             searchLoading={searchLoading}
-            setFilterValue={setFilterValue}
-            filterValue={filterValue}
+            setFilterValue={value => setFilterValue('gender', value)}
+            filterValue={filterValue.gender || []}
           />
         );
 

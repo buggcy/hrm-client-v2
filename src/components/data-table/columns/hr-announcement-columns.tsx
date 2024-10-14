@@ -2,16 +2,15 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { gender_options } from '@/components/filters';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { EmployeeListType } from '@/libs/validations/employee';
+import { AnnouncementType } from '@/libs/validations/hr-announcement';
+import { getBadgeColor, getStatusBadgeColor } from '@/utils/hr.announcement';
 
 import { HrAnnouncementRowActions } from '../actions/hr-announcement-actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
-
-export const hrAnnouncementColumns: ColumnDef<EmployeeListType>[] = [
+export const hrAnnouncementColumns: ColumnDef<AnnouncementType>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -33,120 +32,73 @@ export const hrAnnouncementColumns: ColumnDef<EmployeeListType>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-
   {
-    accessorKey: 'firstName',
+    accessorKey: 'title',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-    cell: ({ row }) => {
-      const firstName: string = row.getValue('firstName');
-      const first = row.original.firstName;
-      const lastName = row.original.lastName;
-      const avatar = row.original.Avatar;
-      const initials = `${first?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
-
-      return (
-        <div className="flex items-center space-x-2">
-          <Avatar className="size-8">
-            <AvatarImage src={avatar || ''} alt={`${firstName} ${lastName}`} />
-            <AvatarFallback className="uppercase">{initials}</AvatarFallback>
-          </Avatar>
-
-          <span className="max-w-[500px] truncate font-medium capitalize">
-            {`${firstName} ${lastName}`}
-          </span>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'companyEmail',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Company Email" />
+      <DataTableColumnHeader column={column} title="Title" />
     ),
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue('companyEmail')}
+            {row.getValue('title')}
           </span>
         </div>
       );
     },
   },
-
   {
-    accessorKey: 'contactNo',
+    accessorKey: 'StartDate',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Contact Number" />
+      <DataTableColumnHeader column={column} title="Start Date" />
     ),
     cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue('contactNo')}
-          </span>
-        </div>
-      );
-    },
-  },
-
-  {
-    accessorKey: 'DOB',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date of Birth" />
-    ),
-    cell: ({ row }) => {
-      const field = new Date(Date.parse(row.getValue('DOB')));
+      const field = new Date(Date.parse(row.getValue('StartDate')));
       return <div>{field?.toDateString()}</div>;
     },
   },
-
   {
-    accessorKey: 'Gender',
+    accessorKey: 'EndDate',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Gender" />
+      <DataTableColumnHeader column={column} title="End Date" />
     ),
     cell: ({ row }) => {
-      const status = gender_options.find(
-        status => status.value === row.getValue('Gender'),
-      );
-
-      if (!status) {
-        return null;
-      }
-
-      return (
-        <div className="flex w-[100px] items-center">
-          {status.icon && (
-            <status.icon className="mr-2 size-4 text-muted-foreground" />
-          )}
-          <span>{status.label}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+      const field = new Date(Date.parse(row.getValue('EndDate')));
+      return <div>{field?.toDateString()}</div>;
     },
   },
-
   {
-    accessorKey: 'Designation',
+    accessorKey: 'Priority',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Designation" />
+      <DataTableColumnHeader column={column} title="Priority" />
     ),
     cell: ({ row }) => {
+      const priority: string = row.getValue('Priority');
+      const badgeColor = getBadgeColor(priority);
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue('Designation')}
-          </span>
+          <Badge className={badgeColor}>{priority}</Badge>
         </div>
       );
     },
   },
-
+  {
+    accessorKey: 'isEnabled',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const isEnabled: boolean = row.getValue('isEnabled');
+      const badgeColor = getStatusBadgeColor(isEnabled);
+      return (
+        <div className="flex space-x-2">
+          <Badge className={badgeColor}>
+            {isEnabled ? 'Enabled' : 'Disabled'}
+          </Badge>
+        </div>
+      );
+    },
+  },
   {
     id: 'actions',
     cell: ({ row }) => <HrAnnouncementRowActions row={row} />,

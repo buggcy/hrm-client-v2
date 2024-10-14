@@ -9,44 +9,43 @@ import { hrAnnouncementColumns } from '@/components/data-table/columns/hr-announ
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
-import { useStores } from '@/providers/Store.Provider';
 
-import { useEmployeeListQuery } from '@/hooks/employee/useEmployeeList.hook';
-import { EmployeeListArrayType } from '@/libs/validations/employee';
-import { searchEmployeeList } from '@/services/hr/employee.service';
-import { EmployeeStoreType } from '@/stores/hr/employee';
+import { useAnnouncementsQuery } from '@/hooks/hr/useManageAnnouncement';
+import { AnnouncementApiResponse } from '@/libs/validations/hr-announcement';
+import { searchAnnouncements } from '@/services/hr/announcement.service';
 
 import { MessageErrorResponse } from '@/types';
 
 const HrAnnouncementTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
-  const { setRefetchEmployeeList, refetchEmployeeList } = employeeStore;
 
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
-  const [genderFilter, setGenderFilter] = useState<string[]>([]);
+  const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
+  const [isEnabledFilter, setIsEnabledFilter] = useState<string[]>([]);
 
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
 
   const {
-    data: employeeList,
+    data: announcementList,
     isLoading,
-    isFetching,
     error,
-    refetch,
-  } = useEmployeeListQuery({ page, limit, gender: genderFilter });
-
+  } = useAnnouncementsQuery({
+    page,
+    limit,
+    Priority: priorityFilter,
+    isEnabled: isEnabledFilter,
+  });
   const {
     mutate,
     isPending,
-    data: searchEmployeeData,
+    data: searchAnnouncementData,
   } = useMutation({
-    mutationFn: searchEmployeeList,
+    mutationFn: searchAnnouncements,
     onError: (err: unknown) => {
       const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({
@@ -69,31 +68,38 @@ const HrAnnouncementTable: FunctionComponent = () => {
     };
   }, [searchTerm]);
 
+  const handleFilterChange = (
+    type: 'priority' | 'isEnabled' | 'gender',
+    value: string[],
+  ) => {
+    if (type === 'priority') setPriorityFilter(value);
+    else if (type === 'isEnabled') setIsEnabledFilter(value);
+  };
+
   useEffect(() => {
-    if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit, gender: genderFilter });
-    } else {
-      void (async () => {
-        await refetch();
-      })();
+    if (
+      debouncedSearchTerm ||
+      priorityFilter.length > 0 ||
+      isEnabledFilter.length > 0
+    ) {
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        priority: priorityFilter,
+        isEnabled: isEnabledFilter,
+      });
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit, genderFilter]);
+  }, [
+    debouncedSearchTerm,
+    mutate,
+    page,
+    limit,
+    priorityFilter,
+    isEnabledFilter,
+  ]);
 
-  useEffect(() => {
-    if (refetchEmployeeList) {
-      void (async () => {
-        await refetch();
-      })();
-
-      setRefetchEmployeeList(false);
-    }
-  }, [refetchEmployeeList, setRefetchEmployeeList, refetch]);
-
-  useEffect(() => {
-    void (async () => {
-      await refetch();
-    })();
-  }, [genderFilter, refetch]);
+  useEffect(() => {}, [priorityFilter, isEnabledFilter]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -103,6 +109,11 @@ const HrAnnouncementTable: FunctionComponent = () => {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
     params.set('limit', newLimit.toString());
+    if (debouncedSearchTerm) params.set('search', debouncedSearchTerm);
+    if (priorityFilter.length > 0)
+      params.set('priority', priorityFilter.join(','));
+    if (isEnabledFilter.length > 0)
+      params.set('status', isEnabledFilter.join(','));
     router.push(`?${params.toString()}`);
   };
 
@@ -113,34 +124,49 @@ const HrAnnouncementTable: FunctionComponent = () => {
       </div>
     );
 
-  const tableData: EmployeeListArrayType = debouncedSearchTerm
-    ? searchEmployeeData?.data || []
-    : employeeList?.data || [];
+  const tableData: AnnouncementApiResponse =
+    debouncedSearchTerm ||
+    priorityFilter.length > 0 ||
+    isEnabledFilter.length > 0
+      ? searchAnnouncementData || {
+          pagination: { page: 0, limit: 0, totalCount: 0, totalPages: 0 },
+          data: [],
+        }
+      : announcementList || {
+          pagination: { page: 0, limit: 0, totalCount: 0, totalPages: 0 },
+          data: [],
+        };
 
-  const tablePageCount: number = debouncedSearchTerm
-    ? searchEmployeeData?.pagination?.totalPages || 0
-    : employeeList?.pagination?.totalPages || 0;
+  const tablePageCount: number =
+    debouncedSearchTerm ||
+    priorityFilter.length > 0 ||
+    isEnabledFilter.length > 0
+      ? searchAnnouncementData?.pagination?.totalPages || 0
+      : announcementList?.pagination?.totalPages || 0;
 
   return (
     <>
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <DataTableLoading columnCount={7} rowCount={limit} />
       ) : (
         <DataTable
           searchLoading={isPending}
-          data={tableData || []}
+          data={tableData.data}
           columns={hrAnnouncementColumns}
           pagination={{
             pageCount: tablePageCount || 1,
-            page: page,
-            limit: limit,
+            page,
+            limit,
             onPaginationChange: handlePaginationChange,
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
-          toolbarType={'employeeList'}
-          setFilterValue={setGenderFilter}
-          filterValue={genderFilter}
+          toolbarType="hrAnnouncement"
+          setFilterValue={handleFilterChange}
+          filterValue={{
+            priority: priorityFilter,
+            status: isEnabledFilter,
+          }}
         />
       )}
     </>

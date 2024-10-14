@@ -3,8 +3,8 @@ export interface IAnnouncement {
   title: string;
   StartDate: string;
   EndDate: string;
-  Priority: 'Low' | 'Medium' | 'High';
-  TargetAudience: 'All' | 'HR' | 'Employees' | 'Management';
+  Priority: string;
+  TargetAudience: string;
   Description: string;
   File?: string;
   isDeleted?: boolean;

@@ -1,46 +1,40 @@
-'use client';
-
-import { useMutation } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
-import { AxiosError } from 'axios';
-import { FileDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
-import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 
-import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import {
-  EmployeeListType,
-  EmployeePayrollListType,
-} from '@/libs/validations/employee';
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
-import { exportEmployeeCSVData } from '@/services/hr/employee.service';
-import { downloadFile } from '@/utils/downloadFile.utils';
+import { AnnouncementType } from '@/libs/validations/hr-announcement';
 
-import { gender_options } from '../../filters';
+const priority_options = [
+  { label: 'Low', value: 'Low' },
+  { label: 'Medium', value: 'Medium' },
+  { label: 'High', value: 'High' },
+];
 
-import { MessageErrorResponseWithError } from '@/types';
+const status_options = [
+  { label: 'Enabled', value: 'true' },
+  { label: 'Disabled', value: 'false' },
+];
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
-  setFilterValue: (value: string[]) => void;
-  filterValue: string[];
+  setFilterValue: (
+    type: 'priority' | 'isEnabled' | 'gender',
+    value: string[],
+  ) => void;
+  filterValue: {
+    priority?: string[];
+    status?: string[];
+  };
 }
 
-export function HrAnnouncementToolbar<
-  TData extends
-    | EmployeeListType
-    | AttendanceHistoryListType
-    | EmployeePayrollListType
-    | LeaveHistoryListType,
->({
+export function HrAnnouncementToolbar<TData extends AnnouncementType>({
   table,
   searchTerm,
   onSearch,
@@ -49,31 +43,32 @@ export function HrAnnouncementToolbar<
   filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const selectedRowIds: string[] = table
     .getSelectedRowModel()
-    .rows.map(row => row.original._id);
+    .rows.map(row => row.original.hrId);
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: exportEmployeeCSVData,
-    onError: (err: AxiosError<MessageErrorResponseWithError>) => {
-      toast({
-        title: 'Error',
-        description:
-          err?.response?.data?.error || 'Error on exporting employees!',
-        variant: 'error',
-      });
-    },
-    onSuccess: (response: string) => {
-      const file = new Blob([response]);
-      downloadFile(file, 'Employees.csv');
-    },
-  });
+  //   const { mutate, isPending } = useMutation({
+  //     mutationFn: exportAnnouncementsCSVData,
+  //     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
+  //       toast({
+  //         title: 'Error',
+  //         description:
+  //           err?.response?.data?.error || 'Error on exporting announcements!',
+  //         variant: 'error',
+  //       });
+  //     },
+  //     onSuccess: (response: string) => {
+  //       const file = new Blob([response]);
+  //       downloadFile(file, 'Announcements.csv');
+  //     },
+  //   });
 
-  const handleExport = () => {
-    if (selectedRowIds.length > 0) {
-      mutate(selectedRowIds);
-    }
-  };
+  //   const handleExport = () => {
+  //     if (selectedRowIds.length > 0) {
+  //       mutate(selectedRowIds);
+  //     }
+  //   };
 
   return (
     <div className="flex items-center justify-between">
@@ -87,19 +82,30 @@ export function HrAnnouncementToolbar<
         />
 
         <DataTableFacetedFilter
-          onFilterChange={setFilterValue}
-          title="Gender"
-          options={gender_options}
-          filterValue={filterValue}
+          onFilterChange={value => setFilterValue('priority', value)}
+          title="Priority"
+          options={priority_options}
+          filterValue={filterValue.priority ?? []}
         />
 
-        {(isFiltered || searchTerm || filterValue.length > 0) && (
+        <DataTableFacetedFilter
+          onFilterChange={value => setFilterValue('isEnabled', value)}
+          title="Status"
+          options={status_options}
+          filterValue={filterValue.status ?? []}
+        />
+
+        {(isFiltered ||
+          searchTerm ||
+          (filterValue.priority && filterValue.priority.length > 0) ||
+          (filterValue.status && filterValue.status.length > 0)) && (
           <Button
             variant="ghost"
             onClick={() => {
               table.resetColumnFilters();
               onSearch('');
-              setFilterValue([]);
+              setFilterValue('priority', []);
+              setFilterValue('isEnabled', []);
             }}
             className="h-8 px-2 lg:px-3"
           >
@@ -108,19 +114,19 @@ export function HrAnnouncementToolbar<
           </Button>
         )}
       </div>
-      {selectedRowIds.length > 0 && (
+      {/* {selectedRowIds.length > 0 && (
         <LoadingButton
           variant="outline"
           size="sm"
           className="ml-auto mr-2 flex h-8"
-          onClick={handleExport}
-          disabled={isPending}
-          loading={isPending}
+          //onClick={handleExport}
+          //disabled={isPending}
+          //loading={isPending}
         >
           <FileDown className="mr-2 size-4" />
           Export
         </LoadingButton>
-      )}
+      )} */}
       <DataTableViewOptions table={table} />
     </div>
   );
