@@ -168,31 +168,35 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
         <Select onValueChange={handleEmployeeChange}>
-          <SelectTrigger className="h-[50px] w-fit p-4">
-            {selectedEmployee ? (
-              <div className="flex items-center gap-1 sm:gap-4">
-                <Avatar className="size-8">
-                  <AvatarImage
-                    src={selectedEmployeeData?.avatar || ''}
-                    alt={`${selectedEmployeeData?.avatar}`}
-                  />
-                  <AvatarFallback className="uppercase">
-                    {selectedEmployeeData?.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col items-start">
-                  <SelectValue>
-                    <p className="text-sm">{selectedEmployeeData?.name}</p>
-                  </SelectValue>
-                  <p className="text-xs text-muted-foreground">
-                    {selectedEmployeeData?.email}
-                  </p>
+          <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[64%]">
+            <SelectTrigger className="h-[50px] w-full p-4">
+              {selectedEmployee ? (
+                <div className="flex items-center gap-1 sm:gap-4">
+                  <Avatar className="size-8">
+                    <AvatarImage
+                      src={selectedEmployeeData?.avatar || ''}
+                      alt={`${selectedEmployeeData?.avatar}`}
+                    />
+                    <AvatarFallback className="uppercase">
+                      {selectedEmployeeData?.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col items-start">
+                    <SelectValue>
+                      <p className="text-sm">{selectedEmployeeData?.name}</p>
+                    </SelectValue>
+                    <p className="text-xs text-muted-foreground">
+                      {selectedEmployeeData?.email}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <SelectValue placeholder="Select Employee" />
-            )}
-          </SelectTrigger>
+              ) : (
+                <SelectValue placeholder="Select Employee" />
+              )}
+            </SelectTrigger>
+            <div className="hidden h-0 w-full opacity-0 sm:block"></div>
+            <div className="hidden h-0 w-full opacity-0 sm:block"></div>
+          </div>
           <SelectContent className="w-fit">
             <SelectGroup>
               <SelectLabel>Select Employee</SelectLabel>
@@ -223,7 +227,7 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
           </SelectContent>
         </Select>
         <div className="flex flex-col gap-4 md:flex-row">
-          <div className="grid h-fit w-full grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 md:max-w-[65%]">
+          <div className="grid h-fit w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[65%]">
             {perkData?.data.map(perk => (
               <div
                 key={perk._id}
