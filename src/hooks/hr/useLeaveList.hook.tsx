@@ -3,6 +3,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import {
   getLeaveListRecords,
   getPendingLeaveRequest,
+  getTrendLeaveChartData,
   LeaveListParams,
   LeaveListRecordParams,
   PendingLeaveRequestParams,
@@ -13,6 +14,7 @@ import { UseQueryConfig } from '@/types';
 import {
   LeaveListApiResponse,
   LeaveListRecords,
+  LeaveTrendChartApiResponse,
 } from '@/types/hr-leave-list.types';
 
 export const useLeaveListPostQuery = (
@@ -53,3 +55,13 @@ export const usePendingLeaveRequestQuery = (
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<LeaveListApiResponse, Error>;
+
+export const useLeaveTrendChartQuery = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['getLeaveChartData'],
+    queryFn: () => getTrendLeaveChartData(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<LeaveTrendChartApiResponse, Error>;

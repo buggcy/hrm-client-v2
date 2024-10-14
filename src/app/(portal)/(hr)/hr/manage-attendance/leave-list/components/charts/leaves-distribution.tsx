@@ -3,13 +3,25 @@
 import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { LeaveListRecords } from '@/types/hr-leave-list.types';
 
@@ -162,8 +174,23 @@ export function LeavesDistributionChart({ data }: LeaveListRecordChartProps) {
             </RadialBarChart>
           </ChartContainer>
         </div>
-        <Button disabled>Approve All</Button>
       </CardContent>
+      <CardFooter>
+        <TooltipProvider disableHoverableContent delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="w-full">
+                <Button className="w-full" disabled>
+                  {'Approve All'}
+                </Button>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Coming Soon</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </CardFooter>
     </Card>
   );
 }

@@ -54,3 +54,14 @@ export interface LeaveListApiResponse {
   pagination: Pagination;
   data: LeaveList[];
 }
+
+export interface LeaveTrendChartData {
+  month: string;
+  approved: number;
+  rejected: number;
+  cancelled: number;
+}
+
+export interface LeaveTrendChartApiResponse {
+  data: LeaveTrendChartData[];
+}

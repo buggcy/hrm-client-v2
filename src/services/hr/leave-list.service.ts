@@ -3,6 +3,7 @@ import {
   leaveListApiResponseSchema,
   LeaveListRecordApiResponse,
   leaveListRecordSchema,
+  leaveTrendChartApiResponseSchema,
 } from '@/libs/validations/hr-leave-list';
 import { baseAPI, schemaParse } from '@/utils';
 
@@ -179,4 +180,14 @@ export const rejectLeaveRecord = async (
     },
   );
   return { message };
+};
+
+export const getTrendLeaveChartData = async () => {
+  try {
+    const response = await baseAPI.get(`/chart/leave/data`);
+    return schemaParse(leaveTrendChartApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching Trend leave chart data!', error);
+    throw error;
+  }
 };
