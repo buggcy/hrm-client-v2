@@ -113,7 +113,7 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
       })();
     }
   }, [debouncedSearchTerm, refetch, mutate, page, limit, status]);
-
+  useEffect(() => {}, [getLeaveChartData]);
   useEffect(() => {}, [leavePostList, selectedDate]);
   useEffect(() => {}, [leaveListRecords, selectedDate]);
   useEffect(() => {
@@ -121,6 +121,7 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
       void (async () => {
         await refetch();
         await refetchRecord();
+        void refetchChartData();
       })();
 
       setRefetchLeaveList(false);
