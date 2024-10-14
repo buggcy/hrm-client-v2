@@ -168,7 +168,7 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
         <Select onValueChange={handleEmployeeChange}>
-          <SelectTrigger className="w-full md:max-w-[calc(65%-16px)]">
+          <SelectTrigger className="h-[50px] w-fit p-4">
             {selectedEmployee ? (
               <div className="flex items-center gap-1 sm:gap-4">
                 <Avatar className="size-8">
@@ -180,22 +180,23 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
                     {selectedEmployeeData?.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <SelectValue>{selectedEmployeeData?.name}</SelectValue>
-                <p className="text-muted-foreground">
-                  {selectedEmployeeData?.email}
-                </p>
+                <div className="flex flex-col items-start">
+                  <SelectValue>
+                    <p className="text-sm">{selectedEmployeeData?.name}</p>
+                  </SelectValue>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedEmployeeData?.email}
+                  </p>
+                </div>
               </div>
             ) : (
               <SelectValue placeholder="Select Employee" />
             )}
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-fit">
             <SelectGroup>
               <SelectLabel>Select Employee</SelectLabel>
               {data?.data.map(employee => (
-                // <SelectItem key={employee.id} value={employee.id}>
-                //   {employee.name}
-                // </SelectItem>
                 <SelectItem key={employee.id} value={employee.id}>
                   <div className="flex items-center gap-1 sm:gap-4">
                     <Avatar className="size-8">
@@ -207,8 +208,14 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
                         {employee.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <SelectValue>{employee.name}</SelectValue>
-                    <p className="text-muted-foreground">{employee.email}</p>
+                    <div className="flex flex-col justify-start">
+                      <SelectValue>
+                        <p className="text-sm">{employee.name}</p>
+                      </SelectValue>
+                      <p className="text-xs text-muted-foreground">
+                        {employee.email}
+                      </p>
+                    </div>
                   </div>
                 </SelectItem>
               ))}
@@ -239,7 +246,7 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
             ))}
           </div>
           {perkData && (
-            <div className="grid h-fit max-h-[75vh] min-h-[500px] w-full grid-cols-1 overflow-y-auto rounded-lg border bg-background md:max-w-[35%]">
+            <div className="grid h-fit max-h-[75vh] w-full grid-cols-1 overflow-y-auto rounded-lg border bg-background md:max-w-[35%]">
               <Accordion type="multiple" className="w-full">
                 {perkData?.data.map(perk => {
                   if (perk.isAvailable)
