@@ -73,7 +73,11 @@ const LeaveApproval: FunctionComponent<HrLeaveRequestsProps> = () => {
         ) : getPendingLeaveRequest?.pagination?.totalCount &&
           getPendingLeaveRequest?.pagination?.totalCount > 0 ? (
           getPendingLeaveRequest?.data?.map(leave => (
-            <LeaveRequest key={leave?._id} data={leave} />
+            <LeaveRequest
+              key={leave?._id}
+              data={leave}
+              selectedDate={selectedDate}
+            />
           ))
         ) : (
           <div className="flex size-full items-center justify-center">

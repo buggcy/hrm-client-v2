@@ -2,13 +2,21 @@
 
 import { useState } from 'react';
 
+import { DateRange } from 'react-day-picker';
+
 import { LeaveListType } from '@/libs/validations/hr-leave-list';
 
 import { LeaveRequestCard } from './LeaveRequestCard';
 
 export const description = 'A pie chart with a custom label';
 
-export function LeaveRequest({ data }: { data: LeaveListType }) {
+export function LeaveRequest({
+  data,
+  selectedDate,
+}: {
+  data: LeaveListType;
+  selectedDate?: DateRange;
+}) {
   const [selected, setSelected] = useState(false);
   const [isLoading] = useState(false);
 
@@ -22,6 +30,7 @@ export function LeaveRequest({ data }: { data: LeaveListType }) {
   return (
     <div>
       <LeaveRequestCard
+        selectedDate={selectedDate}
         person={data}
         selected={selected}
         isSelectable={true}

@@ -11,14 +11,24 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { Eye, Mail, Phone, UserCog } from 'lucide-react';
+import { DateRange } from 'react-day-picker';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { useAllowLeaveListQuery } from '@/hooks/hr/useLeaveList.hook';
 import { LeaveListType } from '@/libs/validations/hr-leave-list';
 import { acceptLeaveRecord } from '@/services/hr/leave-list.service';
 import { AuthStoreType } from '@/stores/auth';
@@ -34,7 +44,9 @@ export const LeaveRequestCard = ({
   selected,
   isSelectable,
   handleSelect,
+  selectedDate,
 }: {
+  selectedDate?: DateRange;
   person: LeaveListType;
   selected?: boolean;
   isSelectable?: boolean;
@@ -52,6 +64,8 @@ export const LeaveRequestCard = ({
     leaveListStore: LeaveListStoreType;
   };
   const { setRefetchLeaveList } = leaveListStore;
+  const { data: allowLeaveList } = useAllowLeaveListQuery(person?.User_ID?._id);
+
   const { mutate: AcceptMutate, isPending: AcceptPending } = useMutation({
     mutationFn: ({ id, hrId }: { id: string; hrId: string | undefined }) =>
       acceptLeaveRecord(id, hrId!),
@@ -72,6 +86,28 @@ export const LeaveRequestCard = ({
       setShowAcceptDialog(false);
     },
   });
+
+  const selectedFromDate = new Date(selectedDate?.from ?? Date.now());
+  const currentYear = selectedFromDate.getFullYear();
+  const currentMonth = selectedFromDate.getMonth() + 1;
+
+  const currentMonthRecord = allowLeaveList?.monthlyLeaveRecords?.find(
+    record => record.year === currentYear && record.month === currentMonth,
+  );
+
+  const currentYearRecord = allowLeaveList?.annualLeavesRecords?.find(
+    record => record.year === currentYear,
+  );
+
+  const startDate = person?.Start_Date ? new Date(person.Start_Date) : null;
+  const endDate = person?.End_Date ? new Date(person.End_Date) : null;
+
+  const durationInDays =
+    startDate && endDate
+      ? Math.ceil(
+          (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+        )
+      : 'N/A';
 
   const handleAccept = () => {
     const hrId = userId;
@@ -168,6 +204,101 @@ export const LeaveRequestCard = ({
               {person?.User_ID?.companyEmail}
             </p>
           </div>
+          <Table className="w-full text-xs">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-1/2"></TableHead>
+
+                <TableHead className="w-1/6 dark:text-white">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>AL</span>
+                      </TooltipTrigger>
+                      <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                        Annual Leave
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableHead>
+                <TableHead className="w-1/6 dark:text-white">
+                  {' '}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>CL</span>
+                      </TooltipTrigger>
+                      <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                        Casual Leave
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableHead>
+                <TableHead className="w-1/6 dark:text-white">
+                  {' '}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>SL</span>
+                      </TooltipTrigger>
+                      <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                        Sick Leave
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableHead>
+                <TableHead className="w-1/6 dark:text-white">
+                  {' '}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>ML</span>
+                      </TooltipTrigger>
+                      <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                        Monthly Leave
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="w-1/2">Allowed Leaves</TableCell>
+                <TableCell className="w-1/6 dark:text-gray-300">
+                  {allowLeaveList?.annualLeavesAllowed}
+                </TableCell>
+                <TableCell className="w-1/6 dark:text-gray-300">
+                  {allowLeaveList?.allowedCasualLeaves}
+                </TableCell>
+                <TableCell className="w-1/6 dark:text-gray-300">
+                  {allowLeaveList?.allowedSickLeaves}
+                </TableCell>
+                <TableCell className="w-1/6 dark:text-gray-300">
+                  {allowLeaveList?.monthlyLeavesAllowed}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="w-1/2">Taken Leaves</TableCell>
+                <TableCell className="w-1/6 dark:text-gray-300">
+                  {currentYearRecord ? currentYearRecord.annualLeaves : 0}
+                </TableCell>
+                <TableCell className="w-1/6 dark:text-gray-300">
+                  {currentMonthRecord ? currentMonthRecord.casualLeaves : 0}
+                </TableCell>
+                <TableCell className="w-1/6 dark:text-gray-300">
+                  {currentMonthRecord ? currentMonthRecord.sickLeaves : 0}
+                </TableCell>
+                <TableCell className="w-1/6 dark:text-gray-300">
+                  {currentMonthRecord
+                    ? currentMonthRecord.sickLeaves +
+                      currentMonthRecord.casualLeaves
+                    : 0}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
           <div className="mt-2 flex justify-between">
             <p className="text-sm font-semibold">{'Leave Title'}</p>
             <span className="truncate text-sm font-medium text-muted-foreground">
@@ -194,6 +325,12 @@ export const LeaveRequestCard = ({
               {person?.End_Date
                 ? new Date(person?.End_Date).toDateString()
                 : 'N/A'}
+            </span>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p className="text-sm font-semibold">Leave Duration</p>
+            <span className="truncate text-sm font-medium text-muted-foreground">
+              {durationInDays}
             </span>
           </div>
           <div className="flex justify-between">
