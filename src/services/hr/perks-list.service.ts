@@ -46,7 +46,7 @@ export const getHrPerksList = async (
   );
 
   try {
-    const response = await baseAPI.get(`/perks?${queryParams.toString()}`);
+    const response = await baseAPI.get(`/perks-v2?${queryParams.toString()}`);
     return schemaParse(hrPerksListApiResponseSchema)(response);
   } catch (error) {
     console.error('Error fetching employee list:', error);
@@ -66,7 +66,7 @@ export const searchHrPerkList = async ({
   type?: string[];
 }): Promise<HrPerksListApiResponse> => {
   const res = await baseAPI.get(
-    `/perks?page=${page}&limit=${limit}&name=${query}&type=${type ? type.join(',') : ''}`,
+    `/perks-v2?page=${page}&limit=${limit}&name=${query}&type=${type ? type.join(',') : ''}`,
   );
   return schemaParse(hrPerksListApiResponseSchema)(res);
 };
@@ -81,7 +81,7 @@ export const addPerk = async ({
   salaryIncrement,
   salaryDecrement,
 }: AddPerkFormData): Promise<SuccessMessageResponse> => {
-  const { message }: SuccessMessageResponse = await baseAPI.post(`/perks`, {
+  const { message }: SuccessMessageResponse = await baseAPI.post(`/perks-v2`, {
     name,
     description,
     salaryIncrement,
@@ -104,7 +104,7 @@ export const updatePerk = async ({
   salaryDecrement: boolean;
 }): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.put(
-    `/perks/${id}`,
+    `/perks-v2/${id}`,
     {
       name,
       description,
@@ -119,14 +119,14 @@ export const deletePerk = async (
   id: string,
 ): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.delete(
-    `/delete-perk/${id}`,
+    `/delete-perk-v2/${id}`,
   );
   return { message };
 };
 
 export const fetchEmployeesForPerks =
   async (): Promise<HrPerksGetEmployeesApiResponse> => {
-    const res = await baseAPI.get('/employee/perks');
+    const res = await baseAPI.get('/employee/perks-v2');
     return schemaParse(HrPerksGetEmployeesApiResponseSchema)(res);
   };
 
@@ -135,7 +135,7 @@ export const fetchEmployeesAllPerks = async ({
 }: {
   id: string;
 }): Promise<HrEmployeeAllPerksApiResponse> => {
-  const res = await baseAPI.get(`/employee/${id}/allPerks`);
+  const res = await baseAPI.get(`/employee/${id}/allPerks-v2`);
   return schemaParse(HrEmployeeAllPerksApiResponseSchema)(res);
 };
 
