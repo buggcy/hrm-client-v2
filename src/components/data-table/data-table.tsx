@@ -32,6 +32,7 @@ import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
 import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
+import { HRPayrollListToolbar } from './toolbars/hr-payroll.toolbar';
 import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
 import { UnapprovedEmployeeToolbar } from './toolbars/unapproved-employee.toolbar';
@@ -163,6 +164,17 @@ export function DataTable<TData extends DataTableType, TValue>({
             searchLoading={searchLoading}
           />
         );
+
+      case 'hrPayrollList':
+        return (
+          <HRPayrollListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+          />
+        );
+
       case 'attendanceList':
         return (
           <AttendanceListToolbar

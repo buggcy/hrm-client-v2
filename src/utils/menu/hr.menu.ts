@@ -1,5 +1,6 @@
 import {
   BadgeCheck,
+  Banknote,
   CalendarDays,
   ClipboardList,
   Home,
@@ -51,6 +52,17 @@ export const hrMenu: MenuItem[] = [
         title: 'Leave Requests',
         icon: Mail,
         href: '/hr/manage-attendance/leave-requests',
+      },
+    ],
+  },
+  {
+    title: 'Manage Payroll',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Payroll',
+        icon: Banknote,
+        href: '/hr/manage-payroll',
       },
     ],
   },
