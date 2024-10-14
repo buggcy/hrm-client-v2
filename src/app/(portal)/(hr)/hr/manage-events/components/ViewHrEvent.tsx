@@ -8,6 +8,8 @@ import { DialogContent } from '@/components/ui/dialog';
 
 import { HrEventsListType } from '@/libs/validations/employee';
 
+import './ViewHrEvent.css';
+
 interface EventDetailsCardProps {
   event: HrEventsListType;
   onClose: () => void;
@@ -74,9 +76,13 @@ export function ViewHrEvent({ event, onClose }: EventDetailsCardProps) {
 
           <div className="flex flex-col space-y-3">
             <span className="text-sm font-medium">Description:</span>
-            <div className="max-h-60 overflow-y-auto px-8 text-sm">
-              {' '}
-              <p>{event.Event_Discription}</p>
+            <div className="description-content max-h-60 overflow-y-auto px-8 text-sm">
+              {/* Render the HTML content from Quill */}
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: event.Event_Discription || '',
+                }}
+              />
             </div>
           </div>
         </div>

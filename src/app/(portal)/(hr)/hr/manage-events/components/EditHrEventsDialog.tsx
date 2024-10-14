@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -34,7 +35,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -138,7 +138,7 @@ export function EditHrEventsDialogDemo({
         <DialogHeader>
           <DialogTitle>Edit Event</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-4">
           <div className="flex flex-row gap-8">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Start_Date" className="mb-2 text-left">
@@ -336,7 +336,7 @@ export function EditHrEventsDialogDemo({
               )}
             </div>
           </div>
-          <div className="flex flex-wrap gap-8">
+          <div className="flex flex-col gap-14">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Description" className="mb-2 text-left">
                 Description
@@ -345,27 +345,25 @@ export function EditHrEventsDialogDemo({
                 name="Description"
                 control={control}
                 render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    id="Description"
-                    rows={6}
-                    placeholder="Enter your description"
+                  <FormattedTextArea
+                    value={field.value || ''}
+                    onChange={field.onChange}
                   />
                 )}
               />
+
               {errors.Description && (
                 <span className="text-sm text-red-500">
                   {errors.Description.message}
                 </span>
               )}
             </div>
+            <DialogFooter>
+              <Button type="submit" disabled={isPending}>
+                Edit Event
+              </Button>
+            </DialogFooter>
           </div>
-
-          <DialogFooter>
-            <Button type="submit" disabled={isPending}>
-              Edit Event
-            </Button>
-          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
