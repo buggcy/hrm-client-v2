@@ -113,7 +113,15 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
       })();
     }
   }, [debouncedSearchTerm, refetch, mutate, page, limit, status]);
-  useEffect(() => {}, [getLeaveChartData]);
+
+  const fetchChartData = async (): Promise<void> => {
+    await refetchChartData();
+  };
+  useEffect(() => {
+    void fetchChartData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refetchChartData]);
+
   useEffect(() => {}, [leavePostList, selectedDate]);
   useEffect(() => {}, [leaveListRecords, selectedDate]);
   useEffect(() => {
