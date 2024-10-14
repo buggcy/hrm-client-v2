@@ -3,6 +3,7 @@ import React, { Suspense, useState } from 'react';
 
 import { Bell } from 'lucide-react';
 
+import Header from '@/components/Header/Header';
 import {
   Layout,
   LayoutHeader,
@@ -30,16 +31,17 @@ export default function ManageEmployeesPage() {
     <Layout>
       <LayoutHeader title="Manage Events">
         <LayoutHeaderButtonsBlock>
-          <Button variant="default" onClick={handleDialogOpen}>
-            Add Event
-          </Button>
-
           <Button variant="outline" size="icon" className="rounded-full">
             <Bell className="size-5" />
           </Button>
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1" className="space-y-5">
+        <Header subheading="Engaging Our Team: Celebrations and Activities Year-Round!">
+          <Button variant="default" onClick={handleDialogOpen}>
+            Add Event
+          </Button>
+        </Header>
         <HrEventsCalender />
         <Suspense fallback={<div>Loading...</div>}>
           <HrEventsTable />

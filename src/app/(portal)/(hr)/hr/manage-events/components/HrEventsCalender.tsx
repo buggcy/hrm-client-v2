@@ -300,7 +300,7 @@ export default function HrEventsCalendar() {
             events={formattedEvents}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 500 }}
+            style={{ height: 400 }}
             date={currentDate}
             view={currentView}
             onNavigate={onNavigate}
