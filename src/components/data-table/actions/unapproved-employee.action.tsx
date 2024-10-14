@@ -3,12 +3,14 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
-import { Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { AxiosError } from 'axios';
+import { Eye, Mail, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import DeleteDialog from '@/components/modals/delete-modal';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,32 +19,76 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { AddEmployeeDialog } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
 import { EmployeeListType } from '@/libs/validations/employee';
-import { deleteEmployeeRecord } from '@/services/hr/employee.service';
+import {
+  deleteEmployeeRecord,
+  resendEmployeeInvitation,
+} from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
+
+import { MessageErrorResponse } from '@/types';
+
 interface DataTableRowActionsProps {
   row: Row<EmployeeListType>;
 }
 
-export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
-  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
-  const { setRefetchEmployeeList } = employeeStore;
-  const [dialogContent] = React.useState<React.ReactNode | null>(null);
+export function UnapprovedEmployeeRowActions({
+  row,
+}: DataTableRowActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
+
+  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
+  const { setRefetchEmployeeList } = employeeStore;
+
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
   const data = row.original;
 
   const router = useRouter();
 
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   const handleEditClick = () => {
-    // setDialogContent(<EditDialog task={data} />);
+    if (data.isApproved === 'tba') {
+      handleDialogOpen();
+    }
   };
 
   const handleViewDetails = () => {
-    router.push(`/profile?userId=${data._id}`);
+    if (data.isApproved != 'tba') {
+      router.push(`/profile?userId=${data._id}`);
+    }
   };
+
+  const { mutate } = useMutation({
+    mutationFn: resendEmployeeInvitation,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on adding employee!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+    },
+  });
 
   return (
     <Dialog>
@@ -58,6 +104,11 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => mutate(data?._id)}>
+            <Mail className="mr-2 size-4" />
+            Resend Invitation
+          </DropdownMenuItem>
+
           <DropdownMenuSeparator />
           <DialogTrigger asChild onClick={() => {}}>
             <DropdownMenuItem onClick={handleViewDetails}>
@@ -80,7 +131,12 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
+      <AddEmployeeDialog
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        onCloseChange={handleDialogClose}
+        editData={data}
+      />
       <DeleteDialog
         id={data._id}
         isOpen={showDeleteDialog}

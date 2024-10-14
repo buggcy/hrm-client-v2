@@ -41,7 +41,6 @@ export type PolicyQueryParamsType = {
   page: number;
   limit: number;
   category?: string;
-  categories?: string[];
 };
 
 export {
