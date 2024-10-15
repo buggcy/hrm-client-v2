@@ -1,5 +1,6 @@
 import {
   BadgeCheck,
+  CalendarCog,
   CalendarDays,
   ClipboardList,
   Home,
@@ -29,6 +30,17 @@ export const hrMenu: MenuItem[] = [
         title: 'Add Employees',
         icon: UserPlus,
         href: '/hr/add-employees',
+      },
+    ],
+  },
+  {
+    title: 'Manage Events',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Events',
+        icon: CalendarCog,
+        href: '/hr/manage-events',
       },
     ],
   },
