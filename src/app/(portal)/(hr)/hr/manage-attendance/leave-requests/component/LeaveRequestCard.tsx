@@ -223,59 +223,61 @@ export const LeaveRequestCard = ({
                       <Badge>Leave Info</Badge>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                    <Table className="text-xs">
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead></TableHead>
-                          <TableHead>Annual</TableHead>
-                          <TableHead>Casual</TableHead>
-                          <TableHead>Sick</TableHead>
-                          <TableHead>Monthly</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell>Allowed Leaves</TableCell>
-                          <TableCell>
-                            {allowLeaveList?.annualLeavesAllowed}
-                          </TableCell>
-                          <TableCell>
-                            {allowLeaveList?.allowedCasualLeaves}
-                          </TableCell>
-                          <TableCell>
-                            {allowLeaveList?.allowedSickLeaves}
-                          </TableCell>
-                          <TableCell>
-                            {allowLeaveList?.monthlyLeavesAllowed}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>Taken Leaves</TableCell>
-                          <TableCell>
-                            {currentYearRecord
-                              ? currentYearRecord.annualLeaves
-                              : 0}
-                          </TableCell>
-                          <TableCell>
-                            {currentMonthRecord
-                              ? currentMonthRecord.casualLeaves
-                              : 0}
-                          </TableCell>
-                          <TableCell>
-                            {currentMonthRecord
-                              ? currentMonthRecord.sickLeaves
-                              : 0}
-                          </TableCell>
-                          <TableCell>
-                            {currentMonthRecord
-                              ? currentMonthRecord.sickLeaves +
-                                currentMonthRecord.casualLeaves
-                              : 0}
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
+                  <TooltipContent className="mb-2 rounded-md border bg-white text-black dark:bg-zinc-900 dark:text-white">
+                    <div className="max-h-[149px] overflow-y-auto">
+                      <Table className="text-xs">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead></TableHead>
+                            <TableHead>Annual</TableHead>
+                            <TableHead>Casual</TableHead>
+                            <TableHead>Sick</TableHead>
+                            <TableHead>Monthly</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell>Allowed Leaves</TableCell>
+                            <TableCell>
+                              {allowLeaveList?.annualLeavesAllowed}
+                            </TableCell>
+                            <TableCell>
+                              {allowLeaveList?.allowedCasualLeaves}
+                            </TableCell>
+                            <TableCell>
+                              {allowLeaveList?.allowedSickLeaves}
+                            </TableCell>
+                            <TableCell>
+                              {allowLeaveList?.monthlyLeavesAllowed}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>Taken Leaves</TableCell>
+                            <TableCell>
+                              {currentYearRecord
+                                ? currentYearRecord.annualLeaves
+                                : 0}
+                            </TableCell>
+                            <TableCell>
+                              {currentMonthRecord
+                                ? currentMonthRecord.casualLeaves
+                                : 0}
+                            </TableCell>
+                            <TableCell>
+                              {currentMonthRecord
+                                ? currentMonthRecord.sickLeaves
+                                : 0}
+                            </TableCell>
+                            <TableCell>
+                              {currentMonthRecord
+                                ? currentMonthRecord.sickLeaves +
+                                  currentMonthRecord.casualLeaves
+                                : 0}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
