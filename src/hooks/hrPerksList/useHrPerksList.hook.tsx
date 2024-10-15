@@ -3,6 +3,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import {
   fetchEmployeesAllPerks,
   fetchEmployeesForPerks,
+  fetchPerkRequests,
   getHrPerksList,
   HrPerksListParams,
 } from '@/services/hr/perks-list.service';
@@ -10,6 +11,7 @@ import {
 import { UseQueryConfig } from '@/types';
 import {
   HrEmployeeAllPerksApiResponse,
+  HrPerkRequestsApiResponse,
   HrPerksGetEmployeesApiResponse,
   HrPerksListApiResponse,
 } from '@/types/hr-perks-list.types';
@@ -36,6 +38,16 @@ export const useHrPerksEmpoyeeQuery = (config: UseQueryConfig = {}) =>
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<HrPerksGetEmployeesApiResponse, Error>;
+
+export const useHrPerkRequestsQuery = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['hrPerkRequests'],
+    queryFn: () => fetchPerkRequests(),
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<HrPerkRequestsApiResponse, Error>;
 
 export const useHrEmpoyeeAllPerksQuery = (
   params: { id: string },

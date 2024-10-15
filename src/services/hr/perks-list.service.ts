@@ -1,6 +1,7 @@
 import { AddPerkFormData } from '@/app/(portal)/(hr)/hr/manage-perks/add-perks/components/AddPerksDialog';
 import {
   HrEmployeeAllPerksApiResponseSchema,
+  HrPerkRequestsApiResponseSchema,
   HrPerksGetEmployeesApiResponseSchema,
   hrPerksListApiResponseSchema,
 } from '@/libs/validations/hr-perks';
@@ -9,6 +10,7 @@ import { baseAPI, schemaParse } from '@/utils';
 import {
   HrEmployeeAllPerks,
   HrEmployeeAllPerksApiResponse,
+  HrPerkRequestsApiResponse,
   HrPerksGetEmployeesApiResponse,
   HrPerksListApiResponse,
 } from '@/types/hr-perks-list.types';
@@ -149,6 +151,34 @@ export const perksHandler = async ({
   const { message }: SuccessMessageResponse = await baseAPI.put(
     `/employee/${id}/perksHandle`,
     { perks: data },
+  );
+  return { message };
+};
+
+export const fetchPerkRequests =
+  async (): Promise<HrPerkRequestsApiResponse> => {
+    const res = await baseAPI.get(`/hr/perk-requests-v2`);
+    return schemaParse(HrPerkRequestsApiResponseSchema)(res);
+  };
+
+export const approvePerkRequest = async ({
+  id,
+}: {
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/hr/perk-requests/${id}/approve`,
+  );
+  return { message };
+};
+
+export const rejectPerkRequest = async ({
+  id,
+}: {
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/hr/perk-requests/${id}/reject`,
   );
   return { message };
 };

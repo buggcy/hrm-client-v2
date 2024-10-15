@@ -53,3 +53,27 @@ export interface HrEmployeeAllPerks {
 export interface HrEmployeeAllPerksApiResponse {
   data: HrEmployeeAllPerks[];
 }
+
+export interface HrPerkRequests {
+  _id: string;
+  Proof_Document: string;
+  assignedIncrementAmount: number;
+  incrementAmount: number;
+  dateApplied: string;
+  userId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    Avatar?: string;
+    companyEmail: string;
+    contactNo: string;
+  };
+  perksId: {
+    _id: string;
+    name: string;
+  };
+}
+
+export interface HrPerkRequestsApiResponse {
+  data: HrPerkRequests[];
+}
