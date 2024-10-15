@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 
 import { Row } from '@tanstack/react-table';
 import { Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
@@ -56,9 +57,11 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
             </DropdownMenuItem>
           </DialogTrigger>
           <DialogTrigger asChild onClick={handleEditClick}>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 size-4" />
-              Edit Details
+            <DropdownMenuItem asChild>
+              <Link href={`/hr/edit-profile`}>
+                <Pencil className="mr-2 size-4" />
+                Edit Details
+              </Link>
             </DropdownMenuItem>
           </DialogTrigger>
           <DropdownMenuItem
