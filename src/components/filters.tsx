@@ -135,6 +135,20 @@ export const perk_status_options = [
     icon: CheckCircle2,
   },
 ];
+
+export const perk_type_options = [
+  {
+    value: 'Increment',
+    label: 'Increment',
+    icon: Circle,
+  },
+  {
+    value: 'Decrement',
+    label: 'Decrement',
+    icon: Circle,
+  },
+];
+
 export const attendance_history_status_options = [
   {
     value: 'Present',

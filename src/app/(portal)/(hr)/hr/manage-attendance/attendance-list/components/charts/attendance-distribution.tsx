@@ -1,14 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { Pie, PieChart } from 'recharts';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { DatePicker } from '@/components/DatePicker';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -18,7 +15,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-import { Card1Data } from '@/types/attendance-list.types';
+import { getAttendanceDistributionStats } from '@/services/hr/attendance-list.service';
+
+import { AttendanceDistributionApiResponse } from '@/types/attendance-list.types';
 
 export const description = 'A pie chart with a label';
 
@@ -40,11 +39,22 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-interface AttendanceDistributionProps {
-  data?: Card1Data;
-}
+const fetchData = async (date: Date) => {
+  const data: AttendanceDistributionApiResponse =
+    await getAttendanceDistributionStats({
+      date: date,
+    });
+  return data;
+};
 
-export function AttendanceDistribution({ data }: AttendanceDistributionProps) {
+export function AttendanceDistribution() {
+  const [date, setDate] = useState(new Date());
+  const [data, setData] = useState<AttendanceDistributionApiResponse | null>(
+    null,
+  );
+  useEffect(() => {
+    void fetchData(date).then(setData);
+  }, [date]);
   const chartData = [
     {
       status: 'present',
@@ -65,8 +75,8 @@ export function AttendanceDistribution({ data }: AttendanceDistributionProps) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center">
-        <CardTitle>Attendance Today</CardTitle>
-        <CardDescription>October 10th, 2024</CardDescription>
+        <CardTitle className="pb-4">Attendance Overview</CardTitle>
+        <DatePicker date={date} setDate={setDate} />
       </CardHeader>
       <CardContent className="flex-1">
         <ChartContainer
