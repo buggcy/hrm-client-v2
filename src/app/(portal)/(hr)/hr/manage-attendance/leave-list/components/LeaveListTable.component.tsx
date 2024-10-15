@@ -19,6 +19,7 @@ import { useStores } from '@/providers/Store.Provider';
 import {
   useLeaveListPostQuery,
   useLeaveListRecordQuery,
+  useLeaveTrendChartQuery,
 } from '@/hooks/hr/useLeaveList.hook';
 import { LeaveListArrayType } from '@/libs/validations/hr-leave-list';
 import { searchLeaveList } from '@/services/hr/leave-list.service';
@@ -72,6 +73,9 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
       to: formatedDate(selectedDate?.to),
     });
 
+  const { data: getLeaveChartData, refetch: refetchChartData } =
+    useLeaveTrendChartQuery();
+
   const {
     mutate,
     isPending,
@@ -110,6 +114,14 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
     }
   }, [debouncedSearchTerm, refetch, mutate, page, limit, status]);
 
+  const fetchChartData = async (): Promise<void> => {
+    await refetchChartData();
+  };
+  useEffect(() => {
+    void fetchChartData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refetchChartData]);
+
   useEffect(() => {}, [leavePostList, selectedDate]);
   useEffect(() => {}, [leaveListRecords, selectedDate]);
   useEffect(() => {
@@ -117,11 +129,19 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
       void (async () => {
         await refetch();
         await refetchRecord();
+        void refetchChartData();
       })();
 
       setRefetchLeaveList(false);
     }
-  }, [refetchLeaveList, setRefetchLeaveList, refetch, refetchRecord, status]);
+  }, [
+    refetchLeaveList,
+    setRefetchLeaveList,
+    refetch,
+    refetchRecord,
+    refetchChartData,
+    status,
+  ]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -171,7 +191,7 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
         </Button>
       </Header>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <LeavesTrendChart />
+        <LeavesTrendChart chartData={getLeaveChartData?.data ?? []} />
         <LeavesDistributionChart data={leaveListRecords} />
       </div>
 

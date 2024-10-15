@@ -63,13 +63,31 @@ const leaveListApiResponseSchema = z.object({
   data: z.array(leaveListSchema),
 });
 
+const leaveTrendChartSchema = z.object({
+  month: z.string(),
+  approved: z.number(),
+  rejected: z.number(),
+  cancelled: z.number(),
+});
+
+const leaveTrendChartApiResponseSchema = z.object({
+  data: z.array(leaveTrendChartSchema),
+});
+
 export type LeaveListApiResponse = z.infer<typeof leaveListApiResponseSchema>;
 export type LeaveListType = z.infer<typeof leaveListSchema>;
 export type LeaveListArrayType = z.infer<typeof leaveListSchema>[] | [];
 export type LeaveListRecordApiResponse = z.infer<typeof leaveListRecordSchema>;
+export type LeaveTrendChartType = z.infer<typeof leaveTrendChartSchema>;
+export type LeaveTrendChartApiResponse = z.infer<
+  typeof leaveTrendChartApiResponseSchema
+>;
+
 export {
   leaveListApiResponseSchema,
   userIdSchema,
   paginationSchema,
   leaveListRecordSchema,
+  leaveTrendChartSchema,
+  leaveTrendChartApiResponseSchema,
 };

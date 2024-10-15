@@ -4,6 +4,7 @@ import { getLeaveData } from '@/services/employee/leave-history.service';
 import {
   getLeaveListRecords,
   getPendingLeaveRequest,
+  getTrendLeaveChartData,
   LeaveListParams,
   LeaveListRecordParams,
   PendingLeaveRequestParams,
@@ -14,6 +15,7 @@ import { UseQueryConfig } from '@/types';
 import {
   LeaveListApiResponse,
   LeaveListRecords,
+  LeaveTrendChartApiResponse,
 } from '@/types/hr-leave-list.types';
 import { EmployeeLeavesDataApiResponse } from '@/types/leave-history.types';
 
@@ -55,6 +57,16 @@ export const usePendingLeaveRequestQuery = (
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<LeaveListApiResponse, Error>;
+
+export const useLeaveTrendChartQuery = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['getLeaveChartData'],
+    queryFn: () => getTrendLeaveChartData(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<LeaveTrendChartApiResponse, Error>;
 
 export const useAllowLeaveListQuery = (
   id: string,

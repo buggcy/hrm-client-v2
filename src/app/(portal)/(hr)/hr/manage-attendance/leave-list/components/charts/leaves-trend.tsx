@@ -18,23 +18,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
+import { LeaveTrendChartData } from '@/types/hr-leave-list.types';
+
 export const description = 'An area chart with a legend';
-
-const chartData = [
-  { month: 'January', approved: 186, rejected: 80, cancelled: 20 },
-  { month: 'February', approved: 305, rejected: 200, cancelled: 50 },
-  { month: 'March', approved: 237, rejected: 120, cancelled: 30 },
-  { month: 'April', approved: 73, rejected: 190, cancelled: 40 },
-  { month: 'May', approved: 209, rejected: 130, cancelled: 10 },
-  { month: 'June', approved: 214, rejected: 140, cancelled: 30 },
-  { month: 'July', approved: 273, rejected: 180, cancelled: 20 },
-  { month: 'August', approved: 303, rejected: 220, cancelled: 40 },
-  { month: 'September', approved: 331, rejected: 240, cancelled: 50 },
-  { month: 'October', approved: 267, rejected: 160, cancelled: 30 },
-  { month: 'November', approved: 189, rejected: 100, cancelled: 20 },
-  { month: 'December', approved: 150, rejected: 50, cancelled: 10 },
-];
-
 const chartConfig = {
   approved: {
     label: 'Approved',
@@ -50,13 +36,17 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function LeavesTrendChart() {
+interface LeaveTrendChartProps {
+  chartData: LeaveTrendChartData[];
+}
+
+export function LeavesTrendChart({ chartData }: LeaveTrendChartProps) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
         <CardTitle>Leaves Over Time</CardTitle>
         <CardDescription>
-          Showing total leave requests for the last 6 months
+          Showing total leave requests for this year
         </CardDescription>
       </CardHeader>
       <CardContent>
