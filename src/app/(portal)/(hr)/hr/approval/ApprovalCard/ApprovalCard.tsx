@@ -13,6 +13,7 @@ import { AxiosError } from 'axios';
 import { Mail, Phone, UserCog } from 'lucide-react';
 import { z } from 'zod';
 
+import CopyToClipboard from '@/components/CopyToClipboard';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -169,54 +170,32 @@ export const ApprovalCard = ({
             <Badge variant="label" className="w-fit truncate text-sm">
               {new Date(person.updatedAt).toDateString()}
             </Badge>
+            <CopyToClipboard
+              text={person.companyEmail}
+              icon={<Mail size={12} />}
+              type="Email address"
+            />
             <TooltipProvider>
-              <div className="flex space-x-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="size-[24px] rounded-full"
-                    >
-                      <Mail className="size-3" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                    <p>{person.email}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="size-[24px] rounded-full"
-                    >
-                      <UserCog className="size-3" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                    <p>{person.Designation}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="size-[24px] rounded-full"
-                    >
-                      <Phone className="size-3" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                    <p>{person.contactNo}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="size-[24px] rounded-full"
+                  >
+                    <UserCog className="size-3" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                  <p>{person.Designation}</p>
+                </TooltipContent>
+              </Tooltip>
             </TooltipProvider>
+            <CopyToClipboard
+              text={person.contactNo}
+              icon={<Phone size={12} />}
+              type="Contact number"
+            />
           </div>
         </div>
         <div>

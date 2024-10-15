@@ -113,12 +113,6 @@ export interface AttendanceUsers {
   users: Employee[];
 }
 
-export interface Card1Data {
-  totalPresent: number;
-  totalAbsent: number;
-  totalLeave: number;
-}
-
 interface dayType {
   Present: number;
   Absent: number;
@@ -152,7 +146,12 @@ export interface Card3Data {
 }
 
 export interface AttendanceListStatsApiResponse {
-  card1Data: Card1Data;
   card2Data: Card2Data;
   card3Data: Card3Data;
+}
+
+export interface AttendanceDistributionApiResponse {
+  totalPresent: number;
+  totalAbsent: number;
+  totalLeave: number;
 }

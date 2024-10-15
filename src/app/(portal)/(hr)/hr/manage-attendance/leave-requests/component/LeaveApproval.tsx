@@ -4,6 +4,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
+import Header from '@/components/Header/Header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -59,15 +60,15 @@ const LeaveApproval: FunctionComponent<HrLeaveRequestsProps> = () => {
 
   return (
     <>
-      <div className="mb-4 flex justify-end">
+      <Header subheading="Review and Approve Employee Leave Requests">
         <DateRangePicker
           timeRange={timeRange}
           selectedDate={selectedDate}
           setTimeRange={setTimeRange}
           setDate={handleSetDate}
         />
-      </div>
-      <div className="mb-2 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-4 lg:gap-6">
+      </Header>
+      <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-4 lg:gap-6">
         {isLoading || isFetching ? (
           <Skeleton className="h-6 w-full" />
         ) : getPendingLeaveRequest?.pagination?.totalCount &&

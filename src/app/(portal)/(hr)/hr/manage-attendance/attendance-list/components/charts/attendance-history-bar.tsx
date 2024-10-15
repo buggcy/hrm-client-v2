@@ -108,10 +108,10 @@ export function AttendanceHistoryBarChart({
         <CardTitle>Attendance Trend</CardTitle>
         <CardDescription>{formattedDateRange}</CardDescription>
       </CardHeader>
-      <CardContent className="md:size-full md:max-h-[275px]">
+      <CardContent className="md:size-full md:max-h-[310px]">
         <ChartContainer
           config={chartConfig}
-          className="size-full max-h-[350px] min-h-[150px] overflow-hidden md:max-h-[275px]"
+          className="size-full max-h-[350px] min-h-[150px] overflow-hidden md:max-h-[310px]"
         >
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />

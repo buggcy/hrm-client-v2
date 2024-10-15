@@ -3,7 +3,9 @@ import {
   CalendarCog,
   CalendarDays,
   ClipboardList,
+  Gift,
   Home,
+  Medal,
   UserCog,
   UserCog2,
   UserPlus,
@@ -68,6 +70,22 @@ export const hrMenu: MenuItem[] = [
         title: 'Manage Policy',
         icon: BadgeCheck,
         href: '/hr/manage-policies',
+      },
+    ],
+  },
+  {
+    title: 'Manage Perks',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Add Perks',
+        icon: Gift,
+        href: '/hr/manage-perks/add-perks',
+      },
+      {
+        title: 'Award Perks',
+        icon: Medal,
+        href: '/hr/manage-perks/award-perks',
       },
     ],
   },
