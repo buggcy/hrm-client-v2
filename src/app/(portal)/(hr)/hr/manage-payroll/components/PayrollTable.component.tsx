@@ -32,7 +32,7 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
-  const [genderFilter, setGenderFilter] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
 
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
@@ -49,6 +49,7 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
     limit,
     from: dates?.from?.toISOString(),
     to: dates?.to?.toISOString(),
+    payStatus: statusFilter,
   });
 
   const {
@@ -87,13 +88,14 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
         limit,
         from: dates?.from?.toISOString() || new Date().toISOString(),
         to: dates?.to?.toISOString() || new Date().toISOString(),
+        payStatus: statusFilter,
       });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit, dates]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit, dates, statusFilter]);
 
   useEffect(() => {
     if (refetchEmployeeList) {
@@ -109,7 +111,7 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
     void (async () => {
       await refetch();
     })();
-  }, [genderFilter, refetch]);
+  }, [statusFilter, refetch]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -155,8 +157,8 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
           toolbarType={'hrPayrollList'}
-          setFilterValue={setGenderFilter}
-          filterValue={genderFilter}
+          setFilterValue={setStatusFilter}
+          filterValue={statusFilter}
         />
       )}
     </>

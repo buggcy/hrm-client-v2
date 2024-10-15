@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export const payStatus = ['Paid', 'Unpaid'] as const;
+
 const paginationSchema = z.object({
   page: z.number(),
   limit: z.number(),
@@ -40,7 +42,7 @@ const HRPayrollSchema = z.object({
   Net_Salary: z.number().optional(),
   Total_SalaryDeducton: z.number().optional(),
   Total_Working_Minutes: z.number().optional(),
-  Pay_Status: z.string().optional(),
+  Pay_Status: z.enum(payStatus).optional(),
   Paid_Amount: z.number().optional(),
   Working_Days: z.number().optional(),
   isDeleted: z.boolean().optional(),

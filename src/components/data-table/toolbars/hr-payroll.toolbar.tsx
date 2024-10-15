@@ -6,6 +6,7 @@ import { AxiosError } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
+import { pay_status_options } from '@/components/filters';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +16,8 @@ import DataTableType from '@/libs/validations/data-table-type';
 import { exportEmployeePayrollCSVData } from '@/services/employee/employeePayroll.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
+import { DataTableFacetedFilter } from '../data-table-faceted-filter';
+
 import { MessageErrorResponseWithError } from '@/types';
 
 interface DataTableToolbarProps<TData> {
@@ -22,6 +25,8 @@ interface DataTableToolbarProps<TData> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function HRPayrollListToolbar<TData extends DataTableType>({
@@ -29,6 +34,8 @@ export function HRPayrollListToolbar<TData extends DataTableType>({
   searchTerm,
   onSearch,
   searchLoading,
+  setFilterValue,
+  filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const selectedRowIds: string[] = table
@@ -68,12 +75,20 @@ export function HRPayrollListToolbar<TData extends DataTableType>({
           loading={searchLoading}
         />
 
-        {(isFiltered || searchTerm) && (
+        <DataTableFacetedFilter
+          onFilterChange={setFilterValue}
+          title="Pay Status"
+          options={pay_status_options}
+          filterValue={filterValue}
+        />
+
+        {(isFiltered || searchTerm || filterValue.length > 0) && (
           <Button
             variant="ghost"
             onClick={() => {
               table.resetColumnFilters();
               onSearch('');
+              setFilterValue([]);
             }}
             className="h-8 px-2 lg:px-3"
           >

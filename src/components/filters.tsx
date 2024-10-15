@@ -93,6 +93,20 @@ export const gender_options = [
     icon: PersonStanding,
   },
 ];
+
+export const pay_status_options = [
+  {
+    value: 'Paid',
+    label: 'Paid',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Unpaid',
+    label: 'Unpaid',
+    icon: XCircle,
+  },
+];
+
 export const hrStatus_options = [
   {
     value: 'enabled',

@@ -9,6 +9,7 @@ export interface HRPayrollListParams {
   limit?: number;
   from?: string;
   to?: string;
+  payStatus?: string[];
 }
 
 export const getPayrollList = async (
@@ -19,6 +20,7 @@ export const getPayrollList = async (
     limit: 5,
     from: new Date().toISOString(),
     to: new Date().toISOString(),
+    payStatus: [],
   };
 
   const mergedParams = { ...defaultParams, ...params };
@@ -38,16 +40,18 @@ export const searchHRPayrollList = async ({
   limit,
   from = new Date().toISOString(),
   to = new Date().toISOString(),
+  payStatus = [],
 }: {
   query: string;
   page: number;
   limit: number;
   from: string;
   to: string;
+  payStatus: string[];
 }): Promise<HRPayrollApiResponse> => {
   const { data, pagination }: HRPayrollApiResponse = await baseAPI.post(
     `/v2/payroll/search`,
-    { query, page, limit, from, to },
+    { query, page, limit, from, to, payStatus },
   );
 
   return { data, pagination };
