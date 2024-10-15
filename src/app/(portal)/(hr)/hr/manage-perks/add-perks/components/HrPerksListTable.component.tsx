@@ -3,79 +3,61 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
-import { DateRange } from 'react-day-picker';
 
-import { attendanceListColumns } from '@/components/data-table/columns/attendance-list-columns';
+import { hrPerkListColumns } from '@/components/data-table/columns/hr-perk-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useAttendanceListQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
-import { AttendanceListType } from '@/libs/validations/attendance-list';
-import { searchAttedanceList } from '@/services/hr/attendance-list.service';
-import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
+import { useHrPerksListQuery } from '@/hooks/hrPerksList/useHrPerksList.hook';
+import { HrPerksListType } from '@/libs/validations/hr-perks';
+import { searchHrPerkList } from '@/services/hr/perks-list.service';
+import { PerkListStoreType } from '@/stores/hr/perk-list';
 
-interface AttendanceHistoryTableProps {
-  dates?: DateRange;
-}
-
-const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
-  dates,
-}) => {
+const HrPerksListTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { attendanceListStore } = useStores() as {
-    attendanceListStore: AttendanceListStoreType;
-  };
-  const { setRefetchAttendanceList, refetchAttendanceList } =
-    attendanceListStore;
-
-  const page = Number(searchParams.get('page')) || 1;
-  const limit = Number(searchParams.get('limit')) || 5;
+  const { perkListStore } = useStores() as { perkListStore: PerkListStoreType };
+  const { setRefetchPerkList, refetchPerkList } = perkListStore;
   const initialSearchTerm = searchParams.get('search') || '';
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
+  const [typeFilter, setTypeFilter] = useState<string[]>([]);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
 
+  const page = Number(searchParams.get('page')) || 1;
+  const limit = Number(searchParams.get('limit')) || 5;
+
   const {
-    data: attendanceList,
+    data: perksList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = useAttendanceListQuery({
-    page,
-    limit,
-    from: dates?.from?.toISOString(),
-    to: dates?.to?.toISOString(),
-    Status: statusFilter,
-  });
+  } = useHrPerksListQuery({ page, limit, type: typeFilter });
 
   const {
     mutate,
     isPending,
-    data: searchAttendanceListData,
+    data: searchPerkListData,
   } = useMutation({
     mutationFn: ({
       query,
       page,
       limit,
-      Status,
+      type,
     }: {
       query: string;
       page: number;
       limit: number;
-      Status: string[];
+      type?: string[];
     }) =>
-      searchAttedanceList({
+      searchHrPerkList({
         query,
         page,
         limit,
-        from: dates?.from,
-        to: dates?.to,
-        Status,
+        type,
       }),
     onError: err => {
       toast({
@@ -98,27 +80,23 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit, Status: statusFilter });
+      mutate({ query: debouncedSearchTerm, page, limit, type: typeFilter });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate, statusFilter]);
+  }, [debouncedSearchTerm, page, limit, refetch, mutate, typeFilter]);
 
   useEffect(() => {
-    if (refetchAttendanceList) {
+    if (refetchPerkList) {
       void (async () => {
         await refetch();
       })();
 
-      setRefetchAttendanceList(false);
+      setRefetchPerkList(false);
     }
-  }, [refetchAttendanceList, setRefetchAttendanceList, refetch]);
-
-  const handleSearchChange = (term: string) => {
-    setSearchTerm(term);
-  };
+  }, [refetchPerkList, setRefetchPerkList, refetch]);
 
   const handlePaginationChange = (newPage: number, newLimit: number) => {
     const params = new URLSearchParams(searchParams);
@@ -134,13 +112,17 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
       </div>
     );
 
-  const tableData: AttendanceListType[] = debouncedSearchTerm
-    ? ((searchAttendanceListData?.data || []) as AttendanceListType[])
-    : ((attendanceList?.data || []) as AttendanceListType[]);
+  const tableData: HrPerksListType[] = debouncedSearchTerm
+    ? ((searchPerkListData?.data || []) as HrPerksListType[])
+    : ((perksList?.data || []) as HrPerksListType[]);
 
   const tablePageCount: number | undefined = debouncedSearchTerm
-    ? searchAttendanceListData?.pagination.totalPages
-    : attendanceList?.pagination.totalPages;
+    ? searchPerkListData?.pagination.totalPages
+    : perksList?.pagination.totalPages;
+
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+  };
 
   return (
     <>
@@ -148,9 +130,9 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
         <DataTableLoading columnCount={7} rowCount={limit} />
       ) : (
         <DataTable
-          searchLoading={isPending}
+          searchLoading={isFetching || isPending}
           data={tableData || []}
-          columns={attendanceListColumns}
+          columns={hrPerkListColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
@@ -159,13 +141,13 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
-          toolbarType="attendanceList"
-          setFilterValue={setStatusFilter}
-          filterValue={statusFilter}
+          toolbarType={'hrPerksList'}
+          setFilterValue={setTypeFilter}
+          filterValue={typeFilter}
         />
       )}
     </>
   );
 };
 
-export default AttendanceListTable;
+export default HrPerksListTable;

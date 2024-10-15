@@ -6,6 +6,7 @@ import { AxiosError } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
+import { attendance_list_status_options } from '@/components/filters';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +16,8 @@ import DataTableType from '@/libs/validations/data-table-type';
 import { exportAttendanceHistoryCSVData } from '@/services/employee/attendance-history.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
+import { DataTableFacetedFilter } from '../data-table-faceted-filter';
+
 import { MessageErrorResponseWithError } from '@/types';
 
 interface DataTableToolbarProps<TData> {
@@ -22,6 +25,8 @@ interface DataTableToolbarProps<TData> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function AttendanceListToolbar<TData extends DataTableType>({
@@ -29,6 +34,8 @@ export function AttendanceListToolbar<TData extends DataTableType>({
   searchTerm,
   onSearch,
   searchLoading,
+  setFilterValue,
+  filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const selectedRowIds: string[] = table
@@ -66,6 +73,13 @@ export function AttendanceListToolbar<TData extends DataTableType>({
           onChange={event => onSearch(event.target.value)}
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
+        />
+
+        <DataTableFacetedFilter
+          onFilterChange={setFilterValue}
+          title="Status"
+          options={attendance_list_status_options}
+          filterValue={filterValue}
         />
 
         {(isFiltered || searchTerm) && (

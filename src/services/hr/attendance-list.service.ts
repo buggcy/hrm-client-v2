@@ -1,5 +1,6 @@
 import { AddAttendanceFormData } from '@/app/(portal)/(hr)/hr/manage-attendance/attendance-list/components/AttendanceDialog';
 import {
+  AttendanceDistributionStatsApiResponseSchema,
   attendanceListApiResponseSchema,
   AttendanceListStatsApiResponseSchema,
   attendanceUsersApiResponseSchema,
@@ -8,6 +9,7 @@ import {
 import { baseAPI, schemaParse } from '@/utils';
 
 import {
+  AttendanceDistributionApiResponse,
   AttendanceListApiResponse,
   AttendanceListStatsApiResponse,
   AttendanceUsers,
@@ -20,7 +22,7 @@ export interface AttendanceListParams {
   from?: string;
   to?: string;
   date?: string;
-  Status?: string;
+  Status?: string[];
   Total_Time?: string;
   Productivity?: string;
   breaks?: string;
@@ -79,15 +81,17 @@ export const searchAttedanceList = async ({
   query,
   from = new Date(),
   to = new Date(),
+  Status = [],
 }: {
   page: number;
   limit: number;
   query: string;
   from?: Date;
   to?: Date;
+  Status: string[];
 }): Promise<AttendanceListApiResponse> => {
   const res = await baseAPI.get(
-    `/attendence-v2?page=${page}&limit=${limit}&fullname=${query}&from=${from?.toISOString()}&to=${to?.toISOString()}`,
+    `/attendence-v2?page=${page}&limit=${limit}&fullname=${query}&from=${from?.toISOString()}&to=${to?.toISOString()}&Status=${Status.join(',')}`,
   );
   return schemaParse(attendanceListApiResponseSchema)(res);
 };
@@ -101,7 +105,7 @@ export const getAttendanceList = async (
     from: '',
     to: '',
     date: '',
-    Status: '',
+    Status: [],
     Total_Time: '',
     Productivity: '',
     breaks: '',
@@ -148,6 +152,25 @@ export const getAttendanceListStats = async ({
     `/attendence-overview-v2?from=${from}&to=${to}`,
   );
   return schemaParse(AttendanceListStatsApiResponseSchema)(res);
+};
+
+export const getAttendanceDistributionStats = async ({
+  date = new Date(),
+}: {
+  date?: Date;
+}): Promise<AttendanceDistributionApiResponse> => {
+  const formattedDate = date
+    .toLocaleDateString('en-CA', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replaceAll('/', '-');
+
+  const res = await baseAPI.get(
+    `/attendence-distribution-v2?date=${formattedDate}`,
+  );
+  return schemaParse(AttendanceDistributionStatsApiResponseSchema)(res);
 };
 
 export const deleteAttendance = async (
