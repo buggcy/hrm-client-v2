@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
 
-import { AddAllowedLeave } from '@/services/hr/manage.leave.service';
+import { AddExtraLeave } from '@/services/hr/manage.leave.service';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -50,6 +50,7 @@ export function AddExtraLeaveModal({
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<AddLeaveFormData>({
     resolver: zodResolver(FormSchema),
@@ -60,13 +61,15 @@ export function AddExtraLeaveModal({
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: AddAllowedLeave,
+    mutationFn: AddExtraLeave,
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message || 'Leave Added Successfully!',
       });
+      reset();
       refetch();
+      onCloseChange(false);
     },
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
@@ -166,7 +169,10 @@ export function AddExtraLeaveModal({
               <Button
                 variant="ghostSecondary"
                 type="button"
-                onClick={() => onCloseChange(false)}
+                onClick={() => {
+                  reset();
+                  onCloseChange(false);
+                }}
               >
                 Close
               </Button>

@@ -135,4 +135,5 @@ export {
   applyLeaveApiResponseSchema,
   EmployeeLeavesDataApiResponseSchema,
   leaveApiResponseSchema,
+  ExtraLeaveSchema,
 };

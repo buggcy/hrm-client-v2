@@ -1,3 +1,5 @@
+import { ExtraLeave } from './leave-history.types';
+
 export interface Pagination {
   page: number;
   limit: number;
@@ -10,4 +12,9 @@ export interface EmployeePerks {
   email: string;
   name: string;
   Avatar?: string;
+}
+
+export interface ExtraLeaveApiResponse {
+  pagination: Pagination;
+  data: ExtraLeave[];
 }
