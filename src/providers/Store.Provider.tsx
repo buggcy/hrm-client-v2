@@ -8,7 +8,9 @@ import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
 import { usePerkStore } from '@/stores/employee/perks';
 import { useAttendanceListStore } from '@/stores/hr/attendance-list';
 import { useEmployeeStore } from '@/stores/hr/employee';
+import { useHrEventsStore } from '@/stores/hr/hrEvents';
 import { useLeaveStore } from '@/stores/hr/leave';
+import { useLeaveListStore } from '@/stores/hr/leave-list';
 
 import { useAuthStore } from '../stores/auth';
 import { usePolicyStore } from '../stores/hr-policies.Store';
@@ -19,12 +21,14 @@ interface StoreContextType {
   employeeStore: ReturnType<typeof useEmployeeStore>;
   perkStore: ReturnType<typeof usePerkStore>;
   employeePayrollStore: ReturnType<typeof useEmployeePayrollStore>;
+  hrEventsStore: ReturnType<typeof useHrEventsStore>;
   attendanceHistoryStore: ReturnType<typeof useAttendanceHistoryStore>;
   leaveHistoryStore: ReturnType<typeof useLeaveHistoryStore>;
   notificationStore: ReturnType<typeof useNotificationStore>;
   policyStore: ReturnType<typeof usePolicyStore>;
   manageLeaveStore: ReturnType<typeof useLeaveStore>;
   attendanceListStore: ReturnType<typeof useAttendanceListStore>;
+  leaveListStore: ReturnType<typeof useLeaveListStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -34,12 +38,14 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const employeeStore = useEmployeeStore();
   const perkStore = usePerkStore();
   const employeePayrollStore = useEmployeePayrollStore();
+  const hrEventsStore = useHrEventsStore();
   const attendanceHistoryStore = useAttendanceHistoryStore();
   const leaveHistoryStore = useLeaveHistoryStore();
   const notificationStore = useNotificationStore();
   const policyStore = usePolicyStore();
   const manageLeaveStore = useLeaveStore();
   const attendanceListStore = useAttendanceListStore();
+  const leaveListStore = useLeaveListStore();
 
   return (
     <StoreContext.Provider
@@ -47,6 +53,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         authStore,
         employeeStore,
         employeePayrollStore,
+        hrEventsStore,
         attendanceHistoryStore,
         leaveHistoryStore,
         perkStore,
@@ -54,6 +61,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         attendanceListStore,
         policyStore,
         manageLeaveStore,
+        leaveListStore,
       }}
     >
       {children}

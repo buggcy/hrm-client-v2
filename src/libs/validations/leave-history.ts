@@ -37,11 +37,13 @@ const MonthlyLeaveRecordSchema = z.object({
   month: z.number(),
   casualLeaves: z.number(),
   sickLeaves: z.number(),
+  _id: z.string(),
 });
 
 const AnnualLeaveRecordSchema = z.object({
   year: z.number(),
   annualLeaves: z.number(),
+  _id: z.string(),
 });
 
 const ExtraLeaveSchema = z.object({
@@ -50,6 +52,7 @@ const ExtraLeaveSchema = z.object({
   leavesTaken: z.number(),
   month: z.number().optional(),
   year: z.number().optional(),
+  _id: z.string(),
 });
 
 const EmployeeLeavesDataApiResponseSchema = z.object({
