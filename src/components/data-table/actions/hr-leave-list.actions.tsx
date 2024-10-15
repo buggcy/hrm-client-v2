@@ -127,6 +127,24 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onSelect={() => {
+              setType('accept');
+              setShowAcceptDialog(true);
+            }}
+          >
+            <Check className="mr-2 size-4" />
+            Accept Request
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => {
+              setType('reject');
+              setShowAcceptDialog(true);
+            }}
+          >
+            <XCircle className="mr-2 size-4" />
+            Reject Request
+          </DropdownMenuItem>
           <DropdownMenuSeparator />{' '}
           {row?.getValue('Status') === 'Pending' ? (
             <>
@@ -134,24 +152,7 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
                 <Eye className="mr-2 size-4" />
                 View Request
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => {
-                  setType('accept');
-                  setShowAcceptDialog(true);
-                }}
-              >
-                <Check className="mr-2 size-4" />
-                Accept Request
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => {
-                  setType('reject');
-                  setShowAcceptDialog(true);
-                }}
-              >
-                <XCircle className="mr-2 size-4" />
-                Reject Request
-              </DropdownMenuItem>
+
               <DropdownMenuItem
                 className="text-red-600"
                 onSelect={() => setShowDeleteDialog(true)}
