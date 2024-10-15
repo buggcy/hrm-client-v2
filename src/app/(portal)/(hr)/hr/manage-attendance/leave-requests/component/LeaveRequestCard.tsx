@@ -152,6 +152,11 @@ export const LeaveRequestCard = ({
                         variant="outline"
                         size="icon"
                         className="size-[24px] rounded-full"
+                        onClick={() =>
+                          navigator.clipboard.writeText(
+                            person?.User_ID?.companyEmail || '',
+                          )
+                        }
                       >
                         <Mail className="size-3" />
                       </Button>
@@ -182,6 +187,11 @@ export const LeaveRequestCard = ({
                         variant="outline"
                         size="icon"
                         className="size-[24px] rounded-full"
+                        onClick={() =>
+                          navigator.clipboard.writeText(
+                            person?.User_ID?.contactNo || '',
+                          )
+                        }
                       >
                         <Phone className="size-3" />
                       </Button>
@@ -194,110 +204,83 @@ export const LeaveRequestCard = ({
               </TooltipProvider>
             </div>
           </div>
-          <div>
-            <div className="flex justify-between">
-              <h3 className="truncate text-lg font-semibold">
-                {person?.User_ID?.firstName} {person?.User_ID?.lastName}
-              </h3>
+          <div className="flex justify-between">
+            <div>
+              <div className="flex justify-between">
+                <h3 className="truncate text-lg font-semibold">
+                  {person?.User_ID?.firstName} {person?.User_ID?.lastName}
+                </h3>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground">
+                {person?.User_ID?.companyEmail}
+              </p>
             </div>
-            <p className="text-sm font-medium text-muted-foreground">
-              {person?.User_ID?.companyEmail}
-            </p>
+            <div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <Badge>Leave Info</Badge>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                    <Table className="text-xs">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead></TableHead>
+                          <TableHead>Annual</TableHead>
+                          <TableHead>Casual</TableHead>
+                          <TableHead>Sick</TableHead>
+                          <TableHead>Monthly</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>Allowed Leaves</TableCell>
+                          <TableCell>
+                            {allowLeaveList?.annualLeavesAllowed}
+                          </TableCell>
+                          <TableCell>
+                            {allowLeaveList?.allowedCasualLeaves}
+                          </TableCell>
+                          <TableCell>
+                            {allowLeaveList?.allowedSickLeaves}
+                          </TableCell>
+                          <TableCell>
+                            {allowLeaveList?.monthlyLeavesAllowed}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Taken Leaves</TableCell>
+                          <TableCell>
+                            {currentYearRecord
+                              ? currentYearRecord.annualLeaves
+                              : 0}
+                          </TableCell>
+                          <TableCell>
+                            {currentMonthRecord
+                              ? currentMonthRecord.casualLeaves
+                              : 0}
+                          </TableCell>
+                          <TableCell>
+                            {currentMonthRecord
+                              ? currentMonthRecord.sickLeaves
+                              : 0}
+                          </TableCell>
+                          <TableCell>
+                            {currentMonthRecord
+                              ? currentMonthRecord.sickLeaves +
+                                currentMonthRecord.casualLeaves
+                              : 0}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
-          <Table className="w-full text-xs">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-1/2"></TableHead>
-
-                <TableHead className="w-1/6 dark:text-white">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span>AL</span>
-                      </TooltipTrigger>
-                      <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                        Annual Leave
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableHead>
-                <TableHead className="w-1/6 dark:text-white">
-                  {' '}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span>CL</span>
-                      </TooltipTrigger>
-                      <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                        Casual Leave
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableHead>
-                <TableHead className="w-1/6 dark:text-white">
-                  {' '}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span>SL</span>
-                      </TooltipTrigger>
-                      <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                        Sick Leave
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableHead>
-                <TableHead className="w-1/6 dark:text-white">
-                  {' '}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span>ML</span>
-                      </TooltipTrigger>
-                      <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                        Monthly Leave
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="w-1/2">Allowed Leaves</TableCell>
-                <TableCell className="w-1/6 dark:text-gray-300">
-                  {allowLeaveList?.annualLeavesAllowed}
-                </TableCell>
-                <TableCell className="w-1/6 dark:text-gray-300">
-                  {allowLeaveList?.allowedCasualLeaves}
-                </TableCell>
-                <TableCell className="w-1/6 dark:text-gray-300">
-                  {allowLeaveList?.allowedSickLeaves}
-                </TableCell>
-                <TableCell className="w-1/6 dark:text-gray-300">
-                  {allowLeaveList?.monthlyLeavesAllowed}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="w-1/2">Taken Leaves</TableCell>
-                <TableCell className="w-1/6 dark:text-gray-300">
-                  {currentYearRecord ? currentYearRecord.annualLeaves : 0}
-                </TableCell>
-                <TableCell className="w-1/6 dark:text-gray-300">
-                  {currentMonthRecord ? currentMonthRecord.casualLeaves : 0}
-                </TableCell>
-                <TableCell className="w-1/6 dark:text-gray-300">
-                  {currentMonthRecord ? currentMonthRecord.sickLeaves : 0}
-                </TableCell>
-                <TableCell className="w-1/6 dark:text-gray-300">
-                  {currentMonthRecord
-                    ? currentMonthRecord.sickLeaves +
-                      currentMonthRecord.casualLeaves
-                    : 0}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
 
           <div className="mt-2 flex justify-between">
             <p className="text-sm font-semibold">{'Leave Title'}</p>
@@ -330,7 +313,7 @@ export const LeaveRequestCard = ({
           <div className="flex flex-row justify-between">
             <p className="text-sm font-semibold">Leave Duration</p>
             <span className="truncate text-sm font-medium text-muted-foreground">
-              {durationInDays}
+              {`${durationInDays} ${durationInDays === 1 ? 'day' : 'days'}`}
             </span>
           </div>
           <div className="flex justify-between">
