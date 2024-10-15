@@ -46,7 +46,7 @@ const chartConfig = {
   },
   cancelled: {
     label: 'Cancelled',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--chart-4))',
   },
 } satisfies ChartConfig;
 
