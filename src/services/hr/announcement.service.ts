@@ -1,11 +1,15 @@
+import { AddAnnouncementFormData } from '@/app/(portal)/(hr)/hr/manage-announcement/components/AnnouncementDialog';
 import {
   AnnouncementApiResponse,
   announcementApiResponseSchema,
+  AnnouncementType,
   PolicyQueryParamsType,
 } from '@/libs/validations/hr-announcement';
 import { baseAPI } from '@/utils';
 
-import { IAnnouncement } from '@/types/hr-announcement.types';
+type SuccessMessageResponse = {
+  message: string;
+};
 
 const fetchAnnouncements = async (
   params?: PolicyQueryParamsType,
@@ -16,75 +20,77 @@ const fetchAnnouncements = async (
       params: params || {},
     },
   );
-  console.log(
-    'fetchAnnouncements response:',
-    announcementApiResponseSchema.parse(response),
-  );
   return announcementApiResponseSchema.parse(response);
 };
 
-// Fetch a single announcement by ID
-const fetchAnnouncementById = async (id: string): Promise<IAnnouncement> => {
-  const response: IAnnouncement = await baseAPI.get(`/announcements/${id}`);
-  console.log('fetchAnnouncementById response:', response);
-
+const fetchAnnouncementById = async (
+  _id: string,
+): Promise<AnnouncementType> => {
+  const response: AnnouncementType = await baseAPI.get(`/announcements/${_id}`);
+  console.log('get by id', response);
   return response;
 };
 
-// Add a new announcement
 const addAnnouncement = async (
-  values: IAnnouncement,
-): Promise<IAnnouncement> => {
-  const response: IAnnouncement = await baseAPI.post('/announcements', values);
-  console.log('Fetched announcement response:', response);
-
-  return response;
-};
-
-// Update an existing announcement by ID
-const updateAnnouncement = async (
-  id: string,
-  values: Partial<IAnnouncement>,
-): Promise<IAnnouncement> => {
-  const response: IAnnouncement = await baseAPI.put(
-    `/announcements/${id}`,
-    values,
+  data: AddAnnouncementFormData,
+): Promise<SuccessMessageResponse> => {
+  console.log('data in service', data);
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    '/announcements',
+    data,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
   );
-  console.log('updateAnnouncement response:', response);
-
-  return response;
+  return { message };
 };
 
-// Delete an announcement by ID
-const deleteAnnouncement = async (id: string): Promise<void> => {
-  await baseAPI.delete(`/announcements/${id}`);
+const updateAnnouncement = async (
+  _id: string,
+  values: Partial<AddAnnouncementFormData>,
+): Promise<SuccessMessageResponse> => {
+  await baseAPI.put(`/announcements/${_id}`, values);
+  console.log(`Announcement with ID ${_id} updated successfully.`);
+  return {
+    message: 'Announcement updated successfully!',
+  };
 };
 
-// Delete multiple announcements by IDs
+const deleteAnnouncement = async (
+  _id: string,
+): Promise<SuccessMessageResponse> => {
+  console.log('front end sercie', _id);
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/announcements/${_id}`,
+  );
+  return { message };
+};
+
 const deleteAllAnnouncements = async (ids: string[]): Promise<void> => {
   await baseAPI.patch('/announcement/multiple-delete', { ids });
 };
 
-// Search announcements by query
 const searchAnnouncements = async (params: {
   page: number;
   limit: number;
   query: string;
-  priority?: string[];
-  isEnabled?: string[];
+  priority?: string;
+  isEnabled?: string;
 }): Promise<AnnouncementApiResponse> => {
   const response: AnnouncementApiResponse = await baseAPI.get(
     '/announcement/search',
     {
       params: {
-        ...params,
+        page: params.page,
+        limit: params.limit,
+        query: params.query,
         ...(params.priority && { priority: params.priority }),
-        ...(params.isEnabled && { status: params.isEnabled }),
+        ...(params.isEnabled && { isEnabled: params.isEnabled }),
       },
     },
   );
-  console.log('searchAnnouncements response:', response.data);
-
   return response;
 };
 

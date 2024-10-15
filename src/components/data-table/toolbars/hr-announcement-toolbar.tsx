@@ -6,7 +6,7 @@ import { DataTableViewOptions } from '@/components/data-table/data-table-view-op
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { AnnouncementType } from '@/libs/validations/hr-announcement';
+import DataTableType from '@/libs/validations/data-table-type';
 
 const priority_options = [
   { label: 'Low', value: 'Low' },
@@ -24,17 +24,11 @@ interface DataTableToolbarProps<TData> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
-  setFilterValue: (
-    type: 'priority' | 'isEnabled' | 'gender',
-    value: string[],
-  ) => void;
-  filterValue: {
-    priority?: string[];
-    status?: string[];
-  };
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
-export function HrAnnouncementToolbar<TData extends AnnouncementType>({
+export function HrAnnouncementToolbar<TData extends DataTableType>({
   table,
   searchTerm,
   onSearch,
@@ -44,31 +38,25 @@ export function HrAnnouncementToolbar<TData extends AnnouncementType>({
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const selectedRowIds: string[] = table
-    .getSelectedRowModel()
-    .rows.map(row => row.original.hrId);
+  // const selectedRowIds: string[] = table
+  //   .getSelectedRowModel()
+  //   .rows.map(row => row.original.hrId);
 
-  //   const { mutate, isPending } = useMutation({
-  //     mutationFn: exportAnnouncementsCSVData,
-  //     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
-  //       toast({
-  //         title: 'Error',
-  //         description:
-  //           err?.response?.data?.error || 'Error on exporting announcements!',
-  //         variant: 'error',
-  //       });
-  //     },
-  //     onSuccess: (response: string) => {
-  //       const file = new Blob([response]);
-  //       downloadFile(file, 'Announcements.csv');
-  //     },
-  //   });
+  const handleFilterChange = (
+    type: 'priority' | 'isEnabled',
+    value: string[],
+  ) => {
+    const otherFilters =
+      type === 'priority'
+        ? filterValue.filter(v => ['true', 'false'].includes(v))
+        : filterValue.filter(v => ['Low', 'Medium', 'High'].includes(v));
+    setFilterValue([...otherFilters, ...value]);
+  };
 
-  //   const handleExport = () => {
-  //     if (selectedRowIds.length > 0) {
-  //       mutate(selectedRowIds);
-  //     }
-  //   };
+  const getPriorityFilterValue = () =>
+    filterValue.filter(v => ['Low', 'Medium', 'High'].includes(v));
+  const getStatusFilterValue = () =>
+    filterValue.filter(v => ['true', 'false'].includes(v));
 
   return (
     <div className="flex items-center justify-between">
@@ -77,35 +65,31 @@ export function HrAnnouncementToolbar<TData extends AnnouncementType>({
           placeholder="Filter ..."
           value={searchTerm}
           onChange={event => onSearch(event.target.value)}
-          inputClassName="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
 
         <DataTableFacetedFilter
-          onFilterChange={value => setFilterValue('priority', value)}
+          onFilterChange={value => handleFilterChange('priority', value)}
           title="Priority"
           options={priority_options}
-          filterValue={filterValue.priority ?? []}
+          filterValue={getPriorityFilterValue()}
         />
 
         <DataTableFacetedFilter
-          onFilterChange={value => setFilterValue('isEnabled', value)}
+          onFilterChange={value => handleFilterChange('isEnabled', value)}
           title="Status"
           options={status_options}
-          filterValue={filterValue.status ?? []}
+          filterValue={getStatusFilterValue()}
         />
 
-        {(isFiltered ||
-          searchTerm ||
-          (filterValue.priority && filterValue.priority.length > 0) ||
-          (filterValue.status && filterValue.status.length > 0)) && (
+        {(isFiltered || searchTerm || filterValue.length > 0) && (
           <Button
             variant="ghost"
             onClick={() => {
               table.resetColumnFilters();
               onSearch('');
-              setFilterValue('priority', []);
-              setFilterValue('isEnabled', []);
+              setFilterValue([]);
             }}
             className="h-8 px-2 lg:px-3"
           >
@@ -114,19 +98,6 @@ export function HrAnnouncementToolbar<TData extends AnnouncementType>({
           </Button>
         )}
       </div>
-      {/* {selectedRowIds.length > 0 && (
-        <LoadingButton
-          variant="outline"
-          size="sm"
-          className="ml-auto mr-2 flex h-8"
-          //onClick={handleExport}
-          //disabled={isPending}
-          //loading={isPending}
-        >
-          <FileDown className="mr-2 size-4" />
-          Export
-        </LoadingButton>
-      )} */}
       <DataTableViewOptions table={table} />
     </div>
   );

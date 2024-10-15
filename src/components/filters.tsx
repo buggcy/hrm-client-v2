@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Circle,
   CircleArrowOutUpRight,
+  CircleFadingPlus,
   HelpCircle,
   PackagePlus,
   PersonStanding,
@@ -93,11 +94,6 @@ export const gender_options = [
 
 export const perk_status_options = [
   {
-    value: 'available',
-    label: 'Available',
-    icon: CircleArrowOutUpRight,
-  },
-  {
     value: 'pending',
     label: 'Pending',
     icon: Circle,
@@ -184,6 +180,52 @@ export const Hr_Announcement_Status_options = [
   {
     value: 'Disable',
     label: 'Disable',
+    icon: CheckCircle2,
+  },
+];
+
+export const employee_status = [
+  {
+    value: 'tba',
+    label: 'To Be Added',
+    icon: CircleFadingPlus,
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Rejected',
+    label: 'Rejected',
+    icon: XCircle,
+  },
+  {
+    value: 'Approved',
+    label: 'Approved',
+    icon: CheckCircle2,
+  },
+];
+
+export const attendance_list_status_options = [
+  {
+    value: 'Present',
+    label: 'Present',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Absent',
+    label: 'Absent',
+    icon: XCircle,
+  },
+  {
+    value: 'Leave',
+    label: 'Leave',
+    icon: Circle,
+  },
+  {
+    value: 'Holiday',
+    label: 'Holiday',
     icon: Circle,
   },
 ];

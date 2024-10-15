@@ -9,13 +9,14 @@ export const targetAudienceOptions = [
 ] as const;
 
 export const announcementSchema = z.object({
-  hrId: z.string().nonempty('HR ID is required'),
-  title: z.string().min(1, 'Title is required'),
+  _id: z.string(),
+  hrId: z.string(),
+  title: z.string(),
   StartDate: z.string(),
   EndDate: z.string(),
   Priority: z.string(),
   TargetAudience: z.string(),
-  Description: z.string().min(1, 'Description is required'),
+  Description: z.string(),
   File: z.string().optional(),
   isDeleted: z.boolean().optional(),
   isEnabled: z.boolean().optional(),

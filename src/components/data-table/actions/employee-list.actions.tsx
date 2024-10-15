@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Row } from '@tanstack/react-table';
 import { Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
@@ -16,22 +17,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useStores } from '@/providers/Store.Provider';
 
 import { EmployeeListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
-
+import { EmployeeStoreType } from '@/stores/hr/employee';
 interface DataTableRowActionsProps {
   row: Row<EmployeeListType>;
 }
 
 export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
+  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
+  const { setRefetchEmployeeList } = employeeStore;
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
   const data = row.original;
 
+  const router = useRouter();
+
   const handleEditClick = () => {
     // setDialogContent(<EditDialog task={data} />);
+  };
+
+  const handleViewDetails = () => {
+    router.push(`/profile?userId=${data._id}`);
   };
 
   return (
@@ -50,7 +60,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DialogTrigger asChild onClick={() => {}}>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleViewDetails}>
               <Eye className="mr-2 size-4" />
               View Details
             </DropdownMenuItem>
@@ -76,6 +86,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
         mutationFunc={deleteEmployeeRecord}
+        setRefetch={setRefetchEmployeeList}
       />
     </Dialog>
   );

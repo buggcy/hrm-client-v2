@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { gender_options } from '@/components/filters';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { EmployeeListType } from '@/libs/validations/employee';
@@ -98,8 +99,36 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
       <DataTableColumnHeader column={column} title="Date of Birth" />
     ),
     cell: ({ row }) => {
-      const field = new Date(Date.parse(row.getValue('DOB')));
-      return <div>{field?.toDateString()}</div>;
+      const dob = new Date(Date.parse(row.getValue('DOB')));
+
+      const currentDate = new Date();
+      let ageYears = currentDate.getFullYear() - dob.getFullYear();
+      let ageMonths = currentDate.getMonth() - dob.getMonth();
+      let ageDays = currentDate.getDate() - dob.getDate();
+
+      if (ageDays < 0) {
+        ageMonths -= 1;
+        const previousMonth = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          0,
+        );
+        ageDays += previousMonth.getDate();
+      }
+
+      if (ageMonths < 0) {
+        ageYears -= 1;
+        ageMonths += 12;
+      }
+
+      return (
+        <div className="flex space-x-2">
+          <Badge variant="outline">{`${ageYears}Y ${ageMonths}M`}</Badge>
+          <span className="max-w-[500px] truncate font-medium">
+            {dob.toDateString()}
+          </span>
+        </div>
+      );
     },
   },
 

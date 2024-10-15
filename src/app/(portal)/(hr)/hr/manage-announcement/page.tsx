@@ -1,5 +1,5 @@
 'use client';
-import { FunctionComponent, Suspense } from 'react';
+import { FunctionComponent, Suspense, useState } from 'react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -10,8 +10,7 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 
-import { fetchAnnouncements } from '@/services/hr/announcement.service';
-
+import { AnnouncementDialog } from './components/AnnouncementDialog';
 import HrAnnouncementTable from './components/HrAnnouncementTable';
 
 interface HrManageAnnouncementmeProps {}
@@ -19,8 +18,16 @@ interface HrManageAnnouncementmeProps {}
 const HrManageAnnouncement: FunctionComponent<
   HrManageAnnouncementmeProps
 > = () => {
-  const data = fetchAnnouncements();
-  console.log(data);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   return (
     <Layout>
       <HighTrafficBanner />
@@ -31,9 +38,15 @@ const HrManageAnnouncement: FunctionComponent<
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
         <Suspense fallback={<div>Loading...</div>}>
-          <HrAnnouncementTable />
+          <HrAnnouncementTable handleDialogOpen={handleDialogOpen} />
         </Suspense>
       </LayoutWrapper>
+      <AnnouncementDialog
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        onCloseChange={handleDialogClose}
+        mode="add"
+      />
     </Layout>
   );
 };

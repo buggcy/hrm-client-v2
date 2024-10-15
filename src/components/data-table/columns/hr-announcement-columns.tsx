@@ -1,12 +1,12 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import { ArrowDown, ArrowRight, ArrowUp } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { AnnouncementType } from '@/libs/validations/hr-announcement';
-import { getBadgeColor, getStatusBadgeColor } from '@/utils/hr.announcement';
 
 import { HrAnnouncementRowActions } from '../actions/hr-announcement-actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
@@ -74,12 +74,22 @@ export const hrAnnouncementColumns: ColumnDef<AnnouncementType>[] = [
     ),
     cell: ({ row }) => {
       const priority: string = row.getValue('Priority');
-      const badgeColor = getBadgeColor(priority);
-      return (
-        <div className="flex space-x-2">
-          <Badge className={badgeColor}>{priority}</Badge>
-        </div>
-      );
+      let icon;
+      switch (priority) {
+        case 'High':
+          icon = <ArrowUp />;
+          break;
+        case 'Low':
+          icon = <ArrowDown />;
+          break;
+        case 'Medium':
+          icon = <ArrowRight />;
+          break;
+        default:
+          icon = null;
+      }
+
+      return <div className="flex items-center space-x-2">{icon}</div>;
     },
   },
   {
@@ -89,10 +99,11 @@ export const hrAnnouncementColumns: ColumnDef<AnnouncementType>[] = [
     ),
     cell: ({ row }) => {
       const isEnabled: boolean = row.getValue('isEnabled');
-      const badgeColor = getStatusBadgeColor(isEnabled);
       return (
         <div className="flex space-x-2">
-          <Badge className={badgeColor}>
+          <Badge
+            variant={row.getValue('isEnabled') === true ? 'success' : 'error'}
+          >
             {isEnabled ? 'Enabled' : 'Disabled'}
           </Badge>
         </div>

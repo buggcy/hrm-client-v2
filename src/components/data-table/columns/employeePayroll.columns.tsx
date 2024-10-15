@@ -190,7 +190,7 @@ export const employeePayrollColumns: ColumnDef<EmployeePayrollListType>[] = [
         <div className="flex space-x-2">
           <Badge
             variant={
-              row.getValue('Pay_Status') === 'Paid' ? 'success' : 'destructive'
+              row.getValue('Pay_Status') === 'Paid' ? 'success' : 'error'
             }
           >
             {row.getValue('Pay_Status')}

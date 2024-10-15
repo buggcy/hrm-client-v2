@@ -2,11 +2,14 @@ import {
   useMutation,
   UseMutationResult,
   useQuery,
+  useQueryClient,
   UseQueryResult,
 } from '@tanstack/react-query';
 
+import { AddAnnouncementFormData } from '@/app/(portal)/(hr)/hr/manage-announcement/components/AnnouncementDialog';
 import {
   AnnouncementApiResponse,
+  AnnouncementType,
   PolicyQueryParamsType,
 } from '@/libs/validations/hr-announcement';
 import {
@@ -21,6 +24,9 @@ import {
 
 import { UseQueryConfig } from '@/types';
 import { IAnnouncement } from '@/types/hr-announcement.types';
+type SuccessMessageResponse = {
+  message: string;
+};
 
 export const useAnnouncementsQuery = (params: PolicyQueryParamsType = {}) => {
   return useQuery<AnnouncementApiResponse, Error>({
@@ -32,47 +38,63 @@ export const useAnnouncementsQuery = (params: PolicyQueryParamsType = {}) => {
   });
 };
 
-export const useAnnouncementQuery = (
-  id: string,
-  config: UseQueryConfig = {},
-) => {
-  return useQuery({
+export const useAnnouncementQuery = (id: string) => {
+  return useQuery<AnnouncementType>({
     queryKey: ['announcement', id],
     queryFn: () => fetchAnnouncementById(id),
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchInterval: 1000 * 60 * 5,
-    ...config,
-  }) as UseQueryResult<IAnnouncement, Error>;
+  });
 };
 
 // Hook to add a new announcement
 export const useAddAnnouncementMutation = () => {
-  return useMutation({
+  const queryClient = useQueryClient();
+
+  return useMutation<SuccessMessageResponse, Error, AddAnnouncementFormData>({
     mutationFn: addAnnouncement,
-  }) as UseMutationResult<IAnnouncement, Error, IAnnouncement>;
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['announcements'] });
+    },
+    onError: error => {
+      console.error('Error:', error);
+    },
+  });
 };
 
 export const useUpdateAnnouncementMutation = () => {
-  return useMutation({
-    mutationFn: ({
-      id,
-      values,
-    }: {
-      id: string;
-      values: Partial<IAnnouncement>;
-    }) => updateAnnouncement(id, values),
-  }) as UseMutationResult<
-    IAnnouncement,
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    SuccessMessageResponse,
     Error,
-    { id: string; values: Partial<IAnnouncement> }
+    { id: string; values: Partial<AddAnnouncementFormData> }
+  >({
+    mutationFn: ({ id, values }) => updateAnnouncement(id, values),
+    onSuccess: data => {
+      console.log('Announcement updated successfully:', data);
+      void queryClient.invalidateQueries({ queryKey: ['announcements'] });
+    },
+    onError: error => {
+      console.error('Error updating announcement:', error);
+    },
+  }) as UseMutationResult<
+    SuccessMessageResponse,
+    Error,
+    { id: string; values: Partial<AddAnnouncementFormData> }
   >;
 };
 
 export const useDeleteAnnouncementMutation = () => {
-  return useMutation({
+  const queryClient = useQueryClient();
+
+  return useMutation<SuccessMessageResponse, Error, string>({
     mutationFn: deleteAnnouncement,
-  }) as UseMutationResult<void, Error, string>;
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['announcements'] });
+    },
+  });
 };
 
 export const useDeleteAllAnnouncementsMutation = () => {

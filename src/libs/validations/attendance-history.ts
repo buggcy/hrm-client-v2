@@ -22,7 +22,6 @@ const attendanceHistoryListSchema = z.object({
   End_Date: z.string(),
   Productivity: z.string(),
   Status: z.enum(attendance_history_status),
-  type: z.literal('attendanceHistory').optional(),
 });
 
 const attendanceHistoryApiResponseSchema = z.object({

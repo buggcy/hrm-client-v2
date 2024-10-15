@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -34,6 +35,9 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
   additionalDocuments,
 }) => {
   const [activeTab, setActiveTab] = useState<string>('Overview');
+  const searchParams = useSearchParams();
+  const userIdFromParams = searchParams.get('userId');
+
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   };
@@ -44,7 +48,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
           <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Overview">
             Overview
           </TabsTrigger>
-          {currentUser?.roleId === 2 ? (
+          {currentUser?.roleId === 2 || userIdFromParams ? (
             <>
               <TabsTrigger className="h-8 w-1/4 sm:w-1/5" value="Kyc">
                 Kyc
@@ -75,25 +79,29 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
         )}
         {activeTab === 'Education' && (
           <CardContent>
-            <div className="mb-2 mt-4 text-sm font-bold">Education</div>
+            <div className="mb-2 mt-4 text-sm font-bold dark:text-white">
+              Education
+            </div>
             {educationExperiences?.length > 0 ? (
               <EducationTab
                 educationExperiences={educationExperiences}
                 type={'education'}
               />
             ) : (
-              <p className="mt-3 text-center text-gray-600">
+              <p className="mt-3 text-center text-gray-600 dark:text-gray-300">
                 {'Currently No Education Available!'}
               </p>
             )}
-            <div className="mb-2 mt-4 text-sm font-bold">Experience</div>
+            <div className="mb-2 mt-4 text-sm font-bold dark:text-white">
+              Experience
+            </div>
             {educationExperiences?.length > 0 ? (
               <EducationTab
                 educationExperiences={educationExperiences}
                 type={'experience'}
               />
             ) : (
-              <p className="mt-3 text-center text-gray-600">
+              <p className="mt-3 text-center text-gray-600 dark:text-gray-300">
                 {'Currently No Experience Available!'}
               </p>
             )}

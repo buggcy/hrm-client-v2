@@ -26,19 +26,16 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
-import {
-  EmployeeListType,
-  EmployeePayrollListType,
-} from '@/libs/validations/employee';
-import { AnnouncementType } from '@/libs/validations/hr-announcement';
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import DataTableType from '@/libs/validations/data-table-type';
 
 import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
+import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 import { HrAnnouncementToolbar } from './toolbars/hr-announcement-toolbar';
+import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
+import { UnapprovedEmployeeToolbar } from './toolbars/unapproved-employee.toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,22 +50,12 @@ interface DataTableProps<TData, TValue> {
   onSearch: (term: string) => void;
   searchLoading: boolean;
   toolbarType: string;
-  setFilterValue: (
-    type: 'priority' | 'isEnabled' | 'gender',
-    value: string[],
-  ) => void;
-  filterValue: { priority?: string[]; status?: string[]; gender?: string[] };
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
+  toolbar?: string;
 }
 
-export function DataTable<
-  TData extends
-    | EmployeePayrollListType
-    | EmployeeListType
-    | AttendanceHistoryListType
-    | LeaveHistoryListType
-    | AnnouncementType,
-  TValue,
->({
+export function DataTable<TData extends DataTableType, TValue>({
   columns,
   data,
   pagination,
@@ -119,8 +106,32 @@ export function DataTable<
             searchTerm={searchTerm}
             onSearch={onSearch}
             searchLoading={searchLoading}
-            setFilterValue={value => setFilterValue('gender', value)}
-            filterValue={filterValue.gender || []}
+            setFilterValue={value => setFilterValue(value)}
+            filterValue={filterValue}
+          />
+        );
+
+      case 'unapprovedEmployeeList':
+        return (
+          <UnapprovedEmployeeToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+          />
+        );
+
+      case 'hrPolicy':
+        return (
+          <HrPolicyToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
           />
         );
 
@@ -147,6 +158,15 @@ export function DataTable<
       case 'payrollList':
         return (
           <LeaveHistoryListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+          />
+        );
+      case 'attendanceList':
+        return (
+          <AttendanceListToolbar
             table={table}
             searchTerm={searchTerm}
             onSearch={onSearch}

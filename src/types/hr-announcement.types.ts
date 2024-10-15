@@ -1,4 +1,5 @@
 export interface IAnnouncement {
+  _id: string;
   hrId: string;
   title: string;
   StartDate: string;
@@ -9,6 +10,7 @@ export interface IAnnouncement {
   File?: string;
   isDeleted?: boolean;
   isEnabled?: boolean;
+  type?: 'hrAnnouncement';
 }
 
 export interface Pagination {
