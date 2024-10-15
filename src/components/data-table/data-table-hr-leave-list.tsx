@@ -26,17 +26,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import DataTableType from '@/libs/validations/data-table-type';
+import { LeaveListType } from '@/libs/validations/hr-leave-list';
 
 import { DataTablePagination } from './data-table-pagination';
-import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
-import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
-import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
-import { HrPerkListToolbar } from './toolbars/hr-perk-list-toolbar';
-import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
-import { HrEventsListToolbar } from './toolbars/hrEvents-list.toolbar';
-import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
-import { UnapprovedEmployeeToolbar } from './toolbars/unapproved-employee.toolbar';
+import { LeaveListToolbar } from './toolbars/hr-leave-list.toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,16 +46,15 @@ interface DataTableProps<TData, TValue> {
   toolbarType: string;
   setFilterValue: (value: string[]) => void;
   filterValue: string[];
-  toolbar?: string;
 }
 
-export function DataTable<TData extends DataTableType, TValue>({
+export function LeaveListDataTable<TData extends LeaveListType, TValue>({
   columns,
   data,
   pagination,
+  searchLoading,
   onSearch,
   searchTerm,
-  searchLoading,
   toolbarType,
   setFilterValue,
   filterValue,
@@ -95,105 +87,16 @@ export function DataTable<TData extends DataTableType, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    manualPagination: true,
   });
-
   const getToolBar = () => {
     switch (toolbarType) {
-      case 'hrEventsList':
+      case 'leavePostList':
         return (
-          <HrEventsListToolbar
+          <LeaveListToolbar
             table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
             searchLoading={searchLoading}
-            setFilterValue={setFilterValue}
-            filterValue={filterValue}
-          />
-        );
-      case 'employeeList':
-        return (
-          <EmployeeListToolbar
-            table={table}
-            searchTerm={searchTerm}
             onSearch={onSearch}
-            searchLoading={searchLoading}
-            setFilterValue={setFilterValue}
-            filterValue={filterValue}
-          />
-        );
-
-      case 'unapprovedEmployeeList':
-        return (
-          <UnapprovedEmployeeToolbar
-            table={table}
             searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-            setFilterValue={setFilterValue}
-            filterValue={filterValue}
-          />
-        );
-
-      case 'hrPolicy':
-        return (
-          <HrPolicyToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-            filterValue={filterValue}
-            setFilterValue={setFilterValue}
-          />
-        );
-
-      case 'attendanceHistory':
-        return (
-          <AttendanceHistoryListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-          />
-        );
-
-      case 'leaveHistory':
-        return (
-          <LeaveHistoryListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-          />
-        );
-
-      case 'payrollList':
-        return (
-          <LeaveHistoryListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-          />
-        );
-      case 'attendanceList':
-        return (
-          <AttendanceListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
-            setFilterValue={setFilterValue}
-            filterValue={filterValue}
-          />
-        );
-      case 'hrPerksList':
-        return (
-          <HrPerkListToolbar
-            table={table}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-            searchLoading={searchLoading}
             setFilterValue={setFilterValue}
             filterValue={filterValue}
           />
@@ -203,7 +106,6 @@ export function DataTable<TData extends DataTableType, TValue>({
         return null;
     }
   };
-
   return (
     <div className="space-y-4">
       {getToolBar()}
@@ -250,7 +152,7 @@ export function DataTable<TData extends DataTableType, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {searchLoading ? 'Finding Results ...' : 'No results.'}
+                  {searchLoading ? 'Finding Leaves ...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

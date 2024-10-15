@@ -37,11 +37,13 @@ const MonthlyLeaveRecordSchema = z.object({
   month: z.number(),
   casualLeaves: z.number(),
   sickLeaves: z.number(),
+  _id: z.string(),
 });
 
 const AnnualLeaveRecordSchema = z.object({
   year: z.number(),
   annualLeaves: z.number(),
+  _id: z.string(),
 });
 
 const ExtraLeaveSchema = z.object({
@@ -50,9 +52,11 @@ const ExtraLeaveSchema = z.object({
   leavesTaken: z.number(),
   month: z.number().optional(),
   year: z.number().optional(),
+  _id: z.string(),
 });
 
 const EmployeeLeavesDataApiResponseSchema = z.object({
+  _id: z.string(),
   userId: z.string(),
   allowedCasualLeaves: z.number(),
   allowedSickLeaves: z.number(),
@@ -63,6 +67,7 @@ const EmployeeLeavesDataApiResponseSchema = z.object({
   extraLeaves: z.array(ExtraLeaveSchema),
   createdAt: z.string(),
   updatedAt: z.string(),
+  __v: z.number(),
 });
 
 const dayOfWeekCountSchema = z.object({
@@ -120,7 +125,9 @@ export type LeaveHistoryApiResponse = z.infer<
   typeof leaveHistoryApiResponseSchema
 >;
 export type LeaveHistoryListType = z.infer<typeof leaveHistoryListSchema>;
-
+export type AllowedLeaveApiResponse = z.infer<
+  typeof EmployeeLeavesDataApiResponseSchema
+>;
 export {
   leaveHistoryApiResponseSchema,
   leaveHistoryListSchema,

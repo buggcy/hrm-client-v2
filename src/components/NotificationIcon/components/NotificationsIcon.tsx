@@ -19,7 +19,7 @@ export const NotificationIcon: React.FC<NotificationIconProps> = ({
   >
     <Bell className="size-5" />
     {unreadCount > 0 && (
-      <span className="absolute right-1 top-1 inline-flex -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-primary px-2 py-1 text-xs font-bold leading-none text-white">
+      <span className="absolute right-1 top-1 inline-flex -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-primary px-2 py-1 text-xs leading-none text-white">
         {unreadCount > 9 ? '9+' : unreadCount}
       </span>
     )}

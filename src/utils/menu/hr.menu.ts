@@ -1,11 +1,11 @@
 import {
   BadgeCheck,
+  CalendarCog,
   CalendarDays,
   ClipboardCheck,
   ClipboardList,
   Gift,
   Home,
-  Mail,
   Medal,
   UserCog,
   UserCog2,
@@ -37,6 +37,17 @@ export const hrMenu: MenuItem[] = [
     ],
   },
   {
+    title: 'Manage Events',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Events',
+        icon: CalendarCog,
+        href: '/hr/manage-events',
+      },
+    ],
+  },
+  {
     title: 'Manage Attendance',
     icon: UserCog2,
     children: [
@@ -49,11 +60,6 @@ export const hrMenu: MenuItem[] = [
         title: 'Leave List',
         icon: CalendarDays,
         href: '/hr/manage-attendance/leave-list',
-      },
-      {
-        title: 'Leave Requests',
-        icon: Mail,
-        href: '/hr/manage-attendance/leave-requests',
       },
     ],
   },

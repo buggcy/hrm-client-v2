@@ -54,20 +54,24 @@ export interface ExtraLeave {
   leavesTaken: number;
   month?: number;
   year?: number;
+  _id: string;
 }
 export interface MonthlyLeaveRecord {
   year: number;
   month: number;
   casualLeaves: number;
   sickLeaves: number;
+  _id: string;
 }
 
 export interface AnnualLeaveRecord {
   year: number;
   annualLeaves: number;
+  _id: string;
 }
 
 export interface EmployeeLeavesDataApiResponse {
+  _id: string;
   userId: string;
   allowedCasualLeaves: number;
   allowedSickLeaves: number;
@@ -78,4 +82,5 @@ export interface EmployeeLeavesDataApiResponse {
   extraLeaves: ExtraLeave[];
   createdAt: string;
   updatedAt: string;
+  __v: number;
 }
