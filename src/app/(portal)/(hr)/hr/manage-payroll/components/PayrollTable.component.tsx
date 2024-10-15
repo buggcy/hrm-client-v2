@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { DateRange } from 'react-day-picker';
 
 import { hrPayrollColumns } from '@/components/data-table/columns/hr-payroll.columns';
 import { DataTable } from '@/components/data-table/data-table';
@@ -18,7 +19,11 @@ import { EmployeeStoreType } from '@/stores/hr/employee';
 
 import { MessageErrorResponse } from '@/types';
 
-const PayrollTable: FunctionComponent = () => {
+interface PayrollTableProps {
+  dates?: DateRange;
+}
+
+const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
@@ -39,7 +44,12 @@ const PayrollTable: FunctionComponent = () => {
     isFetching,
     error,
     refetch,
-  } = useHRPayrollListQuery({ page, limit });
+  } = useHRPayrollListQuery({
+    page,
+    limit,
+    from: dates?.from?.toISOString(),
+    to: dates?.to?.toISOString(),
+  });
 
   const {
     mutate,
@@ -71,13 +81,19 @@ const PayrollTable: FunctionComponent = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        from: dates?.from?.toISOString() || new Date().toISOString(),
+        to: dates?.to?.toISOString() || new Date().toISOString(),
+      });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit, dates]);
 
   useEffect(() => {
     if (refetchEmployeeList) {

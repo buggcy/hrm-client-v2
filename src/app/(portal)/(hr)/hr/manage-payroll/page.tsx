@@ -1,5 +1,8 @@
+'use client';
+
 import React, { Suspense } from 'react';
 
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import {
   Layout,
@@ -12,6 +15,8 @@ import { Notification } from '@/components/NotificationIcon';
 import PayrollTable from './components/PayrollTable.component';
 
 export default function ManagePayrollPage() {
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
   return (
     <Layout>
       <LayoutHeader title="Manage Payroll">
@@ -20,11 +25,18 @@ export default function ManagePayrollPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
-        <Header subheading="Swift payroll, zero stress, happier employees."></Header>
+        <Header subheading="Swift payroll, zero stress, happier employees.">
+          <DateRangePicker
+            timeRange={timeRange}
+            selectedDate={selectedDate}
+            setTimeRange={setTimeRange}
+            setDate={handleSetDate}
+          />
+        </Header>
 
         <div className="mt-6">
           <Suspense fallback={<div>Loading...</div>}>
-            <PayrollTable />
+            <PayrollTable dates={selectedDate} />
           </Suspense>
         </div>
       </LayoutWrapper>
