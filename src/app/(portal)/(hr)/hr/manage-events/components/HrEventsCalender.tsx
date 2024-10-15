@@ -196,11 +196,18 @@ export default function HrEventsCalendar() {
     setCurrentView(newView);
   };
 
-  const eventStyleGetter = () => {
-    const style = {
-      className: 'event-style',
+  const eventStyleGetter = (event: MyEvent) => {
+    let className = 'event-style';
+
+    if (event.Event_Type === 'holiday') {
+      className = 'event-holiday';
+    } else if (event.Event_Type === 'company') {
+      className = 'event-non-holiday';
+    }
+
+    return {
+      className,
     };
-    return style;
   };
 
   const page = 1;
@@ -300,7 +307,7 @@ export default function HrEventsCalendar() {
             events={formattedEvents}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 400 }}
+            style={{ height: 420 }}
             date={currentDate}
             view={currentView}
             onNavigate={onNavigate}

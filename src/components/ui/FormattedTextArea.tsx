@@ -1,9 +1,13 @@
-import React, { useRef } from 'react';
-
-import ReactQuill from 'react-quill';
+import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 import 'react-quill/dist/quill.snow.css';
 import './FormattedTextArea.css';
+
+const ReactQuill = dynamic(() => import('react-quill'), {
+  ssr: false,
+  loading: () => <p>Loading editor...</p>,
+});
 
 interface FormattedTextAreaProps {
   value: string;
@@ -14,10 +18,14 @@ const FormattedTextArea: React.FC<FormattedTextAreaProps> = ({
   value,
   onChange,
 }) => {
-  const quillRef = useRef<ReactQuill | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleChange = (content: string) => {
-    onChange(content); // Pass the content to the parent component
+    onChange(content);
   };
 
   const modules = {
@@ -43,10 +51,13 @@ const FormattedTextArea: React.FC<FormattedTextAreaProps> = ({
     'link',
   ];
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="h-full">
       <ReactQuill
-        ref={quillRef}
         value={value}
         onChange={handleChange}
         modules={modules}

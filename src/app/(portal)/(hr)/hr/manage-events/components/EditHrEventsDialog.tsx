@@ -134,7 +134,7 @@ export function EditHrEventsDialogDemo({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[550px] sm:max-w-[600px]">
+      <DialogContent className="h-full max-h-[550px] sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Edit Event</DialogTitle>
         </DialogHeader>
@@ -321,8 +321,8 @@ export function EditHrEventsDialogDemo({
                         <SelectItem value="No status" disabled>
                           Select status
                         </SelectItem>
-                        <SelectItem value="true">True</SelectItem>
-                        <SelectItem value="false">False</SelectItem>
+                        <SelectItem value="true">Enable</SelectItem>
+                        <SelectItem value="false">Disable</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                     <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
@@ -336,7 +336,7 @@ export function EditHrEventsDialogDemo({
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-14">
+          <div className="flex flex-col gap-10">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Description" className="mb-2 text-left">
                 Description

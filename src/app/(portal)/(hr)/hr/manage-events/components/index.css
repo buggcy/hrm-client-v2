@@ -30,7 +30,7 @@
   background-color: #e7f7fd;
   border-radius: 4px;
   color: hsl(var(--primary));
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .dark .event-style {
@@ -43,4 +43,35 @@
 }
 .rbc-timeslot-group {
   border-bottom: 1px solid hsl(var(--border)) !important;
+}
+
+.event-style {
+  background-color: #e7f7fd;
+  border-radius: 4px;
+  color: hsl(var(--primary));
+  font-size: 12px;
+}
+
+.event-holiday {
+  background-color: #d4edda;
+  color: hsl(var(--success));
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.event-non-holiday {
+  background-color: #e7f7fd;
+  color: hsl(var(--primary));
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.dark .event-holiday {
+  background-color: hsl(var(--success));
+  color: #d4edda;
+}
+
+.dark .event-non-holiday {
+  background-color: hsl(var(--primary));
+  color: #e7f7fd;
 }
