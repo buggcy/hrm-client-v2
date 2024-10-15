@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { getLeaveData } from '@/services/employee/leave-history.service';
 import {
   getLeaveListRecords,
   getPendingLeaveRequest,
@@ -16,6 +17,7 @@ import {
   LeaveListRecords,
   LeaveTrendChartApiResponse,
 } from '@/types/hr-leave-list.types';
+import { EmployeeLeavesDataApiResponse } from '@/types/leave-history.types';
 
 export const useLeaveListPostQuery = (
   params: LeaveListParams,
@@ -65,3 +67,16 @@ export const useLeaveTrendChartQuery = (config: UseQueryConfig = {}) =>
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<LeaveTrendChartApiResponse, Error>;
+
+export const useAllowLeaveListQuery = (
+  id: string,
+  config: UseQueryConfig = {},
+) =>
+  useQuery({
+    queryKey: ['allowLeaveList', id],
+    queryFn: () => getLeaveData({ employeeId: id }),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<EmployeeLeavesDataApiResponse, Error>;
