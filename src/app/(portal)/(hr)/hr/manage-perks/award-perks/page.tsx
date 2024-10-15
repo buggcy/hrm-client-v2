@@ -1,6 +1,7 @@
 'use client';
 
 import { FunctionComponent, useEffect, useState } from 'react';
+import Link from 'next/link';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -36,6 +37,7 @@ import { toast } from '@/components/ui/use-toast';
 
 import {
   useHrEmpoyeeAllPerksQuery,
+  useHrPerkRequestsQuery,
   useHrPerksEmpoyeeQuery,
 } from '@/hooks/hrPerksList/useHrPerksList.hook';
 import { perksHandler } from '@/services/hr/perks-list.service';
@@ -158,6 +160,8 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
     });
   };
 
+  const { data: perkRequests } = useHrPerkRequestsQuery({});
+
   return (
     <Layout>
       <HighTrafficBanner />
@@ -167,65 +171,76 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
-        <Select onValueChange={handleEmployeeChange}>
-          <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[64%]">
-            <SelectTrigger className="h-[50px] w-full p-4">
-              {selectedEmployee ? (
-                <div className="flex items-center gap-1 sm:gap-4">
-                  <Avatar className="size-8">
-                    <AvatarImage
-                      src={selectedEmployeeData?.avatar || ''}
-                      alt={`${selectedEmployeeData?.avatar}`}
-                    />
-                    <AvatarFallback className="uppercase">
-                      {selectedEmployeeData?.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col items-start">
-                    <SelectValue>
-                      <p className="text-sm">{selectedEmployeeData?.name}</p>
-                    </SelectValue>
-                    <p className="text-xs text-muted-foreground">
-                      {selectedEmployeeData?.email}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <SelectValue placeholder="Select Employee" />
-              )}
-            </SelectTrigger>
-            <div className="hidden h-0 w-full opacity-0 sm:block"></div>
-            <div className="hidden h-0 w-full opacity-0 sm:block"></div>
-          </div>
-          <SelectContent className="w-fit">
-            <SelectGroup>
-              <SelectLabel>Select Employee</SelectLabel>
-              {data?.data.map(employee => (
-                <SelectItem key={employee.id} value={employee.id}>
+        <div className="flex flex-col-reverse justify-between gap-4 sm:flex-row">
+          <Select onValueChange={handleEmployeeChange}>
+            <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[64%]">
+              <SelectTrigger className="h-[50px] w-full p-4">
+                {selectedEmployee ? (
                   <div className="flex items-center gap-1 sm:gap-4">
                     <Avatar className="size-8">
                       <AvatarImage
-                        src={employee.avatar || ''}
-                        alt={`${employee.avatar}`}
+                        src={selectedEmployeeData?.avatar || ''}
+                        alt={`${selectedEmployeeData?.avatar}`}
                       />
                       <AvatarFallback className="uppercase">
-                        {employee.name.charAt(0)}
+                        {selectedEmployeeData?.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col justify-start">
+                    <div className="flex flex-col items-start">
                       <SelectValue>
-                        <p className="text-sm">{employee.name}</p>
+                        <p className="text-sm">{selectedEmployeeData?.name}</p>
                       </SelectValue>
                       <p className="text-xs text-muted-foreground">
-                        {employee.email}
+                        {selectedEmployeeData?.email}
                       </p>
                     </div>
                   </div>
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+                ) : (
+                  <SelectValue placeholder="Select Employee" />
+                )}
+              </SelectTrigger>
+              <div className="hidden h-0 w-full opacity-0 sm:block"></div>
+              <div className="hidden h-0 w-full opacity-0 sm:block"></div>
+            </div>
+            <SelectContent className="w-fit">
+              <SelectGroup>
+                <SelectLabel>Select Employee</SelectLabel>
+                {data?.data.map(employee => (
+                  <SelectItem key={employee.id} value={employee.id}>
+                    <div className="flex items-center gap-1 sm:gap-4">
+                      <Avatar className="size-8">
+                        <AvatarImage
+                          src={employee.avatar || ''}
+                          alt={`${employee.avatar}`}
+                        />
+                        <AvatarFallback className="uppercase">
+                          {employee.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col justify-start">
+                        <p className="text-sm">{employee.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {employee.email}
+                        </p>
+                      </div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button variant="outline" asChild className="h-[50px]">
+            <Link
+              href="/hr/manage-perks/perk-requests"
+              className="flex items-center"
+            >
+              View Approval Requests
+              <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                {perkRequests?.data.length || 0}
+              </span>
+            </Link>
+          </Button>
+        </div>
         <div className="flex flex-col gap-4 md:flex-row">
           <div className="grid h-fit w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[65%]">
             {perkData?.data.map(perk => (

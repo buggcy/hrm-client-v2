@@ -5,6 +5,7 @@ import {
   fetchEmployeesForPerks,
   fetchPerkRequests,
   getHrPerksList,
+  HrPerkRequestsParams,
   HrPerksListParams,
 } from '@/services/hr/perks-list.service';
 
@@ -39,10 +40,13 @@ export const useHrPerksEmpoyeeQuery = (config: UseQueryConfig = {}) =>
     ...config,
   }) as UseQueryResult<HrPerksGetEmployeesApiResponse, Error>;
 
-export const useHrPerkRequestsQuery = (config: UseQueryConfig = {}) =>
+export const useHrPerkRequestsQuery = (
+  params: HrPerkRequestsParams,
+  config: UseQueryConfig = {},
+) =>
   useQuery({
-    queryKey: ['hrPerkRequests'],
-    queryFn: () => fetchPerkRequests(),
+    queryKey: ['hrPerkRequests', params],
+    queryFn: () => fetchPerkRequests(params),
     refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,

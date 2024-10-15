@@ -21,6 +21,11 @@ export interface HrPerksListParams {
   type?: string[];
 }
 
+export interface HrPerkRequestsParams {
+  from?: string;
+  to?: string;
+}
+
 export const getHrPerksList = async (
   params: HrPerksListParams = {},
 ): Promise<HrPerksListApiResponse> => {
@@ -155,11 +160,35 @@ export const perksHandler = async ({
   return { message };
 };
 
-export const fetchPerkRequests =
-  async (): Promise<HrPerkRequestsApiResponse> => {
-    const res = await baseAPI.get(`/hr/perk-requests-v2`);
-    return schemaParse(HrPerkRequestsApiResponseSchema)(res);
+export const fetchPerkRequests = async (
+  params: HrPerkRequestsParams = {},
+): Promise<HrPerkRequestsApiResponse> => {
+  const defaultParams: HrPerkRequestsParams = {
+    from: '',
+    to: '',
   };
+
+  const mergedParams = {
+    ...defaultParams,
+    ...params,
+  };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+  const res = await baseAPI.get(
+    `/hr/perk-requests-v2?${queryParams.toString()}`,
+  );
+  return schemaParse(HrPerkRequestsApiResponseSchema)(res);
+};
 
 export const approvePerkRequest = async ({
   id,

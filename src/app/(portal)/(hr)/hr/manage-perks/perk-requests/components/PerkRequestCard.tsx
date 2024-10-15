@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { Eye, Mail, Phone } from 'lucide-react';
 
 import CopyToClipboard from '@/components/CopyToClipboard';
+import { LoadingButton } from '@/components/LoadingButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -35,7 +35,7 @@ const PerkRequestCard = ({
 }: PerkRequestCardProps) => {
   const date = new Date(perkRequest.dateApplied);
   return (
-    <Card className="min-w-[320px] p-4 md:max-w-[400px]" key={perkRequest._id}>
+    <Card className="min-w-[320px] p-4" key={perkRequest._id}>
       <CardHeader className="flex flex-row justify-between p-0">
         <div>
           <Avatar>
@@ -109,22 +109,24 @@ const PerkRequestCard = ({
         </div>
       </CardContent>
       <CardFooter className="flex flex-row justify-end gap-4 p-0 pt-6">
-        <Button
-          variant="destructiveOutline"
+        <LoadingButton
+          variant="outline"
           size="sm"
+          loading={isRejecting}
           disabled={isApproving || isRejecting}
           onClick={() => handleReject(perkRequest._id)}
         >
           Reject
-        </Button>
-        <Button
-          variant="default"
+        </LoadingButton>
+        <LoadingButton
+          variant="primary-inverted"
           size="sm"
+          loading={isApproving}
           disabled={isApproving || isRejecting}
           onClick={() => handleApprove(perkRequest._id)}
         >
           Approve
-        </Button>
+        </LoadingButton>
       </CardFooter>
     </Card>
   );

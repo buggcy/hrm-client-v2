@@ -5,6 +5,8 @@ import { FunctionComponent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
+import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
@@ -25,10 +27,25 @@ import PerkRequestCard from './components/PerkRequestCard';
 
 import { MessageErrorResponse } from '@/types';
 
+const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 interface PerkRequestsProps {}
 
 const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
-  const { refetch, data } = useHrPerkRequestsQuery();
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
+
+  const { refetch, data } = useHrPerkRequestsQuery({
+    from: selectedDate?.from ? formatDate(selectedDate.from) : '',
+    to: selectedDate?.to ? formatDate(selectedDate.to) : '',
+  });
+
+  console.log(selectedDate);
 
   const { mutate: approvePerk, isPending: isApproving } = useMutation({
     mutationFn: approvePerkRequest,
@@ -83,10 +100,18 @@ const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper className="flex flex-col gap-8 px-2">
-        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4">
-          {data?.data.map(perkRequest => {
-            return (
+      <LayoutWrapper className="flex max-w-full flex-col gap-8 px-2">
+        <Header subheading="Review and Approve Employee Perks Requests">
+          <DateRangePicker
+            timeRange={timeRange}
+            selectedDate={selectedDate}
+            setTimeRange={setTimeRange}
+            setDate={handleSetDate}
+          />
+        </Header>
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {data?.data.length ? (
+            data.data.map(perkRequest => (
               <PerkRequestCard
                 key={perkRequest._id}
                 perkRequest={perkRequest}
@@ -95,8 +120,10 @@ const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
                 handleApprove={handleApprove}
                 handleReject={handleReject}
               />
-            );
-          })}
+            ))
+          ) : (
+            <div>No data</div>
+          )}
         </div>
       </LayoutWrapper>
     </Layout>

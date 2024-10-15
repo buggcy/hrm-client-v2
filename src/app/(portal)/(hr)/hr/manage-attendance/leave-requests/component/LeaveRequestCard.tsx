@@ -13,6 +13,7 @@ import { AxiosError } from 'axios';
 import { Eye, Mail, Phone, UserCog } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 
+import CopyToClipboard from '@/components/CopyToClipboard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -144,64 +145,33 @@ export const LeaveRequestCard = ({
                   ? new Date(person?.createdAt).toDateString()
                   : 'N/A'}
               </Badge>
+              <CopyToClipboard
+                text={person.User_ID.companyEmail}
+                icon={<Mail size={12} />}
+                type="Email address"
+              />
+
               <TooltipProvider>
-                <div className="flex space-x-2">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="size-[24px] rounded-full"
-                        onClick={() =>
-                          navigator.clipboard.writeText(
-                            person?.User_ID?.companyEmail || '',
-                          )
-                        }
-                      >
-                        <Mail className="size-3" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                      <p>{person?.User_ID?.companyEmail}</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="size-[24px] rounded-full"
-                      >
-                        <UserCog className="size-3" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                      <p>{person?.User_ID?.Designation}</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="size-[24px] rounded-full"
-                        onClick={() =>
-                          navigator.clipboard.writeText(
-                            person?.User_ID?.contactNo || '',
-                          )
-                        }
-                      >
-                        <Phone className="size-3" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                      <p>{person?.User_ID?.contactNo}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-[24px] rounded-full"
+                    >
+                      <UserCog className="size-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                    <p>{person?.User_ID?.Designation}</p>
+                  </TooltipContent>
+                </Tooltip>
               </TooltipProvider>
+              <CopyToClipboard
+                text={person.User_ID.contactNo}
+                icon={<Phone size={12} />}
+                type="Contact number"
+              />
             </div>
           </div>
           <div className="flex justify-between">
