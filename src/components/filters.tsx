@@ -2,6 +2,7 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUp,
+  Briefcase,
   Bug,
   CheckCircle2,
   Circle,
@@ -11,6 +12,7 @@ import {
   PackagePlus,
   PersonStanding,
   ScrollText,
+  Sun,
   Timer,
   XCircle,
 } from 'lucide-react';
@@ -91,6 +93,30 @@ export const gender_options = [
     icon: PersonStanding,
   },
 ];
+export const hrStatus_options = [
+  {
+    value: 'enabled',
+    label: 'Enabled',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'disabled',
+    label: 'Disabled',
+    icon: XCircle,
+  },
+];
+export const hrEventType_options = [
+  {
+    value: 'holiday',
+    label: 'Holiday',
+    icon: Sun,
+  },
+  {
+    value: 'company',
+    label: 'Non Holiday',
+    icon: Briefcase,
+  },
+];
 
 export const perk_status_options = [
   {
@@ -109,6 +135,20 @@ export const perk_status_options = [
     icon: CheckCircle2,
   },
 ];
+
+export const perk_type_options = [
+  {
+    value: 'Increment',
+    label: 'Increment',
+    icon: Circle,
+  },
+  {
+    value: 'Decrement',
+    label: 'Decrement',
+    icon: Circle,
+  },
+];
+
 export const attendance_history_status_options = [
   {
     value: 'Present',

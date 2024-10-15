@@ -1,0 +1,133 @@
+'use client';
+
+import { FunctionComponent } from 'react';
+
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
+import Header from '@/components/Header/Header';
+import { HighTrafficBanner } from '@/components/HighTrafficBanner';
+import {
+  Layout,
+  LayoutHeader,
+  LayoutHeaderButtonsBlock,
+  LayoutWrapper,
+} from '@/components/Layout';
+import { Notification } from '@/components/NotificationIcon';
+import { toast } from '@/components/ui/use-toast';
+
+import { useHrPerkRequestsQuery } from '@/hooks/hrPerksList/useHrPerksList.hook';
+import {
+  approvePerkRequest,
+  rejectPerkRequest,
+} from '@/services/hr/perks-list.service';
+
+import PerkRequestCard from './components/PerkRequestCard';
+
+import { MessageErrorResponse } from '@/types';
+
+const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+interface PerkRequestsProps {}
+
+const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
+
+  const { refetch, data } = useHrPerkRequestsQuery({
+    from: selectedDate?.from ? formatDate(selectedDate.from) : '',
+    to: selectedDate?.to ? formatDate(selectedDate.to) : '',
+  });
+
+  console.log(selectedDate);
+
+  const { mutate: approvePerk, isPending: isApproving } = useMutation({
+    mutationFn: approvePerkRequest,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description: err?.response?.data?.message || 'Error on approving perk!',
+        variant: 'error',
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Perk request approved successfully!',
+        variant: 'success',
+      });
+      void refetch();
+    },
+  });
+
+  const { mutate: rejectPerk, isPending: isRejecting } = useMutation({
+    mutationFn: rejectPerkRequest,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description: err?.response?.data?.message || 'Error on rejecting perk!',
+        variant: 'error',
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Perk request rejected successfully!',
+        variant: 'success',
+      });
+      void refetch();
+    },
+  });
+
+  const handleApprove = (id: string) => {
+    approvePerk({ id: id });
+  };
+
+  const handleReject = (id: string) => {
+    rejectPerk({ id: id });
+  };
+  return (
+    <Layout>
+      <HighTrafficBanner />
+      <LayoutHeader title="Perk Requests">
+        <LayoutHeaderButtonsBlock>
+          <Notification />
+        </LayoutHeaderButtonsBlock>
+      </LayoutHeader>
+      <LayoutWrapper className="flex max-w-full flex-col gap-8 px-2">
+        <Header subheading="Review and Approve Employee Perks Requests">
+          <DateRangePicker
+            timeRange={timeRange}
+            selectedDate={selectedDate}
+            setTimeRange={setTimeRange}
+            setDate={handleSetDate}
+          />
+        </Header>
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {data?.data.length ? (
+            data.data.map(perkRequest => (
+              <PerkRequestCard
+                key={perkRequest._id}
+                perkRequest={perkRequest}
+                isApproving={isApproving}
+                isRejecting={isRejecting}
+                handleApprove={handleApprove}
+                handleReject={handleReject}
+              />
+            ))
+          ) : (
+            <div>No data</div>
+          )}
+        </div>
+      </LayoutWrapper>
+    </Layout>
+  );
+};
+
+export default PerkRequestsPage;
