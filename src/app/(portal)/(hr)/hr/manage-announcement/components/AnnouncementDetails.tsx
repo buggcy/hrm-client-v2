@@ -59,9 +59,9 @@ export function AnnouncementDetailsDialog({
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right">Priority</Label>
             <div className="col-span-3 flex items-center">
-              {announcementData?.Priority === 'HIGH' && <ArrowUp />}
-              {announcementData?.Priority === 'MEDIUM' && <ArrowRight />}
-              {announcementData?.Priority === 'LOW' && <ArrowDown />}
+              {announcementData?.Priority === 'High' && <ArrowUp />}
+              {announcementData?.Priority === 'Medium' && <ArrowRight />}
+              {announcementData?.Priority === 'Low' && <ArrowDown />}
 
               {announcementData?.Priority || 'N/A'}
             </div>

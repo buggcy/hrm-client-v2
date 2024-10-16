@@ -75,21 +75,32 @@ export const hrAnnouncementColumns: ColumnDef<AnnouncementType>[] = [
     cell: ({ row }) => {
       const priority: string = row.getValue('Priority');
       let icon;
+      let priorityText;
+
       switch (priority) {
         case 'High':
           icon = <ArrowUp />;
+          priorityText = 'High';
           break;
         case 'Low':
           icon = <ArrowDown />;
+          priorityText = 'Low';
           break;
         case 'Medium':
           icon = <ArrowRight />;
+          priorityText = 'Medium';
           break;
         default:
           icon = null;
+          priorityText = '';
       }
 
-      return <div className="flex items-center space-x-2">{icon}</div>;
+      return (
+        <div className="flex items-center space-x-2">
+          {icon}
+          <span>{priorityText}</span>
+        </div>
+      );
     },
   },
   {
