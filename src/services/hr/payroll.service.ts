@@ -1,8 +1,12 @@
+import { PayFormData } from '@/components/data-table/actions/hr-payroll.actions';
+
 import {
   HRPayrollApiResponse,
   HRPayrollApiResponseSchema,
 } from '@/libs/validations/hr-payroll';
 import { baseAPI, schemaParse } from '@/utils';
+
+import { SuccessMessageResponse } from './employee.service';
 
 export interface HRPayrollListParams {
   page?: number;
@@ -55,4 +59,14 @@ export const searchHRPayrollList = async ({
   );
 
   return { data, pagination };
+};
+
+export const payPayroll = async (
+  data: PayFormData,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/update-payroll-status`,
+    data,
+  );
+  return { message };
 };

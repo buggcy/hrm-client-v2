@@ -1,0 +1,305 @@
+'use client';
+
+import * as React from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { Row } from '@tanstack/react-table';
+import { AxiosError } from 'axios';
+import { Eye, HandCoins, MoreHorizontal } from 'lucide-react';
+import { createRoot } from 'react-dom/client';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { LoadingButton } from '@/components/LoadingButton';
+import DeleteDialog from '@/components/modals/delete-modal';
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { toast } from '@/components/ui/use-toast';
+import { useStores } from '@/providers/Store.Provider';
+
+import Payslip from '@/app/(portal)/(employee)/employee/payroll/components/Payslip/Payslip';
+import { EmployeePayrollListType } from '@/libs/validations/employee';
+import { deleteEmployeeRecord } from '@/services/hr/employee.service';
+import { payPayroll } from '@/services/hr/payroll.service';
+import { AuthStoreType } from '@/stores/auth';
+import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
+import { EmployeeStoreType } from '@/stores/hr/employee';
+
+import { MessageErrorResponse } from '@/types';
+
+interface DataTableRowActionsProps {
+  row: Row<EmployeePayrollListType>;
+}
+
+const BaseFormSchema = z.object({
+  amountToBePaid: z.string().min(1, 'Amount is required'),
+  payrollId: z.string().min(1, 'Id is required'),
+});
+
+export type PayFormData = z.infer<typeof BaseFormSchema>;
+
+const FormSchema = (netSalary: number) =>
+  BaseFormSchema.extend({
+    amountToBePaid: z
+      .string()
+      .min(1, 'Amount is required')
+      .refine(value => !isNaN(Number(value)) && Number(value) > 0, {
+        message: 'Amount must be a number greater than 0',
+      })
+      .refine(value => Number(value) <= netSalary, {
+        message: `Amount cannot exceed ${netSalary}`,
+      }),
+  });
+
+export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
+  const { employeePayrollStore } = useStores() as {
+    employeePayrollStore: EmployeePayrollStoreType;
+  };
+  const { setRefetchEmployeePayrollList } = employeePayrollStore;
+  const [dialogContent] = React.useState<React.ReactNode | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    React.useState<boolean>(false);
+
+  const [showPayDialog, setShowPayDialog] = React.useState<boolean>(false);
+
+  const data = row.original;
+
+  const formatDate = (dateString: string): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const today = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+
+  const { authStore, employeeStore } = useStores() as {
+    authStore: AuthStoreType;
+    employeeStore: EmployeeStoreType;
+  };
+  const { user } = authStore;
+  const { setRefetchEmployeeList } = employeeStore;
+
+  const handleViewPayslip = () => {
+    const newWindow = window.open('', '_blank');
+    if (!newWindow) {
+      alert('Please allow popups for this website');
+      return;
+    }
+
+    const payslipData = data;
+
+    newWindow.document.body.innerHTML = `<div id="payslip-root"></div>`;
+
+    const link = newWindow.document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href =
+      'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
+    newWindow.document.head.appendChild(link);
+
+    const rootElement = newWindow.document.getElementById('payslip-root');
+    if (rootElement) {
+      const root = createRoot(rootElement);
+
+      root.render(
+        <Payslip
+          payslipDate={data.Date ? formatDate(data.Date) : 'N/A'}
+          date={today || ''}
+          employeeName={data.Employee_Name || 'N/A'}
+          employeeDesignation={user?.Designation || 'N/A'}
+          employeeDepartment={'N/A'}
+          basicSalary={data.Basic_Salary || 0}
+          absentDeduction={data.Absent_Deduction || 0}
+          incentivePay={0}
+          professionalTax={0}
+          houseRentAllowance={0}
+          loan={0}
+          mealAllowance={0}
+          totalEarnings={0}
+          totalAfterTax={data.Tax_Amount || 0}
+          salaryDeduction={data.Total_SalaryDeducton || 0}
+          paymentStatus={data.Pay_Status || 'N/A'}
+          {...payslipData}
+        />,
+      );
+    } else {
+      console.error('Element with ID "payslip-root" not found.');
+    }
+  };
+
+  const schema =
+    data?.Net_Salary !== undefined
+      ? FormSchema(data.Net_Salary)
+      : BaseFormSchema;
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<PayFormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      amountToBePaid: data.Net_Salary?.toString(),
+      payrollId: data._id,
+    },
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: payPayroll,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description: err?.response?.data?.message || 'Error on pay request!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      reset();
+      setRefetchEmployeeList(true);
+      setShowPayDialog(false);
+    },
+  });
+
+  const handlePay = (data: PayFormData) => {
+    mutate(data);
+  };
+
+  return (
+    <Dialog>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="flex size-8 p-0 data-[state=open]:bg-muted"
+          >
+            <MoreHorizontal className="size-4" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[200px]">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          {data.Pay_Status === 'Unpaid' ? (
+            <DropdownMenuItem
+              onSelect={() => {
+                setShowPayDialog(true);
+              }}
+            >
+              <HandCoins className="mr-2 size-4" />
+              Pay
+            </DropdownMenuItem>
+          ) : null}
+          <DropdownMenuSeparator />
+          <DialogTrigger asChild onClick={handleViewPayslip}>
+            <DropdownMenuItem>
+              <Eye className="mr-2 size-4" />
+              View Payslip
+            </DropdownMenuItem>
+          </DialogTrigger>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
+      <DeleteDialog
+        id={data._id}
+        isOpen={showDeleteDialog}
+        showActionToggle={setShowDeleteDialog}
+        mutationFunc={deleteEmployeeRecord}
+        setRefetch={setRefetchEmployeePayrollList}
+      />
+
+      <AlertDialog open={showPayDialog} onOpenChange={setShowPayDialog}>
+        <form>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle> Pay Salary</AlertDialogTitle>
+              <AlertDialogDescription>
+                <div className="grid gap-8 py-4">
+                  <div className="flex flex-wrap">
+                    <div className="flex flex-1 flex-col">
+                      <Label
+                        htmlFor="amountToBePaid"
+                        className="mb-2 text-left"
+                      >
+                        Amount
+                      </Label>
+                      <Controller
+                        name="amountToBePaid"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            type="text"
+                            id="amountToBePaid"
+                            placeholder={'Enter Amount'}
+                            {...field}
+                          />
+                        )}
+                      />
+                      <div className="flex justify-start p-1">
+                        {errors.amountToBePaid && (
+                          <span className="text-sm text-red-500">
+                            {errors.amountToBePaid.message}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel
+                onClick={() => {
+                  setShowPayDialog(false);
+                }}
+              >
+                Close
+              </AlertDialogCancel>
+
+              <LoadingButton
+                type="button"
+                variant="default"
+                loading={isPending}
+                disabled={isPending}
+                onClick={handleSubmit(handlePay)}
+              >
+                {'Pay'}
+              </LoadingButton>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </form>
+      </AlertDialog>
+    </Dialog>
+  );
+}

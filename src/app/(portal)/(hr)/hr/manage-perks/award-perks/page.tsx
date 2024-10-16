@@ -1,7 +1,6 @@
 'use client';
 
 import { FunctionComponent, useEffect, useState } from 'react';
-import Link from 'next/link';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -37,7 +36,6 @@ import { toast } from '@/components/ui/use-toast';
 
 import {
   useHrEmpoyeeAllPerksQuery,
-  useHrPerkRequestsQuery,
   useHrPerksEmpoyeeQuery,
 } from '@/hooks/hrPerksList/useHrPerksList.hook';
 import { perksHandler } from '@/services/hr/perks-list.service';
@@ -153,14 +151,11 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
   };
 
   const onSubmit = () => {
-    console.log(perkData);
     assignPerks({
       id: selectedEmployee,
       data: perkData?.data,
     });
   };
-
-  const { data: perkRequests } = useHrPerkRequestsQuery({});
 
   return (
     <Layout>
@@ -229,17 +224,6 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button variant="outline" asChild className="h-[50px]">
-            <Link
-              href="/hr/manage-perks/perk-requests"
-              className="flex items-center"
-            >
-              View Approval Requests
-              <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
-                {perkRequests?.data.length || 0}
-              </span>
-            </Link>
-          </Button>
         </div>
         <div className="flex flex-col gap-4 md:flex-row">
           <div className="grid h-fit w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[65%]">

@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 import { HRPayrollListType } from '@/libs/validations/hr-payroll';
 
-import { EmployeePayrollListRowActions } from '../actions/employeePaytroll-list.actions';
+import { HRPayrollListRowActions } from '../actions/hr-payroll.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
 const formatCurrency = (amount: number | undefined) => {
@@ -229,6 +229,6 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
 
   {
     id: 'actions',
-    cell: ({ row }) => <EmployeePayrollListRowActions row={row} />,
+    cell: ({ row }) => <HRPayrollListRowActions row={row} />,
   },
 ];
