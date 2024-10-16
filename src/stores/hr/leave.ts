@@ -1,30 +1,31 @@
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 
-export type LeaveState = {
-  refetchLeaveList: boolean;
+export type ManageLeaveState = {
+  refetchManageLeaveList: boolean;
 };
 
-export type LeaveActions = {
-  setRefetchLeaveList: (res: boolean) => void;
+export type ManageLeaveActions = {
+  setRefetchManageLeaveList: (res: boolean) => void;
 };
 
-export type LeaveStoreType = LeaveState & LeaveActions;
+export type ManageLeaveStoreType = ManageLeaveState & ManageLeaveActions;
 
-export const useLeaveStore = create<LeaveStoreType>()(
+export const useManageLeaveStore = create<ManageLeaveStoreType>()(
   devtools(
     persist(
       set => ({
-        refetchLeaveList: false,
+        refetchManageLeaveList: false,
 
         // Actions
-        setRefetchLeaveList: (res: boolean) => set({ refetchLeaveList: res }),
+        setRefetchManageLeaveList: (res: boolean) =>
+          set({ refetchManageLeaveList: res }),
       }),
       {
-        name: 'leave-storage',
+        name: 'manage-leave-storage',
         storage: createJSONStorage(() => sessionStorage),
       },
     ),
-    { name: 'LeaveStore' },
+    { name: 'ManageLeaveStore' },
   ),
 );

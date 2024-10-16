@@ -3,7 +3,6 @@ import {
   CalendarCog,
   CalendarDays,
   ClipboardList,
-  Clock,
   Gift,
   Home,
   Medal,
@@ -60,17 +59,6 @@ export const hrMenu: MenuItem[] = [
         title: 'Leave List',
         icon: CalendarDays,
         href: '/hr/manage-attendance/leave-list',
-      },
-    ],
-  },
-  {
-    title: 'Manage Leave',
-    icon: UserCog2,
-    children: [
-      {
-        title: 'Manage Leave',
-        icon: Clock,
-        href: '/hr/manage-leave',
       },
     ],
   },

@@ -9,7 +9,7 @@ import { usePerkStore } from '@/stores/employee/perks';
 import { useAttendanceListStore } from '@/stores/hr/attendance-list';
 import { useEmployeeStore } from '@/stores/hr/employee';
 import { useHrEventsStore } from '@/stores/hr/hrEvents';
-import { useLeaveStore } from '@/stores/hr/leave';
+import { useManageLeaveStore } from '@/stores/hr/leave';
 import { useLeaveListStore } from '@/stores/hr/leave-list';
 import { usePerkListStore } from '@/stores/hr/perk-list';
 
@@ -27,7 +27,7 @@ interface StoreContextType {
   leaveHistoryStore: ReturnType<typeof useLeaveHistoryStore>;
   notificationStore: ReturnType<typeof useNotificationStore>;
   policyStore: ReturnType<typeof usePolicyStore>;
-  manageLeaveStore: ReturnType<typeof useLeaveStore>;
+  manageLeaveStore: ReturnType<typeof useManageLeaveStore>;
   attendanceListStore: ReturnType<typeof useAttendanceListStore>;
   leaveListStore: ReturnType<typeof useLeaveListStore>;
   perkListStore: ReturnType<typeof usePerkListStore>;
@@ -45,7 +45,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const leaveHistoryStore = useLeaveHistoryStore();
   const notificationStore = useNotificationStore();
   const policyStore = usePolicyStore();
-  const manageLeaveStore = useLeaveStore();
+  const manageLeaveStore = useManageLeaveStore();
   const attendanceListStore = useAttendanceListStore();
   const leaveListStore = useLeaveListStore();
   const perkListStore = usePerkListStore();

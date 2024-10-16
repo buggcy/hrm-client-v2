@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -19,7 +19,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
 
-import { AddExtraLeave } from '@/services/hr/manage.leave.service';
+import { ExtraLeaveType } from '@/libs/validations/manage-leave';
+import {
+  AddExtraLeave,
+  UpdateExtraLeave,
+} from '@/services/hr/manage.leave.service';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -27,7 +31,9 @@ interface ExtraLeaveModalProps {
   open: boolean;
   onCloseChange: (open: boolean) => void;
   selectedEmployeeId: string;
-  refetch: () => void;
+  type: string;
+  setRefetchManageLeaveList: (refetch: boolean) => void;
+  leaveToEdit: ExtraLeaveType | null;
 }
 
 const FormSchema = z.object({
@@ -40,13 +46,27 @@ export function AddExtraLeaveModal({
   open,
   onCloseChange,
   selectedEmployeeId,
-  refetch,
+  type,
+  setRefetchManageLeaveList,
+  leaveToEdit,
 }: ExtraLeaveModalProps) {
   const [date, setDate] = useState(new Date());
-  const initialDate = new Date();
   const setDateValue = (date: Date | null) => {
     setDate(date || new Date());
   };
+  useEffect(() => {
+    if (type === 'edit' && leaveToEdit) {
+      const month = leaveToEdit.month ?? new Date().getMonth() + 1;
+      const year = leaveToEdit.year ?? new Date().getFullYear();
+      const initialDate = new Date(year, month - 1, 1);
+      setDate(initialDate);
+    } else {
+      setDate(new Date());
+    }
+  }, [leaveToEdit, type]);
+
+  const initialDate = date;
+
   const {
     control,
     handleSubmit,
@@ -68,7 +88,7 @@ export function AddExtraLeaveModal({
         description: response?.message || 'Leave Added Successfully!',
       });
       reset();
-      refetch();
+      setRefetchManageLeaveList(true);
       onCloseChange(false);
     },
     onError: (err: AxiosError<MessageErrorResponse>) => {
@@ -80,6 +100,46 @@ export function AddExtraLeaveModal({
     },
   });
 
+  useEffect(() => {
+    if (type === 'edit' && leaveToEdit) {
+      reset({
+        title: leaveToEdit.title || '',
+        allowed: String(leaveToEdit.leavesAllowed || ''),
+      });
+    }
+  }, [leaveToEdit, type, reset]);
+
+  const { mutate: EditMutate, isPending: EditPending } = useMutation({
+    mutationFn: UpdateExtraLeave,
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message || 'Leave Updated Successfully!',
+      });
+      reset();
+      setRefetchManageLeaveList(true);
+      onCloseChange(false);
+    },
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description: err.message || 'Error on updating the extra leaves!',
+        variant: 'destructive',
+      });
+    },
+  });
+  useEffect(() => {
+    if (!open) {
+      if (type === 'edit' && leaveToEdit) {
+        const month = leaveToEdit.month ?? new Date().getMonth() + 1;
+        const year = leaveToEdit.year ?? new Date().getFullYear();
+        const initialDate = new Date(year, month - 1, 1);
+        setDate(initialDate);
+      } else {
+        setDate(new Date());
+      }
+    }
+  }, [open, type, leaveToEdit]);
   const onSubmit = (data: AddLeaveFormData) => {
     const body = {
       leavesAllowed: Number(data?.allowed),
@@ -89,18 +149,29 @@ export function AddExtraLeaveModal({
       }),
       title: data?.title,
     };
-    const payload = {
+    const addPayload = {
       id: selectedEmployeeId,
       body,
     };
-    mutate(payload);
+    const editPayload = {
+      id: selectedEmployeeId,
+      leaveId: leaveToEdit?._id || '',
+      body,
+    };
+    if (type === 'add') {
+      mutate(addPayload);
+    } else {
+      EditMutate(editPayload);
+    }
   };
   return (
     <>
       <Dialog open={open} onOpenChange={onCloseChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{'Add Extra Leave'}</DialogTitle>
+            <DialogTitle>
+              {type === 'add' ? 'Add Extra Leave' : 'Edit Extra Leave'}
+            </DialogTitle>
           </DialogHeader>
           <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-wrap">
@@ -163,8 +234,12 @@ export function AddExtraLeaveModal({
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" disabled={isPending} size={'sm'}>
-                {'Add'}
+              <Button
+                type="submit"
+                disabled={type === 'add' ? isPending : EditPending}
+                size={'sm'}
+              >
+                {type === 'add' ? 'Add' : 'Update'}
               </Button>
               <Button
                 variant="ghostSecondary"
