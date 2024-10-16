@@ -27,7 +27,6 @@ const HrPerksListTable: FunctionComponent = () => {
   const router = useRouter();
   const { data: hrPerkRecords, refetch: refetchRecord } =
     useHrPerkRecordQuery();
-  console.log('records: ', hrPerkRecords);
 
   const { perkListStore } = useStores() as { perkListStore: PerkListStoreType };
   const { setRefetchPerkList, refetchPerkList } = perkListStore;
