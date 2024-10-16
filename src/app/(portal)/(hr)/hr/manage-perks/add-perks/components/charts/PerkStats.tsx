@@ -6,34 +6,28 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+interface PerkRecordProps {
+  totalPerks: number | undefined;
+  assignedPerks: number | undefined;
+  approvedPerks: number | undefined;
+  rejectedPerks: number | undefined;
+}
 
-const mockData: { id: number; text: string; value: number }[] = [
-  {
-    id: 1,
-    text: 'Total Perks',
-    value: 100,
-  },
-  {
-    id: 2,
-    text: 'Assigned',
-    value: 200,
-  },
-  {
-    id: 3,
-    text: 'Approved',
-    value: 300,
-  },
-  {
-    id: 4,
-    text: 'Rejected',
-    value: 400,
-  },
-];
-
-export function PerkStats() {
+export function PerkStats({
+  totalPerks,
+  assignedPerks,
+  approvedPerks,
+  rejectedPerks,
+}: PerkRecordProps) {
+  const perkData = [
+    { id: 1, text: 'Total Perks', value: totalPerks },
+    { id: 2, text: 'Assigned', value: assignedPerks },
+    { id: 3, text: 'Approved', value: approvedPerks },
+    { id: 4, text: 'Rejected', value: rejectedPerks },
+  ];
   return (
     <div className="grid grid-cols-2 gap-4">
-      {mockData.map(({ id, text, value }) => (
+      {perkData.map(({ id, text, value }) => (
         <Card
           key={id}
           className="flex flex-col items-center justify-center text-center"
