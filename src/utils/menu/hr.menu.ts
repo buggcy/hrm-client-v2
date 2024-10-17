@@ -89,4 +89,15 @@ export const hrMenu: MenuItem[] = [
       },
     ],
   },
+  {
+    title: 'Configuration',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Designation',
+        icon: Gift,
+        href: '/hr/manage-configuration/designation',
+      },
+    ],
+  },
 ];

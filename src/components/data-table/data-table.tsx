@@ -31,6 +31,7 @@ import DataTableType from '@/libs/validations/data-table-type';
 import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
 import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
+import { DesignationToolbar } from './toolbars/designation.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 import { HrPerkListToolbar } from './toolbars/hr-perk-list-toolbar';
 import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
@@ -196,6 +197,15 @@ export function DataTable<TData extends DataTableType, TValue>({
             searchLoading={searchLoading}
             setFilterValue={setFilterValue}
             filterValue={filterValue}
+          />
+        );
+      case 'hrDesignation':
+        return (
+          <DesignationToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
           />
         );
 
