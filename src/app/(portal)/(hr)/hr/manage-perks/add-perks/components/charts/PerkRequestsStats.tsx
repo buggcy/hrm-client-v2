@@ -12,6 +12,8 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
@@ -38,8 +40,8 @@ export function PerkRequests({ chartData }: PerkRecordChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Perk Assigned & Availed</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-sm">Perk Assigned & Availed</CardTitle>
+        <CardDescription className="text-xs">
           Showing total assigned & availed for this year
         </CardDescription>
       </CardHeader>
@@ -81,6 +83,7 @@ export function PerkRequests({ chartData }: PerkRecordChartProps) {
               stroke="var(--color-assigned)"
               stackId="a"
             />
+            <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>
         </ChartContainer>
       </CardContent>

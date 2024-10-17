@@ -35,7 +35,7 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
-        <Header subheading="You are 15 minutes late today!">
+        <Header subheading="Managing and assigning your perks efficiently!">
           <Button variant="default" onClick={handleDialogOpen}>
             Add Perk
           </Button>
