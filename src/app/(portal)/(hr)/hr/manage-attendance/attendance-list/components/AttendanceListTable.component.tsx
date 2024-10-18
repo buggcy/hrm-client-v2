@@ -34,7 +34,7 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
-
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
@@ -50,6 +50,7 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
     limit,
     from: dates?.from?.toISOString(),
     to: dates?.to?.toISOString(),
+    Status: statusFilter,
   });
 
   const {
@@ -61,10 +62,12 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
       query,
       page,
       limit,
+      Status,
     }: {
       query: string;
       page: number;
       limit: number;
+      Status: string[];
     }) =>
       searchAttedanceList({
         query,
@@ -72,6 +75,7 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
         limit,
         from: dates?.from,
         to: dates?.to,
+        Status,
       }),
     onError: err => {
       toast({
@@ -94,13 +98,13 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({ query: debouncedSearchTerm, page, limit, Status: statusFilter });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate]);
+  }, [debouncedSearchTerm, page, limit, refetch, mutate, statusFilter]);
 
   useEffect(() => {
     if (refetchAttendanceList) {
@@ -156,8 +160,8 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
           toolbarType="attendanceList"
-          setFilterValue={(value: string[]) => console.log(value)}
-          filterValue={[]}
+          setFilterValue={setStatusFilter}
+          filterValue={statusFilter}
         />
       )}
     </>

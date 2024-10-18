@@ -56,10 +56,10 @@ export function EmployeeProductivityChart({
         <CardTitle>Employee Productivity</CardTitle>
         <CardDescription>{currentYear}</CardDescription>
       </CardHeader>
-      <CardContent className="md:size-full md:max-h-[300px]">
+      <CardContent className="md:size-full md:max-h-[310px]">
         <ChartContainer
           config={chartConfig}
-          className="size-full max-h-[350px] min-h-[150px] overflow-hidden md:max-h-[250px]"
+          className="size-full max-h-[350px] min-h-[150px] overflow-hidden md:max-h-[310px]"
         >
           <AreaChart
             accessibilityLayer

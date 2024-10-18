@@ -8,7 +8,6 @@ import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
 import { usePerkStore } from '@/stores/employee/perks';
 import { useAttendanceListStore } from '@/stores/hr/attendance-list';
 import { useEmployeeStore } from '@/stores/hr/employee';
-import { useLogsListStore } from '@/stores/hr/hr-logs.Store';
 
 import { useAuthStore } from '../stores/auth';
 import { usePolicyStore } from '../stores/hr-policies.Store';
@@ -19,12 +18,12 @@ interface StoreContextType {
   employeeStore: ReturnType<typeof useEmployeeStore>;
   perkStore: ReturnType<typeof usePerkStore>;
   employeePayrollStore: ReturnType<typeof useEmployeePayrollStore>;
+  hrEventsStore: ReturnType<typeof useHrEventsStore>;
   attendanceHistoryStore: ReturnType<typeof useAttendanceHistoryStore>;
   leaveHistoryStore: ReturnType<typeof useLeaveHistoryStore>;
   notificationStore: ReturnType<typeof useNotificationStore>;
   policyStore: ReturnType<typeof usePolicyStore>;
   attendanceListStore: ReturnType<typeof useAttendanceListStore>;
-  logsListStore: ReturnType<typeof useLogsListStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -34,12 +33,12 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const employeeStore = useEmployeeStore();
   const perkStore = usePerkStore();
   const employeePayrollStore = useEmployeePayrollStore();
+  const hrEventsStore = useHrEventsStore();
   const attendanceHistoryStore = useAttendanceHistoryStore();
   const leaveHistoryStore = useLeaveHistoryStore();
   const notificationStore = useNotificationStore();
   const policyStore = usePolicyStore();
   const attendanceListStore = useAttendanceListStore();
-  const logsListStore = useLogsListStore();
 
   return (
     <StoreContext.Provider
@@ -47,13 +46,13 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         authStore,
         employeeStore,
         employeePayrollStore,
+        hrEventsStore,
         attendanceHistoryStore,
         leaveHistoryStore,
         perkStore,
         notificationStore,
         attendanceListStore,
         policyStore,
-        logsListStore,
       }}
     >
       {children}

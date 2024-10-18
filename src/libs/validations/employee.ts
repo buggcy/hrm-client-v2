@@ -128,6 +128,18 @@ const employeePayrollSchema = z.object({
   __v: z.number().optional(),
   type: z.literal('employeePayroll').optional(),
 });
+const hrEventsSchema = z.object({
+  _id: z.string(),
+  hrId: z.string().optional(),
+  Event_Name: z.string().optional(),
+  Event_Start: z.string().optional(),
+  Event_End: z.string().optional(),
+  Event_Discription: z.string().optional(),
+  isDeleted: z.boolean().optional(),
+  isEnabled: z.boolean().optional(),
+  Event_Type: z.string().optional(),
+  __v: z.number().optional(),
+});
 
 const employeeApiResponseSchema = z.object({
   pagination: paginationSchema,
@@ -137,11 +149,17 @@ const employeePayrollApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeePayrollSchema),
 });
+const hrEventsApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(hrEventsSchema),
+});
 
 export type EmployeeApiResponse = z.infer<typeof employeeApiResponseSchema>;
+export type HrEventsApiResponse = z.infer<typeof hrEventsApiResponseSchema>;
 export type EmployeeListType = z.infer<typeof employeeListSchema>;
 export type EmployeeListArrayType = z.infer<typeof employeeListSchema>[] | [];
 export type EmployeePayrollListType = z.infer<typeof employeePayrollSchema>;
+export type HrEventsListType = z.infer<typeof hrEventsSchema>;
 export type EmployeePayrollArrayType =
   | z.infer<typeof employeePayrollSchema>[]
   | [];
@@ -154,4 +172,5 @@ export {
   positionSchema,
   employeePayrollSchema,
   employeePayrollApiResponseSchema,
+  hrEventsApiResponseSchema,
 };

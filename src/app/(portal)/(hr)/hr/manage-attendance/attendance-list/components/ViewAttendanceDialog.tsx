@@ -2,7 +2,12 @@
 
 import React from 'react';
 
-import { Calendar, Clock, LogIn, LogOut } from 'lucide-react';
+import {
+  AlarmClockCheck,
+  AlarmClockMinus,
+  Calendar,
+  Clock,
+} from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +27,7 @@ import {
 } from '@/libs/validations/attendance-list';
 
 import { formatUTCToLocalTime } from './AttendanceDialog';
+import { BreaksTable } from './BreaksTable';
 
 interface DialogDemoProps {
   data: AttendanceListType;
@@ -65,22 +71,22 @@ export function ViewAttendanceDialog({
         <DialogHeader>
           <DialogTitle>Attendance Details</DialogTitle>
         </DialogHeader>
-        <div className="flex items-center gap-4">
-          <Avatar className="size-8">
-            <AvatarImage src={avatar || ''} alt={`${firstName} ${lastName}`} />
-            <AvatarFallback className="text-xs uppercase">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Avatar className="size-8">
+              <AvatarImage
+                src={avatar || ''}
+                alt={`${firstName} ${lastName}`}
+              />
+              <AvatarFallback className="text-xs uppercase">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
 
-          <span className="max-w-[500px] truncate font-medium capitalize">
-            {`${firstName} ${lastName}`}
-          </span>
-        </div>
-        <div className="flex items-center py-2">
-          <Calendar className="mr-2" size={16} />
-          <span>Date:</span>
-          <span className="ml-4">{date.toLocaleDateString()}</span>
+            <span className="max-w-[500px] truncate font-medium capitalize">
+              {`${firstName} ${lastName}`}
+            </span>
+          </div>
           <Badge
             className="ml-2 px-2 py-1"
             variant={
@@ -94,47 +100,41 @@ export function ViewAttendanceDialog({
             {status}
           </Badge>
         </div>
-        <div className="flex flex-col justify-between gap-8 md:flex-row">
-          <div className="flex items-center py-2">
-            <LogIn size={16} color="hsl(var(--chart-1))" className="mr-2" />{' '}
-            <span>Start Time:</span>
-            <span className="ml-4">{startTime}</span>
+
+        <div className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
+          <div className="flex items-center">
+            <Calendar className="mr-2" size={16} />
+            <span>Date:</span>
+            <span className="ml-4">{date.toLocaleDateString()}</span>
           </div>
-          <div className="flex items-center py-2">
-            <LogOut
-              size={16}
-              color="hsl(var(--chart-3))"
-              className="mr-2 -scale-x-100"
-            />
-            <span>End Time:</span>
-            <span className="ml-4">{endTime}</span>
-          </div>
-        </div>
-        <div className="flex flex-col justify-between md:flex-row">
           <div className="flex items-center py-2">
             <Clock size={16} className="mr-2" />
             <span>Total Time:</span>
             <span className="pl-1">{totalTime}</span>
           </div>
+          <div className="flex items-center py-2">
+            <AlarmClockCheck
+              size={16}
+              color="hsl(var(--chart-1))"
+              className="mr-2"
+            />{' '}
+            <span>Start Time:</span>
+            <span className="ml-4">{startTime}</span>
+          </div>
+          <div className="flex items-center py-2">
+            <AlarmClockMinus
+              size={16}
+              color="hsl(var(--chart-3))"
+              className="mr-2"
+            />
+            <span>End Time:</span>
+            <span className="ml-4">{endTime}</span>
+          </div>
         </div>
+
         <div className="w-full border-t-2 pt-4">
           <span className="pb-4">Breaks:</span>
-          {breaks?.map((breaks, index) => {
-            const startTime = new Date(breaks.Start_Break).toLocaleTimeString(
-              [],
-              { hour: '2-digit', minute: '2-digit' },
-            );
-            const endTime = new Date(breaks.End_Break).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            });
-
-            return (
-              <div key={index} className="flex gap-4 pt-2">
-                <span>{startTime}</span>-<span>{endTime}</span>
-              </div>
-            );
-          })}
+          <BreaksTable data={breaks} />
         </div>
         <DialogFooter>
           <Button onClick={onCloseChange} size="sm">

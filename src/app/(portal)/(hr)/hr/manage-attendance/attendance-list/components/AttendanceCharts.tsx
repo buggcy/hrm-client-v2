@@ -48,7 +48,7 @@ const AttendanceCharts: FunctionComponent<AttendanceCardsProps> = ({
   }, [dates, user, mutate]);
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <AttendanceDistribution data={attendanceListStats?.card1Data} />
+      <AttendanceDistribution />
       <AttendanceHistoryBarChart
         data={attendanceListStats?.card2Data}
         date={dates}
