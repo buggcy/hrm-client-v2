@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -27,7 +28,7 @@ export const Sidebar = () => {
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r bg-background sm:flex">
-      <div className="group relative flex size-full w-w-sidebar flex-col gap-2 overflow-x-hidden px-4 pb-8 pt-6 transition-all duration-300 hover:w-w-sidebar-open">
+      <div className="group relative flex size-full w-w-sidebar flex-col gap-2 px-4 pb-8 pt-6 transition-all duration-300 hover:w-w-sidebar-open">
         <nav className="flex size-full flex-col gap-2">
           <Button
             asChild
@@ -46,32 +47,33 @@ export const Sidebar = () => {
               <LogoHorizontal className="opacity-0 transition-all duration-200 group-hover:-translate-x-8 group-hover:opacity-100" />
             </Link>
           </Button>
-
-          {menuItems.map(item =>
-            item.children ? (
-              <NavSection title={item.title} key={item.title}>
-                {item.children.map(child => (
-                  <li className="flex" key={child.href}>
-                    <NavigationItem
-                      title={child.title}
-                      icon={child.icon}
-                      href={child.href!}
-                      active={pathname === child.href}
-                    />
-                  </li>
-                ))}
-              </NavSection>
-            ) : (
-              <li className="flex" key={item.href}>
-                <NavigationItem
-                  title={item.title}
-                  icon={item.icon}
-                  href={item.href!}
-                  active={pathname === item.href}
-                />
-              </li>
-            ),
-          )}
+          <ScrollArea className="mt-2 h-[570px] w-full">
+            {menuItems.map(item =>
+              item.children ? (
+                <NavSection title={item.title} key={item.title}>
+                  {item.children.map(child => (
+                    <li className="flex" key={child.href}>
+                      <NavigationItem
+                        title={child.title}
+                        icon={child.icon}
+                        href={child.href!}
+                        active={pathname === child.href}
+                      />
+                    </li>
+                  ))}
+                </NavSection>
+              ) : (
+                <li className="flex" key={item.href}>
+                  <NavigationItem
+                    title={item.title}
+                    icon={item.icon}
+                    href={item.href!}
+                    active={pathname === item.href}
+                  />
+                </li>
+              ),
+            )}
+          </ScrollArea>
         </nav>
         <ul className="mt-auto flex flex-col gap-3">
           {/* <li>
