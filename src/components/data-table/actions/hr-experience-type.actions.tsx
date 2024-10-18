@@ -21,7 +21,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { AddEditExperienceTypeDialog } from '@/app/(portal)/(hr)/hr/configuration/experience-type/component/AddEditTypeModal';
+import { AddEditTypeDialog } from '@/app/(portal)/(hr)/hr/configuration/education-type/component/AddEditTypeModal';
 import { ConfigurationType } from '@/libs/validations/hr-configuration';
 import { deleteType } from '@/services/hr/hrConfiguration.service';
 import { useAuthStore } from '@/stores/auth';
@@ -128,13 +128,14 @@ export function ExperienceTypeRowActions({ row }: DataTableRowActionsProps) {
         handleDelete={handleDelete}
       />
       {userId && (
-        <AddEditExperienceTypeDialog
+        <AddEditTypeDialog
           open={modal}
           onCloseChange={handleClose}
           type={modelType}
           userId={userId}
           setRefetchConfigurationList={setRefetchConfigurationList}
           TypeToEdit={modelType === 'edit' ? selectedType : null}
+          moduleType={'Experience'}
         />
       )}
     </Dialog>

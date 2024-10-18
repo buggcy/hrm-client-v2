@@ -135,6 +135,7 @@ export function EducationTypeRowActions({ row }: DataTableRowActionsProps) {
           userId={userId}
           setRefetchConfigurationList={setRefetchConfigurationList}
           TypeToEdit={modelType === 'edit' ? selectedType : null}
+          moduleType={'Education'}
         />
       )}
     </Dialog>

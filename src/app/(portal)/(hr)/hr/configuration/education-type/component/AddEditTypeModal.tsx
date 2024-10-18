@@ -21,7 +21,9 @@ import { toast } from '@/components/ui/use-toast';
 import { ConfigurationType } from '@/libs/validations/hr-configuration';
 import {
   addEducationType,
+  addExperienceType,
   editEducationType,
+  editExperienceType,
 } from '@/services/hr/hrConfiguration.service';
 
 import { MessageErrorResponse } from '@/types';
@@ -33,9 +35,10 @@ interface DialogProps {
   userId: string;
   setRefetchConfigurationList: (refetch: boolean) => void;
   TypeToEdit: ConfigurationType | null;
+  moduleType: string;
 }
 const FormSchema = z.object({
-  educationType: z.string().min(1, 'Education type is required'),
+  type: z.string().min(1, 'type is required'),
 });
 
 export type TypeFormData = z.infer<typeof FormSchema>;
@@ -47,6 +50,7 @@ export function AddEditTypeDialog({
   userId,
   setRefetchConfigurationList,
   TypeToEdit,
+  moduleType,
 }: DialogProps) {
   const {
     control,
@@ -56,77 +60,149 @@ export function AddEditTypeDialog({
   } = useForm<TypeFormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      educationType: '',
+      type: '',
     },
   });
 
   useEffect(() => {
-    if (type === 'edit' && TypeToEdit) {
+    if (moduleType === 'Education' && type === 'edit' && TypeToEdit) {
       reset({
-        educationType: TypeToEdit?.educationType || '',
+        type: TypeToEdit?.educationType || '',
+      });
+    } else if (moduleType === 'Experience' && type === 'edit' && TypeToEdit) {
+      reset({
+        type: TypeToEdit?.experienceType || '',
       });
     }
-  }, [TypeToEdit, type, reset]);
+  }, [TypeToEdit, type, reset, moduleType]);
 
   useEffect(() => {
     if (!open) {
       reset();
     }
   }, [open, reset]);
-  const { mutate, isPending } = useMutation({
-    mutationFn: addEducationType,
-    onSuccess: response => {
-      toast({
-        title: 'Success',
-        description: response?.message || 'Education Type Added Successfully!',
-      });
-      reset();
-      setRefetchConfigurationList(true);
-      onCloseChange(false);
-    },
-    onError: (err: AxiosError<MessageErrorResponse>) => {
-      toast({
-        title: 'Error',
-        description: err.message || 'Error on adding education type!',
-        variant: 'destructive',
-      });
-    },
-  });
-  const { mutate: EditMutate, isPending: EditPending } = useMutation({
-    mutationFn: editEducationType,
-    onSuccess: response => {
-      toast({
-        title: 'Success',
-        description:
-          response?.message || 'Education Type Updated Successfully!',
-      });
-      reset();
-      setRefetchConfigurationList(true);
-      onCloseChange(false);
-    },
-    onError: (err: AxiosError<MessageErrorResponse>) => {
-      toast({
-        title: 'Error',
-        description: err.message || 'Error on updating the education type!',
-        variant: 'destructive',
-      });
-    },
-  });
+
+  const { mutate: AddEducationMutate, isPending: AddEducationPending } =
+    useMutation({
+      mutationFn: addEducationType,
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description:
+            response?.message || 'Education Type Added Successfully!',
+        });
+        reset();
+        setRefetchConfigurationList(true);
+        onCloseChange(false);
+      },
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Error on adding education type!',
+          variant: 'destructive',
+        });
+      },
+    });
+
+  const { mutate: EditEducationMutate, isPending: EditEducationPending } =
+    useMutation({
+      mutationFn: editEducationType,
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description:
+            response?.message || 'Education Type Updated Successfully!',
+        });
+        reset();
+        setRefetchConfigurationList(true);
+        onCloseChange(false);
+      },
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Error on updating the education type!',
+          variant: 'destructive',
+        });
+      },
+    });
+
+  const { mutate: AddExperienceMutate, isPending: AddExperiencePending } =
+    useMutation({
+      mutationFn: addExperienceType,
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description:
+            response?.message || 'Experience Type Added Successfully!',
+        });
+        reset();
+        setRefetchConfigurationList(true);
+        onCloseChange(false);
+      },
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Error on adding experience type!',
+          variant: 'destructive',
+        });
+      },
+    });
+  const { mutate: EditExperienceMutate, isPending: EditExperiencePending } =
+    useMutation({
+      mutationFn: editExperienceType,
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description:
+            response?.message || 'Experience Type Updated Successfully!',
+        });
+        reset();
+        setRefetchConfigurationList(true);
+        onCloseChange(false);
+      },
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Error on updating the experience type!',
+          variant: 'destructive',
+        });
+      },
+    });
 
   const onSubmit = (data: TypeFormData) => {
-    const addPayload = {
-      userId,
-      educationType: data?.educationType,
-    };
-    const editPayload = {
-      id: TypeToEdit?._id ?? '',
-      userId,
-      educationType: data?.educationType,
-    };
-    if (type === 'add') {
-      mutate(addPayload);
-    } else {
-      EditMutate(editPayload);
+    if (moduleType === 'Education') {
+      const addEducationPayload = {
+        userId,
+        educationType: data?.type,
+      };
+      const editEducationPayload = {
+        id: TypeToEdit?._id ?? '',
+        userId,
+        educationType: data?.type,
+      };
+
+      if (moduleType === 'Education' && type === 'add') {
+        AddEducationMutate(addEducationPayload);
+      } else if (moduleType === 'Education' && type === 'edit') {
+        EditEducationMutate(editEducationPayload);
+      }
+    }
+
+    if (moduleType === 'Experience') {
+      const addExperiencePayload = {
+        userId,
+        experienceType: data?.type,
+      };
+      const editExperiencePayload = {
+        id: TypeToEdit?._id ?? '',
+        userId,
+        experienceType: data?.type,
+      };
+      if (moduleType === 'Experience' && type === 'add') {
+        AddExperienceMutate(addExperiencePayload);
+      } else if (moduleType === 'Experience' && type === 'edit') {
+        EditExperienceMutate(editExperiencePayload);
+      }
     }
   };
 
@@ -135,31 +211,38 @@ export function AddEditTypeDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {' '}
-            {type === 'add' ? 'Add Education Type' : 'Edit Education Type'}
+            {moduleType === 'Education' && type === 'add'
+              ? 'Add Education Type'
+              : moduleType === 'Education' && type === 'edit'
+                ? 'Edit Education Type'
+                : moduleType === 'Experience' && type === 'add'
+                  ? 'Add Experience Type'
+                  : moduleType === 'Experience' && type === 'edit'
+                    ? 'Edit Experience Type'
+                    : null}
           </DialogTitle>
         </DialogHeader>
         <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-wrap">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="educationType" className="mb-2 text-left">
-                Education Type
+              <Label htmlFor="type" className="mb-2 text-left">
+                {moduleType} Type
               </Label>
               <Controller
-                name="educationType"
+                name="type"
                 control={control}
                 render={({ field }) => (
                   <Input
                     type="text"
-                    id="educationType"
-                    placeholder="Enter Education Type..."
+                    id="type"
+                    placeholder={`Enter ${moduleType} Type...`}
                     {...field}
                   />
                 )}
               />
-              {errors.educationType && (
+              {errors.type && (
                 <span className="text-sm text-red-500">
-                  {errors.educationType.message}
+                  {`${moduleType} ${errors.type.message}`}
                 </span>
               )}
             </div>
@@ -167,9 +250,27 @@ export function AddEditTypeDialog({
           <DialogFooter>
             <Button
               type="submit"
-              disabled={type === 'add' ? isPending : EditPending}
+              disabled={
+                moduleType === 'Education' && type === 'add'
+                  ? AddEducationPending
+                  : moduleType === 'Education' && type === 'edit'
+                    ? EditEducationPending
+                    : moduleType === 'Experience' && type === 'add'
+                      ? AddExperiencePending
+                      : moduleType === 'Experience' && type === 'edit'
+                        ? EditExperiencePending
+                        : false
+              }
             >
-              {type === 'add' ? 'Add' : 'Update'}
+              {moduleType === 'Education' && type === 'add'
+                ? 'Add'
+                : moduleType === 'Education' && type === 'edit'
+                  ? 'Edit'
+                  : moduleType === 'Experience' && type === 'add'
+                    ? 'Add'
+                    : moduleType === 'Experience' && type === 'edit'
+                      ? 'Edit'
+                      : null}
             </Button>
             <Button
               variant="ghostSecondary"

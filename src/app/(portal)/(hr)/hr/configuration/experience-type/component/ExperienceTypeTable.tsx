@@ -19,7 +19,7 @@ import { searchConfiguration } from '@/services/hr/hrConfiguration.service';
 import { useAuthStore } from '@/stores/auth';
 import { ConfigurationStoreType } from '@/stores/hr/configuration';
 
-import { AddEditExperienceTypeDialog } from './AddEditTypeModal';
+import { AddEditTypeDialog } from '../../education-type/component/AddEditTypeModal';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -164,14 +164,16 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
           toolbarType={'getType'}
         />
       )}
+
       {userId && (
-        <AddEditExperienceTypeDialog
+        <AddEditTypeDialog
           open={modal}
           onCloseChange={handleClose}
           type={modelType}
           userId={userId}
           setRefetchConfigurationList={setRefetchConfigurationList}
           TypeToEdit={null}
+          moduleType={'Experience'}
         />
       )}
     </>

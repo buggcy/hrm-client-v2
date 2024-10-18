@@ -174,6 +174,7 @@ const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
           userId={userId}
           setRefetchConfigurationList={setRefetchConfigurationList}
           TypeToEdit={null}
+          moduleType={'Education'}
         />
       )}
     </>
