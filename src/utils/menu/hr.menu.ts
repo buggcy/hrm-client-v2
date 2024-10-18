@@ -89,4 +89,15 @@ export const hrMenu: MenuItem[] = [
       },
     ],
   },
+  {
+    title: 'Manage Payroll',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Payroll',
+        icon: BadgeCheck,
+        href: '/hr/manage-payroll',
+      },
+    ],
+  },
 ];
