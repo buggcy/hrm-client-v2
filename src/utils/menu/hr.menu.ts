@@ -3,6 +3,7 @@ import {
   CalendarDays,
   ClipboardList,
   Home,
+  Logs,
   Mail,
   UserCog,
   UserCog2,
@@ -64,5 +65,10 @@ export const hrMenu: MenuItem[] = [
         href: '/hr/manage-policies',
       },
     ],
+  },
+  {
+    title: 'Logs',
+    icon: Logs,
+    href: '/hr/manage-logs',
   },
 ];

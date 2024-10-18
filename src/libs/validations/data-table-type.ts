@@ -7,12 +7,15 @@ import {
 import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
+import { LogsListType } from './logs';
+
 type DataTableType =
   | PolicyType
   | AttendanceHistoryListType
   | AttendanceListType
   | EmployeeListType
   | EmployeePayrollListType
-  | LeaveHistoryListType;
+  | LeaveHistoryListType
+  | LogsListType;
 
 export default DataTableType;

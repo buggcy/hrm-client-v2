@@ -12,8 +12,8 @@ import { baseAPI, schemaParse } from '@/utils';
 export interface EmployeeListParams {
   page?: number;
   limit?: number;
-  gender?: string[];
-  isApproved?: string[];
+  gender?: string[]; //..
+  isApproved?: string[]; //..
 }
 
 export interface EditProfileResponse {
