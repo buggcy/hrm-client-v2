@@ -21,18 +21,34 @@ interface ChartDataProps {
 const MonthlyPayrollGraph: FunctionComponent<ChartDataProps> = ({
   payrollData,
 }) => {
+  const renderLegend = () => (
+    <div className="flex justify-center">
+      {Object.entries(chartConfig).map(([key, { label, color }]) => (
+        <div key={key} className="mr-4 flex items-center">
+          <div
+            className="mr-1 size-2"
+            style={{
+              backgroundColor: color,
+              borderRadius: '2px',
+            }}
+          />
+          <span className="text-xs">{label}</span>
+        </div>
+      ))}
+    </div>
+  );
   const chartConfig = {
+    Basic_Salary: {
+      label: 'Basic Salary',
+      color: '#82ca9d',
+    },
     Net_Salary: {
       label: 'Net Salary',
       color: 'hsl(var(--primary))',
     },
     Tax_Amount: {
       label: 'Tax Amount',
-      color: 'hsl(var(--error))',
-    },
-    Basic_Salary: {
-      label: 'Basic Salary',
-      color: 'hsl(var(--secondary))',
+      color: '#e74c3c',
     },
   } satisfies ChartConfig;
 
@@ -49,7 +65,7 @@ const MonthlyPayrollGraph: FunctionComponent<ChartDataProps> = ({
       <CardContent className="w-full pr-0">
         <ChartContainer
           config={chartConfig}
-          className="max-h-[272px] min-h-[100px] w-full"
+          className="max-h-[256px] min-h-[100px] w-full"
         >
           <BarChart data={payrollData} margin={{ left: 0, right: 20 }}>
             <CartesianGrid vertical={false} />
@@ -60,11 +76,12 @@ const MonthlyPayrollGraph: FunctionComponent<ChartDataProps> = ({
             />
             <YAxis />
             <Tooltip />
+            <Bar dataKey="Basic_Salary" fill="#82ca9d" radius={[4, 4, 0, 0]} />
             <Bar dataKey="Net_Salary" fill="#30bbf2" radius={[4, 4, 0, 0]} />
             <Bar dataKey="Tax_Amount" fill="#e74c3c" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Basic_Salary" fill="#82ca9d" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ChartContainer>
+        {renderLegend()}
       </CardContent>
     </Card>
   );

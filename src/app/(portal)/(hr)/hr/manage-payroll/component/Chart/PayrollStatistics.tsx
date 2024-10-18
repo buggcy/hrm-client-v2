@@ -41,7 +41,7 @@ const Cards: FunctionComponent<CardsProps> = ({
       <CardContent className="flex items-center justify-between p-4 sm:gap-2">
         <div className="flex flex-col gap-4">
           <p className="text-xs">{title}</p>
-          <p className="text-xl font-bold md:text-2xl">{value}</p>
+          <p className="truncate text-xl font-bold md:text-2xl">{value}</p>
         </div>
       </CardContent>
     </Card>
@@ -60,14 +60,14 @@ const PayrollStatistics: FunctionComponent<PayrollCardProps> = ({
     {
       id: 1,
       title: 'Total Paid',
-      value: totalPaid,
+      value: totalPaid || 0,
       color: '#28a745',
       icon: <CheckCircle size={24} />,
     },
     {
       id: 2,
       title: 'Total Unpaid',
-      value: totalUnpaid,
+      value: totalUnpaid || 0,
       color: '#dc3545',
       icon: <XCircle size={24} />,
     },
@@ -75,28 +75,28 @@ const PayrollStatistics: FunctionComponent<PayrollCardProps> = ({
     {
       id: 3,
       title: 'Total Paid Amount',
-      value: totalPaidAmount,
+      value: totalPaidAmount || 0,
       color: '#28a745',
       icon: <DollarSign size={24} />,
     },
     {
       id: 6,
       title: 'Total Perk Amount',
-      value: totalPerkAmount,
+      value: totalPerkAmount || 0,
       color: '#17a2b8',
       icon: <Award size={24} />,
     },
     {
       id: 5,
       title: 'Amount To Be Paid',
-      value: totalUnpaidAmount,
+      value: totalUnpaidAmount || 0,
       color: '#ffca28',
       icon: <CreditCard size={24} />,
     },
     {
       id: 6,
       title: 'Total Salary Deductions',
-      value: totalDeduction,
+      value: totalDeduction || 0,
       color: '#dc3545',
       icon: <Minus color="#FF0000" />,
     },
