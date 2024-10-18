@@ -1,5 +1,7 @@
 'use client';
 
+import { FunctionComponent } from 'react';
+
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 
 import {
@@ -11,22 +13,14 @@ import {
 } from '@/components/ui/card';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 
-const payrollData = [
-  { month: 'January', Net_Salary: 500, Tax_Amount: 50, Basic_Salary: 100 },
-  { month: 'February', Net_Salary: 400, Tax_Amount: 40, Basic_Salary: 100 },
-  { month: 'March', Net_Salary: 550, Tax_Amount: 55, Basic_Salary: 100 },
-  { month: 'April', Net_Salary: 480, Tax_Amount: 48, Basic_Salary: 100 },
-  { month: 'May', Net_Salary: 600, Tax_Amount: 60, Basic_Salary: 100 },
-  { month: 'June', Net_Salary: 420, Tax_Amount: 42, Basic_Salary: 100 },
-  { month: 'July', Net_Salary: 650, Tax_Amount: 65, Basic_Salary: 100 },
-  { month: 'August', Net_Salary: 470, Tax_Amount: 47, Basic_Salary: 100 },
-  { month: 'September', Net_Salary: 530, Tax_Amount: 53, Basic_Salary: 100 },
-  { month: 'October', Net_Salary: 580, Tax_Amount: 58, Basic_Salary: 100 },
-  { month: 'November', Net_Salary: 600, Tax_Amount: 60, Basic_Salary: 100 },
-  { month: 'December', Net_Salary: 700, Tax_Amount: 70, Basic_Salary: 100 },
-];
+import { PayrollMonthlyChart } from '@/types/hr-payroll.types';
+interface ChartDataProps {
+  payrollData?: PayrollMonthlyChart[];
+}
 
-export function MonthlyPayrollGraph() {
+const MonthlyPayrollGraph: FunctionComponent<ChartDataProps> = ({
+  payrollData,
+}) => {
   const chartConfig = {
     Net_Salary: {
       label: 'Net Salary',
@@ -74,4 +68,6 @@ export function MonthlyPayrollGraph() {
       </CardContent>
     </Card>
   );
-}
+};
+
+export default MonthlyPayrollGraph;

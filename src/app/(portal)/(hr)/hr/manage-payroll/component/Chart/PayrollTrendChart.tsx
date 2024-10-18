@@ -18,82 +18,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-export const description = 'A stacked area chart';
+import { PayrollTrendChart } from '@/types/hr-payroll.types';
 
-const chartData = [
-  {
-    month: 'January',
-    Total_Working_Minutes: 186,
-    Total_Remaining_Minutes: 80,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'February',
-    Total_Working_Minutes: 305,
-    Total_Remaining_Minutes: 200,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'March',
-    Total_Working_Minutes: 237,
-    Total_Remaining_Minutes: 120,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'April',
-    Total_Working_Minutes: 73,
-    Total_Remaining_Minutes: 190,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'May',
-    Total_Working_Minutes: 209,
-    Total_Remaining_Minutes: 130,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'June',
-    Total_Working_Minutes: 214,
-    Total_Remaining_Minutes: 140,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'July',
-    Total_Working_Minutes: 214,
-    Total_Remaining_Minutes: 140,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'August',
-    Total_Working_Minutes: 214,
-    Total_Remaining_Minutes: 140,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'September',
-    Total_Working_Minutes: 214,
-    Total_Remaining_Minutes: 140,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'October',
-    Total_Working_Minutes: 214,
-    Total_Remaining_Minutes: 140,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'November',
-    Total_Working_Minutes: 214,
-    Total_Remaining_Minutes: 140,
-    Total_Absent_Deduction: 100,
-  },
-  {
-    month: 'December',
-    Total_Working_Minutes: 214,
-    Total_Remaining_Minutes: 140,
-    Total_Absent_Deduction: 100,
-  },
-];
+export const description = 'A stacked area chart';
 
 const chartConfig = {
   Total_Working_Minutes: {
@@ -110,7 +37,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PayrollTrendChart() {
+interface PayrollTrendChartProps {
+  chartData?: PayrollTrendChart[];
+}
+
+export function MonthlyPayrollTrendChart({
+  chartData,
+}: PayrollTrendChartProps) {
   return (
     <Card>
       <CardHeader>

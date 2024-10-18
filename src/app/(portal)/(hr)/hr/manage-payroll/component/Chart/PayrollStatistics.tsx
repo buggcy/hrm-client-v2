@@ -16,8 +16,16 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 interface CardsProps {
   icon: JSX.Element;
   title: string;
-  value: number;
+  value?: number;
   color: string;
+}
+interface PayrollCardProps {
+  totalPaid?: number;
+  totalUnpaid?: number;
+  totalPaidAmount?: number;
+  totalPerkAmount?: number;
+  totalUnpaidAmount?: number;
+  totalDeduction?: number;
 }
 const Cards: FunctionComponent<CardsProps> = ({
   icon,
@@ -40,53 +48,60 @@ const Cards: FunctionComponent<CardsProps> = ({
   );
 };
 
-const CardsData = [
-  {
-    id: 1,
-    title: 'Total Paid',
-    value: 1,
-    color: '#28a745',
-    icon: <CheckCircle size={24} />,
-  },
-  {
-    id: 2,
-    title: 'Total Unpaid',
-    value: 3,
-    color: '#dc3545',
-    icon: <XCircle size={24} />,
-  },
+const PayrollStatistics: FunctionComponent<PayrollCardProps> = ({
+  totalDeduction,
+  totalPaid,
+  totalUnpaid,
+  totalPaidAmount,
+  totalPerkAmount,
+  totalUnpaidAmount,
+}) => {
+  const CardsData = [
+    {
+      id: 1,
+      title: 'Total Paid',
+      value: totalPaid,
+      color: '#28a745',
+      icon: <CheckCircle size={24} />,
+    },
+    {
+      id: 2,
+      title: 'Total Unpaid',
+      value: totalUnpaid,
+      color: '#dc3545',
+      icon: <XCircle size={24} />,
+    },
 
-  {
-    id: 3,
-    title: 'Total Paid Amount',
-    value: 400,
-    color: '#28a745',
-    icon: <DollarSign size={24} />,
-  },
-  {
-    id: 6,
-    title: 'Total Perk Amount',
-    value: 600,
-    color: '#17a2b8',
-    icon: <Award size={24} />,
-  },
-  {
-    id: 5,
-    title: 'Amount To Be Paid',
-    value: 300,
-    color: '#ffca28',
-    icon: <CreditCard size={24} />,
-  },
-  {
-    id: 6,
-    title: 'Total Salary Deductions',
-    value: 500,
-    color: '#dc3545',
-    icon: <Minus color="#FF0000" />,
-  },
-];
+    {
+      id: 3,
+      title: 'Total Paid Amount',
+      value: totalPaidAmount,
+      color: '#28a745',
+      icon: <DollarSign size={24} />,
+    },
+    {
+      id: 6,
+      title: 'Total Perk Amount',
+      value: totalPerkAmount,
+      color: '#17a2b8',
+      icon: <Award size={24} />,
+    },
+    {
+      id: 5,
+      title: 'Amount To Be Paid',
+      value: totalUnpaidAmount,
+      color: '#ffca28',
+      icon: <CreditCard size={24} />,
+    },
+    {
+      id: 6,
+      title: 'Total Salary Deductions',
+      value: totalDeduction,
+      color: '#dc3545',
+      icon: <Minus color="#FF0000" />,
+    },
+  ];
 
-export function PayrollStatistics() {
   return (
     <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
       {CardsData.map((card, index) => (
@@ -94,4 +109,6 @@ export function PayrollStatistics() {
       ))}
     </div>
   );
-}
+};
+
+export default PayrollStatistics;

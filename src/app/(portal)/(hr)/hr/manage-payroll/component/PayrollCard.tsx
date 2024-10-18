@@ -6,15 +6,31 @@ import {
   useMonthPicker,
 } from '@/components/MonthPicker/DateMonthPicker';
 
-import { MonthlyPayrollGraph } from './Chart/MonthlyPayrollChart';
-import { PayrollStatistics } from './Chart/PayrollStatistics';
-import { PayrollTrendChart } from './Chart/PayrollTrendChart';
+import { usePayrollStatisticsQuery } from '@/hooks/hr/useHrPayroll.hook';
+
+import MonthlyPayrollGraph from './Chart/MonthlyPayrollChart';
+import PayrollStatistics from './Chart/PayrollStatistics';
+import { MonthlyPayrollTrendChart } from './Chart/PayrollTrendChart';
 
 interface PayrollCardProps {}
 
 const PayrollCard: FunctionComponent<PayrollCardProps> = () => {
   const { timeRange, selectedMonth, setTimeRange, handleSetMonth } =
     useMonthPicker();
+  const defaultDate = new Date();
+  const month = selectedMonth
+    ? selectedMonth.getMonth() + 1
+    : defaultDate.getMonth() + 1;
+  const year = selectedMonth
+    ? selectedMonth.getFullYear().toString()
+    : defaultDate.getFullYear().toString();
+
+  const formattedMonth = month < 10 ? `0${month}` : `${month}`;
+
+  const { data: payrollStats } = usePayrollStatisticsQuery({
+    month: formattedMonth,
+    year: year,
+  });
 
   return (
     <>
@@ -26,13 +42,20 @@ const PayrollCard: FunctionComponent<PayrollCardProps> = () => {
           setMonth={handleSetMonth}
         />
       </Header>
-      <PayrollStatistics />
+      <PayrollStatistics
+        totalPaid={payrollStats?.records?.totalPaid}
+        totalUnpaid={payrollStats?.records?.totalUnpaid}
+        totalPaidAmount={payrollStats?.records?.totalPaidAmount}
+        totalPerkAmount={payrollStats?.records?.totalIncrementAmount}
+        totalUnpaidAmount={payrollStats?.records?.totalAmountTobePaid}
+        totalDeduction={payrollStats?.records?.totalSalaryDeduction}
+      />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <MonthlyPayrollGraph />
+          <MonthlyPayrollGraph payrollData={payrollStats?.chartData} />
         </div>
         <div className="lg:col-span-5">
-          <PayrollTrendChart />
+          <MonthlyPayrollTrendChart chartData={payrollStats?.trendData} />
         </div>
       </div>
     </>
