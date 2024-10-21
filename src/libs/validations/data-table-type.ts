@@ -8,6 +8,7 @@ import {
 import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
+import { AnnouncementType } from './hr-announcement';
 import { Designation } from './hr-designation.validation';
 import { HrPerksListType } from './hr-perks';
 import { PolicyListType } from './policies';
@@ -22,6 +23,7 @@ type DataTableType =
   | EmployeeListType
   | EmployeePayrollListType
   | LeaveHistoryListType
+  | AnnouncementType
   | Designation;
 
 export default DataTableType;

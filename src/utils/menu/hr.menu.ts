@@ -6,6 +6,7 @@ import {
   Gift,
   Home,
   Medal,
+  Megaphone,
   UserCog,
   UserCog2,
   UserPlus,
@@ -86,6 +87,17 @@ export const hrMenu: MenuItem[] = [
         title: 'Award Perks',
         icon: Medal,
         href: '/hr/manage-perks/award-perks',
+      },
+    ],
+  },
+  {
+    title: 'Manage Announcement',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Announcement',
+        icon: Megaphone,
+        href: '/hr/manage-announcement',
       },
     ],
   },

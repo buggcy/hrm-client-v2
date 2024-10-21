@@ -194,6 +194,35 @@ export const leave_history_status_options = [
     icon: XCircle,
   },
 ];
+export const Hr_Announcement_Pirority_options = [
+  {
+    value: 'Low',
+    label: 'Low',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Medium',
+    label: 'Medium',
+    icon: Circle,
+  },
+  {
+    value: 'High',
+    label: 'High',
+    icon: XCircle,
+  },
+];
+export const Hr_Announcement_Status_options = [
+  {
+    value: 'Enable',
+    label: 'Enable',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Disable',
+    label: 'Disable',
+    icon: CheckCircle2,
+  },
+];
 
 export const employee_status = [
   {
