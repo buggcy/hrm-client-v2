@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-import { Loader as LucideLoader } from 'lucide-react';
-
 const Loader = () => {
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +27,7 @@ const Loader = () => {
             height={150}
             className="object-contain"
           />
-          <LucideLoader className="size-8 animate-spin rounded-full text-blue-600" />
+          <div className="size-6 animate-spin rounded-full border-2 border-t-blue-700" />
         </div>
         <div className="my-4 border-t border-gray-200" />
         <div className="flex items-center">
