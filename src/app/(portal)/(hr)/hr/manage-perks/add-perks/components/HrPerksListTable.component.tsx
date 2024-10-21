@@ -10,14 +10,24 @@ import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useHrPerksListQuery } from '@/hooks/hrPerksList/useHrPerksList.hook';
+import {
+  useHrPerkRecordQuery,
+  useHrPerksListQuery,
+} from '@/hooks/hrPerksList/useHrPerksList.hook';
 import { HrPerksListType } from '@/libs/validations/hr-perks';
 import { searchHrPerkList } from '@/services/hr/perks-list.service';
 import { PerkListStoreType } from '@/stores/hr/perk-list';
 
+import { PerkRequests } from './charts/PerkRequestsStats';
+import { PerkStats } from './charts/PerkStats';
+import { TopPerks } from './charts/TopPerks';
+
 const HrPerksListTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data: hrPerkRecords, refetch: refetchRecord } =
+    useHrPerkRecordQuery();
+
   const { perkListStore } = useStores() as { perkListStore: PerkListStoreType };
   const { setRefetchPerkList, refetchPerkList } = perkListStore;
   const initialSearchTerm = searchParams.get('search') || '';
@@ -92,11 +102,12 @@ const HrPerksListTable: FunctionComponent = () => {
     if (refetchPerkList) {
       void (async () => {
         await refetch();
+        await refetchRecord();
       })();
 
       setRefetchPerkList(false);
     }
-  }, [refetchPerkList, setRefetchPerkList, refetch]);
+  }, [refetchPerkList, setRefetchPerkList, refetch, refetchRecord]);
 
   const handlePaginationChange = (newPage: number, newLimit: number) => {
     const params = new URLSearchParams(searchParams);
@@ -126,6 +137,16 @@ const HrPerksListTable: FunctionComponent = () => {
 
   return (
     <>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <TopPerks chartData={hrPerkRecords?.topAvailed} />
+        <PerkStats
+          totalPerks={hrPerkRecords?.records?.totalPerks}
+          assignedPerks={hrPerkRecords?.records?.totalPerkAssigned}
+          approvedPerks={hrPerkRecords?.records?.totalApprovedPerks}
+          rejectedPerks={hrPerkRecords?.records?.totalRejectedPerks}
+        />
+        <PerkRequests chartData={hrPerkRecords?.chartData} />
+      </div>
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={7} rowCount={limit} />
       ) : (

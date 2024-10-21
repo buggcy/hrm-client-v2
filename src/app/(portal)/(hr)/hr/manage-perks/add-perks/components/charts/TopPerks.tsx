@@ -23,15 +23,12 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-export const description = 'A bar chart with a custom label';
+import { HrTopAvailed } from '@/types/hr-perks-list.types';
 
-const chartData = [
-  { name: 'Health Insurance', count: 31 },
-  { name: 'Bike Allowance', count: 23 },
-  { name: 'Car Allowance', count: 21 },
-  { name: 'Gym Allowance', count: 15 },
-  { name: 'Marriage Allowance', count: 10 },
-];
+export const description = 'A bar chart with a custom label';
+interface PerkRecordChartProps {
+  chartData: HrTopAvailed[] | undefined;
+}
 
 const chartConfig = {
   count: {
@@ -43,12 +40,14 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function TopPerks() {
+export function TopPerks({ chartData }: PerkRecordChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Top Availed Perks</CardTitle>
-        <CardDescription>Showing for the last year</CardDescription>
+        <CardTitle className="text-sm">Top Availed Perks</CardTitle>
+        <CardDescription className="text-xs">
+          Showing top availed perks for this year
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-3/4">
