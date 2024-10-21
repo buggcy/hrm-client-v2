@@ -47,6 +47,7 @@ const AnnualLeaveRecordSchema = z.object({
 });
 
 const ExtraLeaveSchema = z.object({
+  userId: z.string().optional(),
   title: z.string(),
   leavesAllowed: z.number(),
   leavesTaken: z.number(),
@@ -135,4 +136,5 @@ export {
   applyLeaveApiResponseSchema,
   EmployeeLeavesDataApiResponseSchema,
   leaveApiResponseSchema,
+  ExtraLeaveSchema,
 };

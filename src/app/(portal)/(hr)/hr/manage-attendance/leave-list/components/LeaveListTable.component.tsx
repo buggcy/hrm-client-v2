@@ -189,6 +189,11 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
             </span>
           </Link>
         </Button>
+        <Button asChild>
+          <Link href="/hr/manage-leave" className="flex items-center">
+            Assign Leaves
+          </Link>
+        </Button>
       </Header>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <LeavesTrendChart chartData={getLeaveChartData?.data ?? []} />
