@@ -226,7 +226,7 @@ export function AddEditTypeDialog({
           <div className="flex flex-wrap">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="type" className="mb-2 text-left">
-                {moduleType} Type
+                {moduleType} Type <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="type"

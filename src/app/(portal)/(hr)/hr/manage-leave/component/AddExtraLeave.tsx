@@ -177,7 +177,7 @@ export function AddExtraLeaveModal({
             <div className="flex flex-wrap">
               <div className="flex flex-1 flex-col">
                 <Label htmlFor="title" className="mb-2 text-left">
-                  Leave Title
+                  Leave Title <span className="text-red-600">*</span>
                 </Label>
                 <Controller
                   name="title"
@@ -201,7 +201,7 @@ export function AddExtraLeaveModal({
             <div className="flex flex-wrap">
               <div className="flex flex-1 flex-col">
                 <Label htmlFor="allow" className="mb-2 text-left">
-                  Leave Allowed
+                  Leave Allowed <span className="text-red-600">*</span>
                 </Label>
                 <Controller
                   name="allowed"
@@ -225,7 +225,7 @@ export function AddExtraLeaveModal({
             <div className="flex flex-wrap">
               <div className="flex flex-1 flex-col">
                 <Label htmlFor="month" className="mb-2 text-left">
-                  Date
+                  Date <span className="text-red-600">*</span>
                 </Label>
                 <MonthPickerComponent
                   setDateValue={setDateValue}
