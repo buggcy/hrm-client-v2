@@ -118,7 +118,8 @@ export default function AcceptRejectLeaveDialog({
                             htmlFor="reason"
                             className="mb-2 text-left dark:text-white"
                           >
-                            Rejection Reason
+                            Rejection Reason{' '}
+                            <span className="text-red-600">*</span>
                           </Label>
                           <Controller
                             name="reason"

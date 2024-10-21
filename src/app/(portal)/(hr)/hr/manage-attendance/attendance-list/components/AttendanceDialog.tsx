@@ -273,7 +273,7 @@ export function AttendanceDialog({
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="employee" className="mb-2 text-left">
-                Employee
+                Employee <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="employee"
@@ -313,7 +313,7 @@ export function AttendanceDialog({
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="date" className="mb-2 text-left">
-                Date
+                Date <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="date"
@@ -357,7 +357,7 @@ export function AttendanceDialog({
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="inTime" className="mb-2 text-left">
-                Start Time
+                Start Time <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="inTime"
@@ -377,7 +377,7 @@ export function AttendanceDialog({
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="outTime" className="mb-2 text-left">
-                End Time
+                End Time <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="outTime"
@@ -397,7 +397,7 @@ export function AttendanceDialog({
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="totalTime" className="mb-2 text-left">
-                Total Time
+                Total Time <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="totalTime"
@@ -420,7 +420,7 @@ export function AttendanceDialog({
 
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Status" className="mb-2 text-left">
-                Status
+                Status <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="Status"

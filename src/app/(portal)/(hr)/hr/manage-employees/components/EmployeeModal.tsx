@@ -154,7 +154,7 @@ export function AddEmployeeDialog({
           <div className="flex flex-wrap gap-8">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="firstName" className="mb-2 text-left">
-                First Name
+                First Name <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="firstName"
@@ -171,7 +171,7 @@ export function AddEmployeeDialog({
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="lastName" className="mb-2 text-left">
-                Last Name
+                Last Name <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="lastName"
@@ -188,7 +188,7 @@ export function AddEmployeeDialog({
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="email" className="mb-2 text-left">
-                Personal Email
+                Personal Email <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="email"
@@ -213,7 +213,7 @@ export function AddEmployeeDialog({
           <div className="flex flex-wrap gap-8">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="companyEmail" className="mb-2 text-left">
-                Company Email
+                Company Email <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="companyEmail"
@@ -235,7 +235,7 @@ export function AddEmployeeDialog({
             </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="contactNo" className="mb-2 text-left">
-                Contact
+                Contact <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="contactNo"
@@ -327,7 +327,7 @@ export function AddEmployeeDialog({
 
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Designation" className="mb-2 text-left">
-                Designation
+                Designation <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="Designation"

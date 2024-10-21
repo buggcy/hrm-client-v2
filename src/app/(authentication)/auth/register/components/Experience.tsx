@@ -196,11 +196,12 @@ export function ExperienceTable({
           </TableRow>
         </TableFooter>
       </Table>
-      {errors?.educationalDocument?.educationExperiences && (
-        <span className="text-xs text-red-500">
-          {errors?.educationalDocument?.educationExperiences?.message}
-        </span>
-      )}
+      {educationExperiences?.length === 0 &&
+        errors?.educationalDocument?.educationExperiences && (
+          <span className="text-xs text-red-500">
+            {errors?.educationalDocument?.educationExperiences?.message}
+          </span>
+        )}
 
       <CardTitle className="mb-2 mt-4 flex">Additional Documents</CardTitle>
       <Dropzone />

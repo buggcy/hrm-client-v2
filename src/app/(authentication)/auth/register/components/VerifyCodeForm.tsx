@@ -396,7 +396,6 @@ export function VerifyCodeForm(): JSX.Element {
         formData.append('deletedAdditionalDocuments[]', doc);
       });
     }
-
     mainMutate(formData);
   };
 
@@ -415,7 +414,7 @@ export function VerifyCodeForm(): JSX.Element {
   };
 
   return (
-    <Card className="mx-auto max-w-xs p-4 sm:max-w-lg md:max-w-screen-sm lg:max-w-screen-lg">
+    <Card className="mx-auto max-w-lg p-4 sm:max-w-lg md:max-w-screen-sm lg:max-w-screen-lg">
       <Tabs
         defaultValue="verify-code"
         value={activeTab}
@@ -462,7 +461,9 @@ export function VerifyCodeForm(): JSX.Element {
             >
               <CardTitle className="py-8 text-center">Verify Code</CardTitle>
               <div className="mx-auto flex w-full flex-col gap-2 lg:w-9/12">
-                <Label htmlFor="code">Enter your code</Label>
+                <Label htmlFor="code">
+                  Enter your code <span className="text-red-600">*</span>
+                </Label>
                 <Input
                   id="code"
                   placeholder="Enter your code"

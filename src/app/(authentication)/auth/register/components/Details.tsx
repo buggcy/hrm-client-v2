@@ -50,7 +50,7 @@ export function Details({ onNext }: { onNext: () => void }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="firstName" className="mb-2 text-left">
-              First Name
+              First Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="firstName"
@@ -66,7 +66,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="lastName" className="mb-2 text-left">
-              Last Name
+              Last Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="lastName"
@@ -82,7 +82,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="emailAddress" className="mb-2 text-left">
-              Email Address
+              Email Address <span className="text-red-600">*</span>
             </Label>
             <Input
               id="emailAddress"
@@ -98,7 +98,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="contactNo" className="mb-2 text-left">
-              Phone Number
+              Phone Number <span className="text-red-600">*</span>
             </Label>
             <Input
               id="contactNo"
@@ -115,7 +115,7 @@ export function Details({ onNext }: { onNext: () => void }) {
 
           <div className="flex flex-col">
             <Label htmlFor="Emergency_Phone" className="mb-2 text-left">
-              Emergency Phone
+              Emergency <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Emergency_Phone"
@@ -131,7 +131,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="DOB" className="mb-2 text-left">
-              Date of Birth
+              Date of Birth <span className="text-red-600">*</span>
             </Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -297,7 +297,7 @@ export function Details({ onNext }: { onNext: () => void }) {
 
           <div className="flex flex-col">
             <Label htmlFor="gender" className="mb-2 text-left">
-              Gender
+              Gender <span className="text-red-600">*</span>
             </Label>
             <Select
               value={gender || 'Select Gender'}
@@ -341,7 +341,7 @@ export function Details({ onNext }: { onNext: () => void }) {
 
           <div className="flex flex-col">
             <Label htmlFor="nationality" className="mb-2 text-left">
-              Nationality
+              Nationality <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Nationality"
@@ -364,7 +364,7 @@ export function Details({ onNext }: { onNext: () => void }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="Family_Name" className="mb-2 text-left">
-              Name
+              Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Family_Name"
@@ -379,7 +379,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="Family_Relation" className="mb-2 text-left">
-              Relation
+              Relation <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Family_Relation"
@@ -394,7 +394,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="Family_PhoneNo" className="mb-2 text-left">
-              Phone Number
+              Phone Number <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Family_PhoneNo"
@@ -409,7 +409,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="Family_Occupation" className="mb-2 text-left">
-              Occupation
+              Occupation <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Family_Occupation"
@@ -432,7 +432,7 @@ export function Details({ onNext }: { onNext: () => void }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="street" className="mb-2 text-left">
-              Street
+              Street <span className="text-red-600">*</span>
             </Label>
             <Input
               id="street"
@@ -457,7 +457,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="country" className="mb-2 text-left">
-              Country
+              Country <span className="text-red-600">*</span>
             </Label>
             {/* <Select
                 onValueChange={value =>
@@ -498,7 +498,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="province" className="mb-2 text-left">
-              Province
+              Province <span className="text-red-600">*</span>
             </Label>
             {/* <Select
                 onValueChange={value =>
@@ -552,7 +552,7 @@ export function Details({ onNext }: { onNext: () => void }) {
 
           <div className="flex flex-col">
             <Label htmlFor="city" className="mb-2 text-left">
-              City
+              City <span className="text-red-600">*</span>
             </Label>
             <Input
               id="city"
@@ -567,7 +567,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="zip" className="mb-2 text-left">
-              Postal Code
+              Postal Code <span className="text-red-600">*</span>
             </Label>
             <Input
               id="zip"
