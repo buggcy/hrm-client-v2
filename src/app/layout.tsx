@@ -3,6 +3,7 @@ import { Inter as FontSans } from 'next/font/google';
 
 import '@/libs/i18n';
 
+import { LoadingProvider } from '@/components/LoadingProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider, QueryClientProvider, ThemeProvider } from '@/providers';
 import { StoreProvider } from '@/providers/Store.Provider';
@@ -15,6 +16,7 @@ const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans',
 });
+
 export const metadata: Metadata = {
   title: 'Buggcy',
   description: 'Developer portal',
@@ -48,7 +50,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <AuthProvider>{children}</AuthProvider>
+              <AuthProvider>
+                <LoadingProvider>{children}</LoadingProvider>
+              </AuthProvider>
             </ThemeProvider>
           </StoreProvider>
         </QueryClientProvider>
