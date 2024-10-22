@@ -59,13 +59,14 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
       toast({
         title: 'Error',
         description: err?.response?.data?.message || 'Error on cancel request!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: async response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       setRefetchPerkList(true);
       await refetch();

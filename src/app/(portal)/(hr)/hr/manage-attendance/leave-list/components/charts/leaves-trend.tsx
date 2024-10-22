@@ -44,8 +44,8 @@ export function LeavesTrendChart({ chartData }: LeaveTrendChartProps) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle>Leaves Over Time</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-sm">Leaves Over Time</CardTitle>
+        <CardDescription className="text-xs">
           Showing total leave requests for this year
         </CardDescription>
       </CardHeader>

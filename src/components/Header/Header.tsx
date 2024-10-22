@@ -29,7 +29,7 @@ const Header = ({ subheading, children }: HeaderProps) => {
             <Avatar className="size-full border-4 border-background">
               <AvatarImage src={user?.Avatar || ''} alt={user?.firstName} />
               <AvatarFallback className="uppercase">
-                {`${user?.firstName?.charAt(0) || ''}`}
+                {`${user?.firstName?.charAt(0) || ''} ${user?.lastName?.charAt(0) || ''}`}
               </AvatarFallback>
             </Avatar>
           </div>

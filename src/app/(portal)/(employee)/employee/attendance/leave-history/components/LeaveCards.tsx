@@ -32,7 +32,7 @@ const LeaveCards: FunctionComponent<LeaveCardsProps> = ({ date }) => {
       toast({
         title: 'Error',
         description: err?.message || 'Error on fetching stats data!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

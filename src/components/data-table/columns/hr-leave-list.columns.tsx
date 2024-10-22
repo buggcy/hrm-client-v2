@@ -101,7 +101,6 @@ export const hrLeaveListColumns: ColumnDef<LeaveListType>[] = [
           <span className="max-w-[500px] truncate">{date}</span>
         </div>
       );
-      return <div>{field?.toDateString()}</div>;
     },
   },
 

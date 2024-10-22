@@ -42,7 +42,7 @@ export function EmployeeListToolbar<TData extends EmployeeListType>({
         title: 'Error',
         description:
           err?.response?.data?.error || 'Error on exporting employees!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: (response: BlobPart) => {

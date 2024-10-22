@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button';
 
 import { AddPerksDialog } from './components/AddPerksDialog';
 import HrPerksListTable from './components/HrPerksListTable.component';
-import PerkCharts from './components/PerkCharts';
 
 interface AddPerksProps {}
 
@@ -36,12 +35,11 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
-        <Header subheading="You are 15 minutes late today!">
+        <Header subheading="Managing and assigning your perks efficiently!">
           <Button variant="default" onClick={handleDialogOpen}>
             Add Perk
           </Button>
         </Header>
-        <PerkCharts />
         <Suspense fallback={<div>Loading...</div>}>
           <HrPerksListTable />
         </Suspense>
