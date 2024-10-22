@@ -75,3 +75,51 @@
   background-color: hsl(var(--primary));
   color: #e7f7fd;
 }
+
+.calendar-height {
+  height: 420px;
+}
+
+@media (max-width: 640px) {
+  .calendar-height {
+    height: 470px;
+  }
+}
+@media (max-width: 640px) {
+  .rbc-header {
+    font-size: 12px;
+  }
+}
+@media (max-width: 400px) {
+  .rbc-header {
+    font-size: 10px;
+  }
+}
+
+.event-birthday {
+  background-color: #f9c74f;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 12px;
+  width: fit-content;
+  display: flex;
+  padding-right: 0px;
+}
+
+.dark .event-birthday {
+  background-color: #f9a602;
+  color: #fff;
+}
+.event-anniversary {
+  background-color: #ffe4e6;
+  color: #f43f5e;
+  border-radius: 4px;
+  font-size: 12px;
+  padding-right: 0px;
+  width: fit-content;
+}
+
+.dark .event-anniversary {
+  background-color: #f43f5e;
+  color: #ffe4e6;
+}

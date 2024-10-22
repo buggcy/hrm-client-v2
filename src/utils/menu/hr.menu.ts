@@ -44,6 +44,11 @@ export const hrMenu: MenuItem[] = [
         icon: CalendarCog,
         href: '/hr/manage-events',
       },
+      {
+        title: 'Manage Birthday',
+        icon: CalendarCog,
+        href: '/hr/manage-birthday',
+      },
     ],
   },
   {

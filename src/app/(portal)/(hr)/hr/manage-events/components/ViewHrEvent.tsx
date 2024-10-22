@@ -33,7 +33,7 @@ export function ViewHrEvent({ event, onClose }: EventDetailsCardProps) {
   const variant = event?.isEnabled ? 'success' : 'destructive';
 
   return (
-    <DialogContent className="flex h-full max-h-[550px] flex-col justify-between p-6 sm:max-w-[600px]">
+    <DialogContent className="flex h-full max-h-[550px] flex-col justify-between p-6 max-sm:max-h-[600px] sm:max-w-[600px]">
       <div className="flex flex-col gap-3">
         <div className="flex h-fit justify-between pr-5">
           <div className="h-fit text-left text-xl font-semibold">
@@ -46,30 +46,38 @@ export function ViewHrEvent({ event, onClose }: EventDetailsCardProps) {
           </div>
         </div>
         <div className="grid h-fit gap-4 py-4 text-left">
-          <div className="grid h-fit grid-cols-2">
-            <div className="flex space-x-3">
-              <BookImage className="size-4 text-blue-500" />
-              <span className="text-sm font-medium">Event Name:</span>
+          <div className="grid h-fit grid-cols-1 max-sm:gap-3 sm:grid-cols-2">
+            <div className="flex space-x-3 max-sm:justify-between">
+              <div className="flex gap-3">
+                <BookImage className="size-4 text-blue-500" />
+                <span className="text-sm font-medium">Event Name:</span>
+              </div>
               <p className="text-sm">{event.Event_Name}</p>
             </div>
-            <div className="flex space-x-3">
-              <Tag className="size-4 text-blue-500" />
-              <span className="text-sm font-medium">Type:</span>
+            <div className="flex space-x-3 max-sm:justify-between">
+              <div className="flex gap-3">
+                <Tag className="size-4 text-blue-500" />
+                <span className="text-sm font-medium">Type:</span>
+              </div>
               <p className="text-sm">
                 {event.Event_Type === 'company' ? 'Non Holiday' : 'Holiday'}
               </p>
             </div>
           </div>
 
-          <div className="grid h-fit grid-cols-2">
-            <div className="flex space-x-3">
-              <Calendar className="size-4 text-blue-500" />
-              <span className="text-sm font-medium">Start Date:</span>
+          <div className="grid h-fit grid-cols-1 max-sm:gap-3 sm:grid-cols-2">
+            <div className="flex space-x-3 max-sm:justify-between">
+              <div className="flex gap-3">
+                <Calendar className="size-4 text-blue-500" />
+                <span className="text-sm font-medium">Start Date:</span>
+              </div>
               <p className="text-sm">{formatDate(event.Event_Start)}</p>
             </div>
-            <div className="flex space-x-3">
-              <Calendar className="size-4 text-blue-500" />
-              <span className="text-sm font-medium">End Date:</span>
+            <div className="flex space-x-3 max-sm:justify-between">
+              <div className="flex gap-3">
+                <Calendar className="size-4 text-blue-500" />
+                <span className="text-sm font-medium">End Date:</span>
+              </div>
               <p className="text-sm">{formatDate(event.Event_End)}</p>
             </div>
           </div>

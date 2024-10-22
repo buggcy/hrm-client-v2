@@ -10,9 +10,8 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 
-import { BChart } from './BarChart/BarChart';
+import ChartsPage from './components/ChartsPage';
 import EmployeeTable from './components/EmployeeTable.component';
-import { PChart } from './PieChart/PieChart';
 
 export default function ManageEmployeesPage() {
   return (
@@ -24,8 +23,8 @@ export default function ManageEmployeesPage() {
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
         <Header subheading="Transforming employee management into a journey of growth and success."></Header>
-        <div className="my-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <BChart /> <PChart />
+        <div className="mb-6">
+          <ChartsPage />
         </div>
         <Suspense fallback={<div>Loading...</div>}>
           <EmployeeTable />

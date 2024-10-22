@@ -1,6 +1,7 @@
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import { AttendanceListType } from '@/libs/validations/attendance-list';
 import {
+  EmployeeDobTableListType,
   EmployeeListType,
   EmployeePayrollListType,
   HrEventsListType,
@@ -20,6 +21,7 @@ type DataTableType =
   | AttendanceListType
   | EmployeeListType
   | EmployeePayrollListType
-  | LeaveHistoryListType;
+  | LeaveHistoryListType
+  | EmployeeDobTableListType;
 
 export default DataTableType;

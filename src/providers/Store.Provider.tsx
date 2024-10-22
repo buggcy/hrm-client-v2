@@ -8,6 +8,8 @@ import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
 import { usePerkStore } from '@/stores/employee/perks';
 import { useAttendanceListStore } from '@/stores/hr/attendance-list';
 import { useEmployeeStore } from '@/stores/hr/employee';
+import { useEmployeeAnniversaryStore } from '@/stores/hr/employeeAnniversary';
+import { useEmployeeDobStore } from '@/stores/hr/employeeDob';
 import { useHrEventsStore } from '@/stores/hr/hrEvents';
 import { useLeaveListStore } from '@/stores/hr/leave-list';
 import { usePerkListStore } from '@/stores/hr/perk-list';
@@ -19,6 +21,8 @@ import { useNotificationStore } from '../stores/useNotificationStore';
 interface StoreContextType {
   authStore: ReturnType<typeof useAuthStore>;
   employeeStore: ReturnType<typeof useEmployeeStore>;
+  employeeDobStore: ReturnType<typeof useEmployeeDobStore>;
+  employeeAnniversaryStore: ReturnType<typeof useEmployeeAnniversaryStore>;
   perkStore: ReturnType<typeof usePerkStore>;
   employeePayrollStore: ReturnType<typeof useEmployeePayrollStore>;
   hrEventsStore: ReturnType<typeof useHrEventsStore>;
@@ -36,6 +40,8 @@ const StoreContext = createContext<StoreContextType | null>(null);
 export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const authStore = useAuthStore();
   const employeeStore = useEmployeeStore();
+  const employeeDobStore = useEmployeeDobStore();
+  const employeeAnniversaryStore = useEmployeeAnniversaryStore();
   const perkStore = usePerkStore();
   const employeePayrollStore = useEmployeePayrollStore();
   const hrEventsStore = useHrEventsStore();
@@ -52,6 +58,8 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
       value={{
         authStore,
         employeeStore,
+        employeeDobStore,
+        employeeAnniversaryStore,
         employeePayrollStore,
         hrEventsStore,
         attendanceHistoryStore,

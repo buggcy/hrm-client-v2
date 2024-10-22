@@ -34,6 +34,7 @@ import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 import { HrPerkListToolbar } from './toolbars/hr-perk-list-toolbar';
 import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
+import { HrEmpDobListToolbar } from './toolbars/hrEmpDobTable-list.toolbar';
 import { HrEventsListToolbar } from './toolbars/hrEvents-list.toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
 import { UnapprovedEmployeeToolbar } from './toolbars/unapproved-employee.toolbar';
@@ -103,6 +104,17 @@ export function DataTable<TData extends DataTableType, TValue>({
       case 'hrEventsList':
         return (
           <HrEventsListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+          />
+        );
+      case 'hrEmpDobTableList':
+        return (
+          <HrEmpDobListToolbar
             table={table}
             searchTerm={searchTerm}
             onSearch={onSearch}

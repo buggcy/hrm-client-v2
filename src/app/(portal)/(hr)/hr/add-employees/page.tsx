@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 
 import { useApprovalEmployeeQuery } from '@/hooks/employee/useApprovalEmployee.hook';
 
+import AddEmpCards from './components/AddEmpCards';
 import UnApprovedEmployeeTable from './components/UnapprovedEmployee.component';
 import { AddEmployeeDialog } from '../manage-employees/components/EmployeeModal';
 
@@ -49,7 +50,8 @@ export default function AddEmployeesPage() {
             </Link>
           </Button>
         </Header>
-        <div className="my-6">
+        <div className="my-6 flex flex-col gap-5">
+          <AddEmpCards />
           <Suspense fallback={<div>Loading...</div>}>
             <UnApprovedEmployeeTable />
           </Suspense>

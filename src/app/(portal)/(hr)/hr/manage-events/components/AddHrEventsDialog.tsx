@@ -146,13 +146,13 @@ export function HrEventsDialogDemo({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-full max-h-[550px] sm:max-w-[600px]">
+      <DialogContent className="h-full max-h-[550px] max-sm:min-h-[700px] sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add Event</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-0">
-          <div className="flex flex-row gap-8">
-            <div className="flex flex-1 flex-col">
+          <div className="flex w-full flex-row gap-8 max-sm:flex-col max-sm:gap-2">
+            <div className="flex w-full flex-1 flex-col">
               <Label htmlFor="Start_Date" className="mb-2 text-left">
                 Start Date
               </Label>
@@ -165,7 +165,7 @@ export function HrEventsDialogDemo({
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'w-[263.664px] justify-start text-left font-normal',
+                          'w-full justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
                       >
@@ -196,7 +196,7 @@ export function HrEventsDialogDemo({
                 </span>
               )}
             </div>
-            <div className="flex flex-1 flex-col">
+            <div className="flex w-full flex-1 flex-col">
               <Label htmlFor="End_Date" className="mb-2 text-left">
                 End Date
               </Label>
@@ -209,7 +209,7 @@ export function HrEventsDialogDemo({
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'w-[263.664px] justify-start text-left font-normal',
+                          'w-full justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
                       >
@@ -266,7 +266,7 @@ export function HrEventsDialogDemo({
               )}
             </div>
           </div>
-          <div className="flex flex-wrap gap-8">
+          <div className="flex w-full flex-row gap-8 max-sm:flex-col max-sm:gap-2">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="EventType" className="mb-2 text-left">
                 Event Type
@@ -279,7 +279,7 @@ export function HrEventsDialogDemo({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="relative z-50 w-[263.664px] rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectTrigger className="relative z-50 w-full rounded-md border px-3 py-2 text-left text-sm">
                       <SelectValue placeholder="Select EventType" />
                     </SelectTrigger>
                     <SelectContent>
@@ -313,7 +313,7 @@ export function HrEventsDialogDemo({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="relative z-50 w-[263.664px] rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectTrigger className="relative z-50 w-full rounded-md border px-3 py-2 text-left text-sm">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -336,7 +336,7 @@ export function HrEventsDialogDemo({
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-12 max-sm:gap-2">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Description" className="mb-2 text-left">
                 Description

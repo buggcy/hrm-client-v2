@@ -47,6 +47,7 @@ export default function ManageEmployeesPage() {
           <HrEventsTable />
         </Suspense>
       </LayoutWrapper>
+
       <HrEventsDialogDemo
         open={dialogOpen}
         onOpenChange={handleDialogClose}
