@@ -90,6 +90,7 @@ export function AddEditTypeDialog({
           title: 'Success',
           description:
             response?.message || 'Education Type Added Successfully!',
+          variant: 'success',
         });
         reset();
         setRefetchConfigurationList(true);
@@ -99,7 +100,7 @@ export function AddEditTypeDialog({
         toast({
           title: 'Error',
           description: err.message || 'Error on adding education type!',
-          variant: 'destructive',
+          variant: 'error',
         });
       },
     });
@@ -112,6 +113,7 @@ export function AddEditTypeDialog({
           title: 'Success',
           description:
             response?.message || 'Education Type Updated Successfully!',
+          variant: 'success',
         });
         reset();
         setRefetchConfigurationList(true);
@@ -121,7 +123,7 @@ export function AddEditTypeDialog({
         toast({
           title: 'Error',
           description: err.message || 'Error on updating the education type!',
-          variant: 'destructive',
+          variant: 'error',
         });
       },
     });
@@ -134,6 +136,7 @@ export function AddEditTypeDialog({
           title: 'Success',
           description:
             response?.message || 'Experience Type Added Successfully!',
+          variant: 'success',
         });
         reset();
         setRefetchConfigurationList(true);
@@ -143,7 +146,7 @@ export function AddEditTypeDialog({
         toast({
           title: 'Error',
           description: err.message || 'Error on adding experience type!',
-          variant: 'destructive',
+          variant: 'error',
         });
       },
     });
@@ -155,6 +158,7 @@ export function AddEditTypeDialog({
           title: 'Success',
           description:
             response?.message || 'Experience Type Updated Successfully!',
+          variant: 'success',
         });
         reset();
         setRefetchConfigurationList(true);
@@ -164,7 +168,7 @@ export function AddEditTypeDialog({
         toast({
           title: 'Error',
           description: err.message || 'Error on updating the experience type!',
-          variant: 'destructive',
+          variant: 'error',
         });
       },
     });

@@ -76,7 +76,7 @@ function validateLeaveApplication(
       toast({
         title: 'Error',
         description: 'Requested leaves exceed allowed amount.',
-        variant: 'destructive',
+        variant: 'error',
       });
       return false;
     }
@@ -87,7 +87,7 @@ function validateLeaveApplication(
         toast({
           title: 'Error',
           description: 'Requested leaves exceed allowed amount for two years.',
-          variant: 'destructive',
+          variant: 'error',
         });
         return false;
       }
@@ -117,7 +117,7 @@ function validateLeaveApplication(
       toast({
         title: 'Error',
         description: `Requested leaves exceed remaining leaves for ${startYear}.`,
-        variant: 'destructive',
+        variant: 'error',
       });
       return false;
     }
@@ -125,7 +125,7 @@ function validateLeaveApplication(
       toast({
         title: 'Error',
         description: `Requested leaves exceed remaining leaves for ${endYear}.`,
-        variant: 'destructive',
+        variant: 'error',
       });
       return false;
     }
@@ -138,7 +138,7 @@ function validateLeaveApplication(
       toast({
         title: 'Error',
         description: 'Requested leaves exceed allowed amount.',
-        variant: 'destructive',
+        variant: 'error',
       });
       return false;
     }
@@ -148,7 +148,7 @@ function validateLeaveApplication(
       toast({
         title: 'Error',
         description: 'Requested leaves exceed allowed amount for two months.',
-        variant: 'destructive',
+        variant: 'error',
       });
       return false;
     }
@@ -183,7 +183,7 @@ function validateLeaveApplication(
       toast({
         title: 'Error',
         description: `Requested leaves exceed remaining leaves for ${month} ${startYear}.`,
-        variant: 'destructive',
+        variant: 'error',
       });
       return false;
     }
@@ -192,7 +192,7 @@ function validateLeaveApplication(
       toast({
         title: 'Error',
         description: `Requested leaves exceed remaining leaves for ${month} ${endYear}.`,
-        variant: 'destructive',
+        variant: 'error',
       });
       return false;
     }
@@ -269,13 +269,14 @@ export function ApplyLeaveDialog({
         description:
           (err as { response?: { data?: { message?: string } } })?.response
             ?.data?.message || 'Error on applying for leave!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       reset();
       onCloseChange(false);
@@ -292,7 +293,7 @@ export function ApplyLeaveDialog({
       toast({
         title: 'Error',
         description: err?.message || 'Error on fetching stats data!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

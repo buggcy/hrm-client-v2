@@ -69,6 +69,7 @@ const UpdateLeaveForm = ({
       toast({
         title: 'Success',
         description: response?.message || 'Leave Updated Successfully!',
+        variant: 'success',
       });
       setRefetchManageLeaveList(true);
     },
@@ -76,7 +77,7 @@ const UpdateLeaveForm = ({
       toast({
         title: 'Error',
         description: err.message || 'Error on updating the leaves!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

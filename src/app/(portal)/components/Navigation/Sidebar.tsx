@@ -47,7 +47,7 @@ export const Sidebar = () => {
               <LogoHorizontal className="opacity-0 transition-all duration-200 group-hover:-translate-x-8 group-hover:opacity-100" />
             </Link>
           </Button>
-          <ScrollArea className="mt-2 h-[570px] w-full">
+          <ScrollArea className="mt-2 h-[calc(100vh-260px)] w-full">
             {menuItems.map(item =>
               item.children ? (
                 <NavSection title={item.title} key={item.title}>

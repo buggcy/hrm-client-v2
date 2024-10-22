@@ -52,13 +52,14 @@ export function ManageLeaveRowActions({ row }: DataTableRowActionsProps) {
       toast({
         title: 'Error',
         description: err?.response?.data?.message || 'Error on cancel request!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       setRefetchManageLeaveList(true);
       setShowDeleteDialog(false);

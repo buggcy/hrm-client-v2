@@ -67,13 +67,14 @@ export function EducationTypeRowActions({ row }: DataTableRowActionsProps) {
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on delete the education type!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       setRefetchConfigurationList(true);
       setShowDeleteDialog(false);

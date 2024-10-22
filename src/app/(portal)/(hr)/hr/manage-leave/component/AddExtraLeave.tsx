@@ -86,6 +86,7 @@ export function AddExtraLeaveModal({
       toast({
         title: 'Success',
         description: response?.message || 'Leave Added Successfully!',
+        variant: 'success',
       });
       reset();
       setRefetchManageLeaveList(true);
@@ -95,7 +96,7 @@ export function AddExtraLeaveModal({
       toast({
         title: 'Error',
         description: err.message || 'Error on adding the extra leaves!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });
@@ -115,6 +116,7 @@ export function AddExtraLeaveModal({
       toast({
         title: 'Success',
         description: response?.message || 'Leave Updated Successfully!',
+        variant: 'success',
       });
       reset();
       setRefetchManageLeaveList(true);
@@ -124,7 +126,7 @@ export function AddExtraLeaveModal({
       toast({
         title: 'Error',
         description: err.message || 'Error on updating the extra leaves!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

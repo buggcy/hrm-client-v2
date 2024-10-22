@@ -77,7 +77,7 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
         description:
           axiosError?.response?.data?.message ||
           'Error on fetching search data!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });
