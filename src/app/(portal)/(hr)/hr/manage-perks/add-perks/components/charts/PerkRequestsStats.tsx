@@ -12,26 +12,18 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-export const description = 'A stacked area chart';
+import { HrPerkChartData } from '@/types/hr-perks-list.types';
 
-const chartData = [
-  { month: 'January', assigned: 186, availed: 80 },
-  { month: 'February', assigned: 305, availed: 200 },
-  { month: 'March', assigned: 237, availed: 120 },
-  { month: 'April', assigned: 73, availed: 190 },
-  { month: 'May', assigned: 209, availed: 130 },
-  { month: 'June', assigned: 214, availed: 140 },
-  { month: 'July', assigned: 214, availed: 140 },
-  { month: 'August', assigned: 214, availed: 140 },
-  { month: 'September', assigned: 214, availed: 140 },
-  { month: 'October', assigned: 214, availed: 140 },
-  { month: 'November', assigned: 214, availed: 140 },
-  { month: 'December', assigned: 214, availed: 140 },
-];
+export const description = 'A stacked area chart';
+interface PerkRecordChartProps {
+  chartData: HrPerkChartData[] | undefined;
+}
 
 const chartConfig = {
   assigned: {
@@ -44,13 +36,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PerkRequests() {
+export function PerkRequests({ chartData }: PerkRecordChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Perk Assigned & Availed</CardTitle>
-        <CardDescription>
-          Showing total assigned & availed for the last year
+        <CardTitle className="text-sm">Perk Assigned & Availed</CardTitle>
+        <CardDescription className="text-xs">
+          Showing total assigned & availed for this year
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -91,6 +83,7 @@ export function PerkRequests() {
               stroke="var(--color-assigned)"
               stackId="a"
             />
+            <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>
         </ChartContainer>
       </CardContent>

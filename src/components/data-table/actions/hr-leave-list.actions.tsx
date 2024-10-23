@@ -65,13 +65,14 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
       toast({
         title: 'Error',
         description: err?.response?.data?.message || 'Error on cancel request!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       setRefetchLeaveList(true);
       setShowDeleteDialog(false);
@@ -86,13 +87,14 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on approval request!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       setRefetchLeaveList(true);
       setShowAcceptDialog(false);

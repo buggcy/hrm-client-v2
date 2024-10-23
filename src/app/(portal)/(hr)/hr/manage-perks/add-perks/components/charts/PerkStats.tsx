@@ -1,48 +1,81 @@
 'use client';
 
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { FunctionComponent } from 'react';
 
-const mockData: { id: number; text: string; value: number }[] = [
-  {
-    id: 1,
-    text: 'Total Perks',
-    value: 100,
-  },
-  {
-    id: 2,
-    text: 'Assigned',
-    value: 200,
-  },
-  {
-    id: 3,
-    text: 'Approved',
-    value: 300,
-  },
-  {
-    id: 4,
-    text: 'Rejected',
-    value: 400,
-  },
-];
+import { CheckCircle2, Plus, UserCheck, XCircle } from 'lucide-react';
 
-export function PerkStats() {
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+
+interface PerkRecordProps {
+  totalPerks: number | undefined;
+  assignedPerks: number | undefined;
+  approvedPerks: number | undefined;
+  rejectedPerks: number | undefined;
+}
+interface MiddleCardsProps {
+  icon: JSX.Element;
+  title: string;
+  value: string;
+  color: string;
+}
+
+const MiddleCards: FunctionComponent<MiddleCardsProps> = ({
+  icon,
+  title,
+  value,
+  color,
+}) => {
+  return (
+    <Card className="w-full">
+      <CardHeader className="p-4 pb-0">{icon}</CardHeader>
+      <CardContent className="flex items-center justify-between p-4 sm:gap-2">
+        <div className="flex flex-col gap-4">
+          <p className="text-xs">{title}</p>
+          <p className="text-xl font-bold md:text-2xl" style={{ color: color }}>
+            {value}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export function PerkStats({
+  totalPerks,
+  assignedPerks,
+  approvedPerks,
+  rejectedPerks,
+}: PerkRecordProps) {
+  const MiddleCardsData = [
+    {
+      icon: <Plus color="#6c757d" />,
+      title: 'Total Perks',
+      value: totalPerks?.toString() || '0',
+      color: '',
+    },
+    {
+      icon: <UserCheck color="#007bff" />,
+      title: 'Total Assigned',
+      value: assignedPerks?.toString() || '0',
+      color: '',
+    },
+    {
+      icon: <CheckCircle2 color="#28a745" />,
+      title: 'Total Approved',
+      value: approvedPerks?.toString() || '0',
+      color: '',
+    },
+    {
+      icon: <XCircle color="#FF0000" />,
+      title: 'Total Rejected',
+      value: rejectedPerks?.toString() || '0',
+      color: '',
+    },
+  ];
   return (
     <div className="grid grid-cols-2 gap-4">
-      {mockData.map(({ id, text, value }) => (
-        <Card
-          key={id}
-          className="flex flex-col items-center justify-center text-center"
-        >
-          <CardHeader className="pb-0 lg:pt-0">
-            <CardTitle>{text}</CardTitle>
-            <CardDescription className="text-base">{value}</CardDescription>
-          </CardHeader>
-        </Card>
+      {MiddleCardsData.map((card, index) => (
+        <MiddleCards key={index} {...card} />
       ))}
     </div>
   );

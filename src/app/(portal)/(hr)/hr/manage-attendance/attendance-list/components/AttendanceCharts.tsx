@@ -33,7 +33,7 @@ const AttendanceCharts: FunctionComponent<AttendanceCardsProps> = ({
       toast({
         title: 'Error',
         description: err?.message || 'Error on fetching stats data!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

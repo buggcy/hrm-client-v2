@@ -49,6 +49,7 @@ export interface LeaveApiResponse {
 }
 
 export interface ExtraLeave {
+  userId?: string;
   title: string;
   leavesAllowed: number;
   leavesTaken: number;

@@ -75,13 +75,14 @@ export const LeaveRequestCard = ({
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on approval request!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       setRefetchLeaveList(true);
       setShowAcceptDialog(false);

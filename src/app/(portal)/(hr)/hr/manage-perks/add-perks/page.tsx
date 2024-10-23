@@ -17,7 +17,6 @@ import { useHrPerkRequestsQuery } from '@/hooks/hrPerksList/useHrPerksList.hook'
 
 import { AddPerksDialog } from './components/AddPerksDialog';
 import HrPerksListTable from './components/HrPerksListTable.component';
-import PerkCharts from './components/PerkCharts';
 
 interface AddPerksProps {}
 
@@ -64,7 +63,6 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
             Add Perk
           </Button>
         </Header>
-        <PerkCharts />
         <Suspense fallback={<div>Loading...</div>}>
           <HrPerksListTable />
         </Suspense>

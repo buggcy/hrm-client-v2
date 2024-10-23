@@ -4,8 +4,11 @@ import {
   CalendarCog,
   CalendarDays,
   ClipboardList,
+  FileText,
   Gift,
+  GraduationCap,
   Home,
+  Medal,
   UserCog,
   UserCog2,
   UserPlus,
@@ -86,6 +89,49 @@ export const hrMenu: MenuItem[] = [
         title: 'Manage Policy',
         icon: BadgeCheck,
         href: '/hr/manage-policies',
+      },
+    ],
+  },
+  {
+    title: 'Manage Perks',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Add Perks',
+        icon: Gift,
+        href: '/hr/manage-perks/add-perks',
+      },
+      {
+        title: 'Award Perks',
+        icon: Medal,
+        href: '/hr/manage-perks/award-perks',
+      },
+    ],
+  },
+  {
+    title: 'Manage Payroll',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Payroll',
+        icon: BadgeCheck,
+        href: '/hr/manage-payroll',
+      },
+    ],
+  },
+  {
+    title: 'Configuration',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Education Type',
+        icon: GraduationCap,
+        href: '/hr/configuration/education-type',
+      },
+      {
+        title: 'Experience Type',
+        icon: FileText,
+        href: '/hr/configuration/experience-type',
       },
     ],
   },

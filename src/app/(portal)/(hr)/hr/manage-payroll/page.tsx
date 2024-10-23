@@ -4,6 +4,7 @@ import React, { Suspense } from 'react';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
+import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
   Layout,
   LayoutHeader,
@@ -12,6 +13,7 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 
+import PayrollCard from './component/PayrollCard';
 import PayrollTable from './components/PayrollTable.component';
 
 export default function ManagePayrollPage() {
@@ -19,6 +21,7 @@ export default function ManagePayrollPage() {
     useTimeRange();
   return (
     <Layout>
+      <HighTrafficBanner />
       <LayoutHeader title="Manage Payroll">
         <LayoutHeaderButtonsBlock>
           <Notification />
@@ -33,6 +36,10 @@ export default function ManagePayrollPage() {
             setDate={handleSetDate}
           />
         </Header>
+
+        <Suspense fallback={<div>Loading...</div>}>
+          <PayrollCard />
+        </Suspense>
 
         <div className="mt-6">
           <Suspense fallback={<div>Loading...</div>}>
