@@ -11,26 +11,26 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 
-import ExperienceTypeTable from './component/ExperienceTypeTable';
+import ConfigurationTypeTable from './component/ConfigurationTypeTables';
 
-interface ExperienceTypeProps {}
+interface ManageConfigurationProps {}
 
-const ExperienceType: FunctionComponent<ExperienceTypeProps> = () => {
+const ManageConfiguration: FunctionComponent<ManageConfigurationProps> = () => {
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="Manage Experience Type">
+      <LayoutHeader title="Manage Configuration">
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-12 px-2">
         <Suspense fallback={<div>Loading...</div>}>
-          <ExperienceTypeTable />
+          <ConfigurationTypeTable />
         </Suspense>
       </LayoutWrapper>
     </Layout>
   );
 };
 
-export default ExperienceType;
+export default ManageConfiguration;

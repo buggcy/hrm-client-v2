@@ -5,10 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { educationTypeColumns } from '@/components/data-table/columns/hr-education-type.columns';
-import { EducationTypeDataTable } from '@/components/data-table/data-table-education-type';
+import { experienceTypeColumns } from '@/components/data-table/columns/hr-experience-type.columns';
+import { ConfigurationTypeDataTable } from '@/components/data-table/data-table-configuration-type';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
-import Header from '@/components/Header/Header';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
@@ -23,13 +22,21 @@ import { AddEditTypeDialog } from './AddEditTypeModal';
 
 import { MessageErrorResponse } from '@/types';
 
-interface EducationTypeTableProps {}
-const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
+interface ExperienceTypeTableProps {}
+const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { configurationStore } = useStores() as {
     configurationStore: ConfigurationStoreType;
   };
+  const { setRefetchConfigurationList, refetchConfigurationList } =
+    configurationStore;
+  const page = Number(searchParams.get('page')) || 1;
+  const limit = Number(searchParams.get('limit')) || 5;
+  const initialSearchTerm = searchParams.get('search') || '';
+  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] =
+    useState<string>(initialSearchTerm);
   const { user } = useAuthStore();
   const userId: string | undefined = user?.id;
 
@@ -45,15 +52,6 @@ const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
     setModal(true);
   };
 
-  const { setRefetchConfigurationList, refetchConfigurationList } =
-    configurationStore;
-  const page = Number(searchParams.get('page')) || 1;
-  const limit = Number(searchParams.get('limit')) || 5;
-  const initialSearchTerm = searchParams.get('search') || '';
-  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
-  const [debouncedSearchTerm, setDebouncedSearchTerm] =
-    useState<string>(initialSearchTerm);
-
   const {
     data: getType,
     isLoading,
@@ -63,7 +61,7 @@ const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
   } = useConfigurationQuery({
     page,
     limit,
-    status: 'education',
+    status: 'experience',
   });
   const {
     mutate,
@@ -95,7 +93,7 @@ const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit, status: 'education' });
+      mutate({ query: debouncedSearchTerm, page, limit, status: 'experience' });
     } else {
       void (async () => {
         await refetch();
@@ -142,19 +140,18 @@ const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
 
   return (
     <>
-      <Header subheading="Easily Add and Manage Education Types!">
+      <div className="mb-4 flex justify-end">
         <Button variant="default" size={'sm'} onClick={handleAdd}>
-          Add Education Type
+          Add Experience Type
         </Button>
-      </Header>
-
+      </div>
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={4} rowCount={limit} />
       ) : (
-        <EducationTypeDataTable
+        <ConfigurationTypeDataTable
           searchLoading={isPending}
           data={tableData || []}
-          columns={educationTypeColumns}
+          columns={experienceTypeColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
@@ -166,6 +163,7 @@ const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
           toolbarType={'getType'}
         />
       )}
+
       {userId && (
         <AddEditTypeDialog
           open={modal}
@@ -174,11 +172,11 @@ const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
           userId={userId}
           setRefetchConfigurationList={setRefetchConfigurationList}
           TypeToEdit={null}
-          moduleType={'Education'}
+          moduleType={'Experience'}
         />
       )}
     </>
   );
 };
 
-export default EducationTypeTable;
+export default ExperienceTypeTable;
