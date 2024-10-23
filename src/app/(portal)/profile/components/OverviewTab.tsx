@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 
-import { Employee } from '@/types/employee.types';
+import { EmployeeById } from '@/types/employee.types';
 interface OverviewTabProps {
-  user: Employee;
+  user: EmployeeById;
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({ user }) => {

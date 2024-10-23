@@ -341,6 +341,8 @@ export function VerifyCodeForm(): JSX.Element {
 
   const onSubmitMainForm: SubmitHandler<MainFormData> = data => {
     const { userId, additionalInfo, kyc, educationalDocument } = data;
+
+    console.log('click: ');
     const formData = new FormData();
 
     formData.append('email', additionalInfo.emailAddress);

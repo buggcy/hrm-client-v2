@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import React, { useEffect, useState } from 'react';
 
 import {
   Popover,
@@ -23,9 +24,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SelectContent } from '@/components/ui/select';
 
+import {
+  useCities,
+  useCountries,
+  useStates,
+} from '@/hooks/country/useCountryOption.hook';
 import { cn } from '@/utils';
 
 import { MainFormData } from './VerifyCodeForm';
+
+import { CityType, CountryType } from '@/types/country.types';
 
 export function Details({ onNext }: { onNext: () => void }) {
   const {
@@ -34,12 +42,67 @@ export function Details({ onNext }: { onNext: () => void }) {
     watch,
     setValue,
   } = useFormContext<MainFormData>();
+  const DEFAULT_COUNTRY_CODE = 'PK';
+
+  const [selectedCountry, setSelectedCountry] =
+    useState<string>(DEFAULT_COUNTRY_CODE);
+  const [selectedState, setSelectedState] = useState<string>('');
+  const [selectedCity, setSelectedCity] = useState<string>('');
+
+  const { data: countries } = useCountries();
+  const { data: states } = useStates(selectedCountry);
+  const { data: cities } = useCities(selectedCountry, selectedState);
 
   const cutoffDate = subYears(new Date(), 18);
   const dateOfBirth = watch('additionalInfo.DOB');
   const maritalStatus = watch('additionalInfo.Marital_Status');
   const bloodGroup = watch('additionalInfo.Blood_Group');
   const gender = watch('additionalInfo.Gender');
+  const country = watch('additionalInfo.Address.country');
+  const province = watch('additionalInfo.Address.province');
+  const city = watch('additionalInfo.Address.city');
+
+  useEffect(() => {
+    if (countries && countries.length > 0 && !country) {
+      const defaultCountry = countries.find(
+        (country: CountryType) => country.iso2 === DEFAULT_COUNTRY_CODE,
+      );
+
+      if (defaultCountry && defaultCountry.iso2) {
+        setSelectedCountry(defaultCountry.iso2);
+        setValue('additionalInfo.Address.country', defaultCountry.name);
+      }
+    }
+  }, [countries, setValue, country]);
+
+  const handleCountryChange = (value: string) => {
+    const selected = countries.find(
+      (country: CountryType) => country.iso2 === value,
+    );
+    if (selected) {
+      setSelectedCountry(value);
+      setSelectedState('');
+      setSelectedCity('');
+      setValue('additionalInfo.Address.country', selected.name);
+    }
+  };
+
+  const handleStateChange = (value: string) => {
+    const selected = states.find((state: CountryType) => state.iso2 === value);
+    if (selected) {
+      setSelectedState(value);
+      setSelectedCity('');
+      setValue('additionalInfo.Address.province', selected.name);
+    }
+  };
+
+  const handleCityChange = (value: string) => {
+    const selected = cities.find((city: CityType) => city.name === value);
+    if (selected) {
+      setSelectedCity(value);
+      setValue('additionalInfo.Address.city', selected.name);
+    }
+  };
 
   return (
     <Card className="border-none shadow-none">
@@ -459,37 +522,44 @@ export function Details({ onNext }: { onNext: () => void }) {
             <Label htmlFor="country" className="mb-2 text-left">
               Country <span className="text-red-600">*</span>
             </Label>
-            {/* <Select
-                onValueChange={value =>
-                  setValue('additionalInfo.Address.country', value)
-                }
-              >
-                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Country" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
+            <Select
+              value={country || selectedCountry || 'Select country'}
+              onValueChange={handleCountryChange}
+            >
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                <SelectValue>
+                  {/* {selectedCountry
+                    ? countries?.find(
+                        (country: CountryType) =>
+                          country.iso2 === selectedCountry,
+                      )?.name
+                    : 'Select country'} */}
+                  {country
+                    ? country
+                    : selectedCountry
+                      ? countries?.find(
+                          (country: CountryType) =>
+                            country.iso2 === selectedCountry,
+                        )?.name
+                      : 'Select country'}
+                </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="text-sm">
+                  {countries?.map((country: CountryType) => (
                     <SelectItem
-                      value="Pakistan"
+                      key={country.iso2}
+                      value={country.iso2}
                       className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
                     >
-                      Pakistan
+                      {country.name}
                     </SelectItem>
-                    <SelectItem
-                      value="India"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      India
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
-              </Select> */}
-            <Input
-              id="country"
-              {...register('additionalInfo.Address.country')}
-              placeholder="Country"
-            />
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
             {errors.additionalInfo?.Address?.country && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Address.country.message}
@@ -500,49 +570,43 @@ export function Details({ onNext }: { onNext: () => void }) {
             <Label htmlFor="province" className="mb-2 text-left">
               Province <span className="text-red-600">*</span>
             </Label>
-            {/* <Select
-                onValueChange={value =>
-                  setValue('additionalInfo.Address.province', value)
-                }
-              >
-                <SelectTrigger className="relative z-50  rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Province" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
+            <Select
+              value={province || selectedState || 'Select province'}
+              onValueChange={handleStateChange}
+              disabled={!selectedCountry}
+            >
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                <SelectValue>
+                  {/* {selectedState
+                    ? states.find(
+                        (state: CountryType) => state.iso2 === selectedState,
+                      )?.name || 'Select province'
+                    : 'Select province'} */}
+                  {province
+                    ? province
+                    : selectedState
+                      ? states.find(
+                          (state: CountryType) => state.iso2 === selectedState,
+                        )?.name || 'Select province'
+                      : 'Select province'}
+                </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="text-sm">
+                  {states?.map((state: CountryType) => (
                     <SelectItem
-                      value="Punjab"
+                      key={state.iso2}
+                      value={state.iso2}
                       className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
                     >
-                      Punjab
+                      {state.name}
                     </SelectItem>
-                    <SelectItem
-                      value="Sindh"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Sindh
-                    </SelectItem>
-                    <SelectItem
-                      value="Khyber Pakhtunkhwa"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Khyber Pakhtunkhwa
-                    </SelectItem>
-                    <SelectItem
-                      value="Gilgit-Baltistan"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Gilgit-Baltistan
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
-              </Select> */}
-            <Input
-              id="province"
-              {...register('additionalInfo.Address.province')}
-              placeholder="Province"
-            />
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
             {errors.additionalInfo?.Address?.province && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Address.province.message}
@@ -554,17 +618,49 @@ export function Details({ onNext }: { onNext: () => void }) {
             <Label htmlFor="city" className="mb-2 text-left">
               City <span className="text-red-600">*</span>
             </Label>
-            <Input
-              id="city"
-              {...register('additionalInfo.Address.city')}
-              placeholder="City"
-            />
+            <Select
+              value={selectedCity || 'Select city'}
+              onValueChange={handleCityChange}
+              disabled={!selectedState}
+            >
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                <SelectValue>
+                  {/* {selectedCity
+                    ? cities?.find(
+                        (city: CityType) => city.name === selectedCity,
+                      )?.name
+                    : 'Select city'} */}
+                  {city
+                    ? city
+                    : selectedCity
+                      ? cities?.find(
+                          (city: CityType) => city.name === selectedCity,
+                        )?.name
+                      : 'Select city'}
+                </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="text-sm">
+                  {cities?.map((city: CityType) => (
+                    <SelectItem
+                      key={city.id}
+                      value={city.name}
+                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
+                    >
+                      {city.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             {errors.additionalInfo?.Address?.city && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Address.city.message}
               </span>
             )}
           </div>
+
           <div className="flex flex-col">
             <Label htmlFor="zip" className="mb-2 text-left">
               Postal Code <span className="text-red-600">*</span>
