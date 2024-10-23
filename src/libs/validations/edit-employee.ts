@@ -39,6 +39,21 @@ const positionSchema = z.object({
   timestamp: z.string(),
 });
 
+const educationExpereinceSchema = z.object({
+  _id: z.string(),
+  __v: z.number(),
+  user_id: z.string(),
+  type: z.enum(['education', 'experience']),
+  referenceNumber: z.string().optional(),
+  isDeleted: z.boolean(),
+  documentType: z.string(),
+  Start_Date: z.string(),
+  Position: z.string(),
+  Institute: z.string(),
+  End_Date: z.string(),
+  Document: z.string(),
+});
+
 const employeeSchema = z.object({
   _id: z.string(),
   firstName: z.string(),
@@ -48,7 +63,7 @@ const employeeSchema = z.object({
   uniqueCode: z.string().optional(),
   roleId: z.number(),
   companyEmail: z.string().email(),
-  Ed_Exp_ID: z.array(z.string()).optional(),
+  Ed_Exp_ID: z.array(educationExpereinceSchema).optional(),
   dep_ID: z.array(z.string()).optional(),
   isDeleted: z.boolean().optional(),
   UniqueCodeExpire: z.string().optional(),
@@ -103,21 +118,6 @@ const kycSchema = z.object({
   __v: z.number(),
   cnic: cnicSchema,
   bankDetails: bankDetailsSchema,
-});
-
-const educationExpereinceSchema = z.object({
-  _id: z.string(),
-  __v: z.number(),
-  user_id: z.string(),
-  type: z.string(),
-  referenceNumber: z.string().optional(),
-  isDeleted: z.boolean(),
-  documentType: z.string(),
-  Start_Date: z.string(),
-  Position: z.string(),
-  Institute: z.string(),
-  End_Date: z.string(),
-  Document: z.string(),
 });
 
 const additionalDocumentsSchema = z.object({

@@ -44,13 +44,19 @@ const ProfileEdit = ({ data }: ProfileEditProps) => {
         />
       </TabsContent>
       <TabsContent value="kyc">
-        <KYC />
+        <KYC data={data?.output?.kyc[0]} empId={data?.output?.employee?._id} />
       </TabsContent>
       <TabsContent value="education-experience">
-        <EducationExperiences />
+        <EducationExperiences
+          data={data?.output?.educationExperiences}
+          empId={data?.output?.employee?._id}
+        />
       </TabsContent>
       <TabsContent value="additional-documents">
-        <Additional />
+        <Additional
+          data={data?.output?.additionalDocuments}
+          empId={data?.output?.employee?._id}
+        />
       </TabsContent>
     </Tabs>
   );

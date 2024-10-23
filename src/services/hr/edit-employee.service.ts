@@ -6,6 +6,7 @@ import {
   cityApiResponseSchema,
   CountryApiResponse,
   countryApiResponseSchema,
+  EducationExperienceType,
   EmployeeDataApiResponse,
   employeeDataApiResponseSchema,
   salarySchema,
@@ -228,6 +229,120 @@ export const updateEmployeeAddress = async ({
       {
         Address: data,
       },
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const updateEmployeeKYC = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: FormData;
+}) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.put(
+      `/kyc-edit/${id}`,
+      body,
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const addEducationExperience = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: FormData;
+}) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.patch(
+      `/Signup/add-education-experience/${id}`,
+      body,
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const updateEducationExperience = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body?: EducationExperienceType[] | undefined;
+}) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.patch(
+      `/Signup/update-education-experience/${id}`,
+      { educationExperienceData: body },
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const deleteEducationExperience = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: string[];
+}) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.put(
+      `/Signup/update-editionalinformation/${id}`,
+      { ids: body },
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const deleteAdditionalDocument = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: string[];
+}) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.put(
+      `/Signup/update-additionalinformation/${id}`,
+      { documentsToDelete: body },
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const addAdditionalDocument = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: FormData;
+}) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.post(
+      `/Signup/upload-additonaldocument/${id}`,
+      body,
     );
     return { message };
   } catch (error) {

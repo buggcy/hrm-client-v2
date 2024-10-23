@@ -1,7 +1,20 @@
 import React from 'react';
 
-const EducationExperiences = () => {
-  return <div>EducationExperiences</div>;
+import { EducationExperienceType } from '@/libs/validations/edit-employee';
+
+import EducationExperienceTable from '../components/EducationExperienceTable.component';
+
+interface EducationExperiencesProps {
+  empId?: string;
+  data?: EducationExperienceType[];
+}
+
+const EducationExperiences = ({ empId, data }: EducationExperiencesProps) => {
+  return (
+    <div>
+      <EducationExperienceTable empId={empId} eduExpData={data} />
+    </div>
+  );
 };
 
 export default EducationExperiences;

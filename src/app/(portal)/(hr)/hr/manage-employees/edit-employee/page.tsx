@@ -19,6 +19,7 @@ import { EditEmployeeStoreType } from '@/stores/hr/edit-employee';
 
 import AssignPerks from './components/assign-perks/AssignPerks';
 import EditDesignation from './components/edit-designation/EditDesignation';
+import ManageLeaves from './components/manage-leaves/ManageLeaves';
 import ProfileEdit from './components/profile-edit/ProfileEdit';
 import SalaryIncrement from './components/salary-increment/SalaryIncrement';
 
@@ -121,7 +122,7 @@ export default function Page() {
             value="edit-leaves"
             className="mt-0 flex-1 rounded-lg bg-background p-4"
           >
-            <div>Hi</div>
+            <ManageLeaves empId={userIdFromParams} />
           </TabsContent>
         </Tabs>
       </LayoutWrapper>
