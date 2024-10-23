@@ -19,6 +19,16 @@ import PayrollTable from './components/PayrollTable.component';
 export default function ManagePayrollPage() {
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
+
+  const defaultDate = new Date();
+  const month = selectedDate?.from
+    ? selectedDate.from.getMonth() + 1
+    : defaultDate.getMonth() + 1;
+  const year = selectedDate?.from
+    ? selectedDate.from.getFullYear().toString()
+    : defaultDate.getFullYear().toString();
+
+  const formattedMonth = month < 10 ? `0${month}` : `${month}`;
   return (
     <Layout>
       <HighTrafficBanner />
@@ -38,7 +48,7 @@ export default function ManagePayrollPage() {
         </Header>
 
         <Suspense fallback={<div>Loading...</div>}>
-          <PayrollCard />
+          <PayrollCard formattedMonth={formattedMonth} year={year} />
         </Suspense>
 
         <div className="mt-6">
