@@ -46,10 +46,11 @@ export default function ManagePayrollPage() {
             setDate={handleSetDate}
           />
         </Header>
-
-        <Suspense fallback={<div>Loading...</div>}>
-          <PayrollCard formattedMonth={formattedMonth} year={year} />
-        </Suspense>
+        <div className="mt-6">
+          <Suspense fallback={<div>Loading...</div>}>
+            <PayrollCard formattedMonth={formattedMonth} year={year} />
+          </Suspense>
+        </div>
 
         <div className="mt-6">
           <Suspense fallback={<div>Loading...</div>}>

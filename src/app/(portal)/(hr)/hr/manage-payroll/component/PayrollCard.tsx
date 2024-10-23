@@ -30,7 +30,7 @@ const PayrollCard: FunctionComponent<PayrollCardProps> = ({
         totalUnpaidAmount={payrollStats?.records?.totalAmountTobePaid}
         totalDeduction={payrollStats?.records?.totalSalaryDeduction}
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <MonthlyPayrollGraph payrollData={payrollStats?.chartData} />
         </div>
