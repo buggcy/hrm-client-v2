@@ -13,11 +13,11 @@ const createAssignPerkSchema = (
 ) => {
   return z.object({
     increment: salaryIncrement
-      ? z.number().min(1, 'Increment is required')
-      : z.number().optional(),
+      ? z.coerce.number().min(1, 'Increment is required')
+      : z.coerce.number().optional(),
     decrement: salaryDecrement
-      ? z.number().min(1, 'Decrement is required')
-      : z.number().optional(),
+      ? z.coerce.number().min(1, 'Decrement is required')
+      : z.coerce.number().optional(),
   });
 };
 
