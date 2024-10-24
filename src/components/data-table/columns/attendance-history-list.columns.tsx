@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 
+import { AttendanceHistoryRowActions } from '../actions/attendance-history.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
 export const attendanceHistoryListColumns: ColumnDef<AttendanceHistoryListType>[] =
@@ -173,5 +174,9 @@ export const attendanceHistoryListColumns: ColumnDef<AttendanceHistoryListType>[
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id));
       },
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => <AttendanceHistoryRowActions row={row} />,
     },
   ];

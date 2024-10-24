@@ -21,6 +21,8 @@ const leaveHistoryListSchema = z.object({
   Start_Date: z.string(),
   End_Date: z.string(),
   Status: z.enum(leave_history_status),
+  Proof_Document: z.string(),
+  Description: z.string(),
 });
 
 const leaveHistoryApiResponseSchema = z.object({

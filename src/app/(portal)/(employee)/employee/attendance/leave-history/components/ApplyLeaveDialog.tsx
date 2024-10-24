@@ -36,11 +36,14 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 import {
   applyLeaveData,
   getLeaveData,
+  updateLeaveRequest,
 } from '@/services/employee/leave-history.service';
 import { AuthStoreType } from '@/stores/auth';
+import { LeaveHistoryStoreType } from '@/stores/employee/leave-history';
 import { cn } from '@/utils';
 
 import { EmployeeLeavesDataApiResponse } from '@/types/leave-history.types';
@@ -226,19 +229,21 @@ interface DialogDemoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCloseChange: (open: boolean) => void;
-  refetch: (page: number, limit: number) => void;
-  page: number;
-  limit: number;
+  data?: LeaveHistoryListType;
+  id?: string;
 }
 
 export function ApplyLeaveDialog({
   open,
   onOpenChange,
   onCloseChange,
-  refetch,
-  page,
-  limit,
+  data,
+  id,
 }: DialogDemoProps) {
+  const { leaveHistoryStore } = useStores() as {
+    leaveHistoryStore: LeaveHistoryStoreType;
+  };
+  const { setRefetchLeaveHistoryList } = leaveHistoryStore;
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
@@ -251,17 +256,17 @@ export function ApplyLeaveDialog({
     resolver: zodResolver(applyLeaveSchema),
     defaultValues: {
       User_ID: user?.id || '',
-      Start_Date: undefined,
-      End_Date: undefined,
+      Start_Date: data?.Start_Date ? new Date(data.Start_Date) : undefined,
+      End_Date: data?.End_Date ? new Date(data.End_Date) : undefined,
       Status: 'Pending',
-      Title: '',
-      Leave_Type: '',
-      Description: '',
+      Title: data?.Title || '',
+      Leave_Type: data?.Leave_Type || '',
+      Description: data?.Description || '',
       proofDocument: null,
     },
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: applyLeave, isPending: isApplying } = useMutation({
     mutationFn: applyLeaveData,
     onError: err => {
       toast({
@@ -280,7 +285,30 @@ export function ApplyLeaveDialog({
       });
       reset();
       onCloseChange(false);
-      refetch(page, limit);
+      setRefetchLeaveHistoryList(true);
+    },
+  });
+
+  const { mutate: updateLeave, isPending: isUpdating } = useMutation({
+    mutationFn: updateLeaveRequest,
+    onError: err => {
+      toast({
+        title: 'Error',
+        description:
+          (err as { response?: { data?: { message?: string } } })?.response
+            ?.data?.message || 'Error on applying for leave!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      reset();
+      onCloseChange(false);
+      setRefetchLeaveHistoryList(true);
     },
   });
 
@@ -306,15 +334,15 @@ export function ApplyLeaveDialog({
     }
   }, [user, fetchLeaveData]);
 
-  const onSubmit = (data: ApplyLeaveFormData) => {
-    const start = new Date(data.Start_Date);
-    const end = new Date(data.End_Date);
-    const type = data.Leave_Type;
+  const onSubmit = (form: ApplyLeaveFormData) => {
+    const start = new Date(form.Start_Date);
+    const end = new Date(form.End_Date);
+    const type = form.Leave_Type;
     if (!validateLeaveApplication(type, start, end, leaveData)) {
       return;
     }
-    const startDateLocal = new Date(data.Start_Date);
-    const endDateLocal = new Date(data.End_Date);
+    const startDateLocal = new Date(form.Start_Date);
+    const endDateLocal = new Date(form.End_Date);
 
     const startDateUtcPlus5 = new Date(
       startDateLocal.getTime() + 5 * 60 * 60 * 1000,
@@ -327,13 +355,20 @@ export function ApplyLeaveDialog({
     formData.append('Start_Date', startDateUtcPlus5.toISOString());
     formData.append('End_Date', endDateUtcPlus5.toISOString());
     formData.append('Status', 'Pending');
-    formData.append('Title', data.Title);
-    formData.append('Leave_Type', data.Leave_Type);
-    formData.append('Description', data.Description);
-    if (data.proofDocument) {
-      formData.append('proofDocument', data.proofDocument);
+    formData.append('Title', form.Title);
+    formData.append('Leave_Type', form.Leave_Type);
+    formData.append('Description', form.Description);
+    if (form.proofDocument) {
+      formData.append('proofDocument', form.proofDocument);
     }
-    mutate(formData);
+    if (data) {
+      updateLeave({
+        id: id || '',
+        body: formData,
+      });
+    } else {
+      applyLeave(formData);
+    }
   };
 
   return (
@@ -534,8 +569,8 @@ export function ApplyLeaveDialog({
           </div>
 
           <DialogFooter>
-            <Button type="submit" disabled={isPending}>
-              Apply For Leave
+            <Button type="submit" disabled={isApplying || isUpdating}>
+              {data ? 'Update' : 'Apply For'} Leave
             </Button>
           </DialogFooter>
         </form>
