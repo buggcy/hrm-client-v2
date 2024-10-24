@@ -105,8 +105,10 @@ export function AttendanceHistoryBarChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Attendance Trend</CardTitle>
-        <CardDescription>{formattedDateRange}</CardDescription>
+        <CardTitle className="text-base">Attendance Trend</CardTitle>
+        <CardDescription className="text-xs">
+          {formattedDateRange}
+        </CardDescription>
       </CardHeader>
       <CardContent className="md:size-full md:max-h-[310px]">
         <ChartContainer

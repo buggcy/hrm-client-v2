@@ -236,7 +236,7 @@ export function VerifyCodeForm(): JSX.Element {
     onSuccess: response => {
       toast({
         title: 'Success',
-        description: 'Code verification successfull!',
+        description: 'Code verification successful!',
         variant: 'success',
       });
       setActiveTab('personal-details');

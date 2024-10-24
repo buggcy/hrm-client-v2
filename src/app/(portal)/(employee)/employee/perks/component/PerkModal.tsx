@@ -100,6 +100,7 @@ export function PerkModal({
       toast({
         title: 'Success',
         description: response?.message || 'Perk Availed Successfully!',
+        variant: 'success',
       });
       reset();
       await refetch();
@@ -113,7 +114,7 @@ export function PerkModal({
       toast({
         title: 'Error',
         description: err.message || 'Error on avalied perks!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

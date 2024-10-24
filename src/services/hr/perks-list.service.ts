@@ -1,6 +1,7 @@
 import { AddPerkFormData } from '@/app/(portal)/(hr)/hr/manage-perks/add-perks/components/AddPerksDialog';
 import {
   HrEmployeeAllPerksApiResponseSchema,
+  hrPerkRecordApiResponseSchema,
   HrPerkRequestsApiResponseSchema,
   HrPerksGetEmployeesApiResponseSchema,
   hrPerksListApiResponseSchema,
@@ -210,4 +211,14 @@ export const rejectPerkRequest = async ({
     `/hr/perk-requests/${id}/reject`,
   );
   return { message };
+};
+
+export const getPerkCardRecords = async () => {
+  try {
+    const response = await baseAPI.get(`/hr/perks/record`);
+    return schemaParse(hrPerkRecordApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching perks cards records:', error);
+    throw error;
+  }
 };

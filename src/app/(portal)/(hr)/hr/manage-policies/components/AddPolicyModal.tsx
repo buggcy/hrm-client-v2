@@ -101,6 +101,7 @@ export function PolicyDialog({
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       reset();
       onCloseChange();

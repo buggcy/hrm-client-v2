@@ -89,7 +89,7 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
         description:
           axiosError?.response?.data?.message ||
           'Error on fetching search data!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });
@@ -187,6 +187,11 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
             <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
               {leaveListRecords?.pendingCount || 0}
             </span>
+          </Link>
+        </Button>
+        <Button asChild>
+          <Link href="/hr/manage-leave" className="flex items-center">
+            Assign Leaves
           </Link>
         </Button>
       </Header>
