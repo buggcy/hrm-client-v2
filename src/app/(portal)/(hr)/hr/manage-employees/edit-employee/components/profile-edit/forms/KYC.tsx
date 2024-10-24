@@ -117,141 +117,153 @@ const KYC = ({ data, empId }: KYCProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
       <div className="mb-4 flex flex-col gap-8">
-        <div className="flex flex-col">
-          <Label htmlFor="cnic" className="mb-2 text-left">
-            CNIC <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="cnic"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="cnic" placeholder="12345-1234567-1" />
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="flex flex-col">
+            <Label htmlFor="cnic" className="mb-2 text-left">
+              CNIC <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="cnic"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="cnic" placeholder="12345-1234567-1" />
+              )}
+            />
+            {errors.cnic && (
+              <span className="text-sm text-red-500">
+                {errors.cnic.message}
+              </span>
             )}
-          />
-          {errors.cnic && (
-            <span className="text-sm text-red-500">{errors.cnic.message}</span>
-          )}
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="frontPicture" className="mb-2 text-left">
+              Choose Document
+            </Label>
+            <Controller
+              name="frontPicture"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="frontPicture"
+                  placeholder="Choose a file"
+                  type="file"
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    field.onChange(file);
+                  }}
+                />
+              )}
+            />
+            {errors.frontPicture && (
+              <span className="text-sm text-red-500">
+                {errors.frontPicture.message}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="backPicture" className="mb-2 text-left">
+              Choose Document
+            </Label>
+            <Controller
+              name="backPicture"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="backPicture"
+                  placeholder="Choose a file"
+                  type="file"
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    field.onChange(file);
+                  }}
+                />
+              )}
+            />
+            {errors.backPicture && (
+              <span className="text-sm text-red-500">
+                {errors.backPicture.message}
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col">
-          <Label htmlFor="frontPicture" className="mb-2 text-left">
-            Choose Document
-          </Label>
-          <Controller
-            name="frontPicture"
-            control={control}
-            render={({ field }) => (
-              <Input
-                id="frontPicture"
-                placeholder="Choose a file"
-                type="file"
-                onChange={e => {
-                  const file = e.target.files?.[0];
-                  field.onChange(file);
-                }}
-              />
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="flex flex-col">
+            <Label htmlFor="accountHolderName" className="mb-2 text-left">
+              Acount Name<span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="accountHolderName"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="accountHolderName"
+                  placeholder="John Doe"
+                />
+              )}
+            />
+            {errors.accountHolderName && (
+              <span className="text-sm text-red-500">
+                {errors.accountHolderName.message}
+              </span>
             )}
-          />
-          {errors.frontPicture && (
-            <span className="text-sm text-red-500">
-              {errors.frontPicture.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="backPicture" className="mb-2 text-left">
-            Choose Document
-          </Label>
-          <Controller
-            name="backPicture"
-            control={control}
-            render={({ field }) => (
-              <Input
-                id="backPicture"
-                placeholder="Choose a file"
-                type="file"
-                onChange={e => {
-                  const file = e.target.files?.[0];
-                  field.onChange(file);
-                }}
-              />
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="accountNumber" className="mb-2 text-left">
+              AccountNumber <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="accountNumber"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="accountNumber"
+                  placeholder="1234567"
+                  type="number"
+                />
+              )}
+            />
+            {errors.accountNumber && (
+              <span className="text-sm text-red-500">
+                {errors.accountNumber.message}
+              </span>
             )}
-          />
-          {errors.backPicture && (
-            <span className="text-sm text-red-500">
-              {errors.backPicture.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="accountHolderName" className="mb-2 text-left">
-            Acount Name<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="accountHolderName"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="accountHolderName" placeholder="John Doe" />
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="branchName" className="mb-2 text-left">
+              Bank Name <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="branchName"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="branchName" placeholder="HBL" />
+              )}
+            />
+            {errors.branchName && (
+              <span className="text-sm text-red-500">
+                {errors.branchName.message}
+              </span>
             )}
-          />
-          {errors.accountHolderName && (
-            <span className="text-sm text-red-500">
-              {errors.accountHolderName.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="accountNumber" className="mb-2 text-left">
-            AccountNumber <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="accountNumber"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                id="accountNumber"
-                placeholder="1234567"
-                type="number"
-              />
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="iban" className="mb-2 text-left">
+              IBAN Number <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="iban"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="iban" placeholder="PKL12345" />
+              )}
+            />
+            {errors.iban && (
+              <span className="text-sm text-red-500">
+                {errors.iban.message}
+              </span>
             )}
-          />
-          {errors.accountNumber && (
-            <span className="text-sm text-red-500">
-              {errors.accountNumber.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="branchName" className="mb-2 text-left">
-            Bank Name <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="branchName"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="branchName" placeholder="HBL" />
-            )}
-          />
-          {errors.branchName && (
-            <span className="text-sm text-red-500">
-              {errors.branchName.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="iban" className="mb-2 text-left">
-            IBAN Number <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="iban"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="iban" placeholder="PKL12345" />
-            )}
-          />
-          {errors.iban && (
-            <span className="text-sm text-red-500">{errors.iban.message}</span>
-          )}
+          </div>
         </div>
       </div>
       <DialogFooter>

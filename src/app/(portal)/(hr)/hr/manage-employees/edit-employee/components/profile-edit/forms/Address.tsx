@@ -124,191 +124,208 @@ const Address = ({ data, empId }: EmployeeAddressProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
       <div className="mb-4 flex flex-col gap-8">
-        <div className="flex flex-col">
-          <Label htmlFor="street" className="mb-2 text-left">
-            Street <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="street"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="street" placeholder="Street" />
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="flex flex-col">
+            <Label htmlFor="street" className="mb-2 text-left">
+              Street <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="street"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="street" placeholder="Street" />
+              )}
+            />
+            {errors.street && (
+              <span className="text-sm text-red-500">
+                {errors.street.message}
+              </span>
             )}
-          />
-          {errors.street && (
-            <span className="text-sm text-red-500">
-              {errors.street.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="landmark" className="mb-2 text-left">
-            Landmark <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="landmark"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="landmark" placeholder="Landmark" />
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="landmark" className="mb-2 text-left">
+              Landmark <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="landmark"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="landmark" placeholder="Landmark" />
+              )}
+            />
+            {errors.landmark && (
+              <span className="text-sm text-red-500">
+                {errors.landmark.message}
+              </span>
             )}
-          />
-          {errors.landmark && (
-            <span className="text-sm text-red-500">
-              {errors.landmark.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="country" className="mb-2 text-left">
-            Country <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="country"
-            control={control}
-            render={({ field }) => (
-              <Select
-                onValueChange={value => {
-                  field.onChange(value);
-                  setSelectedCountry(() => {
-                    const onecountry = countries?.find(
-                      country => country.name === value,
-                    );
-                    return onecountry?.iso2 || '';
-                  });
-                }}
-                value={field.value}
-              >
-                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Designation" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem value="Select Country" disabled>
-                      Select Country
-                    </SelectItem>
-                    {countries?.map(country => (
-                      <SelectItem key={country.id} value={country.name}>
-                        {country.name}
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="country" className="mb-2 text-left">
+              Country <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="country"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  onValueChange={value => {
+                    field.onChange(value);
+                    setSelectedCountry(() => {
+                      const onecountry = countries?.find(
+                        country => country.name === value,
+                      );
+                      return onecountry?.iso2 || '';
+                    });
+                  }}
+                  value={field.value}
+                >
+                  <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectValue placeholder="Select Designation" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem value="Select Country" disabled>
+                        Select Country
                       </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
-              </Select>
+                      {countries?.map(country => (
+                        <SelectItem key={country.id} value={country.name}>
+                          {country.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                </Select>
+              )}
+            />
+            {errors.country && (
+              <span className="text-sm text-red-500">
+                {errors.country.message}
+              </span>
             )}
-          />
-          {errors.country && (
-            <span className="text-sm text-red-500">
-              {errors.country.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="province" className="mb-2 text-left">
-            Province <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="province"
-            control={control}
-            render={({ field }) => (
-              <Select
-                onValueChange={value => {
-                  field.onChange(value);
-                  setSelectedProvince(() => {
-                    const onestate = states?.find(
-                      state => state.name === value,
-                    );
-                    return onestate?.iso2 || '';
-                  });
-                }}
-                value={field.value}
-              >
-                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Province" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem value="No Province" disabled>
-                      Select Province
-                    </SelectItem>
-                    {states?.map(state => (
-                      <SelectItem key={state.id} value={state.name}>
-                        {state.name}
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="province" className="mb-2 text-left">
+              Province <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="province"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  onValueChange={value => {
+                    field.onChange(value);
+                    setSelectedProvince(() => {
+                      const onestate = states?.find(
+                        state => state.name === value,
+                      );
+                      return onestate?.iso2 || '';
+                    });
+                  }}
+                  value={field.value}
+                >
+                  <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectValue placeholder="Select Province" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem value="No Province" disabled>
+                        Select Province
                       </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
-              </Select>
+                      {states?.map(state => (
+                        <SelectItem key={state.id} value={state.name}>
+                          {state.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                </Select>
+              )}
+            />
+            {errors.province && (
+              <span className="text-sm text-red-500">
+                {errors.province.message}
+              </span>
             )}
-          />
-          {errors.province && (
-            <span className="text-sm text-red-500">
-              {errors.province.message}
-            </span>
-          )}
+          </div>
         </div>
-        <div className="flex flex-col">
-          <Label htmlFor="city" className="mb-2 text-left">
-            City <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="city"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select City" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem value="No City" disabled>
-                      Select city
-                    </SelectItem>
-                    {cities?.map(city => (
-                      <SelectItem key={city.id} value={city.name}>
-                        {city.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
-              </Select>
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex flex-col">
+              <Label htmlFor="city" className="mb-2 text-left">
+                City <span className="text-destructive/90">*</span>
+              </Label>
+              <Controller
+                name="city"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select City" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="No City" disabled>
+                          Select city
+                        </SelectItem>
+                        {cities?.map(city => (
+                          <SelectItem key={city.id} value={city.name}>
+                            {city.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                    <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                  </Select>
+                )}
+              />
+              {errors.city && (
+                <span className="text-sm text-red-500">
+                  {errors.city.message}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <Label htmlFor="zip" className="mb-2 text-left">
+                Zip
+              </Label>
+              <Controller
+                name="zip"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="zip"
+                    placeholder="57400"
+                    type="number"
+                  />
+                )}
+              />
+              {errors.zip && (
+                <span className="text-sm text-red-500">
+                  {errors.zip.message}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="full" className="mb-2 text-left">
+              Description
+            </Label>
+            <Controller
+              name="full"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="full" placeholder="Description" />
+              )}
+            />
+            {errors.full && (
+              <span className="text-sm text-red-500">
+                {errors.full.message}
+              </span>
             )}
-          />
-          {errors.city && (
-            <span className="text-sm text-red-500">{errors.city.message}</span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="zip" className="mb-2 text-left">
-            Zip
-          </Label>
-          <Controller
-            name="zip"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="zip" placeholder="57400" type="number" />
-            )}
-          />
-          {errors.zip && (
-            <span className="text-sm text-red-500">{errors.zip.message}</span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="full" className="mb-2 text-left">
-            Description
-          </Label>
-          <Controller
-            name="full"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="full" placeholder="Description" />
-            )}
-          />
-          {errors.full && (
-            <span className="text-sm text-red-500">{errors.full.message}</span>
-          )}
+          </div>
         </div>
       </div>
       <DialogFooter>

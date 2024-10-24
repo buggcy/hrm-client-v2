@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -79,6 +82,7 @@ const personalSchema = z.object({
 export type PersonalSchemaFormData = z.infer<typeof personalSchema>;
 
 const Personal = ({ empId, data }: PersonalProps) => {
+  const router = useRouter();
   const { editEmployeeStore } = useStores() as {
     editEmployeeStore: EditEmployeeStoreType;
   };
@@ -168,466 +172,510 @@ const Personal = ({ empId, data }: PersonalProps) => {
       id: empId || '',
       body: newData,
     });
+    router.push('/hr/manage-employees');
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
-      <div className="mb-4 flex flex-col gap-8">
-        <div className="flex flex-col">
-          <Label htmlFor="Avatar" className="mb-2 text-left">
-            Choose Avatar
-          </Label>
-          <Controller
-            name="Avatar"
-            control={control}
-            render={({ field }) => (
-              <Input
-                id="Avatar"
-                placeholder="Choose a file"
-                type="file"
-                onChange={e => {
-                  const file = e.target.files?.[0];
-                  field.onChange(file);
-                }}
+      <div className="mb-4 flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-x-8 gap-y-4 md:flex-row">
+          <div className="flex flex-col gap-4 md:w-[90%]">
+            <div className="flex flex-col">
+              <Label htmlFor="Avatar" className="mb-2 text-left">
+                Choose Avatar
+              </Label>
+              <Controller
+                name="Avatar"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="Avatar"
+                    placeholder="Choose a file"
+                    type="file"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      field.onChange(file);
+                    }}
+                  />
+                )}
               />
-            )}
-          />
-          {errors.Avatar && (
-            <span className="text-sm text-red-500">
-              {errors.Avatar.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="availability" className="mb-2 text-left">
-            Status After Logging In{' '}
-            <span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="availability"
-            control={control}
-            render={({ field }) => (
-              <RadioGroup {...field}>
-                <RadioGroupItem value="Available">Available</RadioGroupItem>
-                <RadioGroupItem value="Inactive">Inactive</RadioGroupItem>
-                <RadioGroupItem value="Busy">Busy</RadioGroupItem>
-                <RadioGroupItem value="Offline">Offline</RadioGroupItem>
-              </RadioGroup>
-            )}
-          />
-          {errors.availability && (
-            <span className="text-sm text-red-500">
-              {errors.availability.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <Label htmlFor="profileDescription" className="mb-2 text-left">
-            Profile Description<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="profileDescription"
-            control={control}
-            render={({ field }) => (
-              <Textarea
-                {...field}
-                id="profileDescription"
-                placeholder="John Doe"
-                onChange={e => field.onChange(e.target.value)}
+              {errors.Avatar && (
+                <span className="text-sm text-red-500">
+                  {errors.Avatar.message}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <Label htmlFor="profileDescription" className="mb-2 text-left">
+                Profile Description
+                <span className="text-destructive/90">*</span>
+              </Label>
+              <Controller
+                name="profileDescription"
+                control={control}
+                render={({ field }) => (
+                  <Textarea
+                    {...field}
+                    id="profileDescription"
+                    placeholder="John Doe"
+                    onChange={e => field.onChange(e.target.value)}
+                  />
+                )}
               />
+              {errors.profileDescription && (
+                <span className="text-sm text-red-500">
+                  {errors.profileDescription.message}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex min-w-[200px] flex-col">
+            <Label htmlFor="availability" className="mb-2 text-left">
+              Status After Logging In{' '}
+              <span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="availability"
+              control={control}
+              render={({ field }) => (
+                <RadioGroup
+                  defaultValue={field.value}
+                  onChange={field.onChange}
+                >
+                  <div className="flex flex-row gap-2 text-nowrap">
+                    <RadioGroupItem value="Available" id="r1" />
+                    <Label htmlFor="r1">Available</Label>
+                  </div>
+                  <div className="flex flex-row gap-2 text-nowrap">
+                    <RadioGroupItem value="Inactive" id="r2" />
+                    <Label htmlFor="r2">Inactive</Label>
+                  </div>
+                  <div className="flex flex-row gap-2 text-nowrap">
+                    <RadioGroupItem value="Busy" id="r3" />
+                    <Label htmlFor="r3">Busy</Label>
+                  </div>
+                  <div className="flex flex-row gap-2 text-nowrap">
+                    <RadioGroupItem value="Offline" id="r4" />
+                    <Label htmlFor="r4">Offline</Label>
+                  </div>
+                </RadioGroup>
+              )}
+            />
+            {errors.availability && (
+              <span className="text-sm text-red-500">
+                {errors.availability.message}
+              </span>
             )}
-          />
-          {errors.profileDescription && (
-            <span className="text-sm text-red-500">
-              {errors.profileDescription.message}
-            </span>
-          )}
+          </div>
         </div>
 
         <Separator />
 
-        <h2>Personal Details</h2>
+        <h2 className="text-sm font-bold">Personal Details</h2>
 
-        <div className="flex flex-col">
-          <Label htmlFor="firstName" className="mb-2 text-left">
-            First Name<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="firstName"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="firstName" placeholder="John Doe" />
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="flex flex-col">
+            <Label htmlFor="firstName" className="mb-2 text-left">
+              First Name<span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="firstName"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="firstName" placeholder="John Doe" />
+              )}
+            />
+            {errors.firstName && (
+              <span className="text-sm text-red-500">
+                {errors.firstName.message}
+              </span>
             )}
-          />
-          {errors.firstName && (
-            <span className="text-sm text-red-500">
-              {errors.firstName.message}
-            </span>
-          )}
+          </div>
+
+          <div className="flex flex-col">
+            <Label htmlFor="lastName" className="mb-2 text-left">
+              Last Name<span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="lastName"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="lastName" placeholder="John Doe" />
+              )}
+            />
+            {errors.lastName && (
+              <span className="text-sm text-red-500">
+                {errors.lastName.message}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col">
+            <Label htmlFor="companyEmail" className="mb-2 text-left">
+              Company Email<span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="companyEmail"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="companyEmail" placeholder="John Doe" />
+              )}
+            />
+            {errors.companyEmail && (
+              <span className="text-sm text-red-500">
+                {errors.companyEmail.message}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col">
+            <Label htmlFor="email" className="mb-2 text-left">
+              Email<span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="email" placeholder="John Doe" />
+              )}
+            />
+            {errors.email && (
+              <span className="text-sm text-red-500">
+                {errors.email.message}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="lastName" className="mb-2 text-left">
-            Last Name<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="lastName"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="lastName" placeholder="John Doe" />
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="flex flex-col">
+            <Label htmlFor="contactNo" className="mb-2 text-left">
+              Contact No<span className="text-destructive/90">*</span>
+            </Label>
+            <Controller
+              name="contactNo"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="contactNo" placeholder="John Doe" />
+              )}
+            />
+            {errors.contactNo && (
+              <span className="text-sm text-red-500">
+                {errors.contactNo.message}
+              </span>
             )}
-          />
-          {errors.lastName && (
-            <span className="text-sm text-red-500">
-              {errors.lastName.message}
-            </span>
-          )}
+          </div>
+
+          <div className="flex flex-col">
+            <Label htmlFor="Emergency_Phone" className="mb-2 text-left">
+              Emergency Phone No
+            </Label>
+            <Controller
+              name="Emergency_Phone"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="Emergency_Phone" placeholder="John Doe" />
+              )}
+            />
+            {errors.Emergency_Phone && (
+              <span className="text-sm text-red-500">
+                {errors.Emergency_Phone.message}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col">
+            <Label htmlFor="Nationality" className="mb-2 text-left">
+              Nationality
+            </Label>
+            <Controller
+              name="Nationality"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="Nationality" placeholder="John Doe" />
+              )}
+            />
+            {errors.Nationality && (
+              <span className="text-sm text-red-500">
+                {errors.Nationality.message}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col">
+            <Label htmlFor="DOB" className="mb-2 text-left">
+              Date of Birth
+            </Label>
+            <Controller
+              name="DOB"
+              control={control}
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'justify-start text-left font-normal',
+                        !field.value && 'text-muted-foreground',
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 size-4" />
+                      {field.value ? (
+                        format(field.value, 'PPP')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value ?? undefined}
+                      onSelect={field.onChange}
+                      disabled={date =>
+                        date > new Date() || date < new Date('1900-01-01')
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
+            {errors.DOB && (
+              <span className="text-sm text-red-500">{errors.DOB.message}</span>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="companyEmail" className="mb-2 text-left">
-            Company Email<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="companyEmail"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="companyEmail" placeholder="John Doe" />
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="flex flex-col">
+            <Label htmlFor="Marital_Status" className="mb-2 text-left">
+              Marital Status
+            </Label>
+            <Controller
+              name="Marital_Status"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectValue placeholder="Select Marital Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem value="married" disabled>
+                        Married
+                      </SelectItem>
+                      <SelectItem value="unmarried">Unmarried</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                </Select>
+              )}
+            />
+            {errors.Marital_Status && (
+              <span className="text-sm text-red-500">
+                {errors.Marital_Status.message}
+              </span>
             )}
-          />
-          {errors.companyEmail && (
-            <span className="text-sm text-red-500">
-              {errors.companyEmail.message}
-            </span>
-          )}
-        </div>
+          </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="email" className="mb-2 text-left">
-            Email<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="email" placeholder="John Doe" />
+          <div className="flex flex-col">
+            <Label htmlFor="Blood_Group" className="mb-2 text-left">
+              Blood Group
+            </Label>
+            <Controller
+              name="Blood_Group"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectValue placeholder="Select Blood Group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem value="A+">A+</SelectItem>
+                      <SelectItem value="A-">A-</SelectItem>
+                      <SelectItem value="B+">B+</SelectItem>
+                      <SelectItem value="B-">B-</SelectItem>
+                      <SelectItem value="AB+">AB+</SelectItem>
+                      <SelectItem value="AB-">AB-</SelectItem>
+                      <SelectItem value="O+">O+</SelectItem>
+                      <SelectItem value="O-">O-</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                </Select>
+              )}
+            />
+            {errors.Blood_Group && (
+              <span className="text-sm text-red-500">
+                {errors.Blood_Group.message}
+              </span>
             )}
-          />
-          {errors.email && (
-            <span className="text-sm text-red-500">{errors.email.message}</span>
-          )}
-        </div>
+          </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="contactNo" className="mb-2 text-left">
-            Contact No<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="contactNo"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="contactNo" placeholder="John Doe" />
+          <div className="flex flex-col">
+            <Label htmlFor="Gender" className="mb-2 text-left">
+              Gender
+            </Label>
+            <Controller
+              name="Gender"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectValue placeholder="Select Gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                </Select>
+              )}
+            />
+            {errors.Gender && (
+              <span className="text-sm text-red-500">
+                {errors.Gender.message}
+              </span>
             )}
-          />
-          {errors.contactNo && (
-            <span className="text-sm text-red-500">
-              {errors.contactNo.message}
-            </span>
-          )}
-        </div>
+          </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="Emergency_Phone" className="mb-2 text-left">
-            Emergency Phone No<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="Emergency_Phone"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="Emergency_Phone" placeholder="John Doe" />
+          <div className="flex flex-col">
+            <Label htmlFor="Joining_Date" className="mb-2 text-left">
+              Joining Date
+            </Label>
+            <Controller
+              name="Joining_Date"
+              control={control}
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'justify-start text-left font-normal',
+                        !field.value && 'text-muted-foreground',
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 size-4" />
+                      {field.value ? (
+                        format(field.value, 'PPP')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value ?? undefined}
+                      onSelect={field.onChange}
+                      disabled={date =>
+                        date > new Date() || date < new Date('1900-01-01')
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
+            {errors.Joining_Date && (
+              <span className="text-sm text-red-500">
+                {errors.Joining_Date.message}
+              </span>
             )}
-          />
-          {errors.Emergency_Phone && (
-            <span className="text-sm text-red-500">
-              {errors.Emergency_Phone.message}
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-col">
-          <Label htmlFor="Nationality" className="mb-2 text-left">
-            Nationality<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="Nationality"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="Nationality" placeholder="John Doe" />
-            )}
-          />
-          {errors.Nationality && (
-            <span className="text-sm text-red-500">
-              {errors.Nationality.message}
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-col">
-          <Label htmlFor="DOB" className="mb-2 text-left">
-            Date of Birth
-          </Label>
-          <Controller
-            name="DOB"
-            control={control}
-            render={({ field }) => (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={'outline'}
-                    className={cn(
-                      'justify-start text-left font-normal',
-                      !field.value && 'text-muted-foreground',
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 size-4" />
-                    {field.value ? (
-                      format(field.value, 'PPP')
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value ?? undefined}
-                    onSelect={field.onChange}
-                    disabled={date =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
-                  />
-                </PopoverContent>
-              </Popover>
-            )}
-          />
-          {errors.DOB && (
-            <span className="text-sm text-red-500">{errors.DOB.message}</span>
-          )}
-        </div>
-
-        <div className="flex flex-col">
-          <Label htmlFor="Marital_Status" className="mb-2 text-left">
-            Marital Status
-          </Label>
-          <Controller
-            name="Marital_Status"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Marital Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem value="married" disabled>
-                      Married
-                    </SelectItem>
-                    <SelectItem value="unmarried">Unmarried</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
-              </Select>
-            )}
-          />
-          {errors.Marital_Status && (
-            <span className="text-sm text-red-500">
-              {errors.Marital_Status.message}
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-col">
-          <Label htmlFor="Blood_Group" className="mb-2 text-left">
-            Blood Group
-          </Label>
-          <Controller
-            name="Blood_Group"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Blood Group" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem value="A+">A+</SelectItem>
-                    <SelectItem value="A-">A-</SelectItem>
-                    <SelectItem value="B+">B+</SelectItem>
-                    <SelectItem value="B-">B-</SelectItem>
-                    <SelectItem value="AB+">AB+</SelectItem>
-                    <SelectItem value="AB-">AB-</SelectItem>
-                    <SelectItem value="O+">O+</SelectItem>
-                    <SelectItem value="O-">O-</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
-              </Select>
-            )}
-          />
-          {errors.Blood_Group && (
-            <span className="text-sm text-red-500">
-              {errors.Blood_Group.message}
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-col">
-          <Label htmlFor="Gender" className="mb-2 text-left">
-            Gender
-          </Label>
-          <Controller
-            name="Gender"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
-              </Select>
-            )}
-          />
-          {errors.Gender && (
-            <span className="text-sm text-red-500">
-              {errors.Gender.message}
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-col">
-          <Label htmlFor="Joining_Date" className="mb-2 text-left">
-            Joining Date
-          </Label>
-          <Controller
-            name="Joining_Date"
-            control={control}
-            render={({ field }) => (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={'outline'}
-                    className={cn(
-                      'justify-start text-left font-normal',
-                      !field.value && 'text-muted-foreground',
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 size-4" />
-                    {field.value ? (
-                      format(field.value, 'PPP')
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value ?? undefined}
-                    onSelect={field.onChange}
-                    disabled={date =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
-                  />
-                </PopoverContent>
-              </Popover>
-            )}
-          />
-          {errors.Joining_Date && (
-            <span className="text-sm text-red-500">
-              {errors.Joining_Date.message}
-            </span>
-          )}
+          </div>
         </div>
 
         <Separator />
 
-        <h2>Family Details</h2>
+        <h2 className="text-sm font-bold">Family Details</h2>
 
-        <div className="flex flex-col">
-          <Label htmlFor="Family_Name" className="mb-2 text-left">
-            Name<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="Family_Name"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="Family_Name" placeholder="John Doe" />
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="flex flex-col">
+            <Label htmlFor="Family_Name" className="mb-2 text-left">
+              Name
+            </Label>
+            <Controller
+              name="Family_Name"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="Family_Name" placeholder="John Doe" />
+              )}
+            />
+            {errors.Family_Name && (
+              <span className="text-sm text-red-500">
+                {errors.Family_Name.message}
+              </span>
             )}
-          />
-          {errors.Family_Name && (
-            <span className="text-sm text-red-500">
-              {errors.Family_Name.message}
-            </span>
-          )}
-        </div>
+          </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="Family_Relation" className="mb-2 text-left">
-            Relation<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="Family_Relation"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="Family_Relation" placeholder="John Doe" />
+          <div className="flex flex-col">
+            <Label htmlFor="Family_Relation" className="mb-2 text-left">
+              Relation
+            </Label>
+            <Controller
+              name="Family_Relation"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="Family_Relation" placeholder="John Doe" />
+              )}
+            />
+            {errors.Family_Relation && (
+              <span className="text-sm text-red-500">
+                {errors.Family_Relation.message}
+              </span>
             )}
-          />
-          {errors.Family_Relation && (
-            <span className="text-sm text-red-500">
-              {errors.Family_Relation.message}
-            </span>
-          )}
-        </div>
+          </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="Family_PhoneNo" className="mb-2 text-left">
-            Phone No<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="Family_PhoneNo"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="Family_PhoneNo" placeholder="John Doe" />
+          <div className="flex flex-col">
+            <Label htmlFor="Family_PhoneNo" className="mb-2 text-left">
+              Phone No
+            </Label>
+            <Controller
+              name="Family_PhoneNo"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="Family_PhoneNo" placeholder="John Doe" />
+              )}
+            />
+            {errors.Family_PhoneNo && (
+              <span className="text-sm text-red-500">
+                {errors.Family_PhoneNo.message}
+              </span>
             )}
-          />
-          {errors.Family_PhoneNo && (
-            <span className="text-sm text-red-500">
-              {errors.Family_PhoneNo.message}
-            </span>
-          )}
-        </div>
+          </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="Family_Occupation" className="mb-2 text-left">
-            Occupation<span className="text-destructive/90">*</span>
-          </Label>
-          <Controller
-            name="Family_Occupation"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="Family_Occupation" placeholder="John Doe" />
+          <div className="flex flex-col">
+            <Label htmlFor="Family_Occupation" className="mb-2 text-left">
+              Occupation
+            </Label>
+            <Controller
+              name="Family_Occupation"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="Family_Occupation"
+                  placeholder="John Doe"
+                />
+              )}
+            />
+            {errors.Family_Occupation && (
+              <span className="text-sm text-red-500">
+                {errors.Family_Occupation.message}
+              </span>
             )}
-          />
-          {errors.Family_Occupation && (
-            <span className="text-sm text-red-500">
-              {errors.Family_Occupation.message}
-            </span>
-          )}
+          </div>
         </div>
       </div>
       <DialogFooter>

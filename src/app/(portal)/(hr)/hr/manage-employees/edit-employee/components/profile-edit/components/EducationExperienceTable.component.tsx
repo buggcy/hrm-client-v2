@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -49,6 +50,7 @@ const EducationExperienceTable = ({
   empId,
   eduExpData,
 }: EducationExperiencesTableProps) => {
+  const router = useRouter();
   const [tableData, setTableData] = useState<
     EducationExperienceType[] | undefined
   >(eduExpData ?? eduExpData);
@@ -107,6 +109,7 @@ const EducationExperienceTable = ({
           variant: 'success',
         });
         setRefetchEditEmployeeData(true);
+        router.push('/hr/manage-employees');
       },
     });
 
@@ -131,7 +134,7 @@ const EducationExperienceTable = ({
           description: response?.message || 'Data deleted successfully!',
           variant: 'success',
         });
-        setRefetchEditEmployeeData(true);
+        updateEducationExperienceData({ id: empId || '', body: tableData });
       },
     });
 
@@ -221,7 +224,6 @@ const EducationExperienceTable = ({
   };
   const handleSubmit = () => {
     deleteEducationExperienceData({ id: empId || '', body: deletedItems });
-    updateEducationExperienceData({ id: empId || '', body: tableData });
   };
 
   return (
