@@ -67,7 +67,7 @@ const employeeSchema = z.object({
   dep_ID: z.array(z.string()).optional(),
   isDeleted: z.boolean().optional(),
   UniqueCodeExpire: z.string().optional(),
-  Blood_Group: z.string().optional(),
+  Blood_Group: z.enum(bloodgroupStatus).optional(),
   DOB: z.string().optional(),
   Emergency_Phone: z.string().optional(),
   Family_Name: z.string().optional(),

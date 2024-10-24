@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { PersonalSchemaFormData } from '@/app/(portal)/(hr)/hr/manage-employees/edit-employee/components/profile-edit/forms/Personal';
 import { AddSalaryIncrementFormData } from '@/app/(portal)/(hr)/hr/manage-employees/edit-employee/components/salary-increment/components/SalaryIncrementDialog.component';
 import {
   CityApiResponse,
@@ -343,6 +344,46 @@ export const addAdditionalDocument = async ({
     const { message }: SuccessMessageResponse = await baseAPI.post(
       `/Signup/upload-additonaldocument/${id}`,
       body,
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const updateEmployeeProfile = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: FormData;
+}) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.put(
+      `/employee/edit/profile/${id}`,
+      body,
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const updateEmployeeData = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: PersonalSchemaFormData;
+}) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { Avatar, availability, profileDescription, ...rest } = body;
+    const { message }: SuccessMessageResponse = await baseAPI.put(
+      `/employee/${id}`,
+      rest,
     );
     return { message };
   } catch (error) {

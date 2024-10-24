@@ -35,7 +35,10 @@ const ProfileEdit = ({ data }: ProfileEditProps) => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="personal">
-        <Personal />
+        <Personal
+          data={data?.output?.employee}
+          empId={data?.output?.employee?._id}
+        />
       </TabsContent>
       <TabsContent value="address">
         <Address
