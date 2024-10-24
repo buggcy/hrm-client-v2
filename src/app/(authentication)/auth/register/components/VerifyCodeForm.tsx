@@ -153,9 +153,9 @@ const mainFormSchema = z.object({
     educationExperiences: z
       .array(educationExperienceSchema)
       .min(1, 'You must add at least one education experience'),
-
     Additional_Documents: z.array(imageSchema),
     deletedAdditionalDocuments: z.array(imageSchema),
+    additionalId: z.string(),
   }),
 });
 
@@ -200,6 +200,7 @@ const defaultMainFormValues = {
     bankAccountNumber: '',
   },
   educationalDocument: {
+    additionalId: '',
     educationExperiences: [],
     Additional_Documents: [],
     deletedAdditionalDocuments: [],
@@ -302,6 +303,7 @@ export function VerifyCodeForm(): JSX.Element {
               user_id: exp.user_id || '',
             })) || [],
           Additional_Documents: additionalDocuments?.Document || [],
+          additionalId: additionalDocuments?._id || '',
           deletedAdditionalDocuments: [],
         },
       });
@@ -342,7 +344,6 @@ export function VerifyCodeForm(): JSX.Element {
   const onSubmitMainForm: SubmitHandler<MainFormData> = data => {
     const { userId, additionalInfo, kyc, educationalDocument } = data;
 
-    console.log('click: ');
     const formData = new FormData();
 
     formData.append('email', additionalInfo.emailAddress);
@@ -386,6 +387,13 @@ export function VerifyCodeForm(): JSX.Element {
         formData.append(`Document${index}`, entry.Document as Blob);
       }
     });
+
+    if (educationalDocument.additionalId) {
+      formData.append(
+        'additionalDocumentsId',
+        educationalDocument.additionalId,
+      );
+    }
 
     educationalDocument.Additional_Documents.forEach(file => {
       if (typeof file !== 'string') {
