@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,11 +15,21 @@ const createAssignPerkSchema = (
 ) => {
   return z.object({
     increment: salaryIncrement
-      ? z.coerce.number().min(1, 'Increment is required')
-      : z.coerce.number().optional(),
+      ? z
+          .number({
+            invalid_type_error: 'Increment must be a number',
+          })
+          .min(1, 'Increment is required')
+          .positive('Increment must be a positive number')
+      : z.number().optional(),
     decrement: salaryDecrement
-      ? z.coerce.number().min(1, 'Decrement is required')
-      : z.coerce.number().optional(),
+      ? z
+          .number({
+            invalid_type_error: 'Decrement must be a number',
+          })
+          .min(1, 'Decrement is required')
+          .positive('Decrement must be a positive number')
+      : z.number().optional(),
   });
 };
 
@@ -43,14 +55,25 @@ export const PerkForm = ({
 
   const {
     control,
-    formState: { errors },
+    formState: { errors, touchedFields },
+    trigger,
   } = useForm<AssignPerkFormData>({
     resolver: zodResolver(assignPerkSchema),
+    mode: 'onChange',
     defaultValues: {
-      increment: perk.assignedIncrementAmount,
-      decrement: perk.assignedDecrementAmount,
+      increment: perk.assignedIncrementAmount || 1,
+      decrement: perk.assignedDecrementAmount || 1,
     },
   });
+
+  useEffect(() => {
+    void trigger();
+  }, [
+    perk.assignedIncrementAmount,
+    perk.assignedDecrementAmount,
+    trigger,
+    touchedFields,
+  ]);
 
   return (
     <form className="grid gap-8 py-4">
@@ -68,17 +91,20 @@ export const PerkForm = ({
                   {...field}
                   id="increment"
                   placeholder="Increment"
-                  type="number"
+                  type="text"
                   onChange={e => {
-                    const value = Number(e.target.value);
-                    field.onChange(value);
-                    handlePerkDataIncrementChange(perk._id, value);
+                    const value = e.target.value;
+                    field.onChange(value === '' ? '' : Number(value));
+                    handlePerkDataIncrementChange(
+                      perk._id,
+                      value === '' ? 0 : Number(value),
+                    );
                   }}
-                  min={1}
                 />
               )}
             />
-            {errors.increment && (
+
+            {errors.increment && touchedFields.increment && (
               <span className="text-sm text-red-500">
                 {errors.increment.message}
               </span>
@@ -98,13 +124,15 @@ export const PerkForm = ({
                   {...field}
                   id="decrement"
                   placeholder="Decrement"
-                  type="number"
+                  type="text"
                   onChange={e => {
-                    const value = Number(e.target.value);
-                    field.onChange(value);
-                    handlePerkDataDecrementChange(perk._id, value);
+                    const value = e.target.value;
+                    field.onChange(value === '' ? '' : Number(value));
+                    handlePerkDataDecrementChange(
+                      perk._id,
+                      value === '' ? 0 : Number(value),
+                    );
                   }}
-                  min={1}
                 />
               )}
             />
