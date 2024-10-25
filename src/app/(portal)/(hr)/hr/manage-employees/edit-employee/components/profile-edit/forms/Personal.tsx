@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,7 +21,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   Select,
   SelectContent,
@@ -31,15 +30,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { EmployeeType } from '@/libs/validations/edit-employee';
-import {
-  updateEmployeeData,
-  updateEmployeeProfile,
-} from '@/services/hr/edit-employee.service';
+import { updateEmployeeData } from '@/services/hr/edit-employee.service';
 import { EditEmployeeStoreType } from '@/stores/hr/edit-employee';
 import { cn } from '@/utils';
 
@@ -51,14 +46,6 @@ interface PersonalProps {
 }
 
 const personalSchema = z.object({
-  Avatar: z
-    .instanceof(File)
-    .nullable()
-    .refine(file => file === null || file.size <= 5 * 1024 * 1024, {
-      message: 'File size should be less than 5MB',
-    }),
-  availability: z.string(),
-  profileDescription: z.string().optional(),
   firstName: z.string().min(3).max(50),
   lastName: z.string().min(3).max(50),
   companyEmail: z.string().email(),
@@ -91,12 +78,10 @@ const Personal = ({ empId, data }: PersonalProps) => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<PersonalSchemaFormData>({
     resolver: zodResolver(personalSchema),
     defaultValues: {
-      Avatar: null,
-      availability: data?.Current_Status || 'Available',
-      profileDescription: data?.profileDescription || '',
       firstName: data?.firstName || '',
       lastName: data?.lastName || '',
       companyEmail: data?.companyEmail || '',
@@ -117,25 +102,31 @@ const Personal = ({ empId, data }: PersonalProps) => {
       Family_Occupation: data?.Family_Occupation || '',
     },
   });
-  const { mutate: updateEmployeeProfileData, isPending: isUpdatingProfile } =
-    useMutation({
-      mutationFn: updateEmployeeProfile,
-      onError: (err: AxiosError<MessageErrorResponse>) => {
-        toast({
-          title: 'Error',
-          description: err?.response?.data?.message || 'Error on adding data!',
-          variant: 'error',
-        });
-      },
-      onSuccess: response => {
-        toast({
-          title: 'Success',
-          description: response?.message || 'Data added successfully!',
-          variant: 'success',
-        });
-        setRefetchEditEmployeeData(true);
-      },
-    });
+
+  useEffect(() => {
+    if (data) {
+      reset({
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        companyEmail: data.companyEmail || '',
+        email: data.email || '',
+        contactNo: data.contactNo || '',
+        Emergency_Phone: data.Emergency_Phone || '',
+        Nationality: data.Nationality || '',
+        DOB: data.DOB ? new Date(data.DOB) : new Date(),
+        Marital_Status: data.Marital_Status || 'unmarried',
+        Blood_Group: data.Blood_Group || 'A+',
+        Gender: data.Gender || 'male',
+        Joining_Date: data.Joining_Date
+          ? new Date(data.Joining_Date)
+          : new Date(),
+        Family_Name: data.Family_Name || '',
+        Family_Relation: data.Family_Relation || '',
+        Family_PhoneNo: data.Family_PhoneNo || '',
+        Family_Occupation: data.Family_Occupation || '',
+      });
+    }
+  }, [data, reset]);
 
   const { mutate: updateEmployee, isPending: isUpdatingEmployee } = useMutation(
     {
@@ -160,14 +151,6 @@ const Personal = ({ empId, data }: PersonalProps) => {
   );
 
   const onSubmit = (newData: PersonalSchemaFormData) => {
-    const formData = new FormData();
-    formData.append('Avatar', newData.Avatar || '');
-    formData.append('availability', newData.availability);
-    formData.append('profileDescription', newData.profileDescription || '');
-    updateEmployeeProfileData({
-      id: empId || '',
-      body: formData,
-    });
     updateEmployee({
       id: empId || '',
       body: newData,
@@ -177,99 +160,6 @@ const Personal = ({ empId, data }: PersonalProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
       <div className="mb-4 flex flex-col gap-4">
-        <div className="flex w-full flex-col gap-x-8 gap-y-4 md:flex-row">
-          <div className="flex flex-col gap-4 md:w-[90%]">
-            <div className="flex flex-col">
-              <Label htmlFor="Avatar" className="mb-2 text-left">
-                Choose Avatar
-              </Label>
-              <Controller
-                name="Avatar"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="Avatar"
-                    placeholder="Choose a file"
-                    type="file"
-                    onChange={e => {
-                      const file = e.target.files?.[0];
-                      field.onChange(file);
-                    }}
-                  />
-                )}
-              />
-              {errors.Avatar && (
-                <span className="text-sm text-red-500">
-                  {errors.Avatar.message}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="profileDescription" className="mb-2 text-left">
-                Profile Description
-                <span className="text-destructive/90">*</span>
-              </Label>
-              <Controller
-                name="profileDescription"
-                control={control}
-                render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    id="profileDescription"
-                    placeholder="John Doe"
-                    onChange={e => field.onChange(e.target.value)}
-                  />
-                )}
-              />
-              {errors.profileDescription && (
-                <span className="text-sm text-red-500">
-                  {errors.profileDescription.message}
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="flex min-w-[200px] flex-col">
-            <Label htmlFor="availability" className="mb-2 text-left">
-              Status After Logging In{' '}
-              <span className="text-destructive/90">*</span>
-            </Label>
-            <Controller
-              name="availability"
-              control={control}
-              render={({ field }) => (
-                <RadioGroup
-                  defaultValue={field.value}
-                  onChange={field.onChange}
-                >
-                  <div className="flex flex-row gap-2 text-nowrap">
-                    <RadioGroupItem value="Available" id="r1" />
-                    <Label htmlFor="r1">Available</Label>
-                  </div>
-                  <div className="flex flex-row gap-2 text-nowrap">
-                    <RadioGroupItem value="Inactive" id="r2" />
-                    <Label htmlFor="r2">Inactive</Label>
-                  </div>
-                  <div className="flex flex-row gap-2 text-nowrap">
-                    <RadioGroupItem value="Busy" id="r3" />
-                    <Label htmlFor="r3">Busy</Label>
-                  </div>
-                  <div className="flex flex-row gap-2 text-nowrap">
-                    <RadioGroupItem value="Offline" id="r4" />
-                    <Label htmlFor="r4">Offline</Label>
-                  </div>
-                </RadioGroup>
-              )}
-            />
-            {errors.availability && (
-              <span className="text-sm text-red-500">
-                {errors.availability.message}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <Separator />
-
         <h2 className="text-sm font-bold">Personal Details</h2>
 
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -281,7 +171,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="firstName"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="firstName" placeholder="John Doe" />
+                <Input {...field} id="firstName" placeholder="John" />
               )}
             />
             {errors.firstName && (
@@ -299,7 +189,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="lastName"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="lastName" placeholder="John Doe" />
+                <Input {...field} id="lastName" placeholder="Doe" />
               )}
             />
             {errors.lastName && (
@@ -317,7 +207,11 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="companyEmail"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="companyEmail" placeholder="John Doe" />
+                <Input
+                  {...field}
+                  id="companyEmail"
+                  placeholder="user@example.com"
+                />
               )}
             />
             {errors.companyEmail && (
@@ -335,7 +229,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="email"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="email" placeholder="John Doe" />
+                <Input {...field} id="email" placeholder="user@example.com" />
               )}
             />
             {errors.email && (
@@ -355,7 +249,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="contactNo"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="contactNo" placeholder="John Doe" />
+                <Input {...field} id="contactNo" placeholder="03XXXXXXXXX" />
               )}
             />
             {errors.contactNo && (
@@ -373,7 +267,11 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="Emergency_Phone"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="Emergency_Phone" placeholder="John Doe" />
+                <Input
+                  {...field}
+                  id="Emergency_Phone"
+                  placeholder="03XXXXXXXXX"
+                />
               )}
             />
             {errors.Emergency_Phone && (
@@ -391,7 +289,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="Nationality"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="Nationality" placeholder="John Doe" />
+                <Input {...field} id="Nationality" placeholder="Pakistani" />
               )}
             />
             {errors.Nationality && (
@@ -609,7 +507,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="Family_Name"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="Family_Name" placeholder="John Doe" />
+                <Input {...field} id="Family_Name" placeholder="John" />
               )}
             />
             {errors.Family_Name && (
@@ -627,7 +525,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="Family_Relation"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="Family_Relation" placeholder="John Doe" />
+                <Input {...field} id="Family_Relation" placeholder="Doe" />
               )}
             />
             {errors.Family_Relation && (
@@ -645,7 +543,11 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="Family_PhoneNo"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="Family_PhoneNo" placeholder="John Doe" />
+                <Input
+                  {...field}
+                  id="Family_PhoneNo"
+                  placeholder="03XXXXXXXXX"
+                />
               )}
             />
             {errors.Family_PhoneNo && (
@@ -666,7 +568,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
                 <Input
                   {...field}
                   id="Family_Occupation"
-                  placeholder="John Doe"
+                  placeholder="Salesman"
                 />
               )}
             />
@@ -679,10 +581,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
         </div>
       </div>
       <DialogFooter>
-        <Button
-          type="submit"
-          disabled={isUpdatingProfile || isUpdatingEmployee}
-        >
+        <Button type="submit" disabled={isUpdatingEmployee}>
           Submit
         </Button>
       </DialogFooter>

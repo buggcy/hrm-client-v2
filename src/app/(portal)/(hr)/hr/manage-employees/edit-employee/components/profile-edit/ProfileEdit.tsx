@@ -11,6 +11,7 @@ import Address from './forms/Address';
 import EducationExperiences from './forms/EducationExperiences';
 import KYC from './forms/KYC';
 import Personal from './forms/Personal';
+import Profile from './forms/Profile';
 
 interface ProfileEditProps {
   data?: EmployeeDataApiResponse;
@@ -18,24 +19,39 @@ interface ProfileEditProps {
 
 const ProfileEdit = ({ data }: ProfileEditProps) => {
   return (
-    <Tabs defaultValue="personal">
-      <TabsList className="flex size-full flex-col justify-start md:flex-row">
-        <TabsTrigger value="personal" className="w-full md:w-fit">
+    <Tabs defaultValue="profile">
+      <TabsList className="flex size-full flex-col justify-start lg:flex-row">
+        <TabsTrigger value="profile" className="w-full px-3.5 lg:w-fit">
+          Profile
+        </TabsTrigger>
+        <TabsTrigger value="personal" className="w-full px-3.5 lg:w-fit">
           Personal
         </TabsTrigger>
-        <TabsTrigger value="address" className="w-full md:w-fit">
+        <TabsTrigger value="address" className="w-full px-3.5 lg:w-fit">
           Address
         </TabsTrigger>
-        <TabsTrigger value="kyc" className="w-full md:w-fit">
+        <TabsTrigger value="kyc" className="w-full px-3.5 lg:w-fit">
           KYC
         </TabsTrigger>
-        <TabsTrigger value="education-experience" className="w-full md:w-fit">
+        <TabsTrigger
+          value="education-experience"
+          className="w-full px-3.5 lg:w-fit"
+        >
           Education & Experiences
         </TabsTrigger>
-        <TabsTrigger value="additional-documents" className="w-full md:w-fit">
+        <TabsTrigger
+          value="additional-documents"
+          className="w-full px-3.5 lg:w-fit"
+        >
           Additional Documents
         </TabsTrigger>
       </TabsList>
+      <TabsContent value="profile">
+        <Profile
+          data={data?.output?.employee}
+          empId={data?.output?.employee?._id}
+        />
+      </TabsContent>
       <TabsContent value="personal">
         <Personal
           data={data?.output?.employee}

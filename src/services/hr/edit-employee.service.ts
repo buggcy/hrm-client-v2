@@ -380,7 +380,7 @@ export const updateEmployeeData = async ({
 }) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Avatar, availability, profileDescription, ...rest } = body;
+    const { ...rest } = body;
     const { message }: SuccessMessageResponse = await baseAPI.put(
       `/employee/${id}`,
       rest,

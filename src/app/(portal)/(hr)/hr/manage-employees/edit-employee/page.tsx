@@ -22,7 +22,7 @@ export default function Page() {
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper className="flex max-w-full flex-col gap-8 px-2">
+      <LayoutWrapper className="flex max-w-full flex-col gap-8">
         <Suspense fallback={<div>Loading...</div>}>
           <EditEmployee />
         </Suspense>
