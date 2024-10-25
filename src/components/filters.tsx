@@ -4,6 +4,7 @@ import {
   ArrowUp,
   Briefcase,
   Bug,
+  CheckCircle,
   CheckCircle2,
   Circle,
   CircleArrowOutUpRight,
@@ -238,5 +239,18 @@ export const attendance_list_status_options = [
     value: 'Holiday',
     label: 'Holiday',
     icon: Circle,
+  },
+];
+
+export const log_options = [
+  {
+    value: 'Success',
+    label: 'Success',
+    icon: CheckCircle,
+  },
+  {
+    value: 'Error',
+    label: 'Error',
+    icon: XCircle,
   },
 ];
