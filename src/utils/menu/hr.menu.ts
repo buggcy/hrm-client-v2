@@ -1,11 +1,11 @@
 import {
   BadgeCheck,
+  Banknote,
   CalendarCog,
   CalendarDays,
   ClipboardList,
   Gift,
   Home,
-  Medal,
   Settings,
   UserCog,
   UserCog2,
@@ -64,6 +64,22 @@ export const hrMenu: MenuItem[] = [
     ],
   },
   {
+    title: 'Manage Payroll',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Perks & Benefits',
+        icon: Gift,
+        href: '/hr/manage-perks/add-perks',
+      },
+      {
+        title: 'Payroll',
+        icon: Banknote,
+        href: '/hr/manage-payroll',
+      },
+    ],
+  },
+  {
     title: 'Manage Policy',
     icon: UserCog2,
     children: [
@@ -74,33 +90,7 @@ export const hrMenu: MenuItem[] = [
       },
     ],
   },
-  {
-    title: 'Manage Perks',
-    icon: UserCog2,
-    children: [
-      {
-        title: 'Add Perks',
-        icon: Gift,
-        href: '/hr/manage-perks/add-perks',
-      },
-      {
-        title: 'Award Perks',
-        icon: Medal,
-        href: '/hr/manage-perks/award-perks',
-      },
-    ],
-  },
-  {
-    title: 'Manage Payroll',
-    icon: UserCog2,
-    children: [
-      {
-        title: 'Manage Payroll',
-        icon: BadgeCheck,
-        href: '/hr/manage-payroll',
-      },
-    ],
-  },
+
   {
     title: 'Manage Configuration',
     icon: UserCog2,
