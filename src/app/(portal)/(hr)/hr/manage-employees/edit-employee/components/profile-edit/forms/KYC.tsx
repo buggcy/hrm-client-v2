@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { Eye } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -136,8 +137,19 @@ const KYC = ({ data, empId }: KYCProps) => {
             )}
           </div>
           <div className="flex flex-col">
-            <Label htmlFor="frontPicture" className="mb-2 text-left">
+            <Label
+              htmlFor="frontPicture"
+              className="mb-2 flex flex-row items-center gap-2 text-left"
+            >
               Choose Document
+              <a
+                href={data?.cnic.frontPicture}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary/80 hover:text-primary"
+              >
+                <Eye className="size-4" />
+              </a>
             </Label>
             <Controller
               name="frontPicture"
@@ -161,8 +173,19 @@ const KYC = ({ data, empId }: KYCProps) => {
             )}
           </div>
           <div className="flex flex-col">
-            <Label htmlFor="backPicture" className="mb-2 text-left">
+            <Label
+              htmlFor="backPicture"
+              className="mb-2 flex flex-row items-center gap-2 text-left"
+            >
               Choose Document
+              <a
+                href={data?.cnic.backPicture}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary/80 hover:text-primary"
+              >
+                <Eye className="size-4" />
+              </a>
             </Label>
             <Controller
               name="backPicture"

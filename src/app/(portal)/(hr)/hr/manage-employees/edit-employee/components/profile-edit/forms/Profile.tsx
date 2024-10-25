@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { Eye } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -109,8 +110,19 @@ const Profile = ({ empId, data }: PersonalProps) => {
         <div className="flex w-full flex-col gap-x-8 gap-y-4 md:flex-row">
           <div className="flex flex-col gap-4 md:w-[90%]">
             <div className="flex flex-col">
-              <Label htmlFor="Avatar" className="mb-2 text-left">
-                Choose Avatar
+              <Label
+                htmlFor="Avatar"
+                className="mb-2 flex flex-row items-center gap-2 text-left"
+              >
+                Choose Avatar{' '}
+                <a
+                  href={data?.Avatar || ''}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary/80 hover:text-primary"
+                >
+                  <Eye className="size-4" />
+                </a>
               </Label>
               <Controller
                 name="Avatar"

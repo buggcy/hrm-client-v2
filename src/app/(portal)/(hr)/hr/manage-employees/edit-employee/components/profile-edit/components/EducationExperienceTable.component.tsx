@@ -241,6 +241,7 @@ const EducationExperienceTable = ({
               <TableHead className="text-center">Company</TableHead>
               <TableHead className="text-center">Position</TableHead>
               <TableHead className="text-center">Reference Number</TableHead>
+              <TableHead className="text-center">Document Type</TableHead>
               <TableHead className="text-center">Document</TableHead>
               <TableHead className="text-center">Actions</TableHead>
             </TableRow>

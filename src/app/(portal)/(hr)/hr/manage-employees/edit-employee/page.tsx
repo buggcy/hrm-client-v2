@@ -23,7 +23,7 @@ export default function Page() {
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper className="flex max-w-full flex-col gap-4">
+      <LayoutWrapper className="flex w-full flex-col gap-4">
         <Header subheading="Edit Employee"></Header>
         <Suspense fallback={<div>Loading...</div>}>
           <EditEmployee />

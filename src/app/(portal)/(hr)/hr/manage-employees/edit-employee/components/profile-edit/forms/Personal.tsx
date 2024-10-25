@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { format } from 'date-fns';
-import { CalendarIcon, ChevronDown } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -367,7 +367,6 @@ const Personal = ({ empId, data }: PersonalProps) => {
                       <SelectItem value="unmarried">Unmarried</SelectItem>
                     </SelectGroup>
                   </SelectContent>
-                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
                 </Select>
               )}
             />
@@ -405,7 +404,6 @@ const Personal = ({ empId, data }: PersonalProps) => {
                       <SelectItem value="O-">O-</SelectItem>
                     </SelectGroup>
                   </SelectContent>
-                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
                 </Select>
               )}
             />
@@ -437,7 +435,6 @@ const Personal = ({ empId, data }: PersonalProps) => {
                       <SelectItem value="female">Female</SelectItem>
                     </SelectGroup>
                   </SelectContent>
-                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
                 </Select>
               )}
             />

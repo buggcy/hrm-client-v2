@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { ChevronDown } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -194,7 +193,6 @@ const Address = ({ data, empId }: EmployeeAddressProps) => {
                       ))}
                     </SelectGroup>
                   </SelectContent>
-                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
                 </Select>
               )}
             />
@@ -239,7 +237,6 @@ const Address = ({ data, empId }: EmployeeAddressProps) => {
                       ))}
                     </SelectGroup>
                   </SelectContent>
-                  <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
                 </Select>
               )}
             />
@@ -276,7 +273,6 @@ const Address = ({ data, empId }: EmployeeAddressProps) => {
                         ))}
                       </SelectGroup>
                     </SelectContent>
-                    <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
                   </Select>
                 )}
               />
