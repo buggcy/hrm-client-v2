@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -50,10 +49,10 @@ const EducationExperienceTable = ({
   empId,
   eduExpData,
 }: EducationExperiencesTableProps) => {
-  const router = useRouter();
   const [tableData, setTableData] = useState<
     EducationExperienceType[] | undefined
   >(eduExpData ?? eduExpData);
+  const [isUpdated, setIsUpdated] = useState<boolean>(false);
   const [deletedItems, setDeletedItems] = useState<string[]>([]);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [editingItem, setEditingItem] = useState<EduExpType | null>(null);
@@ -109,7 +108,6 @@ const EducationExperienceTable = ({
           variant: 'success',
         });
         setRefetchEditEmployeeData(true);
-        router.push('/hr/manage-employees');
       },
     });
 
@@ -134,13 +132,9 @@ const EducationExperienceTable = ({
           description: response?.message || 'Data deleted successfully!',
           variant: 'success',
         });
-        updateEducationExperienceData({ id: empId || '', body: tableData });
+        setRefetchEditEmployeeData(true);
       },
     });
-
-  useEffect(() => {
-    setTableData(eduExpData);
-  }, [eduExpData]);
 
   const handleEditClick = (rowData: EducationExperienceType) => {
     const startDate = new Date(rowData.Start_Date);
@@ -203,6 +197,7 @@ const EducationExperienceTable = ({
           },
         );
         setTableData(updatedExperiences);
+        setIsUpdated(true);
       }
     } else {
       const formData = new FormData();
@@ -222,13 +217,29 @@ const EducationExperienceTable = ({
       addEducationExperienceData({ id: empId || '', body: formData });
     }
   };
-  const handleSubmit = () => {
-    deleteEducationExperienceData({ id: empId || '', body: deletedItems });
-  };
+
+  useEffect(() => {
+    if (isUpdated) {
+      updateEducationExperienceData({ id: empId || '', body: tableData });
+      setIsUpdated(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateEducationExperienceData, isUpdated]);
+
+  useEffect(() => {
+    if (deletedItems.length > 0) {
+      deleteEducationExperienceData({ id: empId || '', body: deletedItems });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteEducationExperienceData, deletedItems]);
 
   return (
     <div className="flex flex-col items-end justify-between gap-4">
-      <Button className="w-fit" onClick={handleDialogOpen}>
+      <Button
+        className="w-fit"
+        onClick={handleDialogOpen}
+        disabled={isAdding || isDeleting || isUpdating}
+      >
         Add More
       </Button>
       <div className="max-h-[600px] w-full overflow-y-auto">
@@ -343,13 +354,6 @@ const EducationExperienceTable = ({
           />
         </Table>
       </div>
-      <Button
-        className="w-fit"
-        onClick={handleSubmit}
-        disabled={!eduExpData || isAdding || isUpdating || isDeleting}
-      >
-        Submit
-      </Button>
     </div>
   );
 };
