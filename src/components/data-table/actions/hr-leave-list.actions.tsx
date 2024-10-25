@@ -129,7 +129,6 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />{' '}
           {row?.getValue('Status') === 'Pending' ? (
             <>
               <DropdownMenuItem
@@ -150,35 +149,22 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
                 <XCircle className="mr-2 size-4" />
                 Reject Request
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleView(data)}>
-                <Eye className="mr-2 size-4" />
-                View Request
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                className="text-red-600"
-                onSelect={() => setShowDeleteDialog(true)}
-              >
-                <Trash2 className="mr-2 size-4" />
-                Delete Request
-              </DropdownMenuItem>
             </>
-          ) : (
-            <>
-              <DropdownMenuItem onClick={() => handleView(data)}>
-                <Eye className="mr-2 size-4" />
-                View Request
-              </DropdownMenuItem>
+          ) : null}
+          <DropdownMenuSeparator />
 
-              <DropdownMenuItem
-                className="text-red-600"
-                onSelect={() => setShowDeleteDialog(true)}
-              >
-                <Trash2 className="mr-2 size-4" />
-                Delete Request
-              </DropdownMenuItem>
-            </>
-          )}
+          <DropdownMenuItem onClick={() => handleView(data)}>
+            <Eye className="mr-2 size-4" />
+            View Request
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="text-red-600"
+            onSelect={() => setShowDeleteDialog(true)}
+          >
+            <Trash2 className="mr-2 size-4" />
+            Delete Request
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
