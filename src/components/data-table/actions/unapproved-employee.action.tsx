@@ -62,6 +62,8 @@ export function UnapprovedEmployeeRowActions({
   const handleEditClick = () => {
     if (data.isApproved === 'tba') {
       handleDialogOpen();
+    } else {
+      router.push(`/hr/manage-employees/edit-employee?employee=${data._id}`);
     }
   };
 
