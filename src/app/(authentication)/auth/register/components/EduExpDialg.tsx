@@ -212,7 +212,6 @@ export function EduEpxDialog({
                     'justify-start text-left font-normal',
                     !end && 'text-muted-foreground',
                   )}
-                  disabled={!start}
                 >
                   <CalendarIcon className="mr-2 size-4" />
                   {end ? format(end, 'PPP') : <span>Pick a date</span>}
