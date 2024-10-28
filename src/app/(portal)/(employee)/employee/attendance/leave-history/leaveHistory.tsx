@@ -173,9 +173,6 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
         open={dialogOpen}
         onOpenChange={handleDialogClose}
         onCloseChange={handleDialogClose}
-        refetch={() => refetch()}
-        page={page}
-        limit={limit}
       />
     </div>
   );
