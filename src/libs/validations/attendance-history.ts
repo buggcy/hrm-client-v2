@@ -14,6 +14,12 @@ const paginationSchema = z.object({
   totalPages: z.number(),
 });
 
+const breakSchema = z.object({
+  Start_Break: z.string(),
+  End_Break: z.string(),
+  _id: z.string(),
+});
+
 const attendanceHistoryListSchema = z.object({
   _id: z.string(),
   date: z.string(),
@@ -22,6 +28,7 @@ const attendanceHistoryListSchema = z.object({
   End_Date: z.string(),
   Productivity: z.string(),
   Status: z.enum(attendance_history_status),
+  breaks: z.array(breakSchema),
 });
 
 const attendanceHistoryApiResponseSchema = z.object({

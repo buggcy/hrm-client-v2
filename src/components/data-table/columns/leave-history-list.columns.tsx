@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
+import { LeaveHistoryRowActions } from '../actions/employee-leave-history.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
 export const leaveHistoryListColumns: ColumnDef<LeaveHistoryListType>[] = [
@@ -126,5 +127,10 @@ export const leaveHistoryListColumns: ColumnDef<LeaveHistoryListType>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
+  },
+
+  {
+    id: 'actions',
+    cell: ({ row }) => <LeaveHistoryRowActions row={row} />,
   },
 ];
