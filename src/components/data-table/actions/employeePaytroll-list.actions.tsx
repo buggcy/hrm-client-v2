@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Row } from '@tanstack/react-table';
 import { Eye, MoreHorizontal } from 'lucide-react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import DeleteDialog from '@/components/modals/delete-modal';
 import { Button } from '@/components/ui/button';
@@ -76,29 +76,35 @@ export function EmployeePayrollListRowActions({
     link.href =
       'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
     newWindow.document.head.appendChild(link);
-    // eslint-disable-next-line react/no-deprecated
-    ReactDOM.render(
-      <Payslip
-        payslipDate={data.Date ? formatDate(data.Date) : 'N/A'}
-        date={today || ''}
-        employeeName={data.Employee_Name || 'N/A'}
-        employeeDesignation={user?.Designation || 'N/A'}
-        employeeDepartment={'N/A'}
-        basicSalary={data.Basic_Salary || 0}
-        absentDeduction={data.Absent_Deduction || 0}
-        incentivePay={0}
-        professionalTax={0}
-        houseRentAllowance={0}
-        loan={0}
-        mealAllowance={0}
-        totalEarnings={0}
-        totalAfterTax={data.Tax_Amount || 0}
-        salaryDeduction={data.Total_SalaryDeducton || 0}
-        paymentStatus={data.Pay_Status || 'N/A'}
-        {...payslipData}
-      />,
-      newWindow.document.getElementById('payslip-root'),
-    );
+
+    const rootElement = newWindow.document.getElementById('payslip-root');
+    if (rootElement) {
+      const root = createRoot(rootElement);
+
+      root.render(
+        <Payslip
+          payslipDate={data.Date ? formatDate(data.Date) : 'N/A'}
+          date={today || ''}
+          employeeName={data.Employee_Name || 'N/A'}
+          employeeDesignation={user?.Designation || 'N/A'}
+          employeeDepartment={'N/A'}
+          basicSalary={data.Basic_Salary || 0}
+          absentDeduction={data.Absent_Deduction || 0}
+          incentivePay={0}
+          professionalTax={0}
+          houseRentAllowance={0}
+          loan={0}
+          mealAllowance={0}
+          totalEarnings={0}
+          totalAfterTax={data.Tax_Amount || 0}
+          salaryDeduction={data.Total_SalaryDeducton || 0}
+          paymentStatus={data.Pay_Status || 'N/A'}
+          {...payslipData}
+        />,
+      );
+    } else {
+      console.error('Element with ID "payslip-root" not found.');
+    }
   };
 
   return (
