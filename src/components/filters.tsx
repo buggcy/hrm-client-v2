@@ -1,4 +1,6 @@
 import {
+  AlertCircle,
+  AlertTriangle,
   ArrowDown,
   ArrowRight,
   ArrowUp,
@@ -270,6 +272,37 @@ export const log_options = [
   {
     value: 'Failed',
     label: 'Failed',
+    icon: XCircle,
+  },
+];
+
+export const announcement_priority_options = [
+  {
+    value: 'High',
+    label: 'High',
+    icon: AlertCircle,
+  },
+  {
+    value: 'Medium',
+    label: 'Medium',
+    icon: AlertTriangle,
+  },
+  {
+    value: 'Low',
+    label: 'Low',
+    icon: CheckCircle,
+  },
+];
+
+export const announcement_status_options = [
+  {
+    value: true,
+    label: 'Enabled',
+    icon: CheckCircle2,
+  },
+  {
+    value: false,
+    label: 'Disabled',
     icon: XCircle,
   },
 ];

@@ -32,6 +32,7 @@ import { DataTablePagination } from './data-table-pagination';
 import { AttendanceHistoryListToolbar } from './toolbars/attendance-history-list.toolbar';
 import { AttendanceListToolbar } from './toolbars/attendance-list.toolbar';
 import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
+import { ManageAnnouncementsToolbar } from './toolbars/hr-manage-announcements.toolbar';
 import { HRPayrollListToolbar } from './toolbars/hr-payroll.toolbar';
 import { HrPerkListToolbar } from './toolbars/hr-perk-list-toolbar';
 import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
@@ -204,6 +205,17 @@ export function DataTable<TData extends DataTableType, TValue>({
       case 'hrPerksList':
         return (
           <HrPerkListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+          />
+        );
+      case 'manage-announcements':
+        return (
+          <ManageAnnouncementsToolbar
             table={table}
             searchTerm={searchTerm}
             onSearch={onSearch}
