@@ -62,7 +62,7 @@ export const useHrEmpoyeeAllPerksQuery = (
   useQuery({
     queryKey: ['hrEmployeePerksList', params],
     queryFn: () => fetchEmployeesAllPerks(params),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,

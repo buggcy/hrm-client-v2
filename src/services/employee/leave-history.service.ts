@@ -6,6 +6,8 @@ import {
 } from '@/libs/validations/leave-history';
 import { baseAPI, schemaParse } from '@/utils';
 
+import { SuccessMessageResponse } from '../hr/attendance-list.service';
+
 import {
   ApplyLeaveApiResponse,
   EmployeeLeavesDataApiResponse,
@@ -124,4 +126,28 @@ export const exportLeaveHistoryCSVData = async (
 ): Promise<BlobPart> => {
   const res: BlobPart = await baseAPI.post(`/leavehistory/export-csv`, { ids });
   return res;
+};
+
+export const updateLeaveRequest = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: FormData;
+}): Promise<SuccessMessageResponse> => {
+  console.log(id);
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/leave/pending/${id}?status=Pending`,
+    body,
+  );
+  return { message };
+};
+
+export const cancelLeaveRequest = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/leave/cancel/${id}`,
+  );
+  return { message };
 };
