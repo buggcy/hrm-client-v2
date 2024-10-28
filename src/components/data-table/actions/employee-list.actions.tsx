@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Row } from '@tanstack/react-table';
-import { Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Eye, MoreHorizontal, Pencil, Trash2, UserX } from 'lucide-react';
 
 import DeleteDialog from '@/components/modals/delete-modal';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useStores } from '@/providers/Store.Provider';
 
+import { FiredModal } from '@/app/(portal)/(hr)/hr/manage-employees/Modal/FiredModal';
 import { EmployeeListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
@@ -32,10 +33,16 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
+
+  const [modal, setModal] = React.useState<boolean>(false);
+  const [firedId, setFiredId] = React.useState<string>('');
+
   const data = row.original;
 
   const router = useRouter();
-
+  const handleClose = () => {
+    setModal(false);
+  };
   const handleEditClick = () => {
     // setDialogContent(<EditDialog task={data} />);
   };
@@ -43,7 +50,10 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
   const handleViewDetails = () => {
     router.push(`/profile?userId=${data._id}`);
   };
-
+  const handleFire = (id: string) => {
+    setFiredId(id);
+    setModal(true);
+  };
   return (
     <Dialog>
       <DropdownMenu>
@@ -71,6 +81,12 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
               Edit Details
             </DropdownMenuItem>
           </DialogTrigger>
+          <DialogTrigger asChild onClick={() => {}}>
+            <DropdownMenuItem onClick={() => handleFire(data?._id)}>
+              <UserX className="mr-2 size-4" />
+              Fire Employee
+            </DropdownMenuItem>
+          </DialogTrigger>
           <DropdownMenuItem
             onSelect={() => setShowDeleteDialog(true)}
             className="text-red-600"
@@ -88,6 +104,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
         mutationFunc={deleteEmployeeRecord}
         setRefetch={setRefetchEmployeeList}
       />
+      <FiredModal open={modal} onCloseChange={handleClose} fireId={firedId} />
     </Dialog>
   );
 }
