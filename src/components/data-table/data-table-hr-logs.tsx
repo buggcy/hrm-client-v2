@@ -26,10 +26,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { ConfigurationType } from '@/libs/validations/hr-configuration';
+import { LogListType } from '@/libs/validations/hr-log';
 
 import { DataTablePagination } from './data-table-pagination';
-import { EducationTypeToolbar } from './toolbars/hr-education-type.toolbar';
+import { LogListToolbar } from './toolbars/hr-logs.toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,12 +44,11 @@ interface DataTableProps<TData, TValue> {
   onSearch: (term: string) => void;
   searchLoading: boolean;
   toolbarType: string;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
-export function ExperienceTypeDataTable<
-  TData extends ConfigurationType,
-  TValue,
->({
+export function LogListDataTable<TData extends LogListType, TValue>({
   columns,
   data,
   pagination,
@@ -57,6 +56,8 @@ export function ExperienceTypeDataTable<
   onSearch,
   searchTerm,
   toolbarType,
+  setFilterValue,
+  filterValue,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -89,13 +90,15 @@ export function ExperienceTypeDataTable<
   });
   const getToolBar = () => {
     switch (toolbarType) {
-      case 'getType':
+      case 'logList':
         return (
-          <EducationTypeToolbar
+          <LogListToolbar
             table={table}
             searchLoading={searchLoading}
             onSearch={onSearch}
             searchTerm={searchTerm}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
           />
         );
 
@@ -149,7 +152,7 @@ export function ExperienceTypeDataTable<
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {searchLoading ? 'Finding Perks ...' : 'No results.'}
+                  {searchLoading ? 'Finding Logs ...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

@@ -33,7 +33,7 @@ interface DataTableRowActionsProps {
   row: Row<ConfigurationType>;
 }
 
-export function EducationTypeRowActions({ row }: DataTableRowActionsProps) {
+export function DesignationTypeRowActions({ row }: DataTableRowActionsProps) {
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
@@ -66,7 +66,8 @@ export function EducationTypeRowActions({ row }: DataTableRowActionsProps) {
       toast({
         title: 'Error',
         description:
-          err?.response?.data?.message || 'Error on delete the education type!',
+          err?.response?.data?.message ||
+          'Error on delete the designation type!',
         variant: 'error',
       });
     },
@@ -81,7 +82,7 @@ export function EducationTypeRowActions({ row }: DataTableRowActionsProps) {
     },
   });
   const handleDelete = () => {
-    const status = 'education';
+    const status = 'designation';
     const payload = {
       status: status,
       id: data?._id,
@@ -125,7 +126,7 @@ export function EducationTypeRowActions({ row }: DataTableRowActionsProps) {
         showActionToggle={setShowDeleteDialog}
         title={'Confirm Delete'}
         isPending={isPending}
-        description={'Are your sure you want to delete this education type?'}
+        description={'Are your sure you want to delete this designation type?'}
         handleDelete={handleDelete}
       />
       {userId && (
@@ -136,7 +137,7 @@ export function EducationTypeRowActions({ row }: DataTableRowActionsProps) {
           userId={userId}
           setRefetchConfigurationList={setRefetchConfigurationList}
           TypeToEdit={modelType === 'edit' ? selectedType : null}
-          moduleType={'Education'}
+          moduleType={'Designation'}
         />
       )}
     </Dialog>

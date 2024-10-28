@@ -4,10 +4,9 @@ import {
   CalendarCog,
   CalendarDays,
   ClipboardList,
-  FileText,
   Gift,
-  GraduationCap,
   Home,
+  Settings,
   UserCog,
   UserCog2,
   UserPlus,
@@ -93,18 +92,13 @@ export const hrMenu: MenuItem[] = [
   },
 
   {
-    title: 'Configuration',
+    title: 'Manage Configuration',
     icon: UserCog2,
     children: [
       {
-        title: 'Education Type',
-        icon: GraduationCap,
-        href: '/hr/configuration/education-type',
-      },
-      {
-        title: 'Experience Type',
-        icon: FileText,
-        href: '/hr/configuration/experience-type',
+        title: 'Manage Configuration',
+        icon: Settings,
+        href: '/hr/manage-configuration',
       },
     ],
   },

@@ -20,8 +20,10 @@ import { toast } from '@/components/ui/use-toast';
 
 import { ConfigurationType } from '@/libs/validations/hr-configuration';
 import {
+  addDesignationType,
   addEducationType,
   addExperienceType,
+  editDesignationType,
   editEducationType,
   editExperienceType,
 } from '@/services/hr/hrConfiguration.service';
@@ -72,6 +74,10 @@ export function AddEditTypeDialog({
     } else if (moduleType === 'Experience' && type === 'edit' && TypeToEdit) {
       reset({
         type: TypeToEdit?.experienceType || '',
+      });
+    } else if (moduleType === 'Designation' && type === 'edit' && TypeToEdit) {
+      reset({
+        type: TypeToEdit?.designationType || '',
       });
     }
   }, [TypeToEdit, type, reset, moduleType]);
@@ -173,6 +179,51 @@ export function AddEditTypeDialog({
       },
     });
 
+  const { mutate: AddDesignationMutate, isPending: AddDesignationPending } =
+    useMutation({
+      mutationFn: addDesignationType,
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description:
+            response?.message || 'Designation Type Added Successfully!',
+          variant: 'success',
+        });
+        reset();
+        setRefetchConfigurationList(true);
+        onCloseChange(false);
+      },
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Error on adding designation type!',
+          variant: 'error',
+        });
+      },
+    });
+  const { mutate: EditDesignationMutate, isPending: EditDesignationPending } =
+    useMutation({
+      mutationFn: editDesignationType,
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description:
+            response?.message || 'Designation Type Updated Successfully!',
+          variant: 'success',
+        });
+        reset();
+        setRefetchConfigurationList(true);
+        onCloseChange(false);
+      },
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Error on updating the designation type!',
+          variant: 'error',
+        });
+      },
+    });
+
   const onSubmit = (data: TypeFormData) => {
     if (moduleType === 'Education') {
       const addEducationPayload = {
@@ -208,6 +259,23 @@ export function AddEditTypeDialog({
         EditExperienceMutate(editExperiencePayload);
       }
     }
+    if (moduleType === 'Designation') {
+      const addDesignationPayload = {
+        userId,
+        designationType: data?.type,
+      };
+      const editDesignationPayload = {
+        id: TypeToEdit?._id ?? '',
+        userId,
+        designationType: data?.type,
+      };
+
+      if (moduleType === 'Designation' && type === 'add') {
+        AddDesignationMutate(addDesignationPayload);
+      } else if (moduleType === 'Designation' && type === 'edit') {
+        EditDesignationMutate(editDesignationPayload);
+      }
+    }
   };
 
   return (
@@ -223,7 +291,11 @@ export function AddEditTypeDialog({
                   ? 'Add Experience Type'
                   : moduleType === 'Experience' && type === 'edit'
                     ? 'Edit Experience Type'
-                    : null}
+                    : moduleType === 'Designation' && type === 'edit'
+                      ? 'Edit Designation Type'
+                      : moduleType === 'Designation' && type === 'add'
+                        ? 'Add Designation Type'
+                        : null}
           </DialogTitle>
         </DialogHeader>
         <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
@@ -263,7 +335,11 @@ export function AddEditTypeDialog({
                       ? AddExperiencePending
                       : moduleType === 'Experience' && type === 'edit'
                         ? EditExperiencePending
-                        : false
+                        : moduleType === 'Designation' && type === 'add'
+                          ? AddDesignationPending
+                          : moduleType === 'Designation' && type === 'edit'
+                            ? EditDesignationPending
+                            : false
               }
             >
               {moduleType === 'Education' && type === 'add'
@@ -274,7 +350,11 @@ export function AddEditTypeDialog({
                     ? 'Add'
                     : moduleType === 'Experience' && type === 'edit'
                       ? 'Edit'
-                      : null}
+                      : moduleType === 'Designation' && type === 'add'
+                        ? 'Add'
+                        : moduleType === 'Designation' && type === 'edit'
+                          ? 'Edit'
+                          : null}
             </Button>
             <Button
               variant="ghostSecondary"

@@ -141,9 +141,9 @@ const mainFormSchema = z.object({
     educationExperiences: z
       .array(educationExperienceSchema)
       .min(1, 'You must add at least one education experience'),
-
     Additional_Documents: z.array(imageSchema),
     deletedAdditionalDocuments: z.array(imageSchema),
+    additionalId: z.string(),
   }),
 });
 
@@ -188,6 +188,7 @@ const defaultMainFormValues = {
     bankAccountNumber: '',
   },
   educationalDocument: {
+    additionalId: '',
     educationExperiences: [],
     Additional_Documents: [],
     deletedAdditionalDocuments: [],
@@ -290,6 +291,7 @@ export function VerifyCodeForm(): JSX.Element {
               user_id: exp.user_id || '',
             })) || [],
           Additional_Documents: additionalDocuments?.Document || [],
+          additionalId: additionalDocuments?._id || '',
           deletedAdditionalDocuments: [],
         },
       });
@@ -329,6 +331,7 @@ export function VerifyCodeForm(): JSX.Element {
 
   const onSubmitMainForm: SubmitHandler<MainFormData> = data => {
     const { userId, additionalInfo, kyc, educationalDocument } = data;
+
     const formData = new FormData();
 
     formData.append('email', additionalInfo.emailAddress);
@@ -373,6 +376,13 @@ export function VerifyCodeForm(): JSX.Element {
       }
     });
 
+    if (educationalDocument.additionalId) {
+      formData.append(
+        'additionalDocumentsId',
+        educationalDocument.additionalId,
+      );
+    }
+
     educationalDocument.Additional_Documents.forEach(file => {
       if (typeof file !== 'string') {
         formData.append(`Additional_Documents`, file);
@@ -384,7 +394,6 @@ export function VerifyCodeForm(): JSX.Element {
         formData.append('deletedAdditionalDocuments[]', doc);
       });
     }
-
     mainMutate(formData);
   };
 
@@ -403,7 +412,7 @@ export function VerifyCodeForm(): JSX.Element {
   };
 
   return (
-    <Card className="mx-auto max-w-xs p-4 sm:max-w-lg md:max-w-screen-sm lg:max-w-screen-lg">
+    <Card className="mx-auto max-w-lg p-4 sm:max-w-lg md:max-w-screen-sm lg:max-w-screen-lg">
       <Tabs
         defaultValue="verify-code"
         value={activeTab}
@@ -450,7 +459,9 @@ export function VerifyCodeForm(): JSX.Element {
             >
               <CardTitle className="py-8 text-center">Verify Code</CardTitle>
               <div className="mx-auto flex w-full flex-col gap-2 lg:w-9/12">
-                <Label htmlFor="code">Enter your code</Label>
+                <Label htmlFor="code">
+                  Enter your code <span className="text-red-600">*</span>
+                </Label>
                 <Input
                   id="code"
                   placeholder="Enter your code"

@@ -104,7 +104,9 @@ export function ResetPasswordForm() {
           name="otp"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>OTP</FormLabel>
+              <FormLabel>
+                OTP <span className="text-red-600">*</span>
+              </FormLabel>
               <FormControl>
                 <Input autoComplete="otp" placeholder="Enter OTP" {...field} />
               </FormControl>
@@ -118,7 +120,9 @@ export function ResetPasswordForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>
+                Password <span className="text-red-600">*</span>
+              </FormLabel>
               <FormControl>
                 <PasswordInput
                   autoComplete="current-password"
@@ -136,7 +140,9 @@ export function ResetPasswordForm() {
           name="cPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel>
+                Confirm Password <span className="text-red-600">*</span>
+              </FormLabel>
               <FormControl>
                 <PasswordInput
                   autoComplete="current-password"

@@ -21,7 +21,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { AddEditTypeDialog } from '@/app/(portal)/(hr)/hr/configuration/education-type/component/AddEditTypeModal';
+import { AddEditTypeDialog } from '@/app/(portal)/(hr)/hr/manage-configuration/component/AddEditTypeModal';
 import { ConfigurationType } from '@/libs/validations/hr-configuration';
 import { deleteType } from '@/services/hr/hrConfiguration.service';
 import { useAuthStore } from '@/stores/auth';

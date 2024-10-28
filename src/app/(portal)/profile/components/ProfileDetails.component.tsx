@@ -11,10 +11,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
-import { Employee } from '@/types/employee.types';
+import { EmployeeById } from '@/types/employee.types';
 
 interface ProfileDetailsProps {
-  user: Employee;
+  user: EmployeeById;
 }
 
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {

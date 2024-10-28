@@ -14,14 +14,14 @@ import OverviewTab from './OverviewTab';
 import {
   AdditionalDocuments,
   EducationExperiences,
-  Employee,
+  EmployeeById,
   Kyc,
 } from '@/types/employee.types';
 import { User } from '@/types/user.types';
 
 interface ProfileTabsProps {
   currentUser: User;
-  user: Employee;
+  user: EmployeeById;
   kyc: Kyc[];
   educationExperiences: EducationExperiences[];
   additionalDocuments: AdditionalDocuments[];
