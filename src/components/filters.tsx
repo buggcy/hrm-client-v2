@@ -267,4 +267,9 @@ export const log_options = [
     label: 'Error',
     icon: XCircle,
   },
+  {
+    value: 'Failed',
+    label: 'Failed',
+    icon: XCircle,
+  },
 ];

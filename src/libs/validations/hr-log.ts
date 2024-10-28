@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const LogStatus = ['Success', 'Error'] as const;
+export const LogStatus = ['Success', 'Error', 'Failed'] as const;
 
 const paginationSchema = z.object({
   page: z.number(),
@@ -14,7 +14,7 @@ const messageSchema = z.object({
   status: z.enum(LogStatus),
   timestamp: z.string(),
   message: z.string(),
-  errorMessage: z.string().nullable().optional(),
+  errorMessage: z.union([z.string(), z.array(z.string()), z.null()]).optional(),
 });
 
 const LogListSchema = z.object({

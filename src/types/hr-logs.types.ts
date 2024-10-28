@@ -18,7 +18,7 @@ export interface Logs {
   message: MessageSchema[];
   type: string;
   title: string;
-  overallStatus: 'Success' | 'Error';
+  overallStatus: 'Success' | 'Error' | 'Failed';
   __v: number;
   createdAt: string;
 }
