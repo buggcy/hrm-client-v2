@@ -31,7 +31,7 @@ export const useAllowLeaveListQuery = (
   useQuery({
     queryKey: ['allowLeaveList', id],
     queryFn: () => AllowLeaveList(id),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
