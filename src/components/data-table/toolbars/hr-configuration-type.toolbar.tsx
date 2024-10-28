@@ -16,7 +16,7 @@ interface DataTableToolbarProps<TData> {
   onSearch: (term: string) => void;
 }
 
-export function EducationTypeToolbar<TData extends ConfigurationType>({
+export function ConfigurationTypeToolbar<TData extends ConfigurationType>({
   table,
   searchTerm,
   onSearch,

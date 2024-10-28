@@ -29,7 +29,7 @@ import {
 import { ConfigurationType } from '@/libs/validations/hr-configuration';
 
 import { DataTablePagination } from './data-table-pagination';
-import { EducationTypeToolbar } from './toolbars/hr-education-type.toolbar';
+import { ConfigurationTypeToolbar } from './toolbars/hr-configuration-type.toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,7 +46,7 @@ interface DataTableProps<TData, TValue> {
   toolbarType: string;
 }
 
-export function ExperienceTypeDataTable<
+export function ConfigurationTypeDataTable<
   TData extends ConfigurationType,
   TValue,
 >({
@@ -91,7 +91,7 @@ export function ExperienceTypeDataTable<
     switch (toolbarType) {
       case 'getType':
         return (
-          <EducationTypeToolbar
+          <ConfigurationTypeToolbar
             table={table}
             searchLoading={searchLoading}
             onSearch={onSearch}
@@ -149,7 +149,7 @@ export function ExperienceTypeDataTable<
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {searchLoading ? 'Finding Perks ...' : 'No results.'}
+                  {searchLoading ? 'Finding types ...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

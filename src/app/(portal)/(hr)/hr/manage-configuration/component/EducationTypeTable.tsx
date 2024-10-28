@@ -5,10 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { experienceTypeColumns } from '@/components/data-table/columns/hr-experience-type.columns';
-import { ExperienceTypeDataTable } from '@/components/data-table/data-table-experience-type';
+import { educationTypeColumns } from '@/components/data-table/columns/hr-education-type.columns';
+import { ConfigurationTypeDataTable } from '@/components/data-table/data-table-configuration-type';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
-import Header from '@/components/Header/Header';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
@@ -19,25 +18,17 @@ import { searchConfiguration } from '@/services/hr/hrConfiguration.service';
 import { useAuthStore } from '@/stores/auth';
 import { ConfigurationStoreType } from '@/stores/hr/configuration';
 
-import { AddEditTypeDialog } from '../../education-type/component/AddEditTypeModal';
+import { AddEditTypeDialog } from './AddEditTypeModal';
 
 import { MessageErrorResponse } from '@/types';
 
-interface ExperienceTypeTableProps {}
-const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
+interface EducationTypeTableProps {}
+const EducationTypeTable: FunctionComponent<EducationTypeTableProps> = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { configurationStore } = useStores() as {
     configurationStore: ConfigurationStoreType;
   };
-  const { setRefetchConfigurationList, refetchConfigurationList } =
-    configurationStore;
-  const page = Number(searchParams.get('page')) || 1;
-  const limit = Number(searchParams.get('limit')) || 5;
-  const initialSearchTerm = searchParams.get('search') || '';
-  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
-  const [debouncedSearchTerm, setDebouncedSearchTerm] =
-    useState<string>(initialSearchTerm);
   const { user } = useAuthStore();
   const userId: string | undefined = user?.id;
 
@@ -53,6 +44,15 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
     setModal(true);
   };
 
+  const { setRefetchConfigurationList, refetchConfigurationList } =
+    configurationStore;
+  const page = Number(searchParams.get('page')) || 1;
+  const limit = Number(searchParams.get('limit')) || 5;
+  const initialSearchTerm = searchParams.get('search') || '';
+  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] =
+    useState<string>(initialSearchTerm);
+
   const {
     data: getType,
     isLoading,
@@ -62,7 +62,7 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
   } = useConfigurationQuery({
     page,
     limit,
-    status: 'experience',
+    status: 'education',
   });
   const {
     mutate,
@@ -94,7 +94,7 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit, status: 'experience' });
+      mutate({ query: debouncedSearchTerm, page, limit, status: 'education' });
     } else {
       void (async () => {
         await refetch();
@@ -141,18 +141,18 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
 
   return (
     <>
-      <Header subheading="Easily Add and Manage Experience Types!">
+      <div className="mb-4 flex justify-end">
         <Button variant="default" size={'sm'} onClick={handleAdd}>
-          Add Experience Type
+          Add Education Type
         </Button>
-      </Header>
+      </div>
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={4} rowCount={limit} />
       ) : (
-        <ExperienceTypeDataTable
+        <ConfigurationTypeDataTable
           searchLoading={isPending}
           data={tableData || []}
-          columns={experienceTypeColumns}
+          columns={educationTypeColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
@@ -164,7 +164,6 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
           toolbarType={'getType'}
         />
       )}
-
       {userId && (
         <AddEditTypeDialog
           open={modal}
@@ -173,11 +172,11 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
           userId={userId}
           setRefetchConfigurationList={setRefetchConfigurationList}
           TypeToEdit={null}
-          moduleType={'Experience'}
+          moduleType={'Education'}
         />
       )}
     </>
   );
 };
 
-export default ExperienceTypeTable;
+export default EducationTypeTable;
