@@ -16,6 +16,8 @@ const Dropzone: React.FC = () => {
   } = useFormContext<MainFormData>();
 
   const addDoc = watch('educationalDocument.Additional_Documents');
+  const deletedDocs =
+    watch('educationalDocument.deletedAdditionalDocuments') || [];
   const fileErrors = errors.educationalDocument?.Additional_Documents;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,17 +32,19 @@ const Dropzone: React.FC = () => {
   };
 
   const handleRemoveFile = (index: number) => {
-    if (typeof addDoc[index] === 'string') {
+    const fileToRemove = addDoc[index];
+
+    if (typeof fileToRemove === 'string') {
       setValue('educationalDocument.deletedAdditionalDocuments', [
-        ...(watch('educationalDocument.deletedAdditionalDocuments') || []),
-        addDoc[index],
+        ...deletedDocs,
+        fileToRemove,
       ]);
     }
 
-    setValue(
-      'educationalDocument.Additional_Documents',
-      addDoc.filter((_: string | File, i: number) => i !== index),
+    const updatedDocs = addDoc.filter(
+      (_: string | File, i: number) => i !== index,
     );
+    setValue('educationalDocument.Additional_Documents', updatedDocs);
   };
 
   const getFileIcon = (fileName: string) => {

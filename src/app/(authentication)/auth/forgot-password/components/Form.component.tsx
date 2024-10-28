@@ -70,7 +70,9 @@ export function ResetPasswordForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>
+                Email <span className="text-red-600">*</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   type="email"

@@ -70,6 +70,9 @@ export function EduEpxDialog({
     resolver: zodResolver(educationExperienceSchema),
     defaultValues: {
       user_id: userId,
+      Institute: '',
+      Position: '',
+      referenceNumber: '',
     },
   });
 
@@ -81,6 +84,9 @@ export function EduEpxDialog({
     } else {
       reset({
         user_id: userId,
+        Institute: '',
+        Position: '',
+        referenceNumber: '',
       });
     }
   }, [editingItem, setValue, reset, userId]);
@@ -115,7 +121,7 @@ export function EduEpxDialog({
         <div className="grid grid-cols-1 gap-3 pt-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           <div className="flex flex-col">
             <Label htmlFor="type" className="mb-2 text-left">
-              Type
+              Type <span className="text-red-600">*</span>
             </Label>
             <Select
               name="type"
@@ -159,7 +165,7 @@ export function EduEpxDialog({
 
           <div className="flex flex-col">
             <Label htmlFor="Start_Date" className="mb-2 text-left">
-              Start Date
+              Start Date <span className="text-red-600">*</span>
             </Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -196,7 +202,7 @@ export function EduEpxDialog({
 
           <div className="flex flex-col">
             <Label htmlFor="End_Date" className="mb-2 text-left">
-              End Date
+              End Date <span className="text-red-600">*</span>
             </Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -233,7 +239,8 @@ export function EduEpxDialog({
 
           <div className="flex flex-col">
             <Label htmlFor="Institute" className="mb-2 text-left">
-              {type === 'education' ? 'Institue' : 'Company'}
+              {type === 'education' ? 'Institue' : 'Company'}{' '}
+              <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Institute"
@@ -251,7 +258,8 @@ export function EduEpxDialog({
 
           <div className="flex flex-col">
             <Label htmlFor="Position" className="mb-2 text-left">
-              {type === 'education' ? 'Department' : 'Position'}
+              {type === 'education' ? 'Department' : 'Position'}{' '}
+              <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Position"
@@ -269,7 +277,7 @@ export function EduEpxDialog({
 
           <div className="flex flex-col">
             <Label htmlFor="documentType" className="mb-2 text-left">
-              Document Type
+              Document Type <span className="text-red-600">*</span>
             </Label>
             <Select
               name="documentType"
@@ -337,7 +345,7 @@ export function EduEpxDialog({
           <div className="flex flex-col">
             <div className="mb-2 flex items-center justify-between">
               <Label className="text-left" htmlFor="Document">
-                Document
+                Document <span className="text-red-600">*</span>
               </Label>
               {doc && (
                 <a

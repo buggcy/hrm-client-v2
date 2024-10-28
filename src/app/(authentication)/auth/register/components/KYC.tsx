@@ -45,7 +45,7 @@ export function KYC({
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="bankAccountHolderName" className="mb-2 text-left">
-              Account Holder Name
+              Account Holder Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="bankAccountHolderName"
@@ -60,7 +60,7 @@ export function KYC({
           </div>
           <div className="flex flex-col">
             <Label htmlFor="bankAccountNumber" className="mb-2 text-left">
-              Account Number
+              Account Number <span className="text-red-600">*</span>
             </Label>
             <Input
               id="bankAccountNumber"
@@ -75,7 +75,7 @@ export function KYC({
           </div>
           <div className="flex flex-col">
             <Label htmlFor="bankBranchName" className="mb-2 text-left">
-              Bank Name
+              Bank Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="bankBranchName"
@@ -90,7 +90,7 @@ export function KYC({
           </div>
           <div className="flex flex-col">
             <Label htmlFor="iban" className="mb-2 text-left">
-              IBAN Number
+              IBAN Number <span className="text-red-600">*</span>
             </Label>
             <Input
               id="iban"
@@ -113,7 +113,7 @@ export function KYC({
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="cnicNumber" className="mb-2 text-left">
-              CNIC Number
+              CNIC Number <span className="text-red-600">*</span>
             </Label>
             <Input
               id="cnicNumber"
@@ -129,7 +129,7 @@ export function KYC({
           <div className="flex flex-col">
             <div className="mb-2 flex items-center justify-between">
               <Label className="text-left" htmlFor="cnicFrontPicture">
-                Front Image CNIC
+                Front Image CNIC <span className="text-red-600">*</span>
               </Label>
               {cnicFrontPicture && (
                 <a
@@ -160,7 +160,7 @@ export function KYC({
           <div className="flex flex-col">
             <div className="mb-2 flex items-center justify-between">
               <Label className="text-left" htmlFor="cnicBackPicture">
-                Back Image CNIC
+                Back Image CNIC <span className="text-red-600">*</span>
               </Label>
               {cnicBackPicture && (
                 <a

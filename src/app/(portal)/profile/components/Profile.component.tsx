@@ -7,7 +7,7 @@ import ProfileTabs from './ProfileTabs.component';
 import {
   AdditionalDocuments,
   EducationExperiences,
-  Employee,
+  EmployeeById,
   Kyc,
 } from '@/types/employee.types';
 import { User } from '@/types/user.types';
@@ -17,7 +17,7 @@ interface ProfileComponentProps {
   user:
     | {
         output: {
-          employee: Employee;
+          employee: EmployeeById;
           kyc: Kyc[];
           educationExperiences: EducationExperiences[];
           additionalDocuments: AdditionalDocuments[];
@@ -32,8 +32,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 }) => {
   if (!user) return null;
 
-  const { employee, kyc, educationExperiences, additionalDocuments } =
-    user.output;
+  const { employee, kyc, additionalDocuments } = user.output;
   return (
     <>
       <div className="flex flex-wrap">
@@ -45,7 +44,11 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
             currentUser={currentUser}
             user={employee}
             kyc={kyc}
-            educationExperiences={educationExperiences}
+            educationExperiences={
+              Array.isArray(employee?.Ed_Exp_ID)
+                ? employee.Ed_Exp_ID
+                : [employee?.Ed_Exp_ID]
+            }
             additionalDocuments={additionalDocuments}
           />
         </div>
