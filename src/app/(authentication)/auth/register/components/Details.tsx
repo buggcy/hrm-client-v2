@@ -41,6 +41,7 @@ export function Details({ onNext }: { onNext: () => void }) {
     formState: { errors },
     watch,
     setValue,
+    setError,
   } = useFormContext<MainFormData>();
   const DEFAULT_COUNTRY_CODE = 'PK';
 
@@ -168,6 +169,17 @@ export function Details({ onNext }: { onNext: () => void }) {
               {...register('additionalInfo.contactNo')}
               placeholder="03XXXXXXXXX"
               disabled
+              onBlur={() => {
+                const phone = watch('additionalInfo.Emergency_Phone');
+                const strippedVal = phone.replace(/^(03|\+923)/, '');
+                if (phone && strippedVal.length !== 9) {
+                  setError('additionalInfo.Emergency_Phone', {
+                    type: 'manual',
+                    message:
+                      'Phone number must have exactly 9 digits after 03 or +923',
+                  });
+                }
+              }}
             />
             {errors.additionalInfo?.contactNo && (
               <span className="text-xs text-red-500">
@@ -185,6 +197,17 @@ export function Details({ onNext }: { onNext: () => void }) {
               {...register('additionalInfo.Emergency_Phone')}
               placeholder="03XXXXXXXXX"
               type="tel"
+              onBlur={() => {
+                const phone = watch('additionalInfo.Emergency_Phone');
+                const strippedVal = phone.replace(/^(03|\+923)/, '');
+                if (phone && strippedVal.length !== 9) {
+                  setError('additionalInfo.Emergency_Phone', {
+                    type: 'manual',
+                    message:
+                      'Phone number must have exactly 9 digits after 03 or +923',
+                  });
+                }
+              }}
             />
             {errors.additionalInfo?.Emergency_Phone && (
               <span className="text-xs text-red-500">
@@ -213,7 +236,7 @@ export function Details({ onNext }: { onNext: () => void }) {
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="z-50 w-auto p-0" align="start">
                 <Calendar
                   mode="single"
                   selected={dateOfBirth || cutoffDate}
@@ -463,6 +486,17 @@ export function Details({ onNext }: { onNext: () => void }) {
               id="Family_PhoneNo"
               {...register('additionalInfo.Family_PhoneNo')}
               placeholder="03XXXXXXXXX"
+              onBlur={() => {
+                const phone = watch('additionalInfo.Emergency_Phone');
+                const strippedVal = phone.replace(/^(03|\+923)/, '');
+                if (phone && strippedVal.length !== 9) {
+                  setError('additionalInfo.Emergency_Phone', {
+                    type: 'manual',
+                    message:
+                      'Phone number must have exactly 9 digits after 03 or +923',
+                  });
+                }
+              }}
             />
             {errors.additionalInfo?.Family_PhoneNo && (
               <span className="text-xs text-red-500">

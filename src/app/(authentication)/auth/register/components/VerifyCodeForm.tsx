@@ -106,18 +106,10 @@ const mainFormSchema = z.object({
     emailAddress: z.string().email('Invalid email address'),
     contactNo: z
       .string()
-      .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"')
-      .regex(
-        /(?<=^(03|\+923))\d{9}$/,
-        'Contact number must have exactly 9 digits after "03" or "+923"',
-      ),
+      .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
     Emergency_Phone: z
       .string()
-      .regex(/^(03|\+923)/, 'Phone number must start with "03" or "+923"')
-      .regex(
-        /(?<=^(03|\+923))\d{9}$/,
-        'Phone number must have exactly 9 digits after "03" or "+923"',
-      ),
+      .regex(/^(03|\+923)/, 'Phone number must start with "03" or "+923"'),
     DOB: z
       .date()
       .max(new Date(), 'Invalid date of birth')
@@ -130,11 +122,7 @@ const mainFormSchema = z.object({
     Family_Relation: z.string().min(1, 'Relation is required'),
     Family_PhoneNo: z
       .string()
-      .regex(/^(03|\+923)/, 'Phone number must start with "03" or "+923"')
-      .regex(
-        /(?<=^(03|\+923))\d{9}$/,
-        'Phone number must have exactly 9 digits after "03" or "+923"',
-      ),
+      .regex(/^(03|\+923)/, 'Phone number must start with "03" or "+923"'),
     Family_Occupation: z.string().min(1, 'Occupation is required'),
     Address: addressSchema,
   }),
