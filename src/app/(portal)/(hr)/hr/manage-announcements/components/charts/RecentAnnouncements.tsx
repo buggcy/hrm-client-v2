@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { CheckCircleIcon, Newspaper, Target } from 'lucide-react';
+import { CircleArrowDown, CircleArrowRight, CircleArrowUp } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -36,21 +36,21 @@ const RecentAnnouncements = ({
     : [announcements].filter(announcement => announcement !== undefined);
 
   const getIconAndColor = (priority: string) => {
-    switch (priority) {
+    switch (priority.toLowerCase()) {
       case 'high':
         return {
-          icon: <CheckCircleIcon className="size-6 text-red-500" />,
-          color: 'text-red-500',
+          icon: <CircleArrowUp className="size-6" />, // Red for high priority alert
+          color: 'text-red-600',
         };
-      case 'Medium':
+      case 'medium':
         return {
-          icon: <Newspaper className="size-6 text-blue-500" />,
-          color: 'text-blue-500',
+          icon: <CircleArrowRight className="size-6" />, // Yellow for medium priority info
+          color: 'text-yellow-500',
         };
-      case 'Low':
+      case 'low':
       default:
         return {
-          icon: <Target className="size-6 text-green-500" />,
+          icon: <CircleArrowDown className="size-6" />, // Green for low priority checkmark
           color: 'text-green-500',
         };
     }
@@ -61,7 +61,7 @@ const RecentAnnouncements = ({
       <CardHeader className="pb-0">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-base font-semibold dark:text-white">
-            Recent Announcements
+            Upcoming Announcements
           </h2>
         </div>
       </CardHeader>
@@ -81,18 +81,35 @@ const RecentAnnouncements = ({
                 const { icon } = getIconAndColor(
                   announcement.Priority || 'normal',
                 );
+                const formatOptions: Intl.DateTimeFormatOptions = {
+                  month: 'short',
+                  day: 'numeric',
+                };
+                const startDate = new Intl.DateTimeFormat(
+                  'en-US',
+                  formatOptions,
+                ).format(new Date(announcement.StartDate));
+                const endDate = new Intl.DateTimeFormat(
+                  'en-US',
+                  formatOptions,
+                ).format(new Date(announcement.EndDate));
+
                 return (
                   <Button
                     key={index}
-                    className="flex w-full items-start justify-start space-x-2 rounded-md border p-2"
+                    className="flex size-full items-center justify-start space-x-2 rounded-md border p-2"
                     variant="outline"
                     onClick={() => handleViewDialogOpen(announcement)}
                   >
                     {icon}
                     <div>
-                      <h3 className="text-sm font-semibold dark:text-white">
+                      <h3 className="text-left text-sm font-semibold dark:text-white">
                         {announcement.title || 'No Title'}
                       </h3>
+                      <p className="text-left text-xs text-muted-foreground">
+                        {startDate}{' '}
+                        {startDate !== endDate ? ` - ${endDate}` : ''}
+                      </p>
                     </div>
                   </Button>
                 );
