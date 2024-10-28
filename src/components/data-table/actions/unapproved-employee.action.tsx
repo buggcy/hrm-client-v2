@@ -22,6 +22,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { ViewTbaEmployeeDialog } from '@/app/(portal)/(hr)/hr/add-employees/components/ViewTbaEmployeeDialog.component';
 import { AddEmployeeDialog } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
 import { EmployeeListType } from '@/libs/validations/employee';
 import {
@@ -47,6 +48,8 @@ export function UnapprovedEmployeeRowActions({
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
+  const [tbaDialogOpen, setTbaDialogOpen] = React.useState(false);
+
   const data = row.original;
 
   const router = useRouter();
@@ -59,15 +62,27 @@ export function UnapprovedEmployeeRowActions({
     setDialogOpen(false);
   };
 
+  const handleTBADialogOpen = () => {
+    setTbaDialogOpen(true);
+  };
+
+  const handleTBADialogClose = () => {
+    setTbaDialogOpen(false);
+  };
+
   const handleEditClick = () => {
     if (data.isApproved === 'tba') {
       handleDialogOpen();
+    } else {
+      router.push(`/hr/manage-employees/edit-employee?employee=${data._id}`);
     }
   };
 
   const handleViewDetails = () => {
     if (data.isApproved != 'tba') {
       router.push(`/profile?userId=${data._id}`);
+    } else {
+      handleTBADialogOpen();
     }
   };
 
@@ -136,6 +151,12 @@ export function UnapprovedEmployeeRowActions({
         onOpenChange={handleDialogClose}
         onCloseChange={handleDialogClose}
         editData={data}
+      />
+      <ViewTbaEmployeeDialog
+        open={tbaDialogOpen}
+        onOpenChange={handleTBADialogClose}
+        onCloseChange={handleTBADialogClose}
+        data={data}
       />
       <DeleteDialog
         id={data._id}
