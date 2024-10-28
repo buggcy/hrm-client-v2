@@ -104,7 +104,12 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
         mutationFunc={deleteEmployeeRecord}
         setRefetch={setRefetchEmployeeList}
       />
-      <FiredModal open={modal} onCloseChange={handleClose} fireId={firedId} />
+      <FiredModal
+        open={modal}
+        onCloseChange={handleClose}
+        fireId={firedId}
+        setRefetchEmployeeList={setRefetchEmployeeList}
+      />
     </Dialog>
   );
 }

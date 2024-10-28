@@ -229,3 +229,25 @@ export const EditProfile = async ({
   );
   return { message, token };
 };
+export interface FireBody {
+  employeeId: string;
+  hrId: string;
+  title: string;
+  reason: string;
+  description: string;
+  appliedDate?: string;
+  immedaiteDate?: string;
+  isFired: boolean;
+  type?: string;
+}
+export const FireEmployee = async ({
+  body,
+}: {
+  body: FireBody;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/fire/employee`,
+    body,
+  );
+  return { message };
+};
