@@ -149,7 +149,17 @@ export const UserPopover = () => {
                 <Link href="/all-notifications">Notifications</Link>
               </Button>
             </li>
-
+            {user?.roleId === 1 && (
+              <li>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start p-2"
+                  asChild
+                >
+                  <Link href="/hr/manage-logs">Logs</Link>
+                </Button>
+              </li>
+            )}
             <li>
               <Button
                 variant="ghost"

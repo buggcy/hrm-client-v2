@@ -21,6 +21,8 @@ const leaveHistoryListSchema = z.object({
   Start_Date: z.string(),
   End_Date: z.string(),
   Status: z.enum(leave_history_status),
+  Proof_Document: z.string(),
+  Description: z.string(),
 });
 
 const leaveHistoryApiResponseSchema = z.object({
@@ -47,6 +49,7 @@ const AnnualLeaveRecordSchema = z.object({
 });
 
 const ExtraLeaveSchema = z.object({
+  userId: z.string().optional(),
   title: z.string(),
   leavesAllowed: z.number(),
   leavesTaken: z.number(),
@@ -135,4 +138,5 @@ export {
   applyLeaveApiResponseSchema,
   EmployeeLeavesDataApiResponseSchema,
   leaveApiResponseSchema,
+  ExtraLeaveSchema,
 };

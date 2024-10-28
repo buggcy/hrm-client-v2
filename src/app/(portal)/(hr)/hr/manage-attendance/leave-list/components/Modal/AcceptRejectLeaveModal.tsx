@@ -83,13 +83,14 @@ export default function AcceptRejectLeaveDialog({
         title: 'Error',
         description:
           err?.response?.data?.message || 'Error on approval request!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       reset();
       setRefetchLeaveList(true);
@@ -118,7 +119,8 @@ export default function AcceptRejectLeaveDialog({
                             htmlFor="reason"
                             className="mb-2 text-left dark:text-white"
                           >
-                            Rejection Reason
+                            Rejection Reason{' '}
+                            <span className="text-red-600">*</span>
                           </Label>
                           <Controller
                             name="reason"

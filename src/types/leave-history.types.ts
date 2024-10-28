@@ -10,6 +10,8 @@ export interface LeaveHistory {
   Start_Date: string;
   End_Date: string;
   Status: LeaveStatus;
+  Proof_Document: string;
+  Description: string;
 }
 
 export interface Pagination {
@@ -49,6 +51,7 @@ export interface LeaveApiResponse {
 }
 
 export interface ExtraLeave {
+  userId?: string;
   title: string;
   leavesAllowed: number;
   leavesTaken: number;

@@ -82,6 +82,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       toast({
         title: 'Success',
         description: response?.message || 'Profile Edit Successfully!',
+        variant: 'success',
       });
       reset();
     },
@@ -89,7 +90,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       toast({
         title: 'Error',
         description: err?.response?.data?.message || 'Error on Edit Profile!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });
@@ -103,7 +104,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       toast({
         title: 'File Error',
         description: fileError,
-        variant: 'destructive',
+        variant: 'error',
       });
       return;
     }

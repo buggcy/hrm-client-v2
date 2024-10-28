@@ -75,7 +75,7 @@ export function AttendanceDistribution() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center">
-        <CardTitle className="pb-4">Attendance Overview</CardTitle>
+        <CardTitle className="pb-4 text-base">Attendance Overview</CardTitle>
         <DatePicker date={date} setDate={setDate} />
       </CardHeader>
       <CardContent className="flex-1">

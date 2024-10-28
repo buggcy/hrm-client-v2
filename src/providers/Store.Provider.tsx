@@ -7,11 +7,15 @@ import { useEmployeePayrollStore } from '@/stores/employee/employeePayroll';
 import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
 import { usePerkStore } from '@/stores/employee/perks';
 import { useAttendanceListStore } from '@/stores/hr/attendance-list';
+import { useConfigurationStore } from '@/stores/hr/configuration';
+import { useEditEmployeeStore } from '@/stores/hr/edit-employee';
 import { useEmployeeStore } from '@/stores/hr/employee';
 import { useEmployeeAnniversaryStore } from '@/stores/hr/employeeAnniversary';
 import { useEmployeeDobStore } from '@/stores/hr/employeeDob';
 import { useHrEventsStore } from '@/stores/hr/hrEvents';
+import { useManageLeaveStore } from '@/stores/hr/leave';
 import { useLeaveListStore } from '@/stores/hr/leave-list';
+import { useLogStore } from '@/stores/hr/logs';
 import { usePerkListStore } from '@/stores/hr/perk-list';
 
 import { useAuthStore } from '../stores/auth';
@@ -30,9 +34,13 @@ interface StoreContextType {
   leaveHistoryStore: ReturnType<typeof useLeaveHistoryStore>;
   notificationStore: ReturnType<typeof useNotificationStore>;
   policyStore: ReturnType<typeof usePolicyStore>;
+  manageLeaveStore: ReturnType<typeof useManageLeaveStore>;
   attendanceListStore: ReturnType<typeof useAttendanceListStore>;
   leaveListStore: ReturnType<typeof useLeaveListStore>;
   perkListStore: ReturnType<typeof usePerkListStore>;
+  configurationStore: ReturnType<typeof useConfigurationStore>;
+  logStore: ReturnType<typeof useLogStore>;
+  editEmployeeStore: ReturnType<typeof useEditEmployeeStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -49,9 +57,13 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const leaveHistoryStore = useLeaveHistoryStore();
   const notificationStore = useNotificationStore();
   const policyStore = usePolicyStore();
+  const manageLeaveStore = useManageLeaveStore();
   const attendanceListStore = useAttendanceListStore();
   const leaveListStore = useLeaveListStore();
   const perkListStore = usePerkListStore();
+  const configurationStore = useConfigurationStore();
+  const logStore = useLogStore();
+  const editEmployeeStore = useEditEmployeeStore();
 
   return (
     <StoreContext.Provider
@@ -68,8 +80,12 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         notificationStore,
         attendanceListStore,
         policyStore,
+        manageLeaveStore,
         leaveListStore,
         perkListStore,
+        configurationStore,
+        logStore,
+        editEmployeeStore,
       }}
     >
       {children}

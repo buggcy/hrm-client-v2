@@ -37,7 +37,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
   const router = useRouter();
 
   const handleEditClick = () => {
-    // setDialogContent(<EditDialog task={data} />);
+    router.push(`/hr/manage-employees/edit-employee?employee=${data._id}`);
   };
 
   const handleViewDetails = () => {

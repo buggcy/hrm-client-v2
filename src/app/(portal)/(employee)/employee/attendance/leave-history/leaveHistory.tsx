@@ -89,7 +89,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
       toast({
         title: 'Error',
         description: err?.message || 'Error on fetching search data!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });
@@ -173,9 +173,6 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
         open={dialogOpen}
         onOpenChange={handleDialogClose}
         onCloseChange={handleDialogClose}
-        refetch={() => refetch()}
-        page={page}
-        limit={limit}
       />
     </div>
   );

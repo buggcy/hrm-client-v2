@@ -101,6 +101,7 @@ export function PolicyDialog({
       toast({
         title: 'Success',
         description: response?.message,
+        variant: 'success',
       });
       reset();
       onCloseChange();
@@ -129,7 +130,7 @@ export function PolicyDialog({
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6 py-4">
           <div className="flex flex-col">
             <Label className="mb-2" htmlFor="category">
-              Category
+              Category <span className="text-red-600">*</span>
             </Label>
             <Controller
               name="category"
@@ -191,7 +192,7 @@ export function PolicyDialog({
 
           <div className="flex flex-col">
             <Label className="mb-2" htmlFor="file">
-              Upload File
+              Upload File <span className="text-red-600">*</span>
             </Label>
             <Controller
               name="file"

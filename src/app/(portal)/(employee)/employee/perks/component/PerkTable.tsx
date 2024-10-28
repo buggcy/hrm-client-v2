@@ -84,7 +84,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
         description:
           axiosError?.response?.data?.message ||
           'Error on fetching search data!',
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });

@@ -4,6 +4,7 @@ import {
   ArrowUp,
   Briefcase,
   Bug,
+  CheckCircle,
   CheckCircle2,
   Circle,
   CircleArrowOutUpRight,
@@ -93,6 +94,20 @@ export const gender_options = [
     icon: PersonStanding,
   },
 ];
+
+export const pay_status_options = [
+  {
+    value: 'Paid',
+    label: 'Paid',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Unpaid',
+    label: 'Unpaid',
+    icon: XCircle,
+  },
+];
+
 export const hrStatus_options = [
   {
     value: 'enabled',
@@ -238,5 +253,23 @@ export const attendance_list_status_options = [
     value: 'Holiday',
     label: 'Holiday',
     icon: Circle,
+  },
+];
+
+export const log_options = [
+  {
+    value: 'Success',
+    label: 'Success',
+    icon: CheckCircle,
+  },
+  {
+    value: 'Error',
+    label: 'Error',
+    icon: XCircle,
+  },
+  {
+    value: 'Failed',
+    label: 'Failed',
+    icon: XCircle,
   },
 ];

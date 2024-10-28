@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import React, { useEffect, useState } from 'react';
 
 import {
   Popover,
@@ -23,9 +24,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SelectContent } from '@/components/ui/select';
 
+import {
+  useCities,
+  useCountries,
+  useStates,
+} from '@/hooks/country/useCountryOption.hook';
 import { cn } from '@/utils';
 
 import { MainFormData } from './VerifyCodeForm';
+
+import { CityType, CountryType } from '@/types/country.types';
 
 export function Details({ onNext }: { onNext: () => void }) {
   const {
@@ -33,13 +41,69 @@ export function Details({ onNext }: { onNext: () => void }) {
     formState: { errors },
     watch,
     setValue,
+    setError,
   } = useFormContext<MainFormData>();
+  const DEFAULT_COUNTRY_CODE = 'PK';
+
+  const [selectedCountry, setSelectedCountry] =
+    useState<string>(DEFAULT_COUNTRY_CODE);
+  const [selectedState, setSelectedState] = useState<string>('');
+  const [selectedCity, setSelectedCity] = useState<string>('');
+
+  const { data: countries } = useCountries();
+  const { data: states } = useStates(selectedCountry);
+  const { data: cities } = useCities(selectedCountry, selectedState);
 
   const cutoffDate = subYears(new Date(), 18);
   const dateOfBirth = watch('additionalInfo.DOB');
   const maritalStatus = watch('additionalInfo.Marital_Status');
   const bloodGroup = watch('additionalInfo.Blood_Group');
   const gender = watch('additionalInfo.Gender');
+  const country = watch('additionalInfo.Address.country');
+  const province = watch('additionalInfo.Address.province');
+  const city = watch('additionalInfo.Address.city');
+
+  useEffect(() => {
+    if (countries && countries.length > 0 && !country) {
+      const defaultCountry = countries.find(
+        (country: CountryType) => country.iso2 === DEFAULT_COUNTRY_CODE,
+      );
+
+      if (defaultCountry && defaultCountry.iso2) {
+        setSelectedCountry(defaultCountry.iso2);
+        setValue('additionalInfo.Address.country', defaultCountry.name);
+      }
+    }
+  }, [countries, setValue, country]);
+
+  const handleCountryChange = (value: string) => {
+    const selected = countries.find(
+      (country: CountryType) => country.iso2 === value,
+    );
+    if (selected) {
+      setSelectedCountry(value);
+      setSelectedState('');
+      setSelectedCity('');
+      setValue('additionalInfo.Address.country', selected.name);
+    }
+  };
+
+  const handleStateChange = (value: string) => {
+    const selected = states.find((state: CountryType) => state.iso2 === value);
+    if (selected) {
+      setSelectedState(value);
+      setSelectedCity('');
+      setValue('additionalInfo.Address.province', selected.name);
+    }
+  };
+
+  const handleCityChange = (value: string) => {
+    const selected = cities.find((city: CityType) => city.name === value);
+    if (selected) {
+      setSelectedCity(value);
+      setValue('additionalInfo.Address.city', selected.name);
+    }
+  };
 
   return (
     <Card className="border-none shadow-none">
@@ -50,7 +114,7 @@ export function Details({ onNext }: { onNext: () => void }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="firstName" className="mb-2 text-left">
-              First Name
+              First Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="firstName"
@@ -66,7 +130,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="lastName" className="mb-2 text-left">
-              Last Name
+              Last Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="lastName"
@@ -82,7 +146,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="emailAddress" className="mb-2 text-left">
-              Email Address
+              Email Address <span className="text-red-600">*</span>
             </Label>
             <Input
               id="emailAddress"
@@ -98,13 +162,24 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="contactNo" className="mb-2 text-left">
-              Phone Number
+              Phone Number <span className="text-red-600">*</span>
             </Label>
             <Input
               id="contactNo"
               {...register('additionalInfo.contactNo')}
               placeholder="03XXXXXXXXX"
               disabled
+              onBlur={() => {
+                const phone = watch('additionalInfo.Emergency_Phone');
+                const strippedVal = phone.replace(/^(03|\+923)/, '');
+                if (phone && strippedVal.length !== 9) {
+                  setError('additionalInfo.Emergency_Phone', {
+                    type: 'manual',
+                    message:
+                      'Phone number must have exactly 9 digits after 03 or +923',
+                  });
+                }
+              }}
             />
             {errors.additionalInfo?.contactNo && (
               <span className="text-xs text-red-500">
@@ -115,13 +190,24 @@ export function Details({ onNext }: { onNext: () => void }) {
 
           <div className="flex flex-col">
             <Label htmlFor="Emergency_Phone" className="mb-2 text-left">
-              Emergency Phone
+              Emergency <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Emergency_Phone"
               {...register('additionalInfo.Emergency_Phone')}
               placeholder="03XXXXXXXXX"
               type="tel"
+              onBlur={() => {
+                const phone = watch('additionalInfo.Emergency_Phone');
+                const strippedVal = phone.replace(/^(03|\+923)/, '');
+                if (phone && strippedVal.length !== 9) {
+                  setError('additionalInfo.Emergency_Phone', {
+                    type: 'manual',
+                    message:
+                      'Phone number must have exactly 9 digits after 03 or +923',
+                  });
+                }
+              }}
             />
             {errors.additionalInfo?.Emergency_Phone && (
               <span className="text-xs text-red-500">
@@ -131,7 +217,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="DOB" className="mb-2 text-left">
-              Date of Birth
+              Date of Birth <span className="text-red-600">*</span>
             </Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -150,7 +236,7 @@ export function Details({ onNext }: { onNext: () => void }) {
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="z-50 w-auto p-0" align="start">
                 <Calendar
                   mode="single"
                   selected={dateOfBirth || cutoffDate}
@@ -297,7 +383,7 @@ export function Details({ onNext }: { onNext: () => void }) {
 
           <div className="flex flex-col">
             <Label htmlFor="gender" className="mb-2 text-left">
-              Gender
+              Gender <span className="text-red-600">*</span>
             </Label>
             <Select
               value={gender || 'Select Gender'}
@@ -341,7 +427,7 @@ export function Details({ onNext }: { onNext: () => void }) {
 
           <div className="flex flex-col">
             <Label htmlFor="nationality" className="mb-2 text-left">
-              Nationality
+              Nationality <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Nationality"
@@ -364,7 +450,7 @@ export function Details({ onNext }: { onNext: () => void }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="Family_Name" className="mb-2 text-left">
-              Name
+              Name <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Family_Name"
@@ -379,7 +465,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="Family_Relation" className="mb-2 text-left">
-              Relation
+              Relation <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Family_Relation"
@@ -394,12 +480,23 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="Family_PhoneNo" className="mb-2 text-left">
-              Phone Number
+              Phone Number <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Family_PhoneNo"
               {...register('additionalInfo.Family_PhoneNo')}
               placeholder="03XXXXXXXXX"
+              onBlur={() => {
+                const phone = watch('additionalInfo.Emergency_Phone');
+                const strippedVal = phone.replace(/^(03|\+923)/, '');
+                if (phone && strippedVal.length !== 9) {
+                  setError('additionalInfo.Emergency_Phone', {
+                    type: 'manual',
+                    message:
+                      'Phone number must have exactly 9 digits after 03 or +923',
+                  });
+                }
+              }}
             />
             {errors.additionalInfo?.Family_PhoneNo && (
               <span className="text-xs text-red-500">
@@ -409,7 +506,7 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="Family_Occupation" className="mb-2 text-left">
-              Occupation
+              Occupation <span className="text-red-600">*</span>
             </Label>
             <Input
               id="Family_Occupation"
@@ -432,7 +529,7 @@ export function Details({ onNext }: { onNext: () => void }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="street" className="mb-2 text-left">
-              Street
+              Street <span className="text-red-600">*</span>
             </Label>
             <Input
               id="street"
@@ -457,39 +554,46 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="country" className="mb-2 text-left">
-              Country
+              Country <span className="text-red-600">*</span>
             </Label>
-            {/* <Select
-                onValueChange={value =>
-                  setValue('additionalInfo.Address.country', value)
-                }
-              >
-                <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Country" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
+            <Select
+              value={country || selectedCountry || 'Select country'}
+              onValueChange={handleCountryChange}
+            >
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                <SelectValue>
+                  {/* {selectedCountry
+                    ? countries?.find(
+                        (country: CountryType) =>
+                          country.iso2 === selectedCountry,
+                      )?.name
+                    : 'Select country'} */}
+                  {country
+                    ? country
+                    : selectedCountry
+                      ? countries?.find(
+                          (country: CountryType) =>
+                            country.iso2 === selectedCountry,
+                        )?.name
+                      : 'Select country'}
+                </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="text-sm">
+                  {countries?.map((country: CountryType) => (
                     <SelectItem
-                      value="Pakistan"
+                      key={country.iso2}
+                      value={country.iso2}
                       className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
                     >
-                      Pakistan
+                      {country.name}
                     </SelectItem>
-                    <SelectItem
-                      value="India"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      India
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
-              </Select> */}
-            <Input
-              id="country"
-              {...register('additionalInfo.Address.country')}
-              placeholder="Country"
-            />
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
             {errors.additionalInfo?.Address?.country && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Address.country.message}
@@ -498,51 +602,45 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="province" className="mb-2 text-left">
-              Province
+              Province <span className="text-red-600">*</span>
             </Label>
-            {/* <Select
-                onValueChange={value =>
-                  setValue('additionalInfo.Address.province', value)
-                }
-              >
-                <SelectTrigger className="relative z-50  rounded-md border px-3 py-2 text-left text-sm">
-                  <SelectValue placeholder="Select Province" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className="text-sm">
+            <Select
+              value={province || selectedState || 'Select province'}
+              onValueChange={handleStateChange}
+              disabled={!selectedCountry}
+            >
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                <SelectValue>
+                  {/* {selectedState
+                    ? states.find(
+                        (state: CountryType) => state.iso2 === selectedState,
+                      )?.name || 'Select province'
+                    : 'Select province'} */}
+                  {province
+                    ? province
+                    : selectedState
+                      ? states.find(
+                          (state: CountryType) => state.iso2 === selectedState,
+                        )?.name || 'Select province'
+                      : 'Select province'}
+                </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="text-sm">
+                  {states?.map((state: CountryType) => (
                     <SelectItem
-                      value="Punjab"
+                      key={state.iso2}
+                      value={state.iso2}
                       className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
                     >
-                      Punjab
+                      {state.name}
                     </SelectItem>
-                    <SelectItem
-                      value="Sindh"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Sindh
-                    </SelectItem>
-                    <SelectItem
-                      value="Khyber Pakhtunkhwa"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Khyber Pakhtunkhwa
-                    </SelectItem>
-                    <SelectItem
-                      value="Gilgit-Baltistan"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Gilgit-Baltistan
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                <ChevronDown className="absolute ml-[220px] mt-8 size-4" />
-              </Select> */}
-            <Input
-              id="province"
-              {...register('additionalInfo.Address.province')}
-              placeholder="Province"
-            />
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
             {errors.additionalInfo?.Address?.province && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Address.province.message}
@@ -552,22 +650,54 @@ export function Details({ onNext }: { onNext: () => void }) {
 
           <div className="flex flex-col">
             <Label htmlFor="city" className="mb-2 text-left">
-              City
+              City <span className="text-red-600">*</span>
             </Label>
-            <Input
-              id="city"
-              {...register('additionalInfo.Address.city')}
-              placeholder="City"
-            />
+            <Select
+              value={selectedCity || 'Select city'}
+              onValueChange={handleCityChange}
+              disabled={!selectedState}
+            >
+              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                <SelectValue>
+                  {/* {selectedCity
+                    ? cities?.find(
+                        (city: CityType) => city.name === selectedCity,
+                      )?.name
+                    : 'Select city'} */}
+                  {city
+                    ? city
+                    : selectedCity
+                      ? cities?.find(
+                          (city: CityType) => city.name === selectedCity,
+                        )?.name
+                      : 'Select city'}
+                </SelectValue>
+                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="text-sm">
+                  {cities?.map((city: CityType) => (
+                    <SelectItem
+                      key={city.id}
+                      value={city.name}
+                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
+                    >
+                      {city.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             {errors.additionalInfo?.Address?.city && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Address.city.message}
               </span>
             )}
           </div>
+
           <div className="flex flex-col">
             <Label htmlFor="zip" className="mb-2 text-left">
-              Postal Code
+              Postal Code <span className="text-red-600">*</span>
             </Label>
             <Input
               id="zip"

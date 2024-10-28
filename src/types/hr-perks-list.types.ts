@@ -77,3 +77,25 @@ export interface HrPerkRequests {
 export interface HrPerkRequestsApiResponse {
   data: HrPerkRequests[];
 }
+
+export interface HrPerkChartData {
+  month: string;
+  assigned: number;
+  availed: number;
+}
+
+export interface HrTopAvailed {
+  name: string;
+  count: number;
+}
+
+export interface HrPerkRecordApiResponse {
+  records: {
+    totalPerks: number;
+    totalApprovedPerks: number;
+    totalRejectedPerks: number;
+    totalPerkAssigned: number;
+  };
+  topAvailed: HrTopAvailed[];
+  chartData: HrPerkChartData[];
+}

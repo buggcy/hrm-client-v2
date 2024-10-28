@@ -53,8 +53,8 @@ export function EmployeeProductivityChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Employee Productivity</CardTitle>
-        <CardDescription>{currentYear}</CardDescription>
+        <CardTitle className="text-base">Employee Productivity</CardTitle>
+        <CardDescription className="text-xs">{currentYear}</CardDescription>
       </CardHeader>
       <CardContent className="md:size-full md:max-h-[310px]">
         <ChartContainer
