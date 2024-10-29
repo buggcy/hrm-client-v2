@@ -62,7 +62,7 @@ const FormattedTextArea: React.FC<FormattedTextAreaProps> = ({
         onChange={handleChange}
         modules={modules}
         formats={formats}
-        className="h-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="h-[300px] focus:outline-none focus:ring-2 focus:ring-blue-500"
         style={{
           direction: 'ltr',
           height: '150px',
