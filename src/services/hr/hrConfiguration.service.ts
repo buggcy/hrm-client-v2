@@ -101,12 +101,16 @@ export const addExperienceType = async (payload: {
 export const addDesignationType = async (payload: {
   userId: string;
   designationType?: string;
+  isIntern?: boolean;
+  isProbational?: boolean;
 }): Promise<SuccessMessageResponse> => {
-  const { userId, designationType } = payload;
+  const { userId, designationType, isIntern, isProbational } = payload;
   const { message }: SuccessMessageResponse = await baseAPI.post(`/add/types`, {
     userId,
     status: 'designation',
     designationType,
+    isIntern,
+    isProbational,
   });
   return { message };
 };

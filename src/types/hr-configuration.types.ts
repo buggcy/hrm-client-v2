@@ -20,6 +20,8 @@ export interface Configuration {
   };
   status: 'designation' | 'education' | 'experience';
   isDeleted: boolean;
+  isProbational?: boolean;
+  isIntern?: boolean;
   createdAt: string;
   updatedAt: string;
 }

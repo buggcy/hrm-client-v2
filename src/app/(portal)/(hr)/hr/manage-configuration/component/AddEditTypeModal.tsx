@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -7,6 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -65,6 +66,16 @@ export function AddEditTypeDialog({
       type: '',
     },
   });
+  const [isIntern, setIsIntern] = useState<boolean>(false);
+  const [isProbational, setIsProbational] = useState<boolean>(false);
+
+  const handleInternChange = (checked: boolean) => {
+    setIsIntern(checked);
+  };
+
+  const handleProbationalChange = (checked: boolean) => {
+    setIsProbational(checked);
+  };
 
   useEffect(() => {
     if (moduleType === 'Education' && type === 'edit' && TypeToEdit) {
@@ -85,6 +96,8 @@ export function AddEditTypeDialog({
   useEffect(() => {
     if (!open) {
       reset();
+      setIsIntern(false);
+      setIsProbational(false);
     }
   }, [open, reset]);
 
@@ -263,6 +276,8 @@ export function AddEditTypeDialog({
       const addDesignationPayload = {
         userId,
         designationType: data?.type,
+        isIntern,
+        isProbational,
       };
       const editDesignationPayload = {
         id: TypeToEdit?._id ?? '',
@@ -316,6 +331,34 @@ export function AddEditTypeDialog({
                   />
                 )}
               />
+              {moduleType === 'Designation' && type === 'add' && (
+                <div className="mt-2 flex flex-row gap-3">
+                  <div className="m-1 flex flex-row gap-2">
+                    <Checkbox
+                      checked={isIntern}
+                      aria-label="Immediate Termination"
+                      className="translate-y-[2px]"
+                      onCheckedChange={checked => {
+                        const isChecked = Boolean(checked);
+                        handleInternChange(isChecked);
+                      }}
+                    />
+                    <Label className="mt-1 text-xs">Intern</Label>
+                  </div>
+                  <div className="m-1 flex flex-row gap-2">
+                    <Checkbox
+                      checked={isProbational}
+                      aria-label="Immediate Termination"
+                      className="translate-y-[2px]"
+                      onCheckedChange={checked => {
+                        const isChecked = Boolean(checked);
+                        handleProbationalChange(isChecked);
+                      }}
+                    />
+                    <Label className="mt-1 text-xs">Probational</Label>
+                  </div>
+                </div>
+              )}
               {errors.type && (
                 <span className="text-sm text-red-500">
                   {`${moduleType} ${errors.type.message}`}

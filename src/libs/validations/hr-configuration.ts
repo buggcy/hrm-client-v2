@@ -30,6 +30,8 @@ const configurationSchema = z.object({
   educationType: z.string().optional(),
   designationType: z.string().optional(),
   isDeleted: z.boolean(),
+  isIntern: z.boolean().optional(),
+  isProbational: z.boolean().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
