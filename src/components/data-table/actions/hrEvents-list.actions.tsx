@@ -96,9 +96,12 @@ export function HrEventsListRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
-      <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
-        <ViewHrEvent event={data} onClose={handleViewDetailsClose} />
-      </Dialog>
+      <ViewHrEvent
+        event={data}
+        onCloseChange={handleViewDetailsClose}
+        onOpenChange={handleViewDetailsClose}
+        open={viewDetailsOpen}
+      />
       <DeleteDialog
         id={data._id}
         isOpen={showDeleteDialog}

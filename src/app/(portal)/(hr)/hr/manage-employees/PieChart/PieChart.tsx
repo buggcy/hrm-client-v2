@@ -44,14 +44,14 @@ const chartConfig: PieChartConfig = {
 
 export function PChart() {
   return (
-    <Card className="flex flex-col">
+    <Card className="flex h-[330px] flex-col">
       <CardHeader>
         <CardDescription>
           Percentage of Active , Inactive and On-Leave Employee
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="h-[250px] w-full">
           <PieChart>
             <ChartTooltip
               content={<ChartTooltipContent nameKey="visitors" hideLabel />}

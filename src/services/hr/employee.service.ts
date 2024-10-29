@@ -3,8 +3,10 @@ import { AxiosResponse } from 'axios';
 import { ApprovalEmployeeType } from '@/app/(portal)/(hr)/hr/approval/ApprovalCard/ApprovalCard';
 import { AddEmployeeFormData } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
 import {
+  cardDataSchema,
   EmployeeApiResponse,
   employeeApiResponseSchema,
+  employeeDobDataSchema,
   EmployeeListType,
   resignedApiResponseSchema,
   ResignedListApiResponse,
@@ -269,74 +271,40 @@ export const EditProfile = async ({
   return { message, token };
 };
 
-export const FireEmployee = async ({
-  body,
-}: {
-  body: FireBody;
-}): Promise<SuccessMessageResponse> => {
-  const { message }: SuccessMessageResponse = await baseAPI.post(
-    `/fire/employee`,
-    body,
-  );
-  return { message };
-};
-
-export const resignedEmployee = async (
-  params: ResignedParams = {},
-): Promise<ResignedListApiResponse> => {
-  const defaultParams: ResignedParams = {
-    page: 1,
-    limit: 5,
-    from: '',
-    to: '',
-    status: [],
+export interface CardData {
+  Card2Data: {
+    pending: number;
+    tba: number;
+    rejected: number;
+    approved: number;
+    internees: number;
   };
-
-  const mergedParams = { ...defaultParams, ...params };
-
-  try {
-    const response = await baseAPI.post(`/read/all/resignations`, mergedParams);
-    return schemaParse(resignedApiResponseSchema)(response);
-  } catch (error) {
-    console.error('Error fetching resigned records:', error);
-    throw error;
-  }
-};
-export const searchResignedEmployee = async ({
-  query,
-  page,
-  limit,
-}: {
-  query: string;
-  page: number;
-  limit: number;
-}): Promise<ResignedListApiResponse> => {
-  const { data, pagination }: ResignedListApiResponse = await baseAPI.get(
-    `/resignations/search?page=${page}&limit=${limit}&query=${query}`,
-  );
-
-  return { data, pagination };
-};
-
-export const getResignedFiredEmployeeList = async (
-  params: EmployeeListParams = {},
-): Promise<EmployeeApiResponse> => {
-  const defaultParams: EmployeeListParams = {
-    page: 1,
-    limit: 5,
-    isApproved: [],
+  Card3Data: {
+    tba: {
+      expired: number;
+      pending: number;
+    };
+    Rejected: {
+      expired: number;
+      pending: number;
+    };
   };
+}
 
-  const mergedParams = { ...defaultParams, ...params };
-
+export interface DobData {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  DOB: Date;
+  Joining_Date: Date;
+  remainingDays: number;
+}
+export const getAddEmployeeCharts = async (): Promise<CardData> => {
   try {
-    const response = await baseAPI.post(
-      `/all/resigned-fired/employees`,
-      mergedParams,
-    );
-    return schemaParse(employeeApiResponseSchema)(response);
+    const response = await baseAPI.get('/addEmployee/charts');
+    return schemaParse(cardDataSchema)(response);
   } catch (error) {
-    console.error('Error fetching employee list:', error);
+    console.error('Error fetching add employee charts:', error);
     throw error;
   }
 };
@@ -412,4 +380,87 @@ export const ResignationRecordById = async (
 ): Promise<AxiosResponse> => {
   const res = await baseAPI.get(`/resignation/${id}`);
   return res;
+};
+export const getEmpDobDate = async (): Promise<DobData[]> => {
+  try {
+    const response = await baseAPI.get('/employee/dob', {
+      params: { fetchAll: true },
+    });
+    return employeeDobDataSchema.parse(response);
+  } catch (error) {
+    console.error(`Error fetching Employee's Date of Birth data:`, error);
+    throw error;
+  }
+};
+
+export const FireEmployee = async ({
+  body,
+}: {
+  body: FireBody;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/fire/employee`,
+    body,
+  );
+  return { message };
+};
+
+export const resignedEmployee = async (
+  params: ResignedParams = {},
+): Promise<ResignedListApiResponse> => {
+  const defaultParams: ResignedParams = {
+    page: 1,
+    limit: 5,
+    from: '',
+    to: '',
+    status: [],
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  try {
+    const response = await baseAPI.post(`/read/all/resignations`, mergedParams);
+    return schemaParse(resignedApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching resigned records:', error);
+    throw error;
+  }
+};
+export const searchResignedEmployee = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<ResignedListApiResponse> => {
+  const { data, pagination }: ResignedListApiResponse = await baseAPI.get(
+    `/resignations/search?page=${page}&limit=${limit}&query=${query}`,
+  );
+
+  return { data, pagination };
+};
+
+export const getResignedFiredEmployeeList = async (
+  params: EmployeeListParams = {},
+): Promise<EmployeeApiResponse> => {
+  const defaultParams: EmployeeListParams = {
+    page: 1,
+    limit: 5,
+    isApproved: [],
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  try {
+    const response = await baseAPI.post(
+      `/all/resigned-fired/employees`,
+      mergedParams,
+    );
+    return schemaParse(employeeApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching employee list:', error);
+    throw error;
+  }
 };

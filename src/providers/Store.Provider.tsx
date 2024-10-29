@@ -6,10 +6,13 @@ import { useAttendanceHistoryStore } from '@/stores/employee/attendance-history'
 import { useEmployeePayrollStore } from '@/stores/employee/employeePayroll';
 import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
 import { usePerkStore } from '@/stores/employee/perks';
+import { useManageAnnouncementsStore } from '@/stores/hr/announcements';
 import { useAttendanceListStore } from '@/stores/hr/attendance-list';
 import { useConfigurationStore } from '@/stores/hr/configuration';
 import { useEditEmployeeStore } from '@/stores/hr/edit-employee';
 import { useEmployeeStore } from '@/stores/hr/employee';
+import { useEmployeeAnniversaryStore } from '@/stores/hr/employeeAnniversary';
+import { useEmployeeDobStore } from '@/stores/hr/employeeDob';
 import { useHrEventsStore } from '@/stores/hr/hrEvents';
 import { useManageLeaveStore } from '@/stores/hr/leave';
 import { useLeaveListStore } from '@/stores/hr/leave-list';
@@ -23,6 +26,8 @@ import { useNotificationStore } from '../stores/useNotificationStore';
 interface StoreContextType {
   authStore: ReturnType<typeof useAuthStore>;
   employeeStore: ReturnType<typeof useEmployeeStore>;
+  employeeDobStore: ReturnType<typeof useEmployeeDobStore>;
+  employeeAnniversaryStore: ReturnType<typeof useEmployeeAnniversaryStore>;
   perkStore: ReturnType<typeof usePerkStore>;
   employeePayrollStore: ReturnType<typeof useEmployeePayrollStore>;
   hrEventsStore: ReturnType<typeof useHrEventsStore>;
@@ -37,6 +42,7 @@ interface StoreContextType {
   configurationStore: ReturnType<typeof useConfigurationStore>;
   logStore: ReturnType<typeof useLogStore>;
   editEmployeeStore: ReturnType<typeof useEditEmployeeStore>;
+  manageAnnouncementsStore: ReturnType<typeof useManageAnnouncementsStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -44,6 +50,8 @@ const StoreContext = createContext<StoreContextType | null>(null);
 export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const authStore = useAuthStore();
   const employeeStore = useEmployeeStore();
+  const employeeDobStore = useEmployeeDobStore();
+  const employeeAnniversaryStore = useEmployeeAnniversaryStore();
   const perkStore = usePerkStore();
   const employeePayrollStore = useEmployeePayrollStore();
   const hrEventsStore = useHrEventsStore();
@@ -59,11 +67,14 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const logStore = useLogStore();
   const editEmployeeStore = useEditEmployeeStore();
 
+  const manageAnnouncementsStore = useManageAnnouncementsStore();
   return (
     <StoreContext.Provider
       value={{
         authStore,
         employeeStore,
+        employeeDobStore,
+        employeeAnniversaryStore,
         employeePayrollStore,
         hrEventsStore,
         attendanceHistoryStore,
@@ -78,6 +89,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         configurationStore,
         logStore,
         editEmployeeStore,
+        manageAnnouncementsStore,
       }}
     >
       {children}

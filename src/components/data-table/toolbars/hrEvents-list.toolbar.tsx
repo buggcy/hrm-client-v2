@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
 import DataTableType from '@/libs/validations/data-table-type';
-import { exportEmployeeCSVData } from '@/services/hr/employee.service';
+import { exportEventsCSVData } from '@/services/hr/hrEvents.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
 import { MessageErrorResponseWithError } from '@/types';
@@ -43,7 +43,7 @@ export function HrEventsListToolbar<TData extends DataTableType>({
     .filter((id): id is string => !!id);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: exportEmployeeCSVData,
+    mutationFn: exportEventsCSVData,
     onError: (err: AxiosError<MessageErrorResponseWithError>) => {
       toast({
         title: 'Error',
@@ -52,9 +52,9 @@ export function HrEventsListToolbar<TData extends DataTableType>({
         variant: 'error',
       });
     },
-    onSuccess: (response: string) => {
+    onSuccess: (response: BlobPart) => {
       const file = new Blob([response]);
-      downloadFile(file, 'Employees.csv');
+      downloadFile(file, 'Events.csv');
     },
   });
 
