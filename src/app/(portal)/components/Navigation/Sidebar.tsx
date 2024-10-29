@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -47,7 +47,11 @@ export const Sidebar = () => {
               <LogoHorizontal className="opacity-0 transition-all duration-200 group-hover:-translate-x-8 group-hover:opacity-100" />
             </Link>
           </Button>
-          <ScrollArea className="mt-2 h-[calc(100vh-260px)] w-full">
+          <ScrollArea
+            className="mt-2 h-[calc(100vh-260px)] w-full overflow-visible"
+            hideScrollbar={true}
+          >
+            <ScrollBar className="mr-[-17px]" />
             {menuItems.map(item =>
               item.children ? (
                 <NavSection title={item.title} key={item.title}>

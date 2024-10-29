@@ -6,6 +6,7 @@ import {
   ClipboardList,
   Gift,
   Home,
+  Megaphone,
   Settings,
   UserCog,
   UserCog2,
@@ -41,9 +42,14 @@ export const hrMenu: MenuItem[] = [
     icon: UserCog2,
     children: [
       {
-        title: 'Manage Events',
+        title: 'Events',
         icon: CalendarCog,
         href: '/hr/manage-events',
+      },
+      {
+        title: 'Announcements',
+        icon: Megaphone,
+        href: '/hr/manage-announcements',
       },
       {
         title: 'Manage Birthday',
@@ -52,6 +58,7 @@ export const hrMenu: MenuItem[] = [
       },
     ],
   },
+
   {
     title: 'Manage Attendance',
     icon: UserCog2,
