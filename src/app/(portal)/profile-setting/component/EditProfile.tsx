@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 
-import { KeyRound, Pencil } from 'lucide-react';
+import { KeyRound, Pencil, UserMinus } from 'lucide-react';
 
 import Header from '@/components/Header/Header';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import AccountTab from './AccountTab';
 import ProfileTab from './ProfileTab';
+import ResignationTab from './ResignationTab';
 
 import { User } from '@/types/user.types';
 interface UserProps {
@@ -47,6 +48,13 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
                   <KeyRound className="mr-2 size-4" />
                   <span className="capitalize">Account Edit</span>
                 </TabsTrigger>
+                <TabsTrigger
+                  className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
+                  value="resignation"
+                >
+                  <UserMinus className="mr-2 size-4" />
+                  <span className="capitalize">Apply Resignation</span>
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -60,6 +68,11 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
               {activeTab === 'account' && (
                 <CardContent>
                   <AccountTab user={user} />
+                </CardContent>
+              )}
+              {activeTab === 'resignation' && (
+                <CardContent>
+                  <ResignationTab user={user} />
                 </CardContent>
               )}
             </Card>

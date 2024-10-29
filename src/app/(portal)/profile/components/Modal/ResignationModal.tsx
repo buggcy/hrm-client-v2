@@ -27,10 +27,16 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { FireEmployee } from '@/services/hr/employee.service';
+import { ApplyResignation } from '@/services/employee/dashboard.service';
 import { AuthStoreType } from '@/stores/auth';
 import { cn } from '@/utils';
 
@@ -39,15 +45,13 @@ import { MessageErrorResponse } from '@/types';
 interface ModalProps {
   open: boolean;
   onCloseChange: (open: boolean) => void;
-  fireId: string;
-  setRefetchEmployeeList: (refetch: boolean) => void;
 }
 const FormSchema = z.object({
-  title: z.string().min(1, 'Fire Title is required'),
-  reason: z.string().min(1, 'Fire Reason is required'),
-  description: z.string().min(1, 'Fire Description is required'),
+  title: z.string().min(1, 'Resignation Title is required'),
+  reason: z.string().min(1, 'Resignation Reason is required'),
+  description: z.string().min(1, 'Resignation Description is required'),
   appliedDate: z.date().refine(date => date != null, {
-    message: 'Date is required',
+    message: 'Applied Date is required',
   }),
   immedaiteDate: z.date().refine(date => date != null, {
     message: 'Immediate Date is required',
@@ -56,12 +60,7 @@ const FormSchema = z.object({
 
 export type FormData = z.infer<typeof FormSchema>;
 
-export function FiredModal({
-  open,
-  onCloseChange,
-  fireId,
-  setRefetchEmployeeList,
-}: ModalProps) {
+export function ResignationModal({ open, onCloseChange }: ModalProps) {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
@@ -96,21 +95,20 @@ export function FiredModal({
   }, [open, reset]);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: FireEmployee,
+    mutationFn: ApplyResignation,
     onSuccess: response => {
       toast({
         title: 'Success',
-        description: response?.message || 'Employee Fired!',
+        description: response?.message || 'Resignation Applied Successfully!',
         variant: 'success',
       });
       reset();
-      setRefetchEmployeeList(true);
       onCloseChange(false);
     },
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
-        description: err.message || 'Error on firing employee!',
+        description: err.message || 'Error on resigning the employee!',
         variant: 'error',
       });
     },
@@ -118,13 +116,12 @@ export function FiredModal({
 
   const onSubmit = (data: FormData) => {
     const body = {
-      employeeId: fireId,
-      hrId: userId,
+      employeeId: userId,
       title: data?.title,
       reason: data?.reason,
       description: data?.description,
       appliedDate: format(data.appliedDate, 'yyyy-MM-dd'),
-      isFired: true,
+      isResigned: true,
       ...(isImmediate
         ? {
             type: 'immediate',
@@ -139,7 +136,7 @@ export function FiredModal({
     <Dialog open={open} onOpenChange={onCloseChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{'Fire Employee'}</DialogTitle>
+          <DialogTitle>{'Apply Resignation'}</DialogTitle>
         </DialogHeader>
 
         <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
@@ -236,15 +233,33 @@ export function FiredModal({
               )}
             </div>
             <div className="m-1 flex flex-row gap-2">
-              <Checkbox
-                checked={isImmediate}
-                aria-label="Immediate Termination"
-                className="translate-y-[2px]"
-                onCheckedChange={checked => {
-                  const isChecked = Boolean(checked);
-                  handleCheckboxChange(isChecked);
-                }}
-              />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Checkbox
+                      checked={isImmediate}
+                      aria-label="Immediate Termination"
+                      className="translate-y-[2px]"
+                      onCheckedChange={checked => {
+                        const isChecked = Boolean(checked);
+                        handleCheckboxChange(isChecked);
+                      }}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <ul className="list-disc pl-5">
+                      <li>
+                        If you want to resign immediately, you will not receive
+                        your current month&apos;s salary.
+                      </li>
+                      <li>
+                        This option is for immediate termination requests.
+                      </li>
+                      <li>Please ensure you understand the implications.</li>
+                    </ul>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <Label className="mt-1 text-xs">Immediate</Label>
             </div>
           </div>

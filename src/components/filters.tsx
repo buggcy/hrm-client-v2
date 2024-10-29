@@ -15,6 +15,8 @@ import {
   ScrollText,
   Sun,
   Timer,
+  UserMinus,
+  UserX,
   XCircle,
 } from 'lucide-react';
 
@@ -231,6 +233,16 @@ export const employee_status = [
     label: 'Approved',
     icon: CheckCircle2,
   },
+  {
+    value: 'Resigned',
+    label: 'Resigned',
+    icon: UserMinus,
+  },
+  {
+    value: 'Fired',
+    label: 'Fired',
+    icon: UserX,
+  },
 ];
 
 export const attendance_list_status_options = [
@@ -271,5 +283,36 @@ export const log_options = [
     value: 'Failed',
     label: 'Failed',
     icon: XCircle,
+  },
+];
+
+export const resigned_options = [
+  {
+    value: 'Approved',
+    label: 'Approved',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Rejected',
+    label: 'Rejected',
+    icon: XCircle,
+  },
+];
+
+export const resigned_fired_status = [
+  {
+    value: 'Resigned',
+    label: 'Resigned',
+    icon: UserMinus,
+  },
+  {
+    value: 'Fired',
+    label: 'Fired',
+    icon: UserX,
   },
 ];

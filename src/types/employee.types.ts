@@ -159,9 +159,46 @@ export interface EmployeeById {
   createdAt?: string;
 }
 
+export interface ResignedEmployee {
+  _id: string;
+  employee: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    contactNo?: string;
+    companyEmail: string;
+    Designation?: string;
+    Avatar?: string;
+  };
+  hr: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    companyEmail: string;
+    Avatar?: string;
+  };
+  title: string;
+  reason: string;
+  description: string;
+  isResigned: boolean;
+  __v: number;
+  assignedDate?: string;
+  appliedDate?: string;
+  immedaiteDate?: string;
+  type?: string;
+  isApproved?: 'Pending' | 'Approved' | 'Rejected';
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface EmployeeApiResponse {
   pagination: Pagination;
   data: Employee[];
+}
+
+export interface ResignedApiResponse {
+  pagination: Pagination;
+  data: ResignedEmployee[];
 }
 
 export interface GetEmployeeByIdResponse {
@@ -171,4 +208,7 @@ export interface GetEmployeeByIdResponse {
     additionalDocuments: AdditionalDocuments[];
     kyc: Kyc[];
   };
+}
+export interface GetResignationByIdResponse {
+  data: ResignedEmployee[];
 }

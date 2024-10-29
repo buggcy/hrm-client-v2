@@ -16,7 +16,7 @@ import DataTableType from '@/libs/validations/data-table-type';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
-import { employee_status } from '../../filters';
+import { employee_status, resigned_fired_status } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -27,6 +27,7 @@ interface DataTableToolbarProps<TData> {
   searchLoading: boolean;
   setFilterValue: (value: string[]) => void;
   filterValue: string[];
+  type?: string;
 }
 
 export function UnapprovedEmployeeToolbar<TData extends DataTableType>({
@@ -36,6 +37,7 @@ export function UnapprovedEmployeeToolbar<TData extends DataTableType>({
   searchLoading,
   setFilterValue,
   filterValue,
+  type,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const selectedRowIds: string[] = table
@@ -78,7 +80,9 @@ export function UnapprovedEmployeeToolbar<TData extends DataTableType>({
         <DataTableFacetedFilter
           onFilterChange={setFilterValue}
           title="Status"
-          options={employee_status}
+          options={
+            type === 'resigned' ? resigned_fired_status : employee_status
+          }
           filterValue={filterValue}
         />
 

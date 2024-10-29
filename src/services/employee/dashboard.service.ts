@@ -1,5 +1,7 @@
 import { baseAPI } from '@/utils';
 
+import { SuccessMessageResponse } from '../hr/employee.service';
+
 import { RecentAnnouncement } from '@/types/announcement.types';
 import {
   AttendanceData,
@@ -76,4 +78,27 @@ export const fetchRecentAnnouncements = async () => {
 export const fetchUpcomingBirthdays = async (): Promise<BirthdayResponse> => {
   const response: BirthdayResponse = await baseAPI.get('/birthdays');
   return response;
+};
+
+export interface ResignedBody {
+  employeeId: string;
+  title: string;
+  reason: string;
+  description: string;
+  appliedDate?: string;
+  immedaiteDate?: string;
+  isResigned: boolean;
+  type?: string;
+}
+
+export const ApplyResignation = async ({
+  body,
+}: {
+  body: ResignedBody;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/resignation/apply`,
+    body,
+  );
+  return { message };
 };

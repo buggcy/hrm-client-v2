@@ -6,6 +6,8 @@ import {
   EmployeeApiResponse,
   employeeApiResponseSchema,
   EmployeeListType,
+  resignedApiResponseSchema,
+  ResignedListApiResponse,
 } from '@/libs/validations/employee';
 import { baseAPI, schemaParse } from '@/utils';
 
@@ -23,6 +25,43 @@ export interface EditProfileResponse {
 export type SuccessMessageResponse = {
   message: string;
 };
+export interface FireBody {
+  employeeId: string;
+  hrId: string;
+  title: string;
+  reason: string;
+  description: string;
+  appliedDate?: string;
+  immedaiteDate?: string;
+  isFired: boolean;
+  type?: string;
+}
+
+export interface ApprovedRejectResignationBody {
+  hrId: string;
+  isApproved: string;
+}
+
+export interface ApprovedRejectResignationParams {
+  id: string;
+  employeeId: string;
+  body: ApprovedRejectResignationBody;
+}
+
+export interface ResignedParams {
+  page?: number;
+  limit?: number;
+  from?: string;
+  to?: string;
+  status?: string[];
+}
+
+export interface GetResignedParams {
+  page?: number;
+  limit?: number;
+  from?: string;
+  to?: string;
+}
 
 export const getEmployeeList = async (
   params: EmployeeListParams = {},
@@ -229,17 +268,7 @@ export const EditProfile = async ({
   );
   return { message, token };
 };
-export interface FireBody {
-  employeeId: string;
-  hrId: string;
-  title: string;
-  reason: string;
-  description: string;
-  appliedDate?: string;
-  immedaiteDate?: string;
-  isFired: boolean;
-  type?: string;
-}
+
 export const FireEmployee = async ({
   body,
 }: {
@@ -250,4 +279,137 @@ export const FireEmployee = async ({
     body,
   );
   return { message };
+};
+
+export const resignedEmployee = async (
+  params: ResignedParams = {},
+): Promise<ResignedListApiResponse> => {
+  const defaultParams: ResignedParams = {
+    page: 1,
+    limit: 5,
+    from: '',
+    to: '',
+    status: [],
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  try {
+    const response = await baseAPI.post(`/read/all/resignations`, mergedParams);
+    return schemaParse(resignedApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching resigned records:', error);
+    throw error;
+  }
+};
+export const searchResignedEmployee = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<ResignedListApiResponse> => {
+  const { data, pagination }: ResignedListApiResponse = await baseAPI.get(
+    `/resignations/search?page=${page}&limit=${limit}&query=${query}`,
+  );
+
+  return { data, pagination };
+};
+
+export const getResignedFiredEmployeeList = async (
+  params: EmployeeListParams = {},
+): Promise<EmployeeApiResponse> => {
+  const defaultParams: EmployeeListParams = {
+    page: 1,
+    limit: 5,
+    isApproved: [],
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  try {
+    const response = await baseAPI.post(
+      `/all/resigned-fired/employees`,
+      mergedParams,
+    );
+    return schemaParse(employeeApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching employee list:', error);
+    throw error;
+  }
+};
+
+export const resignedFiredSearchEmployeeList = async ({
+  query,
+  page,
+  limit,
+  isApproved,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+  isApproved: string[];
+}): Promise<EmployeeApiResponse> => {
+  const { data, pagination }: EmployeeApiResponse = await baseAPI.post(
+    `/search/all/resigned-fired/employees`,
+    { query, page, limit, isApproved },
+  );
+
+  return { data, pagination };
+};
+
+export const getPendingResignedRequest = async (
+  params: GetResignedParams = {},
+): Promise<ResignedListApiResponse> => {
+  const defaultParams: GetResignedParams = {
+    from: '',
+    to: '',
+    page: 1,
+    limit: 5,
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(
+      `/get/resignation/approvals?${queryParams.toString()}`,
+    );
+    return schemaParse(resignedApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching Pending resigned requests!', error);
+    throw error;
+  }
+};
+
+export const ApprovedRejectResignation = async ({
+  id,
+  employeeId,
+  body,
+}: ApprovedRejectResignationParams): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/resignation/${id}/approved/${employeeId}`,
+    body,
+  );
+  return { message };
+};
+
+export const ResignationRecordById = async (
+  id: string,
+): Promise<AxiosResponse> => {
+  const res = await baseAPI.get(`/resignation/${id}`);
+  return res;
 };
