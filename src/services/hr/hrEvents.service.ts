@@ -136,3 +136,10 @@ export const searchHrEventsList = async ({
 
   return { data, pagination };
 };
+
+export const exportEventsCSVData = async (
+  ids: Array<string>,
+): Promise<BlobPart> => {
+  const res: BlobPart = await baseAPI.post(`/event/export-csv`, { ids });
+  return res;
+};

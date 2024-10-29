@@ -8,7 +8,7 @@ import EmpBirthdayTable from './EmpBirthdayTable';
 function TabPages() {
   return (
     <Tabs defaultValue="DOB" className="w-full">
-      <TabsList className="mb-5 flex justify-center">
+      <TabsList className="mb-5 flex w-fit justify-center px-2 py-1">
         <TabsTrigger value="DOB">DOB</TabsTrigger>
         <TabsTrigger value="Anniversary">Anniversary</TabsTrigger>
       </TabsList>

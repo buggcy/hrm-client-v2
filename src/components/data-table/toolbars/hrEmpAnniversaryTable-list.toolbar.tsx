@@ -18,7 +18,7 @@ interface DataTableToolbarProps<TData> {
   filterValue: string[];
 }
 
-export function HrEmpDobListToolbar<TData extends DataTableType>({
+export function HrEmpAnniversaryListToolbar<TData extends DataTableType>({
   table,
   searchTerm,
   onSearch,

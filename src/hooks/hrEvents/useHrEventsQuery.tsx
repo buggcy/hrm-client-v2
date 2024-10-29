@@ -16,7 +16,7 @@ export const useHrEventsQuery = (
     queryKey: ['hrEvents', params],
     queryFn: () => getHrEventsList(params),
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<HrEventApiResponse, Error>;

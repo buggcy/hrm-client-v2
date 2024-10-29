@@ -35,6 +35,7 @@ import { EmployeeListToolbar } from './toolbars/employee-list.toolbar';
 import { HRPayrollListToolbar } from './toolbars/hr-payroll.toolbar';
 import { HrPerkListToolbar } from './toolbars/hr-perk-list-toolbar';
 import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
+import { HrEmpAnniversaryListToolbar } from './toolbars/hrEmpAnniversaryTable-list.toolbar';
 import { HrEmpDobListToolbar } from './toolbars/hrEmpDobTable-list.toolbar';
 import { HrEventsListToolbar } from './toolbars/hrEvents-list.toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
@@ -105,6 +106,17 @@ export function DataTable<TData extends DataTableType, TValue>({
       case 'hrEventsList':
         return (
           <HrEventsListToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+          />
+        );
+      case 'hrEmpAnniversaryTableList':
+        return (
+          <HrEmpAnniversaryListToolbar
             table={table}
             searchTerm={searchTerm}
             onSearch={onSearch}

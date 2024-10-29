@@ -11,9 +11,9 @@ import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useEmployeeDobTableQuery } from '@/hooks/EmployeeDobTable/useEmpDob.hook';
+import { useEmployeeAnniversaryQuery } from '@/hooks/EmployeeDobTable/useEmpDob.hook';
 import { EmployeeDobTableListArrayType } from '@/libs/validations/employee';
-import { searchEmployeeDobTableList } from '@/services/hr/employeeDob.service';
+import { searchEmployeeAnniversaryTableList } from '@/services/hr/employeeDob.service';
 import { EmployeeAnniversaryStoreType } from '@/stores/hr/employeeAnniversary';
 
 import { MessageErrorResponse } from '@/types';
@@ -42,7 +42,7 @@ const AnniversaryTable: FunctionComponent = () => {
     isFetching,
     error,
     refetch,
-  } = useEmployeeDobTableQuery({
+  } = useEmployeeAnniversaryQuery({
     page,
     limit,
     firstName: '',
@@ -55,7 +55,7 @@ const AnniversaryTable: FunctionComponent = () => {
     isPending,
     data: searchEmployeeAnniversaryData,
   } = useMutation({
-    mutationFn: searchEmployeeDobTableList,
+    mutationFn: searchEmployeeAnniversaryTableList,
     onError: (err: unknown) => {
       const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({

@@ -97,13 +97,14 @@
 }
 
 .event-birthday {
-  background-color: #f9c74f;
-  color: #fff;
+  background-color: hsl(var(--transparent));
+  color: #f9a602;
   border-radius: 4px;
   font-size: 12px;
   width: fit-content;
   display: flex;
   padding-right: 0px;
+  margin-left: auto;
 }
 
 .dark .event-birthday {
@@ -111,12 +112,13 @@
   color: #fff;
 }
 .event-anniversary {
-  background-color: #ffe4e6;
+  background-color: hsl(var(--transparent));
   color: #f43f5e;
   border-radius: 4px;
   font-size: 12px;
   padding-right: 0px;
   width: fit-content;
+  margin-left: auto;
 }
 
 .dark .event-anniversary {

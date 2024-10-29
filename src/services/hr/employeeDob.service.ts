@@ -55,6 +55,49 @@ export const getEmpDobTableList = async (
   }
 };
 
+export const getEmpAnniversaryTableList = async (
+  params: EmpDobTableParams = {
+    page: 1,
+    limit: 5,
+    firstName: '',
+    lastName: '',
+    remainingDays: 0,
+  },
+): Promise<EmployeeDobTableApiResponse> => {
+  const defaultParams: EmpDobTableParams = {
+    page: 1,
+    limit: 5,
+    firstName: '',
+    lastName: '',
+    remainingDays: 0,
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(
+      `/employee/anniversary?${queryParams.toString()}`,
+    );
+
+    return schemaParse(employeeDobApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching employee anniversary:', error);
+    throw error;
+  }
+};
+
 export const searchEmployeeDobTableList = async ({
   query,
   page,
@@ -66,6 +109,21 @@ export const searchEmployeeDobTableList = async ({
 }): Promise<EmployeeDobTableApiResponse> => {
   const res = await baseAPI.get(
     `/employee/dob?page=${page}&limit=${limit}&query=${query}`,
+  );
+  return schemaParse(employeeDobApiResponseSchema)(res);
+};
+
+export const searchEmployeeAnniversaryTableList = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<EmployeeDobTableApiResponse> => {
+  const res = await baseAPI.get(
+    `/employee/anniversary?page=${page}&limit=${limit}&query=${query}`,
   );
   return schemaParse(employeeDobApiResponseSchema)(res);
 };

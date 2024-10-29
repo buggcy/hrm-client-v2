@@ -415,51 +415,66 @@ export default function HrEventsCalendar() {
     );
   };
 
-  const formattedDobEvents: MyEvent[] | undefined = empDobDate?.map(
+  const formattedDobEvents: MyEvent[] | undefined = empDobDate?.flatMap(
     (dobEvent: EmployeeDob) => {
       const dob = new Date(dobEvent.DOB);
       const currentYear = new Date().getFullYear();
 
-      const birthdayThisYear = new Date(
-        currentYear,
-        dob.getMonth(),
-        dob.getDate(),
-      );
+      const yearRange = 5;
+      const eventsForBirthday = [];
 
-      return {
-        id: `dob-${dobEvent.firstName}-${dobEvent.lastName}`,
-        title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Birthday`,
-        start: birthdayThisYear,
-        end: new Date(birthdayThisYear.setDate(birthdayThisYear.getDate())),
-        Event_Type: 'birthday',
-      };
+      for (let yearOffset = -yearRange; yearOffset <= yearRange; yearOffset++) {
+        const year = currentYear + yearOffset;
+        const birthdayThisYear = new Date(year, dob.getMonth(), dob.getDate());
+
+        eventsForBirthday.push({
+          id: `dob-${dobEvent.firstName}-${dobEvent.lastName}-${year}`,
+          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Birthday`,
+          start: birthdayThisYear,
+          end: new Date(birthdayThisYear.setDate(birthdayThisYear.getDate())),
+          Event_Type: 'birthday',
+        });
+      }
+
+      return eventsForBirthday;
     },
   );
-  const formattedanniversaryEvents: MyEvent[] | undefined = empDobDate?.map(
+
+  const formattedAnniversaryEvents: MyEvent[] | undefined = empDobDate?.flatMap(
     (dobEvent: EmployeeDob) => {
-      const dob = new Date(dobEvent.Joining_Date);
+      const joiningDate = new Date(dobEvent.Joining_Date);
       const currentYear = new Date().getFullYear();
 
-      const birthdayThisYear = new Date(
-        currentYear,
-        dob.getMonth(),
-        dob.getDate(),
-      );
+      const yearRange = 5;
+      const eventsForAnniversary = [];
 
-      return {
-        id: `dob-${dobEvent.firstName}-${dobEvent.lastName}`,
-        title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Joining anniversary`,
-        start: birthdayThisYear,
-        end: new Date(birthdayThisYear.setDate(birthdayThisYear.getDate())),
-        Event_Type: 'anniversary',
-      };
+      for (let yearOffset = -yearRange; yearOffset <= yearRange; yearOffset++) {
+        const year = currentYear + yearOffset;
+        const anniversaryThisYear = new Date(
+          year,
+          joiningDate.getMonth(),
+          joiningDate.getDate(),
+        );
+
+        eventsForAnniversary.push({
+          id: `anniversary-${dobEvent.firstName}-${dobEvent.lastName}-${year}`,
+          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Joining Anniversary`,
+          start: anniversaryThisYear,
+          end: new Date(
+            anniversaryThisYear.setDate(anniversaryThisYear.getDate()),
+          ),
+          Event_Type: 'anniversary',
+        });
+      }
+
+      return eventsForAnniversary;
     },
   );
 
   const allEvents = [
     ...(formattedEvents || []),
     ...(formattedDobEvents || []),
-    ...(formattedanniversaryEvents || []),
+    ...(formattedAnniversaryEvents || []),
   ];
 
   const handleEventClick = (event: HrEventsListType) => {

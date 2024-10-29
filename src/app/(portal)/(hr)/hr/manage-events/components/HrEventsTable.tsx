@@ -124,8 +124,7 @@ const HrEventsTable: FunctionComponent = () => {
     );
 
   const tableData: HrEventsListType[] = debouncedSearchTerm
-    ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      ((hrEventsListData?.data || []) as HrEventsListType[])
+    ? hrEventsListData?.data || []
     : ((hrEventsList?.data || []) as HrEventsListType[]);
 
   const tablePageCount: number | undefined = debouncedSearchTerm
