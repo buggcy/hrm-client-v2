@@ -40,14 +40,14 @@ const chartConfig: ChartProps['config'] = {
 
 export function BChart() {
   return (
-    <Card>
+    <Card className="h-[330px]">
       <CardHeader>
         <CardDescription>
           Number of Employees in Each Department
         </CardDescription>
       </CardHeader>
       <CardContent className="pl-0">
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="h-[250px] w-full">
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis

@@ -4,61 +4,58 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { DateRange } from 'react-day-picker';
 
-import { hrEventsColumns } from '@/components/data-table/columns/hrEventsColumns';
+import { employeeAnniversaryListColumns } from '@/components/data-table/columns/employeeAnniversary-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useHrEventsQuery } from '@/hooks/hrEvents/useHrEventsQuery';
-import { HrEventsListType } from '@/libs/validations/employee';
-import { searchHrEventsList } from '@/services/hr/hrEvents.service';
-import { HrEventsStoreType } from '@/stores/hr/hrEvents';
+import { useEmployeeAnniversaryQuery } from '@/hooks/EmployeeDobTable/useEmpDob.hook';
+import { EmployeeDobTableListArrayType } from '@/libs/validations/employee';
+import { searchEmployeeAnniversaryTableList } from '@/services/hr/employeeDob.service';
+import { EmployeeAnniversaryStoreType } from '@/stores/hr/employeeAnniversary';
 
 import { MessageErrorResponse } from '@/types';
 
-interface HrEventsTableProps {
-  dates?: DateRange;
-}
-
-const HrEventsTable: FunctionComponent<HrEventsTableProps> = ({ dates }) => {
+const AnniversaryTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { employeeAnniversaryStore } = useStores() as {
+    employeeAnniversaryStore: EmployeeAnniversaryStoreType;
+  };
+  const { setRefetchEmployeeList, refetchEmployeeList } =
+    employeeAnniversaryStore;
+
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
-
-  const { hrEventsStore } = useStores() as {
-    hrEventsStore: HrEventsStoreType;
-  };
-  const { setRefetchHrEventsList, refetchHrEventsList } = hrEventsStore;
   const initialSearchTerm = searchParams.get('search') || '';
+  const [genderFilter, setGenderFilter] = useState<string[]>([]);
+
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
-  const [hrStatusFilter, setHrStatusFilter] = useState<string[]>([]);
 
   const {
-    data: hrEventsList,
+    data: employeeAnniversaryList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = useHrEventsQuery({
+  } = useEmployeeAnniversaryQuery({
     page,
     limit,
-    from: dates?.from?.toISOString(),
-    to: dates?.to?.toISOString(),
-    hrStatus: hrStatusFilter,
+    firstName: '',
+    lastName: '',
+    remainingDays: 0,
   });
 
   const {
     mutate,
     isPending,
-    data: hrEventsListData,
+    data: searchEmployeeAnniversaryData,
   } = useMutation({
-    mutationFn: searchHrEventsList,
+    mutationFn: searchEmployeeAnniversaryTableList,
     onError: (err: unknown) => {
       const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({
@@ -83,44 +80,29 @@ const HrEventsTable: FunctionComponent<HrEventsTableProps> = ({ dates }) => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({
-        query: debouncedSearchTerm,
-        page,
-        limit,
-        hrStatus: hrStatusFilter,
-        from: dates?.from?.toISOString(),
-        to: dates?.to?.toISOString(),
-      });
+      mutate({ query: debouncedSearchTerm, page, limit });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [
-    debouncedSearchTerm,
-    page,
-    limit,
-    refetch,
-    mutate,
-    hrStatusFilter,
-    dates,
-  ]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
+
+  useEffect(() => {
+    if (refetchEmployeeList) {
+      void (async () => {
+        await refetch();
+      })();
+
+      setRefetchEmployeeList(false);
+    }
+  }, [refetchEmployeeList, setRefetchEmployeeList, refetch]);
 
   useEffect(() => {
     void (async () => {
       await refetch();
     })();
-  }, [page, limit, refetch, hrStatusFilter]);
-
-  useEffect(() => {
-    if (refetchHrEventsList) {
-      void (async () => {
-        await refetch();
-      })();
-
-      setRefetchHrEventsList(false);
-    }
-  }, [refetchHrEventsList, page, limit, setRefetchHrEventsList, refetch]);
+  }, [refetch]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -140,23 +122,24 @@ const HrEventsTable: FunctionComponent<HrEventsTableProps> = ({ dates }) => {
       </div>
     );
 
-  const tableData: HrEventsListType[] = debouncedSearchTerm
-    ? hrEventsListData?.data || []
-    : ((hrEventsList?.data || []) as HrEventsListType[]);
+  const tableData: EmployeeDobTableListArrayType = debouncedSearchTerm
+    ? ((searchEmployeeAnniversaryData?.data ||
+        []) as EmployeeDobTableListArrayType)
+    : ((employeeAnniversaryList?.data || []) as EmployeeDobTableListArrayType);
 
   const tablePageCount: number | undefined = debouncedSearchTerm
-    ? hrEventsListData?.pagination?.totalPages || 0
-    : hrEventsList?.pagination?.totalPages || 0;
+    ? searchEmployeeAnniversaryData?.pagination?.totalPages || 0
+    : employeeAnniversaryList?.pagination?.totalPages || 0;
 
   return (
     <>
       {isLoading || isFetching ? (
-        <DataTableLoading columnCount={7} rowCount={limit} />
+        <DataTableLoading columnCount={3} rowCount={limit} />
       ) : (
-        <DataTable<HrEventsListType, undefined>
+        <DataTable
           searchLoading={isPending}
           data={tableData || []}
-          columns={hrEventsColumns}
+          columns={employeeAnniversaryListColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
@@ -165,13 +148,13 @@ const HrEventsTable: FunctionComponent<HrEventsTableProps> = ({ dates }) => {
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
-          toolbarType={'hrEventsList'}
-          setFilterValue={setHrStatusFilter}
-          filterValue={hrStatusFilter}
+          toolbarType={'hrEmpAnniversaryTableList'}
+          setFilterValue={setGenderFilter}
+          filterValue={genderFilter}
         />
       )}
     </>
   );
 };
 
-export default HrEventsTable;
+export default AnniversaryTable;

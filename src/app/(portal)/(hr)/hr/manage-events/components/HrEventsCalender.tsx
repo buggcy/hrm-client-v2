@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Cake, ChevronLeft, ChevronRight, Gift } from 'lucide-react';
 import {
   Calendar,
   dateFnsLocalizer,
@@ -15,9 +15,9 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogOverlay } from '@/components/ui/dialog';
 import { useStores } from '@/providers/Store.Provider';
 
+import { useEmployeeDobStatsQuery } from '@/hooks/employee/useApprovalEmployee.hook';
 import { useHrEventsQuery } from '@/hooks/hrEvents/useHrEventsQuery';
 import { HrEventsListType } from '@/libs/validations/employee';
 import { HrEventsStoreType } from '@/stores/hr/hrEvents';
@@ -43,6 +43,12 @@ type MyEvent = {
   Event_Type?: string;
   Event_Discription?: string;
   isEnabled?: boolean;
+};
+type EmployeeDob = {
+  firstName: string;
+  lastName: string;
+  DOB: Date;
+  Joining_Date: Date;
 };
 
 const localizer = dateFnsLocalizer({
@@ -161,7 +167,7 @@ export default function HrEventsCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<View>(Views.MONTH);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<HrEventsListType | null>({
+  const [selectedEvent, setSelectedEvent] = useState<HrEventsListType>({
     _id: '',
     hrId: undefined,
     Event_Name: '',
@@ -174,6 +180,87 @@ export default function HrEventsCalendar() {
     __v: 0,
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { data: empDobDate } = useEmployeeDobStatsQuery();
+  const [tooltip, setTooltip] = useState<{
+    visible: boolean;
+    event?: MyEvent;
+    x: number;
+    y: number;
+  }>({
+    visible: false,
+    event: undefined,
+    x: 0,
+    y: 0,
+  });
+
+  const Tooltip: React.FC<{ event?: MyEvent; x: number; y: number }> = ({
+    event,
+    x,
+    y,
+  }) => {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+      if (event) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    }, [event]);
+
+    if (!event) return null;
+
+    const tooltipStyles = {
+      birthday: {
+        backgroundColor: '#f9c74f',
+        color: '#fff',
+      },
+      holiday: {
+        backgroundColor: '#d4edda',
+        color: 'hsl(var(--success))',
+      },
+      nonHoliday: {
+        backgroundColor: '#e7f7fd',
+        color: 'hsl(var(--primary))',
+      },
+      anniversary: {
+        backgroundColor: '#f43f5e',
+        color: '#ffe4e6',
+      },
+    };
+
+    const currentStyle =
+      event.Event_Type === 'birthday'
+        ? tooltipStyles.birthday
+        : event.Event_Type === 'holiday'
+          ? tooltipStyles.holiday
+          : event.Event_Type === 'anniversary'
+            ? tooltipStyles.anniversary
+            : tooltipStyles.nonHoliday;
+
+    return (
+      <div
+        className={`absolute z-50 rounded border border-gray-300 p-2 shadow transition-opacity duration-300 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{
+          left: x,
+          top: y,
+          backgroundColor: currentStyle.backgroundColor,
+          color: currentStyle.color,
+          transform: isVisible ? 'translateY(0)' : 'translateY(-10px)',
+        }}
+      >
+        <div className="flex items-center">
+          {event.Event_Type === 'birthday' && (
+            <Cake className="mr-2 inline-block size-4" />
+          )}
+          <h3 className="font-bold">{event.title}</h3>
+        </div>
+        <p>{event.Event_Type}</p>
+      </div>
+    );
+  };
 
   useEffect(() => {
     const prefersDarkMode = window.matchMedia(
@@ -203,6 +290,10 @@ export default function HrEventsCalendar() {
       className = 'event-holiday';
     } else if (event.Event_Type === 'company') {
       className = 'event-non-holiday';
+    } else if (event.Event_Type === 'birthday') {
+      className = 'event-birthday';
+    } else if (event.Event_Type === 'anniversary') {
+      className = 'event-anniversary';
     }
 
     return {
@@ -284,13 +375,115 @@ export default function HrEventsCalendar() {
     isEnabled: event?.isEnabled === true,
   }));
 
+  type CustomEventProps = {
+    event: MyEvent;
+  };
+
+  const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
+    const handleMouseEnter = (e: React.MouseEvent) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setTooltip({
+        visible: true,
+        event,
+        x: rect.left + window.scrollX - 5,
+        y: rect.top + window.scrollY - 70,
+      });
+    };
+
+    const handleMouseLeave = () => {
+      setTooltip({ visible: false, event: undefined, x: 0, y: 0 });
+    };
+
+    return (
+      <div
+        title={event.title}
+        className={cn('event-tooltip')}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {event.Event_Type === 'birthday' && (
+          <Cake className="mr-2 inline-block size-4" />
+        )}
+        {event.Event_Type === 'anniversary' && (
+          <Gift className="mr-2 inline-block size-4" />
+        )}
+        {event.Event_Type === 'company' || event.Event_Type === 'holiday'
+          ? event.title
+          : ''}
+      </div>
+    );
+  };
+
+  const formattedDobEvents: MyEvent[] | undefined = empDobDate?.flatMap(
+    (dobEvent: EmployeeDob) => {
+      const dob = new Date(dobEvent.DOB);
+      const currentYear = new Date().getFullYear();
+
+      const yearRange = 5;
+      const eventsForBirthday = [];
+
+      for (let yearOffset = -yearRange; yearOffset <= yearRange; yearOffset++) {
+        const year = currentYear + yearOffset;
+        const birthdayThisYear = new Date(year, dob.getMonth(), dob.getDate());
+
+        eventsForBirthday.push({
+          id: `dob-${dobEvent.firstName}-${dobEvent.lastName}-${year}`,
+          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Birthday`,
+          start: birthdayThisYear,
+          end: new Date(birthdayThisYear.setDate(birthdayThisYear.getDate())),
+          Event_Type: 'birthday',
+        });
+      }
+
+      return eventsForBirthday;
+    },
+  );
+
+  const formattedAnniversaryEvents: MyEvent[] | undefined = empDobDate?.flatMap(
+    (dobEvent: EmployeeDob) => {
+      const joiningDate = new Date(dobEvent.Joining_Date);
+      const currentYear = new Date().getFullYear();
+
+      const yearRange = 5;
+      const eventsForAnniversary = [];
+
+      for (let yearOffset = -yearRange; yearOffset <= yearRange; yearOffset++) {
+        const year = currentYear + yearOffset;
+        const anniversaryThisYear = new Date(
+          year,
+          joiningDate.getMonth(),
+          joiningDate.getDate(),
+        );
+
+        eventsForAnniversary.push({
+          id: `anniversary-${dobEvent.firstName}-${dobEvent.lastName}-${year}`,
+          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Joining Anniversary`,
+          start: anniversaryThisYear,
+          end: new Date(
+            anniversaryThisYear.setDate(anniversaryThisYear.getDate()),
+          ),
+          Event_Type: 'anniversary',
+        });
+      }
+
+      return eventsForAnniversary;
+    },
+  );
+
+  const allEvents = [
+    ...(formattedEvents || []),
+    ...(formattedDobEvents || []),
+    ...(formattedAnniversaryEvents || []),
+  ];
+
   const handleEventClick = (event: HrEventsListType) => {
-    setSelectedEvent(event);
-    setIsDialogOpen(true);
+    if (event.Event_Type !== 'birthday' && event.Event_Type !== 'anniversary') {
+      setSelectedEvent(event);
+      setIsDialogOpen(true);
+    }
   };
 
   const closeDialog = () => {
-    setSelectedEvent(null);
     setIsDialogOpen(false);
   };
 
@@ -300,14 +493,14 @@ export default function HrEventsCalendar() {
         `mx-auto w-full ${isDarkMode ? 'bg-dark-background' : 'bg-background'} text-foreground`,
       )}
     >
-      <CardContent className="p-6">
+      <CardContent className="p-0 pt-2 sm:p-6">
         <div>
           <Calendar<MyEvent>
             localizer={localizer}
-            events={formattedEvents}
+            events={allEvents}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 420 }}
+            className="calendar-height"
             date={currentDate}
             view={currentView}
             onNavigate={onNavigate}
@@ -315,23 +508,24 @@ export default function HrEventsCalendar() {
             eventPropGetter={eventStyleGetter}
             components={{
               toolbar: CustomToolbar,
+              event: CustomEvent,
             }}
             // @ts-ignore
             onSelectEvent={handleEventClick}
             dayPropGetter={dayPropGetter}
           />
+          {tooltip.visible && (
+            <Tooltip event={tooltip.event} x={tooltip.x} y={tooltip.y} />
+          )}
         </div>
       </CardContent>
 
-      {isDialogOpen && (
-        <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
-          <DialogOverlay>
-            {/* eslint-disable-next-line react/prop-types */}
-            {/* @ts-ignore */}
-            <ViewHrEvent event={selectedEvent} onClose={closeDialog} />
-          </DialogOverlay>
-        </Dialog>
-      )}
+      <ViewHrEvent
+        event={selectedEvent}
+        onCloseChange={closeDialog}
+        onOpenChange={closeDialog}
+        open={isDialogOpen}
+      />
     </Card>
   );
 }

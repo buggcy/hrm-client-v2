@@ -141,6 +141,46 @@ const hrEventsSchema = z.object({
   __v: z.number().optional(),
 });
 
+const cardDataSchema = z.object({
+  Card2Data: z.object({
+    pending: z.number(),
+    tba: z.number(),
+    rejected: z.number(),
+    approved: z.number(),
+    internees: z.number(),
+  }),
+  Card3Data: z.object({
+    tba: z.object({
+      expired: z.number(),
+      pending: z.number(),
+    }),
+    Rejected: z.object({
+      expired: z.number(),
+      pending: z.number(),
+    }),
+  }),
+});
+
+const employeeDobDataSchema = z.array(
+  z.object({
+    _id: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    DOB: z.preprocess(val => new Date(val as string), z.date()),
+    Joining_Date: z.preprocess(val => new Date(val as string), z.date()),
+    remainingDays: z.number(),
+  }),
+);
+
+const employeeDobTableSchema = z.object({
+  _id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  DOB: z.preprocess(val => new Date(val as string), z.date()),
+  Joining_Date: z.preprocess(val => new Date(val as string), z.date()),
+  remainingDays: z.number(),
+});
+
 const employeeApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeeListSchema),
@@ -148,6 +188,10 @@ const employeeApiResponseSchema = z.object({
 const employeePayrollApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeePayrollSchema),
+});
+const employeeDobApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: employeeDobDataSchema,
 });
 const hrEventsApiResponseSchema = z.object({
   pagination: paginationSchema,
@@ -158,7 +202,12 @@ export type EmployeeApiResponse = z.infer<typeof employeeApiResponseSchema>;
 export type HrEventsApiResponse = z.infer<typeof hrEventsApiResponseSchema>;
 export type EmployeeListType = z.infer<typeof employeeListSchema>;
 export type EmployeeListArrayType = z.infer<typeof employeeListSchema>[] | [];
+export type EmployeeDobTableListArrayType =
+  | z.infer<typeof employeeDobTableSchema>[]
+  | [];
 export type EmployeePayrollListType = z.infer<typeof employeePayrollSchema>;
+export type EmployeeDobTableListType = z.infer<typeof employeeDobTableSchema>;
+export type EmpDobListType = z.infer<typeof employeeDobDataSchema>;
 export type HrEventsListType = z.infer<typeof hrEventsSchema>;
 export type EmployeePayrollArrayType =
   | z.infer<typeof employeePayrollSchema>[]
@@ -173,4 +222,7 @@ export {
   employeePayrollSchema,
   employeePayrollApiResponseSchema,
   hrEventsApiResponseSchema,
+  cardDataSchema,
+  employeeDobDataSchema,
+  employeeDobApiResponseSchema,
 };

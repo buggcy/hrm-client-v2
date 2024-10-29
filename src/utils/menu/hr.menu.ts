@@ -51,6 +51,11 @@ export const hrMenu: MenuItem[] = [
         icon: Megaphone,
         href: '/hr/manage-announcements',
       },
+      {
+        title: 'Manage Birthday',
+        icon: CalendarCog,
+        href: '/hr/manage-birthday',
+      },
     ],
   },
 

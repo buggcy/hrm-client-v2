@@ -3,8 +3,10 @@ import { AxiosResponse } from 'axios';
 import { ApprovalEmployeeType } from '@/app/(portal)/(hr)/hr/approval/ApprovalCard/ApprovalCard';
 import { AddEmployeeFormData } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
 import {
+  cardDataSchema,
   EmployeeApiResponse,
   employeeApiResponseSchema,
+  employeeDobDataSchema,
   EmployeeListType,
 } from '@/libs/validations/employee';
 import { baseAPI, schemaParse } from '@/utils';
@@ -228,4 +230,54 @@ export const EditProfile = async ({
     formData,
   );
   return { message, token };
+};
+
+export interface CardData {
+  Card2Data: {
+    pending: number;
+    tba: number;
+    rejected: number;
+    approved: number;
+    internees: number;
+  };
+  Card3Data: {
+    tba: {
+      expired: number;
+      pending: number;
+    };
+    Rejected: {
+      expired: number;
+      pending: number;
+    };
+  };
+}
+
+export interface DobData {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  DOB: Date;
+  Joining_Date: Date;
+  remainingDays: number;
+}
+export const getAddEmployeeCharts = async (): Promise<CardData> => {
+  try {
+    const response = await baseAPI.get('/addEmployee/charts');
+    return schemaParse(cardDataSchema)(response);
+  } catch (error) {
+    console.error('Error fetching add employee charts:', error);
+    throw error;
+  }
+};
+
+export const getEmpDobDate = async (): Promise<DobData[]> => {
+  try {
+    const response = await baseAPI.get('/employee/dob', {
+      params: { fetchAll: true },
+    });
+    return employeeDobDataSchema.parse(response);
+  } catch (error) {
+    console.error(`Error fetching Employee's Date of Birth data:`, error);
+    throw error;
+  }
 };

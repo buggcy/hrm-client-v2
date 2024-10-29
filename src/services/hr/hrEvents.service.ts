@@ -10,6 +10,8 @@ export interface HrEventsListParams {
   page?: number;
   limit?: number;
   hrStatus?: string[];
+  from?: string;
+  to?: string;
 }
 
 export type SuccessMessageResponse = {
@@ -22,6 +24,8 @@ export const getHrEventsList = async (
   const defaultParams: HrEventsListParams = {
     page: 1,
     limit: 5,
+    from: '',
+    to: '',
     hrStatus: [],
   };
 
@@ -123,16 +127,27 @@ export const searchHrEventsList = async ({
   page,
   limit,
   hrStatus,
+  from,
+  to,
 }: {
   query: string;
   page: number;
   limit: number;
   hrStatus: string[];
+  from?: string;
+  to?: string;
 }): Promise<HrEventsApiResponse> => {
   const { data, pagination }: HrEventsApiResponse = await baseAPI.post(
     `/hrevent/search`,
-    { query, page, limit, hrStatus },
+    { query, page, limit, hrStatus, from, to },
   );
 
   return { data, pagination };
+};
+
+export const exportEventsCSVData = async (
+  ids: Array<string>,
+): Promise<BlobPart> => {
+  const res: BlobPart = await baseAPI.post(`/event/export-csv`, { ids });
+  return res;
 };
