@@ -48,13 +48,15 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
                   <KeyRound className="mr-2 size-4" />
                   <span className="capitalize">Account Edit</span>
                 </TabsTrigger>
-                <TabsTrigger
-                  className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
-                  value="resignation"
-                >
-                  <UserMinus className="mr-2 size-4" />
-                  <span className="capitalize">Apply Resignation</span>
-                </TabsTrigger>
+                {user?.roleId === 2 && (
+                  <TabsTrigger
+                    className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
+                    value="resignation"
+                  >
+                    <UserMinus className="mr-2 size-4" />
+                    <span className="capitalize">Apply Resignation</span>
+                  </TabsTrigger>
+                )}
               </TabsList>
             </Tabs>
           </div>
