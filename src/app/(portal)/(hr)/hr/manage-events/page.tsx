@@ -3,6 +3,7 @@ import React, { Suspense, useState } from 'react';
 
 import { Bell } from 'lucide-react';
 
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import {
   Layout,
@@ -18,6 +19,8 @@ import HrEventsTable from './components/HrEventsTable';
 
 export default function ManageEmployeesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -38,13 +41,19 @@ export default function ManageEmployeesPage() {
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1" className="space-y-5">
         <Header subheading="Engaging Our Team: Celebrations and Activities Year-Round!">
+          <DateRangePicker
+            timeRange={timeRange}
+            selectedDate={selectedDate}
+            setTimeRange={setTimeRange}
+            setDate={handleSetDate}
+          />
           <Button variant="default" onClick={handleDialogOpen}>
             Add Event
           </Button>
         </Header>
         <HrEventsCalender />
         <Suspense fallback={<div>Loading...</div>}>
-          <HrEventsTable />
+          <HrEventsTable dates={selectedDate} />
         </Suspense>
       </LayoutWrapper>
 

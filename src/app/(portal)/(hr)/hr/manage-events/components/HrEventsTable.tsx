@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { DateRange } from 'react-day-picker';
 
 import { hrEventsColumns } from '@/components/data-table/columns/hrEventsColumns';
 import { DataTable } from '@/components/data-table/data-table';
@@ -18,7 +19,11 @@ import { HrEventsStoreType } from '@/stores/hr/hrEvents';
 
 import { MessageErrorResponse } from '@/types';
 
-const HrEventsTable: FunctionComponent = () => {
+interface HrEventsTableProps {
+  dates?: DateRange;
+}
+
+const HrEventsTable: FunctionComponent<HrEventsTableProps> = ({ dates }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const page = Number(searchParams.get('page')) || 1;
@@ -43,6 +48,8 @@ const HrEventsTable: FunctionComponent = () => {
   } = useHrEventsQuery({
     page,
     limit,
+    from: dates?.from?.toISOString(),
+    to: dates?.to?.toISOString(),
     hrStatus: hrStatusFilter,
   });
 
@@ -81,13 +88,23 @@ const HrEventsTable: FunctionComponent = () => {
         page,
         limit,
         hrStatus: hrStatusFilter,
+        from: dates?.from?.toISOString(),
+        to: dates?.to?.toISOString(),
       });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate, hrStatusFilter]);
+  }, [
+    debouncedSearchTerm,
+    page,
+    limit,
+    refetch,
+    mutate,
+    hrStatusFilter,
+    dates,
+  ]);
 
   useEffect(() => {
     void (async () => {
