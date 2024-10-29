@@ -16,7 +16,6 @@ import {
   Dialog,
   DialogContent,
   DialogFooter,
-  DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
 import FormattedTextArea from '@/components/ui/FormattedTextArea';
@@ -147,10 +146,10 @@ export function HrEventsDialogDemo({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="h-full max-h-[550px] max-sm:min-h-[700px] sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>Add Event</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-0">
+        <DialogTitle className="text-center sm:text-left">
+          Add Event
+        </DialogTitle>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 pt-4">
           <div className="flex w-full flex-row gap-8 max-sm:flex-col max-sm:gap-2">
             <div className="flex w-full flex-1 flex-col">
               <Label htmlFor="Start_Date" className="mb-2 text-left">
@@ -336,7 +335,7 @@ export function HrEventsDialogDemo({
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-12 max-sm:gap-2">
+          <div className="flex flex-col gap-4 max-sm:gap-2">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Description" className="mb-2 text-left">
                 Description

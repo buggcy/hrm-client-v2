@@ -12,13 +12,7 @@ import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter } from '@/components/ui/dialog';
 import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -134,13 +128,13 @@ export function EditHrEventsDialogDemo({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-full max-h-[550px] max-sm:min-h-[700px] sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>Edit Event</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-4">
+      <DialogContent className="flex max-h-[550px] flex-col gap-4 max-sm:min-h-fit sm:max-w-[600px]">
+        <h2 className="h-fit text-center text-lg font-semibold leading-none tracking-tight sm:text-left">
+          Edit Event
+        </h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 pt-4">
           <div className="flex w-full flex-row gap-8 max-sm:flex-col max-sm:gap-2">
-            <div className="flex flex-1 flex-col">
+            <div className="flex w-full flex-1 flex-col">
               <Label htmlFor="Start_Date" className="mb-2 text-left">
                 Start Date
               </Label>
@@ -336,7 +330,7 @@ export function EditHrEventsDialogDemo({
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-12 max-sm:gap-2">
+          <div className="flex flex-col gap-4 max-sm:gap-2">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Description" className="mb-2 text-left">
                 Description

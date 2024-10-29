@@ -15,7 +15,6 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogOverlay } from '@/components/ui/dialog';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useEmployeeDobStatsQuery } from '@/hooks/employee/useApprovalEmployee.hook';
@@ -168,7 +167,7 @@ export default function HrEventsCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<View>(Views.MONTH);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<HrEventsListType | null>({
+  const [selectedEvent, setSelectedEvent] = useState<HrEventsListType>({
     _id: '',
     hrId: undefined,
     Event_Name: '',
@@ -485,7 +484,6 @@ export default function HrEventsCalendar() {
   };
 
   const closeDialog = () => {
-    setSelectedEvent(null);
     setIsDialogOpen(false);
   };
 
@@ -522,15 +520,12 @@ export default function HrEventsCalendar() {
         </div>
       </CardContent>
 
-      {isDialogOpen && (
-        <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
-          <DialogOverlay>
-            {/* eslint-disable-next-line react/prop-types */}
-            {/* @ts-ignore */}
-            <ViewHrEvent event={selectedEvent} onClose={closeDialog} />
-          </DialogOverlay>
-        </Dialog>
-      )}
+      <ViewHrEvent
+        event={selectedEvent}
+        onCloseChange={closeDialog}
+        onOpenChange={closeDialog}
+        open={isDialogOpen}
+      />
     </Card>
   );
 }
