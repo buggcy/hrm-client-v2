@@ -464,3 +464,14 @@ export const getResignedFiredEmployeeList = async (
     throw error;
   }
 };
+
+export const DeleteResignation = async ({
+  id,
+}: {
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/delete/resignation/${id}`,
+  );
+  return { message };
+};

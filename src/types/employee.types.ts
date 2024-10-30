@@ -180,7 +180,9 @@ export interface ResignedEmployee {
   title: string;
   reason: string;
   description: string;
-  isResigned: boolean;
+  isResigned?: boolean;
+  isFired?: boolean;
+  isDeleted?: boolean;
   __v: number;
   assignedDate?: string;
   appliedDate?: string;

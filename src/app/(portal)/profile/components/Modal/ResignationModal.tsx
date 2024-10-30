@@ -45,6 +45,7 @@ import { MessageErrorResponse } from '@/types';
 interface ModalProps {
   open: boolean;
   onCloseChange: (open: boolean) => void;
+  refetch: () => void;
 }
 const FormSchema = z.object({
   title: z.string().min(1, 'Resignation Title is required'),
@@ -60,7 +61,7 @@ const FormSchema = z.object({
 
 export type FormData = z.infer<typeof FormSchema>;
 
-export function ResignationModal({ open, onCloseChange }: ModalProps) {
+export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
@@ -124,6 +125,7 @@ export function ResignationModal({ open, onCloseChange }: ModalProps) {
         variant: 'success',
       });
       reset();
+      refetch();
       onCloseChange(false);
     },
     onError: (err: AxiosError<MessageErrorResponse>) => {

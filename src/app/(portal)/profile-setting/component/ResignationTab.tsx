@@ -26,7 +26,7 @@ interface UserProps {
 const ResignationTab: React.FC<UserProps> = ({ user }) => {
   const userId = user?.id;
 
-  const { data } = useReadResignationRecordQuery(userId, {
+  const { data, refetch } = useReadResignationRecordQuery(userId, {
     enabled: !!userId,
   });
 
@@ -115,13 +115,17 @@ const ResignationTab: React.FC<UserProps> = ({ user }) => {
             </TableBody>
           </Table>
         ) : (
-          <div className="mt-4 text-center text-xs">
+          <div className="mt-4 text-center text-xs text-gray-600 dark:text-gray-300">
             No resignation application has been submitted yet.
           </div>
         )}
       </div>
 
-      <ResignationModal open={modal} onCloseChange={handleClose} />
+      <ResignationModal
+        open={modal}
+        onCloseChange={handleClose}
+        refetch={refetch}
+      />
     </>
   );
 };
