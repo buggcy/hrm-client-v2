@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { format } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -67,14 +67,11 @@ export function ResignationModal({ open, onCloseChange }: ModalProps) {
   const userId = user?.id || '';
   const [isImmediate, setIsImmediate] = useState(false);
 
-  const handleCheckboxChange = (checked: boolean) => {
-    setIsImmediate(checked);
-  };
-
   const {
     control,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -87,9 +84,33 @@ export function ResignationModal({ open, onCloseChange }: ModalProps) {
     },
   });
 
+  const handleCheckboxChange = (checked: boolean) => {
+    setIsImmediate(checked);
+    const today = new Date();
+    if (checked) {
+      reset({
+        ...getValues(),
+        appliedDate: today,
+        immedaiteDate: addDays(today, 1),
+      });
+    } else {
+      reset({
+        ...getValues(),
+        appliedDate: today,
+        immedaiteDate: today,
+      });
+    }
+  };
+
   useEffect(() => {
     if (!open) {
-      reset();
+      reset({
+        title: '',
+        reason: '',
+        description: '',
+        appliedDate: new Date(),
+        immedaiteDate: new Date(),
+      });
       setIsImmediate(false);
     }
   }, [open, reset]);
@@ -205,6 +226,7 @@ export function ResignationModal({ open, onCloseChange }: ModalProps) {
                           'justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
+                        disabled={isImmediate}
                       >
                         <CalendarIcon className="mr-2 size-4" />
                         {field.value ? (
@@ -281,7 +303,7 @@ export function ResignationModal({ open, onCloseChange }: ModalProps) {
                           'justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
-                        disabled={!isImmediate}
+                        disabled={true}
                       >
                         <CalendarIcon className="mr-2 size-4" />
                         {field.value ? (
