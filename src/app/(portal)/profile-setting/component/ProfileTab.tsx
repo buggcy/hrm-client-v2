@@ -38,7 +38,7 @@ export type EditPasswordFormData = z.infer<typeof FormSchema>;
 const ProfileTab: React.FC<UserProps> = ({ user }) => {
   const userId: string | undefined = user?.id;
 
-  const { data } = useReadEmployeeRecordQuery(userId, {
+  const { data, refetch } = useReadEmployeeRecordQuery(userId, {
     enabled: !!userId,
   });
 
@@ -73,7 +73,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
   const { setUser } = useAuthStore();
   const { mutate, isPending } = useMutation({
     mutationFn: EditProfile,
-    onSuccess: response => {
+    onSuccess: async response => {
       const token = response?.token;
       if (token) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -84,7 +84,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
         description: response?.message || 'Profile Edit Successfully!',
         variant: 'success',
       });
-      reset();
+      await refetch();
     },
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
