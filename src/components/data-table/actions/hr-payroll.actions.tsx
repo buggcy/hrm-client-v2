@@ -39,6 +39,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import Payslip from '@/app/(portal)/(employee)/employee/payroll/components/Payslip/Payslip';
 import { EmployeePayrollListType } from '@/libs/validations/employee';
+import { HRPayrollListType } from '@/libs/validations/hr-payroll';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
 import { payPayroll } from '@/services/hr/payroll.service';
 import { AuthStoreType } from '@/stores/auth';
@@ -48,7 +49,7 @@ import { EmployeeStoreType } from '@/stores/hr/employee';
 import { MessageErrorResponse } from '@/types';
 
 interface DataTableRowActionsProps {
-  row: Row<EmployeePayrollListType>;
+  row: Row<EmployeePayrollListType> | Row<HRPayrollListType>;
 }
 
 const BaseFormSchema = z.object({

@@ -13,13 +13,16 @@ import {
 
 import { AnnouncementType } from '@/libs/validations/hr-announcements';
 
+import { RecentAnnouncement } from '@/types/announcement.types';
+
 import './ViewAnnouncement.css';
 
 interface ViewAnnouncementDialogProps {
-  announcement?: AnnouncementType;
+  announcement?: AnnouncementType | RecentAnnouncement;
   onOpenChange: () => void;
   onCloseChange: () => void;
   open: boolean;
+  user?: string;
 }
 
 export function ViewAnnouncement({
@@ -27,6 +30,7 @@ export function ViewAnnouncement({
   onCloseChange,
   onOpenChange,
   open,
+  user,
 }: ViewAnnouncementDialogProps) {
   const formatDate = (dateString?: string): string => {
     if (!dateString) return 'Invalid date';
@@ -51,11 +55,13 @@ export function ViewAnnouncement({
           <DialogTitle>Announcement Details</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-3">
-          <div className="h-fit text-right text-xl font-semibold">
-            <Badge variant={variant}>
-              {announcement?.isEnabled ? 'Enable' : 'Disabled'}
-            </Badge>
-          </div>
+          {user === 'hr' && (
+            <div className="h-fit text-right text-xl font-semibold">
+              <Badge variant={variant}>
+                {announcement?.isEnabled ? 'Enable' : 'Disabled'}
+              </Badge>
+            </div>
+          )}
           <div className="grid h-fit gap-4 py-4 text-left">
             <div className="grid h-fit grid-cols-2">
               <div className="flex space-x-3">

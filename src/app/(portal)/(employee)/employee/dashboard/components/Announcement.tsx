@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-import { CheckCircleIcon, Newspaper, Target } from 'lucide-react';
+import { CircleArrowDown, CircleArrowRight, CircleArrowUp } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
+import { ViewAnnouncement } from '@/app/(portal)/(hr)/hr/manage-announcements/components/ViewAnnouncementDialog.component';
 import { useRecentAnnouncements } from '@/hooks/employee/useRecentAnnouncement';
 
 import { RecentAnnouncement } from '@/types/announcement.types';
@@ -26,31 +27,41 @@ const RecentAnnouncements = () => {
     isLoading,
     isFetching,
   } = useRecentAnnouncements();
-  const [, setSelectedAnnouncement] = useState<RecentAnnouncement | null>(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] =
+    useState<RecentAnnouncement>();
 
   useEffect(() => {}, [announcements]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const handleViewDialogOpen = (announcement: RecentAnnouncement) => {
+    setSelectedAnnouncement(announcement);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleViewDialogClose = () => {
+    setIsViewDialogOpen(false);
+  };
 
   const announcementArray: RecentAnnouncement[] = Array.isArray(announcements)
     ? announcements.filter(announcement => announcement !== undefined)
     : [announcements].filter(announcement => announcement !== undefined);
 
   const getIconAndColor = (priority: string) => {
-    switch (priority) {
+    switch (priority.toLowerCase()) {
       case 'high':
         return {
-          icon: <CheckCircleIcon className="size-6 text-red-500" />,
-          color: 'text-red-500',
+          icon: <CircleArrowUp className="size-6 min-h-6 min-w-6" />,
+          color: 'text-red-600',
         };
-      case 'Medium':
+      case 'medium':
         return {
-          icon: <Newspaper className="size-6 text-blue-500" />,
-          color: 'text-blue-500',
+          icon: <CircleArrowRight className="size-6 min-h-6 min-w-6" />,
+          color: 'text-yellow-500',
         };
-      case 'Low':
+      case 'low':
       default:
         return {
-          icon: <Target className="size-6 text-green-500" />,
+          icon: <CircleArrowDown className="size-6 min-h-6 min-w-6" />,
           color: 'text-green-500',
         };
     }
@@ -70,7 +81,7 @@ const RecentAnnouncements = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="max-h-[300px] space-y-4 overflow-y-auto">
+        <div className="max-h-[300px] space-y-4 overflow-y-auto pr-4">
           {isLoading || isFetching ? (
             <div className="text-sm text-gray-500 dark:text-gray-300">
               Loading Announcements
@@ -85,78 +96,36 @@ const RecentAnnouncements = () => {
                 const { icon } = getIconAndColor(
                   announcement.Priority || 'normal',
                 );
+                const formatOptions: Intl.DateTimeFormatOptions = {
+                  month: 'short',
+                  day: 'numeric',
+                };
+                const startDate = new Intl.DateTimeFormat(
+                  'en-US',
+                  formatOptions,
+                ).format(new Date(announcement.StartDate));
+                const endDate = new Intl.DateTimeFormat(
+                  'en-US',
+                  formatOptions,
+                ).format(new Date(announcement.EndDate));
                 return (
-                  <div key={index} className="flex items-start space-x-4 py-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleViewDialogOpen(announcement)}
+                    key={index}
+                    className="flex size-full items-center justify-start space-x-2 rounded-md border p-2"
+                  >
                     {icon}
                     <div>
-                      <h3 className="text-sm font-semibold dark:text-white">
+                      <h3 className="text-left text-sm font-semibold dark:text-white">
                         {announcement.title || 'No Title'}
                       </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-300">
-                        {announcement.Description || 'No Description'}
+                      <p className="text-left text-xs text-muted-foreground">
+                        {startDate}{' '}
+                        {startDate !== endDate ? ` - ${endDate}` : ''}
                       </p>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="link"
-                            onClick={() =>
-                              setSelectedAnnouncement(announcement)
-                            }
-                          >
-                            View Details
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="dark:bg-zinc-900 dark:text-white">
-                          <DialogHeader>
-                            <DialogTitle>
-                              {announcement.title || 'No Title'}
-                            </DialogTitle>
-                            <DialogDescription>
-                              <div className="space-y-2">
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    Description:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {announcement.Description}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    Priority:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {announcement.Priority}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    Start Date:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {new Date(
-                                      announcement.StartDate,
-                                    ).toLocaleString()}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    End Date:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {new Date(
-                                      announcement.EndDate,
-                                    ).toLocaleString()}
-                                  </span>
-                                </div>
-                              </div>
-                            </DialogDescription>
-                          </DialogHeader>
-                          <DialogClose />
-                        </DialogContent>
-                      </Dialog>
                     </div>
-                  </div>
+                  </Button>
                 );
               },
             )
@@ -232,6 +201,12 @@ const RecentAnnouncements = () => {
           </div>
         )}
       </CardContent>
+      <ViewAnnouncement
+        announcement={selectedAnnouncement}
+        open={isViewDialogOpen}
+        onOpenChange={handleViewDialogClose}
+        onCloseChange={handleViewDialogClose}
+      />
     </Card>
   );
 };
