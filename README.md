@@ -19,7 +19,7 @@ Make sure you have Node.js installed on your system. We use [`nvm` (Node Version
 2. **Install project dependencies:**
 
    ```bash
-   npm ci
+   npm ci 
    ```
 
    Using `npm ci` helps ensure that your package versions match those in `package-lock.json`, providing a more consistent installation process.
@@ -94,7 +94,7 @@ Our project uses a structured directory layout to organize the various parts of 
         |   ├───hooks
         ...
         .# .env, package.json, .nvmrc,
-        .# .eslintrc, tsconfig.json, .gitignore,
+        .# .eslintrc, tsconfig.json, .gitignore
         .# etc...
         ...
         └── README.md
