@@ -1,0 +1,204 @@
+import {
+  FeedbackApiResponse,
+  FeedbackApiResponseSchema,
+  QuestionAnswerApiResponse,
+  QuestionAnswerApiResponseSchema,
+} from '@/libs/validations/hr-feedback';
+import { baseAPI, schemaParse } from '@/utils';
+
+import { SuccessMessageResponse } from './employee.service';
+
+export interface FeedbackParams {
+  page?: number;
+  limit?: number;
+}
+
+export const getFeedbacks = async (
+  params: FeedbackParams = {},
+): Promise<FeedbackApiResponse> => {
+  const defaultParams: FeedbackParams = {
+    page: 1,
+    limit: 5,
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(
+      `/get/feedbacks/all?${queryParams.toString()}`,
+    );
+    return schemaParse(FeedbackApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching feedbacks!', error);
+    throw error;
+  }
+};
+
+export const searchFeedback = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<FeedbackApiResponse> => {
+  const { data, pagination }: FeedbackApiResponse = await baseAPI.get(
+    `/search/feedbacks?page=${page}&limit=${limit}&query=${query}`,
+  );
+
+  return { data, pagination };
+};
+
+export const getQuestionAnswer = async (
+  category: string,
+  params: FeedbackParams = {},
+): Promise<QuestionAnswerApiResponse> => {
+  const defaultParams: FeedbackParams = {
+    page: 1,
+    limit: 5,
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(
+      `/get/all/question/answer/${category}?${queryParams.toString()}`,
+    );
+    return schemaParse(QuestionAnswerApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching Question Answers!', error);
+    throw error;
+  }
+};
+
+export const searchQuestionAnswer = async ({
+  query,
+  page,
+  limit,
+  category,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+  category: string;
+}): Promise<FeedbackApiResponse> => {
+  const { data, pagination }: FeedbackApiResponse = await baseAPI.get(
+    `/search/all/question/answer/${category}?page=${page}&limit=${limit}&query=${query}`,
+  );
+
+  return { data, pagination };
+};
+
+export const deleteQuestion = async (payload: {
+  questionId: string;
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { questionId, id } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/delete/feedback/questions/${id}/${questionId}`,
+  );
+  return { message };
+};
+
+export const deleteFeedback = async (payload: {
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { id } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/delete/feedback/${id}`,
+  );
+  return { message };
+};
+
+export const editQuestion = async (payload: {
+  id: string;
+  questionId: string;
+  questionText?: string;
+}): Promise<SuccessMessageResponse> => {
+  const { id, questionId, questionText } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/update/feedback/questions/${id}/${questionId}`,
+    {
+      questionText,
+    },
+  );
+  return { message };
+};
+
+export const enableDisableFeedback = async (payload: {
+  id: string;
+  isEnabled?: boolean;
+}): Promise<SuccessMessageResponse> => {
+  const { id, isEnabled } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/enable/feedback/questions/${id}`,
+    {
+      isEnabled,
+    },
+  );
+  return { message };
+};
+
+export const addFeedback = async (payload: {
+  hr: string;
+  feedbackTitle?: string;
+  question?: string[];
+  feedbackCategory: string;
+  isEnabled: boolean;
+}): Promise<SuccessMessageResponse> => {
+  const { hr, feedbackTitle, question, feedbackCategory, isEnabled } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/add/feedbacks`,
+    {
+      hr,
+      feedbackTitle,
+      question,
+      feedbackCategory,
+      isEnabled,
+    },
+  );
+  return { message };
+};
+interface body {
+  feedbackTitle?: string;
+  question?: string[];
+  feedbackCategory?: string;
+  isEnabled?: boolean;
+}
+
+export const addMoreQuestion = async (payload: {
+  id: string;
+  body: body;
+}): Promise<SuccessMessageResponse> => {
+  const { id, body } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/feedback/questions/${id}`,
+    body,
+  );
+  return { message };
+};

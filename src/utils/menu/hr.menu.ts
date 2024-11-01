@@ -8,6 +8,7 @@ import {
   Home,
   Megaphone,
   Settings,
+  ThumbsUp,
   UserCog,
   UserCog2,
   UserPlus,
@@ -111,6 +112,17 @@ export const hrMenu: MenuItem[] = [
         title: 'Manage Configuration',
         icon: Settings,
         href: '/hr/manage-configuration',
+      },
+    ],
+  },
+  {
+    title: 'Manage Feedbacks',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Feedbacks',
+        icon: ThumbsUp,
+        href: '/hr/manage-feedbacks',
       },
     ],
   },
