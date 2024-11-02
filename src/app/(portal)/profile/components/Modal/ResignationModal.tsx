@@ -73,7 +73,9 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
     handleSubmit,
     reset,
     getValues,
+    setValue,
     formState: { errors },
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -85,6 +87,19 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
     },
   });
 
+  const appliedDate = watch('appliedDate', new Date());
+  useEffect(() => {
+    if (open && !isImmediate) {
+      if (user?.Designation === 'Intern') {
+        const oneWeek = addDays(appliedDate, 7);
+        setValue('immedaiteDate', oneWeek);
+      } else {
+        const oneMonthLater = addDays(appliedDate, 30);
+        setValue('immedaiteDate', oneMonthLater);
+      }
+    }
+  }, [open, appliedDate, setValue, isImmediate, user?.Designation]);
+
   const handleCheckboxChange = (checked: boolean) => {
     setIsImmediate(checked);
     const today = new Date();
@@ -92,7 +107,7 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
       reset({
         ...getValues(),
         appliedDate: today,
-        immedaiteDate: addDays(today, 1),
+        immedaiteDate: today,
       });
     } else {
       reset({
@@ -277,6 +292,10 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
                         your current month&apos;s salary.
                       </li>
                       <li>
+                        If you choose to resign immediately, your account
+                        credentials will be removed instantly.
+                      </li>
+                      <li>
                         This option is for immediate termination requests.
                       </li>
                       <li>Please ensure you understand the implications.</li>
@@ -291,7 +310,8 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
           <div className="flex flex-wrap">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="immedaiteDate" className="mb-2 text-left">
-                Immediate Date <span className="text-red-600">*</span>
+                Expected Resignation Date{' '}
+                <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="immedaiteDate"
