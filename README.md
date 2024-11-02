@@ -19,7 +19,7 @@ Make sure you have Node.js installed on your system. We use [`nvm` (Node Version
 2. **Install project dependencies:**
 
    ```bash
-   npm ci
+   npm ci 
    ```
 
    Using `npm ci` helps ensure that your package versions match those in `package-lock.json`, providing a more consistent installation process.
