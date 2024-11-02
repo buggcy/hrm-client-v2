@@ -11,6 +11,7 @@ export interface Configuration {
   educationType?: string;
   designationType?: string;
   experienceType?: string;
+  feedbackType?: string;
   userId: {
     _id: string;
     firstName: string;

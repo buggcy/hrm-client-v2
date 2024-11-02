@@ -165,3 +165,33 @@ export const editDesignationType = async (payload: {
   );
   return { message };
 };
+
+export const addFeedbackType = async (payload: {
+  userId: string;
+  feedbackType?: string;
+}): Promise<SuccessMessageResponse> => {
+  const { userId, feedbackType } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(`/add/types`, {
+    userId,
+    status: 'feedback',
+    feedbackType,
+  });
+  return { message };
+};
+
+export const editFeedbackType = async (payload: {
+  id: string;
+  userId: string;
+  feedbackType?: string;
+}): Promise<SuccessMessageResponse> => {
+  const { id, userId, feedbackType } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/edit/types/${id}`,
+    {
+      userId,
+      status: 'feedback',
+      feedbackType,
+    },
+  );
+  return { message };
+};
