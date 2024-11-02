@@ -3,6 +3,7 @@ import { AxiosResponse } from 'axios';
 import {
   FeedbackApiResponse,
   FeedbackApiResponseSchema,
+  FeedbackCardApiResponseSchema,
   QuestionAnswerApiResponse,
   QuestionAnswerApiResponseSchema,
 } from '@/libs/validations/hr-feedback';
@@ -194,4 +195,14 @@ export const updateFeedback = async (payload: {
 export const getFeedbackCategory = async (): Promise<AxiosResponse> => {
   const res = await baseAPI.get('/feedback/category');
   return res;
+};
+
+export const getFeedbackCardData = async (category: string) => {
+  try {
+    const response = await baseAPI.get(`/feedback/record/${category}`);
+    return schemaParse(FeedbackCardApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching feedback records!', error);
+    throw error;
+  }
 };

@@ -61,3 +61,13 @@ export interface QuestionAnswerApiResponse {
   pagination: Pagination;
   data: QuestionAnswerList[];
 }
+
+export interface FeedbackRecordApiResponse {
+  data: {
+    totalUsers: number;
+    averagePercentage: number;
+    goodPercentage: number;
+    excellentPercentage: number;
+    notSatisfyPercentage: number;
+  };
+}

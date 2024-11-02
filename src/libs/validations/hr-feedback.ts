@@ -60,10 +60,26 @@ const QuestionAnswerApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(QuestionAnswerSchema),
 });
+const feedbackRecordSchema = z.object({
+  totalUsers: z.number(),
+  averagePercentage: z.number(),
+  goodPercentage: z.number(),
+  excellentPercentage: z.number(),
+  notSatisfyPercentage: z.number(),
+});
+
+const FeedbackCardApiResponseSchema = z.object({
+  data: feedbackRecordSchema,
+});
 
 export type FeedbackApiResponse = z.infer<typeof FeedbackApiResponseSchema>;
 export type FeedbackType = z.infer<typeof FeedbackSchema>;
 export type FeedbackArrayType = z.infer<typeof FeedbackSchema>[] | [];
+
+export type FeedbackCardApiResponse = z.infer<
+  typeof FeedbackCardApiResponseSchema
+>;
+export type FeedbackCArdType = z.infer<typeof QuestionAnswerSchema>;
 
 export type QuestionAnswerApiResponse = z.infer<
   typeof QuestionAnswerApiResponseSchema
@@ -75,8 +91,10 @@ export type QuestionAnswerArrayType =
 
 export {
   QuestionAnswerApiResponseSchema,
+  FeedbackCardApiResponseSchema,
   FeedbackApiResponseSchema,
   userSchema,
+  feedbackRecordSchema,
   paginationSchema,
   QuestionAnswerSchema,
   questionSchema,

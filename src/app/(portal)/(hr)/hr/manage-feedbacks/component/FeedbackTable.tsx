@@ -24,11 +24,13 @@ import { useStores } from '@/providers/Store.Provider';
 import {
   useFeedbackCategoryQuery,
   useFeedbackQuery,
+  useFeedbackRecordQuery,
 } from '@/hooks/hr/useFeedback.hook';
 import { FeedbackArrayType } from '@/libs/validations/hr-feedback';
 import { searchFeedback } from '@/services/hr/hr-feedback.service';
 import { FeedbackStoreType } from '@/stores/hr/hr-feedback';
 
+import FeedbackStatistics from './FeedbackCards';
 import { AddEditFeedbackModal } from './Modal/AddEditFeedbackModal';
 import QuestionAnswerTypeTable from './QuestionAnswerTable';
 
@@ -52,7 +54,8 @@ const FeedbackTable: FunctionComponent = () => {
     useState<string>(initialSearchTerm);
   const [modal, setModal] = useState(false);
   const [modelType, setModelType] = useState('add');
-
+  const { data: feedbackRecord, refetch: RecordRefetch } =
+    useFeedbackRecordQuery(category);
   const handleClose = () => {
     setModal(false);
   };
@@ -109,6 +112,7 @@ const FeedbackTable: FunctionComponent = () => {
       void (async () => {
         await refetch();
         await CategoryRefetch();
+        await RecordRefetch();
       })();
     }
   }, [
@@ -119,20 +123,23 @@ const FeedbackTable: FunctionComponent = () => {
     limit,
     CategoryRefetch,
     status,
+    RecordRefetch,
   ]);
 
   useEffect(() => {}, [getFeedbacks]);
+  useEffect(() => {}, [feedbackRecord]);
   useEffect(() => {
     if (refetchFeedbackList) {
       void (async () => {
         await refetch();
         await CategoryRefetch();
+        await RecordRefetch();
       })();
-
       setRefetchFeedbackList(false);
     }
   }, [
     CategoryRefetch,
+    RecordRefetch,
     refetch,
     refetchFeedbackList,
     setRefetchFeedbackList,
@@ -221,13 +228,22 @@ const FeedbackTable: FunctionComponent = () => {
           </div>
         </>
       ) : (
-        <div className="mt-6">
-          <QuestionAnswerTypeTable
-            category={category}
-            setRefetchFeedbackList={setRefetchFeedbackList}
-            refetchFeedbackList={refetchFeedbackList}
+        <>
+          <FeedbackStatistics
+            totalUsers={feedbackRecord?.data?.totalUsers}
+            averagePercentage={feedbackRecord?.data?.averagePercentage}
+            goodPercentage={feedbackRecord?.data?.goodPercentage}
+            excellentPercentage={feedbackRecord?.data?.excellentPercentage}
+            notSatisfyPercentage={feedbackRecord?.data?.notSatisfyPercentage}
           />
-        </div>
+          <div className="mt-6">
+            <QuestionAnswerTypeTable
+              category={category}
+              setRefetchFeedbackList={setRefetchFeedbackList}
+              refetchFeedbackList={refetchFeedbackList}
+            />
+          </div>
+        </>
       )}
       <AddEditFeedbackModal
         open={modal}
