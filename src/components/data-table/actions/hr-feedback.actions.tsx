@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   Eye,
   MoreHorizontal,
-  Plus,
+  Pencil,
   Trash2,
   XCircle,
 } from 'lucide-react';
@@ -28,6 +28,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { AddEditFeedbackModal } from '@/app/(portal)/(hr)/hr/manage-feedbacks/component/Modal/AddEditFeedbackModal';
 import UpdateQuestionDialog from '@/app/(portal)/(hr)/hr/manage-feedbacks/component/UpdateQuestionModal';
 import ViewFeedback from '@/app/(portal)/(hr)/hr/manage-feedbacks/component/ViewFeedbackModal';
 import { FeedbackType } from '@/libs/validations/hr-feedback';
@@ -57,6 +58,18 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
     null,
   );
   const data = row.original;
+  const [modal, setModal] = React.useState(false);
+  const [modelType, setModelType] = React.useState('add');
+
+  const handleClose = () => {
+    setModal(false);
+  };
+
+  const handleEdit = (row: FeedbackType) => {
+    setModelType('edit');
+    setModal(true);
+    setSelectedRow(row);
+  };
 
   const viewToggle = () => {
     setIsView(false);
@@ -156,9 +169,9 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />{' '}
-          <DropdownMenuItem>
-            <Plus className="mr-2 size-4" />
-            Add Questions
+          <DropdownMenuItem onClick={() => handleEdit(data)}>
+            <Pencil className="mr-2 size-4" />
+            Update Feedback
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleEnable(data)}>
             {data?.isEnabled === true ? (
@@ -198,12 +211,20 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
       />
       <UpdateQuestionDialog
         isOpen={isEnable}
+        setRefetchFeedbackList={setRefetchFeedbackList}
         title={`${type === 'enable' ? 'Confirm Enable' : 'Confirm Disable'}`}
         type={type}
         description={`${type === 'enable' ? 'Are your sure you want to enable this feedback?' : 'Are your sure you want to disble this feedback?'}`}
         isPending={EnablePending}
         onSubmit={handleSubmit}
         showActionToggle={toggleEnable}
+      />
+      <AddEditFeedbackModal
+        open={modal}
+        onCloseChange={handleClose}
+        type={modelType}
+        selectedRow={selectedRow}
+        setRefetchFeedbackList={setRefetchFeedbackList}
       />
     </Dialog>
   );

@@ -44,6 +44,8 @@ interface DataTableProps<TData, TValue> {
   onSearch: (term: string) => void;
   searchLoading: boolean;
   toolbarType: string;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function FeedbackDataTable<TData extends FeedbackType, TValue>({
@@ -54,6 +56,8 @@ export function FeedbackDataTable<TData extends FeedbackType, TValue>({
   onSearch,
   searchTerm,
   toolbarType,
+  setFilterValue,
+  filterValue,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -93,6 +97,8 @@ export function FeedbackDataTable<TData extends FeedbackType, TValue>({
             searchLoading={searchLoading}
             onSearch={onSearch}
             searchTerm={searchTerm}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
           />
         );
 

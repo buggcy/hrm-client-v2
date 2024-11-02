@@ -21,6 +21,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import UpdateQuestionDialog from '@/app/(portal)/(hr)/hr/manage-feedbacks/component/UpdateQuestionModal';
 import ViewFeedback from '@/app/(portal)/(hr)/hr/manage-feedbacks/component/ViewFeedbackModal';
 import { QuestionAnswerType } from '@/libs/validations/hr-feedback';
 import { deleteQuestion } from '@/services/hr/hr-feedback.service';
@@ -39,12 +40,22 @@ export function QuestionAnswerRowActions({ row }: DataTableRowActionsProps) {
   const [isView, setIsView] = React.useState(false);
   const [selectedRow, setSelectedRow] =
     React.useState<QuestionAnswerType | null>(null);
+  const [isEdit, setIsEdit] = React.useState(false);
+  const [type, setType] = React.useState('');
   const data = row.original;
   const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
   const { setRefetchFeedbackList } = feedbackStore;
 
   const viewToggle = () => {
     setIsView(false);
+  };
+  const toggleEdit = () => {
+    setIsEdit(false);
+  };
+  const handleEdit = (row: QuestionAnswerType) => {
+    setType('edit');
+    setIsEdit(true);
+    setSelectedRow(row);
   };
 
   const handleView = (row: QuestionAnswerType) => {
@@ -95,7 +106,7 @@ export function QuestionAnswerRowActions({ row }: DataTableRowActionsProps) {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />{' '}
           {data?.isEnabled === false && (
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleEdit(data)}>
               <Pencil className="mr-2 size-4" />
               Edit Question
             </DropdownMenuItem>
@@ -130,6 +141,13 @@ export function QuestionAnswerRowActions({ row }: DataTableRowActionsProps) {
         onCloseChange={viewToggle}
         answerData={selectedRow}
         type={'answer'}
+      />
+      <UpdateQuestionDialog
+        isOpen={isEdit}
+        type={type}
+        showActionToggle={toggleEdit}
+        selectedRow={selectedRow}
+        setRefetchFeedbackList={setRefetchFeedbackList}
       />
     </Dialog>
   );

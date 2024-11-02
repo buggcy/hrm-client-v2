@@ -21,11 +21,15 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useFeedbackQuery } from '@/hooks/hr/useFeedback.hook';
+import {
+  useFeedbackCategoryQuery,
+  useFeedbackQuery,
+} from '@/hooks/hr/useFeedback.hook';
 import { FeedbackArrayType } from '@/libs/validations/hr-feedback';
 import { searchFeedback } from '@/services/hr/hr-feedback.service';
 import { FeedbackStoreType } from '@/stores/hr/hr-feedback';
 
+import { AddEditFeedbackModal } from './Modal/AddEditFeedbackModal';
 import QuestionAnswerTypeTable from './QuestionAnswerTable';
 
 import { MessageErrorResponse } from '@/types';
@@ -34,16 +38,29 @@ const FeedbackTable: FunctionComponent = () => {
   const [category, setCategory] = useState<string>('All');
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data: feedbackCategory, refetch: CategoryRefetch } =
+    useFeedbackCategoryQuery();
   const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
   const { setRefetchFeedbackList, refetchFeedbackList } = feedbackStore;
 
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
-
+  const [status, setStatus] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
+  const [modal, setModal] = useState(false);
+  const [modelType, setModelType] = useState('add');
+
+  const handleClose = () => {
+    setModal(false);
+  };
+
+  const handleAdd = () => {
+    setModelType('add');
+    setModal(true);
+  };
 
   const {
     data: getFeedbacks,
@@ -54,6 +71,7 @@ const FeedbackTable: FunctionComponent = () => {
   } = useFeedbackQuery({
     page,
     limit,
+    status,
   });
 
   const {
@@ -90,20 +108,36 @@ const FeedbackTable: FunctionComponent = () => {
     } else {
       void (async () => {
         await refetch();
+        await CategoryRefetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit]);
+  }, [
+    debouncedSearchTerm,
+    refetch,
+    mutate,
+    page,
+    limit,
+    CategoryRefetch,
+    status,
+  ]);
 
   useEffect(() => {}, [getFeedbacks]);
   useEffect(() => {
     if (refetchFeedbackList) {
       void (async () => {
         await refetch();
+        await CategoryRefetch();
       })();
 
       setRefetchFeedbackList(false);
     }
-  }, [refetch, refetchFeedbackList, setRefetchFeedbackList]);
+  }, [
+    CategoryRefetch,
+    refetch,
+    refetchFeedbackList,
+    setRefetchFeedbackList,
+    status,
+  ]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -144,10 +178,12 @@ const FeedbackTable: FunctionComponent = () => {
             <SelectContent>
               <SelectGroup className="text-sm">
                 <SelectItem value="All">All</SelectItem>
-                <SelectItem value="System Feedback">System Feedback</SelectItem>
-                <SelectItem value="Internship Feedback">
-                  Internship Feedback
-                </SelectItem>
+
+                {feedbackCategory?.feedbackCategories.map((type, index) => (
+                  <SelectItem key={index} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -157,7 +193,7 @@ const FeedbackTable: FunctionComponent = () => {
       {category === 'All' ? (
         <>
           <div className="mb-4 mt-6 flex justify-end">
-            <Button variant="default" size={'sm'}>
+            <Button variant="default" size={'sm'} onClick={handleAdd}>
               Add Feedback
             </Button>
           </div>
@@ -178,6 +214,8 @@ const FeedbackTable: FunctionComponent = () => {
                 onSearch={handleSearchChange}
                 searchTerm={searchTerm}
                 toolbarType={'getFeedbacks'}
+                setFilterValue={setStatus}
+                filterValue={status}
               />
             )}
           </div>
@@ -191,6 +229,12 @@ const FeedbackTable: FunctionComponent = () => {
           />
         </div>
       )}
+      <AddEditFeedbackModal
+        open={modal}
+        onCloseChange={handleClose}
+        type={modelType}
+        setRefetchFeedbackList={setRefetchFeedbackList}
+      />
     </>
   );
 };

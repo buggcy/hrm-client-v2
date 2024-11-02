@@ -47,7 +47,11 @@ export interface QuestionAnswerList {
   answers: Answers[];
   answerCount?: number;
 }
+export interface IFeedbackCategoryResponse {
+  feedbackCategories: Array<string>;
+}
 
+export type feedbackCategories = Array<string>;
 export interface FeedBackApiResponse {
   pagination: Pagination;
   data: FeedbackList[];

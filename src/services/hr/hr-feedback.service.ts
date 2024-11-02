@@ -1,3 +1,5 @@
+import { AxiosResponse } from 'axios';
+
 import {
   FeedbackApiResponse,
   FeedbackApiResponseSchema,
@@ -11,6 +13,7 @@ import { SuccessMessageResponse } from './employee.service';
 export interface FeedbackParams {
   page?: number;
   limit?: number;
+  status?: string[];
 }
 
 export const getFeedbacks = async (
@@ -19,29 +22,16 @@ export const getFeedbacks = async (
   const defaultParams: FeedbackParams = {
     page: 1,
     limit: 5,
+    status: [],
   };
 
   const mergedParams = { ...defaultParams, ...params };
 
-  const queryParams = new URLSearchParams(
-    Object.entries(mergedParams).reduce(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value.toString();
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    ),
-  );
-
   try {
-    const response = await baseAPI.get(
-      `/get/feedbacks/all?${queryParams.toString()}`,
-    );
+    const response = await baseAPI.post(`/get/feedbacks`, mergedParams);
     return schemaParse(FeedbackApiResponseSchema)(response);
   } catch (error) {
-    console.error('Error fetching feedbacks!', error);
+    console.error('Error fetching Logs list:', error);
     throw error;
   }
 };
@@ -163,42 +153,45 @@ export const enableDisableFeedback = async (payload: {
   );
   return { message };
 };
-
-export const addFeedback = async (payload: {
-  hr: string;
-  feedbackTitle?: string;
-  question?: string[];
-  feedbackCategory: string;
-  isEnabled: boolean;
-}): Promise<SuccessMessageResponse> => {
-  const { hr, feedbackTitle, question, feedbackCategory, isEnabled } = payload;
-  const { message }: SuccessMessageResponse = await baseAPI.post(
-    `/add/feedbacks`,
-    {
-      hr,
-      feedbackTitle,
-      question,
-      feedbackCategory,
-      isEnabled,
-    },
-  );
-  return { message };
-};
-interface body {
+export interface Editbody {
   feedbackTitle?: string;
   question?: string[];
   feedbackCategory?: string;
   isEnabled?: boolean;
+  deleteQuestions?: string[];
+}
+interface Addbody {
+  hr: string;
+  feedbackTitle?: string;
+  question?: string[];
+  feedbackCategory: string;
+  isEnabled?: boolean;
 }
 
-export const addMoreQuestion = async (payload: {
-  id: string;
-  body: body;
+export const addFeedback = async (payload: {
+  body: Addbody;
 }): Promise<SuccessMessageResponse> => {
-  const { id, body } = payload;
+  const { body } = payload;
   const { message }: SuccessMessageResponse = await baseAPI.post(
-    `/feedback/questions/${id}`,
+    `/add/feedbacks`,
     body,
   );
   return { message };
+};
+
+export const updateFeedback = async (payload: {
+  id: string;
+  body: Editbody;
+}): Promise<SuccessMessageResponse> => {
+  const { id, body } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/update/feedback/${id}`,
+    body,
+  );
+  return { message };
+};
+
+export const getFeedbackCategory = async (): Promise<AxiosResponse> => {
+  const res = await baseAPI.get('/feedback/category');
+  return res;
 };
