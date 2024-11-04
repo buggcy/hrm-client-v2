@@ -47,6 +47,13 @@ interface PerksDistributionProps {
 }
 
 export function PerksDistribution({ data }: PerksDistributionProps) {
+  const transformedData = data?.map(item => ({
+    ...item,
+    approved: item.approved || 0.1, // minimum threshold for display
+    rejected: item.rejected || 0.1,
+    approvedAmount: item.approvedAmount || 0.1,
+    rejectedAmount: item.rejectedAmount || 0.1,
+  }));
   return (
     <Card className="col-span-1">
       <CardHeader className="items-center pb-0">
@@ -61,7 +68,7 @@ export function PerksDistribution({ data }: PerksDistributionProps) {
           className="mx-auto aspect-square max-h-[310px]"
         >
           <RadarChart
-            data={data}
+            data={transformedData}
             margin={{
               top: 10,
               right: 10,
@@ -81,14 +88,20 @@ export function PerksDistribution({ data }: PerksDistributionProps) {
                           <div className="flex flex-row items-center gap-1">
                             <div className="h-full w-1 bg-[hsl(var(--chart-1))]"></div>
                             <span>Total Approved Amount: </span>
-                            <strong>{payload.approvedAmount} Rs</strong>
+                            <strong>
+                              {parseInt(payload.approvedAmount as string, 10)}{' '}
+                              Rs
+                            </strong>
                           </div>
                         )}
                         {name === 'rejected' && (
                           <div className="flex flex-row items-center gap-1">
                             <div className="h-full w-1 bg-[hsl(var(--chart-3))]"></div>
                             <span>Total Rejected Amount: </span>
-                            <strong>{payload.rejectedAmount} Rs</strong>
+                            <strong>
+                              {parseInt(payload.rejectedAmount as string, 10)}{' '}
+                              Rs
+                            </strong>
                           </div>
                         )}
                         <div className="flex flex-row items-center gap-1">
@@ -100,7 +113,7 @@ export function PerksDistribution({ data }: PerksDistributionProps) {
                           <span className="capitalize">
                             Total {name} Requests:{' '}
                           </span>
-                          <strong>{value}</strong>
+                          <strong>{parseInt(value as string, 10)}</strong>
                         </div>
                       </div>
                     );

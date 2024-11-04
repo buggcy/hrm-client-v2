@@ -15,7 +15,6 @@ import { RequestDistribution } from './charts/RequestDistribution';
 
 const HrDashboardCharts = () => {
   const { data } = useHrDashboardStatsQuery();
-  console.log(data);
   return (
     <div className="flex size-full flex-col gap-4">
       <div className="grid w-full grid-cols-1 gap-x-0 gap-y-4 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-0">

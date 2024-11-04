@@ -32,6 +32,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const projectProgressData = [
   {
@@ -92,85 +98,99 @@ export function ProjectProgress() {
   );
 
   return (
-    <Card className="col-span-1 flex flex-col justify-between">
-      <CardHeader className="flex-row items-start space-y-0 pb-0">
-        <div className="grid gap-1">
-          <CardTitle>Project Progress</CardTitle>
-          <CardDescription>Monthly Progress Report</CardDescription>
-        </div>
-        <Select value={selectedProject} onValueChange={setSelectedProject}>
-          <SelectTrigger
-            className="ml-auto h-7 w-[130px] rounded-lg pl-2.5"
-            aria-label="Select a project"
-          >
-            <SelectValue placeholder="Select project" />
-          </SelectTrigger>
-          <SelectContent align="end" className="rounded-xl">
-            {projectProgressData.map(project => (
-              <SelectItem
-                key={project.projectId}
-                value={project.projectId}
-                className="rounded-lg [&_span]:flex"
-              >
-                {project.projectName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto size-full max-h-[280px] min-h-[250px]"
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={projectData}
-              margin={{ top: 26, left: -22, right: 16 }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="month"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={value => value.slice(0, 3)}
-                className="capitalize"
-              />
-              <YAxis
-                dataKey="progress"
-                domain={[0, 100]}
-                tickFormatter={value => `${value}%`}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={
-                  <ChartTooltipContent
-                    indicator="line"
-                    className="capitalize"
-                  />
-                }
-              />
-              <Line
-                dataKey="progress"
-                type="monotone"
-                stroke="var(--color-progress)"
-                strokeWidth={2}
-                dot={{ fill: 'var(--color-progress)' }}
-                activeDot={{ r: 6 }}
-              >
-                <LabelList
-                  position="top"
-                  offset={12}
-                  className="fill-foreground"
-                  fontSize={12}
-                  formatter={(value: number) => `${value}%`}
-                />
-              </Line>
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+    <TooltipProvider delayDuration={100}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="col-span-1 size-full">
+            <Card className="pointer-events-none flex size-full flex-col justify-between opacity-50">
+              <CardHeader className="flex-row items-start space-y-0 pb-0">
+                <div className="grid gap-1">
+                  <CardTitle>Project Progress</CardTitle>
+                  <CardDescription>Monthly Progress Report</CardDescription>
+                </div>
+                <Select
+                  value={selectedProject}
+                  onValueChange={setSelectedProject}
+                >
+                  <SelectTrigger
+                    className="ml-auto h-7 w-[130px] rounded-lg pl-2.5"
+                    aria-label="Select a project"
+                  >
+                    <SelectValue placeholder="Select project" />
+                  </SelectTrigger>
+                  <SelectContent align="end" className="rounded-xl">
+                    {projectProgressData.map(project => (
+                      <SelectItem
+                        key={project.projectId}
+                        value={project.projectId}
+                        className="rounded-lg [&_span]:flex"
+                      >
+                        {project.projectName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer
+                  config={chartConfig}
+                  className="mx-auto size-full max-h-[280px] min-h-[250px]"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={projectData}
+                      margin={{ top: 26, left: -22, right: 16 }}
+                    >
+                      <CartesianGrid vertical={false} />
+                      <XAxis
+                        dataKey="month"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        tickFormatter={value => value.slice(0, 3)}
+                        className="capitalize"
+                      />
+                      <YAxis
+                        dataKey="progress"
+                        domain={[0, 100]}
+                        tickFormatter={value => `${value}%`}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        content={
+                          <ChartTooltipContent
+                            indicator="line"
+                            className="capitalize"
+                          />
+                        }
+                      />
+                      <Line
+                        dataKey="progress"
+                        type="monotone"
+                        stroke="var(--color-progress)"
+                        strokeWidth={2}
+                        dot={{ fill: 'var(--color-progress)' }}
+                        activeDot={{ r: 6 }}
+                      >
+                        <LabelList
+                          position="top"
+                          offset={12}
+                          className="fill-foreground"
+                          fontSize={12}
+                          formatter={(value: number) => `${value}%`}
+                        />
+                      </Line>
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Coming Soon</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
