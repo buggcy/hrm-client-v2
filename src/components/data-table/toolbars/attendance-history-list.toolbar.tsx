@@ -5,15 +5,18 @@ import type { Table } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
+import { attendance_list_status_options } from '@/components/filters';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
 import DataTableType from '@/libs/validations/data-table-type';
 import { exportAttendanceHistoryCSVData } from '@/services/employee/attendance-history.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
+
+import { DataTableFacetedFilter } from '../data-table-faceted-filter';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -22,6 +25,8 @@ interface DataTableToolbarProps<TData> {
   searchTerm: string;
   onSearch: (term: string) => void;
   searchLoading: boolean;
+  setFilterValue: (value: string[]) => void;
+  filterValue: string[];
 }
 
 export function AttendanceHistoryListToolbar<TData extends DataTableType>({
@@ -29,6 +34,8 @@ export function AttendanceHistoryListToolbar<TData extends DataTableType>({
   searchTerm,
   onSearch,
   searchLoading,
+  setFilterValue,
+  filterValue,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const selectedRowIds: string[] = table
@@ -57,15 +64,24 @@ export function AttendanceHistoryListToolbar<TData extends DataTableType>({
     }
   };
 
+  if (searchTerm) {
+    console.log('searchTerm:', searchTerm);
+  }
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
-          placeholder="Filter ..."
-          value={searchTerm}
-          onChange={event => onSearch(event.target.value)}
-          inputClassName="h-8 w-[150px] lg:w-[250px]"
+        <CustomDayPicker
+          onDateChange={date => onSearch(date?.toISOString() || '')}
+          initialDate={searchTerm ? new Date(searchTerm) : undefined}
           loading={searchLoading}
+        />
+
+        <DataTableFacetedFilter
+          onFilterChange={setFilterValue}
+          title="Status"
+          options={attendance_list_status_options}
+          filterValue={filterValue}
         />
 
         {(isFiltered || searchTerm) && (

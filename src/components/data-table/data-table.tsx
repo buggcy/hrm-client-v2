@@ -180,6 +180,8 @@ export function DataTable<TData extends DataTableType, TValue>({
             searchTerm={searchTerm}
             onSearch={onSearch}
             searchLoading={searchLoading}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
           />
         );
 
