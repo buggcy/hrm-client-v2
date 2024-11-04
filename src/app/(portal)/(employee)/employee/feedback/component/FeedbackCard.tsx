@@ -17,7 +17,8 @@ import { EmployeeFeedbackList } from '@/types/feedback.types';
 const FeedbackCard: React.FC = () => {
   const { user } = useAuthStore();
   const userId: string | undefined = user?.id;
-  const { data, error, isLoading, isFetching } = useEmployeeFeedbackQuery();
+  const { data, error, isLoading, isFetching, refetch } =
+    useEmployeeFeedbackQuery();
   const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
   const { setRefetchFeedbackList } = feedbackStore;
 
@@ -27,6 +28,12 @@ const FeedbackCard: React.FC = () => {
   const [attemptedFeedbacks, setAttemptedFeedbacks] = useState<{
     [key: string]: boolean;
   }>({});
+
+  useEffect(() => {
+    void (async () => {
+      await refetch();
+    })();
+  }, [refetch]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
