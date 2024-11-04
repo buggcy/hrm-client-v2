@@ -1,13 +1,23 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Dialog } from '@radix-ui/react-dialog';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { UserRoundPen } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioInput } from '@/components/ui/radio';
@@ -19,6 +29,8 @@ import { useTypesQuery } from '@/hooks/types.hook';
 import { EditProfile } from '@/services/hr/employee.service';
 import { useAuthStore } from '@/stores/auth';
 import { validateFile } from '@/utils/fileValidation.utils';
+
+import ImageUpload from './uploadImage';
 
 import { MessageErrorResponse } from '@/types';
 import { User } from '@/types/user.types';
@@ -41,6 +53,8 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
   const { data } = useReadEmployeeRecordQuery(userId, {
     enabled: !!userId,
   });
+  const [updatedImg, setUpdatedImg] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { isLoading } = useTypesQuery();
   const {
@@ -94,10 +108,9 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       });
     },
   });
-
   const onSubmit = (data: EditPasswordFormData) => {
     const fileInput = document.getElementById('file') as HTMLInputElement;
-    const file = fileInput.files ? fileInput.files[0] : null;
+    const file = fileInput?.files ? fileInput.files[0] : null;
 
     const fileError = validateFile(file);
     if (fileError) {
@@ -115,9 +128,12 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
     formData.append('availability', data.availability);
     formData.append('profileDescription', data.profileDescription);
 
-    if (file) {
-      formData.append('Avatar', file);
+    const avatar = file || updatedImg;
+
+    if (avatar) {
+      formData.append('Avatar', avatar);
     }
+
     const payload = {
       id: user.id,
       formData,
@@ -127,39 +143,59 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
 
   return (
     <>
-      <div className="mb-2 mt-4 text-base font-normal dark:text-white">
-        Profile Edit
+      <div className="mb-2 mt-4 flex items-center justify-between text-base font-normal dark:text-white">
+        <div className="mt-0">Profile Edit</div>
+        <div className="relative inline-block transition-opacity hover:opacity-75">
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <div
+                className="absolute inset-0 cursor-pointer rounded-full bg-primary"
+                style={{
+                  padding: `${120 * 0.04}px`,
+                }}
+              >
+                <Avatar className="size-full border-4 border-background">
+                  <AvatarImage src={user?.Avatar || ''} alt={user?.firstName} />
+                  <AvatarFallback className="uppercase">
+                    {`${user?.firstName?.charAt(0) || ''} ${user?.lastName?.charAt(0) || ''}`}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100">
+                  <UserRoundPen className="rounded-full bg-black p-2 text-white" />
+                </div>
+              </div>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="mb-2 text-center">
+                  Upload your Photo
+                </DialogTitle>
+                <DialogDescription className="text-center">
+                  Please select a clear, high-resolution image.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="mx-auto grid gap-4 py-4">
+                <ImageUpload
+                  initialAvatar={data?.output.employee.Avatar ?? ''}
+                  onSave={image => {
+                    setUpdatedImg(image);
+                    setDialogOpen(false);
+                  }}
+                />
+              </div>
+            </DialogContent>
+          </Dialog>
+          <div
+            style={{
+              width: `${120}px`,
+              height: `${120}px`,
+            }}
+          />
+        </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-2 mt-4 text-xs text-gray-600 dark:text-gray-300">
           Required
-        </div>
-        <div className="mb-4 grid grid-cols-12 gap-4 text-sm">
-          <Label
-            htmlFor="file"
-            className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-          >
-            Upload Your Avatar
-          </Label>
-          <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-            <Controller
-              name="file"
-              control={control}
-              render={({ field }) => (
-                <Input
-                  type={'file'}
-                  id="file"
-                  placeholder="Browse for a file to upload..."
-                  {...field}
-                />
-              )}
-            />{' '}
-            <span className="text-xs text-gray-500">
-              {
-                ' JPG, GIF, PNG, MOV and AVI. Please choose a files under 2GB to upload. File sizes are 400 x 300px.'
-              }
-            </span>
-          </div>
         </div>
 
         <div className="mb-4 grid grid-cols-12 gap-4">
