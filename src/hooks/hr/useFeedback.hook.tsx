@@ -2,6 +2,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import {
   FeedbackParams,
+  getEmployeeFeedback,
   getFeedbackCardData,
   getFeedbackCategory,
   getFeedbacks,
@@ -10,6 +11,7 @@ import {
 
 import { UseQueryConfig } from '@/types';
 import {
+  EmployeeFeedbackApiResponse,
   FeedBackApiResponse,
   FeedbackRecordApiResponse,
   IFeedbackCategoryResponse,
@@ -67,3 +69,13 @@ export const useFeedbackRecordQuery = (
     ...config,
     enabled: !!category,
   }) as UseQueryResult<FeedbackRecordApiResponse, Error>;
+
+export const useEmployeeFeedbackQuery = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['getEmployeeFeedback'],
+    queryFn: () => getEmployeeFeedback(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<EmployeeFeedbackApiResponse, Error>;

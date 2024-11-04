@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 
 import {
+  EmployeeFeedbackApiResponseSchema,
   FeedbackApiResponse,
   FeedbackApiResponseSchema,
   FeedbackCardApiResponseSchema,
@@ -205,4 +206,34 @@ export const getFeedbackCardData = async (category: string) => {
     console.error('Error fetching feedback records!', error);
     throw error;
   }
+};
+
+export const getEmployeeFeedback = async () => {
+  try {
+    const response = await baseAPI.get(`/active/feedbacks`);
+    return schemaParse(EmployeeFeedbackApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching emmployee feedback!', error);
+    throw error;
+  }
+};
+interface Answer {
+  questionId: string;
+  answerText: string;
+}
+
+interface Answerbody {
+  userId: string;
+  answer: Answer[];
+}
+export const addAnswer = async (payload: {
+  id: string;
+  body: Answerbody;
+}): Promise<SuccessMessageResponse> => {
+  const { id, body } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/add/answers/${id}`,
+    body,
+  );
+  return { message };
 };

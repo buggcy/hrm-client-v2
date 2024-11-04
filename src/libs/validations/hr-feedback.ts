@@ -41,11 +41,6 @@ const FeedbackSchema = z.object({
   updatedAt: z.string().optional(),
 });
 
-const FeedbackApiResponseSchema = z.object({
-  pagination: paginationSchema,
-  data: z.array(FeedbackSchema),
-});
-
 const QuestionAnswerSchema = z.object({
   feedbackId: z.string().optional(),
   _id: z.string().optional(),
@@ -56,10 +51,6 @@ const QuestionAnswerSchema = z.object({
   answers: z.array(answerSchema).optional(),
 });
 
-const QuestionAnswerApiResponseSchema = z.object({
-  pagination: paginationSchema,
-  data: z.array(QuestionAnswerSchema),
-});
 const feedbackRecordSchema = z.object({
   totalUsers: z.number(),
   averagePercentage: z.number(),
@@ -68,13 +59,43 @@ const feedbackRecordSchema = z.object({
   notSatisfyPercentage: z.number(),
 });
 
+const EmployeeFeedbackSchema = z.object({
+  _id: z.string().optional(),
+  feedbackCategory: z.string().optional(),
+  feedbackTitle: z.string().optional(),
+  questions: z.array(questionSchema),
+  userToAttempted: z.array(z.string()),
+});
+
+const FeedbackApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(FeedbackSchema),
+});
+
+const QuestionAnswerApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(QuestionAnswerSchema),
+});
+
 const FeedbackCardApiResponseSchema = z.object({
   data: feedbackRecordSchema,
+});
+
+const EmployeeFeedbackApiResponseSchema = z.object({
+  data: z.array(EmployeeFeedbackSchema),
 });
 
 export type FeedbackApiResponse = z.infer<typeof FeedbackApiResponseSchema>;
 export type FeedbackType = z.infer<typeof FeedbackSchema>;
 export type FeedbackArrayType = z.infer<typeof FeedbackSchema>[] | [];
+
+export type EmployeeFeedbackApiResponse = z.infer<
+  typeof EmployeeFeedbackApiResponseSchema
+>;
+export type EmployeeFeedbackType = z.infer<typeof EmployeeFeedbackSchema>;
+export type EmployeeFeedbackArrayType =
+  | z.infer<typeof EmployeeFeedbackSchema>[]
+  | [];
 
 export type FeedbackCardApiResponse = z.infer<
   typeof FeedbackCardApiResponseSchema
@@ -90,6 +111,7 @@ export type QuestionAnswerArrayType =
   | [];
 
 export {
+  EmployeeFeedbackApiResponseSchema,
   QuestionAnswerApiResponseSchema,
   FeedbackCardApiResponseSchema,
   FeedbackApiResponseSchema,

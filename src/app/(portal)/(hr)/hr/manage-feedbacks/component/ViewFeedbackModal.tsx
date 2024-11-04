@@ -84,8 +84,14 @@ const ViewFeedback = ({
                         </div>
                       </div>
                       <div className="w-1/2">
-                        <p className="truncate text-sm text-gray-600 dark:text-gray-300">
-                          {answerItem.answer}
+                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                          {answerItem?.answer ? (
+                            answerItem?.answer
+                          ) : (
+                            <span className="text-red-500">
+                              User skipped this question
+                            </span>
+                          )}
                         </p>
                       </div>
                     </div>

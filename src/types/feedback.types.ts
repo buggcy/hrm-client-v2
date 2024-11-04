@@ -47,11 +47,20 @@ export interface QuestionAnswerList {
   answers: Answers[];
   answerCount?: number;
 }
+
 export interface IFeedbackCategoryResponse {
   feedbackCategories: Array<string>;
 }
+export interface EmployeeFeedbackList {
+  _id: string;
+  feedbackTitle: string;
+  questions: Questions[];
+  feedbackCategory: string;
+  userToAttempted: string[];
+}
 
 export type feedbackCategories = Array<string>;
+
 export interface FeedBackApiResponse {
   pagination: Pagination;
   data: FeedbackList[];
@@ -70,4 +79,8 @@ export interface FeedbackRecordApiResponse {
     excellentPercentage: number;
     notSatisfyPercentage: number;
   };
+}
+
+export interface EmployeeFeedbackApiResponse {
+  data: EmployeeFeedbackList[];
 }

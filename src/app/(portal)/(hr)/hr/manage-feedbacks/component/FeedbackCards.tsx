@@ -34,7 +34,7 @@ const Cards: FunctionComponent<CardsProps> = ({
         <div className="flex flex-col gap-4">
           <p className="text-xs">{title}</p>
           <p className="truncate text-xl font-bold md:text-2xl">
-            {title === 'Total Users' ? value : `${value}%`}
+            {title === 'Total Users' ? value : `${Math.round(value || 0)}%`}
           </p>
         </div>
       </CardContent>
