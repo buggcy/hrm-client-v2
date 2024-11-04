@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useEmployeeFeedbackQuery } from '@/hooks/hr/useFeedback.hook';
@@ -11,24 +12,18 @@ import { FeedbackStoreType } from '@/stores/hr/hr-feedback';
 
 import FeedbackForm from './feedbackForm';
 
-interface Feedbacks {
-  _id: string;
-  feedbackTitle: string;
-  feedbackCategory: string;
-  questions: Array<{ _id: string; questionText: string; timestamp: string }>;
-}
+import { EmployeeFeedbackList } from '@/types/feedback.types';
 
 const FeedbackCard: React.FC = () => {
   const { user } = useAuthStore();
   const userId: string | undefined = user?.id;
-  const { data } = useEmployeeFeedbackQuery();
+  const { data, error, isLoading, isFetching } = useEmployeeFeedbackQuery();
   const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
   const { setRefetchFeedbackList } = feedbackStore;
 
   const [showForm, setShowForm] = useState(false);
-  const [selectedFeedback, setSelectedFeedback] = useState<Feedbacks | null>(
-    null,
-  );
+  const [selectedFeedback, setSelectedFeedback] =
+    useState<EmployeeFeedbackList | null>(null);
   const [attemptedFeedbacks, setAttemptedFeedbacks] = useState<{
     [key: string]: boolean;
   }>({});
@@ -51,7 +46,7 @@ const FeedbackCard: React.FC = () => {
     }
   }, [data]);
 
-  const handleFeedbackClick = (feedback: Feedbacks) => {
+  const handleFeedbackClick = (feedback: EmployeeFeedbackList) => {
     if (!attemptedFeedbacks[feedback._id]) {
       setSelectedFeedback(feedback);
       setShowForm(true);
@@ -68,56 +63,69 @@ const FeedbackCard: React.FC = () => {
       setShowForm(false);
     }
   };
+  if (error)
+    return (
+      <div className="py-4 text-center text-red-500">
+        Error: {error.message}
+      </div>
+    );
 
   return (
-    <div className="flex justify-center p-4">
-      {showForm && selectedFeedback ? (
-        <FeedbackForm
-          title={selectedFeedback.feedbackTitle}
-          id={selectedFeedback._id}
-          questions={selectedFeedback.questions}
-          onSubmit={handleFormSubmit}
-          onClose={() => setShowForm(false)}
-          userId={userId}
-          setRefetchFeedbackList={setRefetchFeedbackList}
-        />
-      ) : data?.data && data?.data?.length > 0 ? (
-        <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {data?.data?.map(feedback => {
-            const isUserAttempted = feedback?.userToAttempted?.includes(
-              userId || '',
-            );
-            const isFeedbackAttempted =
-              attemptedFeedbacks[feedback._id] || isUserAttempted;
-            return (
-              <Card
-                key={feedback._id}
-                className="flex flex-col items-center p-6 shadow-md hover:shadow-lg"
-              >
-                <h3 className="mb-4 text-center text-xl font-semibold text-gray-600 dark:text-gray-300">
-                  {feedback.feedbackCategory}
-                </h3>
-                <Button
-                  variant={isFeedbackAttempted ? 'card' : 'default'}
-                  size={'sm'}
-                  onClick={() => handleFeedbackClick(feedback)}
-                  disabled={isFeedbackAttempted}
-                >
-                  {isFeedbackAttempted
-                    ? 'Feedback Submitted'
-                    : 'Quick Feedback'}
-                </Button>
-              </Card>
-            );
-          })}
-        </div>
+    <>
+      {isLoading || isFetching ? (
+        <Skeleton className="h-8 w-full" />
       ) : (
-        <p className="w-full text-base font-medium text-gray-600 dark:text-gray-300">
-          We are preparing a feedback to conduct user thoughts and experiences.
-          Please connect with us, stay tuned! The feedback form will air soon.
-        </p>
+        <div className="flex justify-center p-4">
+          {showForm && selectedFeedback ? (
+            <FeedbackForm
+              title={selectedFeedback.feedbackTitle}
+              id={selectedFeedback._id}
+              questions={selectedFeedback.questions}
+              onSubmit={handleFormSubmit}
+              onClose={() => setShowForm(false)}
+              userId={userId}
+              setRefetchFeedbackList={setRefetchFeedbackList}
+            />
+          ) : data?.data && data?.data?.length > 0 ? (
+            <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {data?.data?.map(feedback => {
+                const isUserAttempted = feedback?.userToAttempted?.includes(
+                  userId || '',
+                );
+                const isFeedbackAttempted =
+                  attemptedFeedbacks[feedback._id] || isUserAttempted;
+                return (
+                  <Card
+                    key={feedback._id}
+                    className="flex flex-col items-center p-6 shadow-md hover:shadow-lg"
+                  >
+                    <h3 className="mb-4 text-center text-xl font-semibold text-gray-600 dark:text-gray-300">
+                      {feedback.feedbackCategory}
+                    </h3>
+                    <Button
+                      variant={isFeedbackAttempted ? 'card' : 'default'}
+                      size={'sm'}
+                      onClick={() => handleFeedbackClick(feedback)}
+                      disabled={isFeedbackAttempted}
+                    >
+                      {isFeedbackAttempted
+                        ? 'Feedback Submitted'
+                        : 'Quick Feedback'}
+                    </Button>
+                  </Card>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="w-full text-base font-medium text-gray-600 dark:text-gray-300">
+              We are preparing a feedback to conduct user thoughts and
+              experiences. Please connect with us, stay tuned! The feedback form
+              will air soon.
+            </p>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

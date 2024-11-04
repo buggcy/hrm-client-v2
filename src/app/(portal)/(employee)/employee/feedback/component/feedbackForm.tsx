@@ -7,22 +7,18 @@ import { X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { RadioInput } from '@/components/ui/radio';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 
 import { addAnswer } from '@/services/hr/hr-feedback.service';
 
 import { MessageErrorResponse } from '@/types';
-
-interface Question {
-  _id: string;
-  questionText: string;
-  timestamp: string;
-}
+import { Questions } from '@/types/feedback.types';
 
 interface FeedbackFormProps {
   title: string;
-  questions: Question[];
+  questions: Questions[];
   onSubmit: () => void;
   onClose: () => void;
   userId?: string;
@@ -155,28 +151,21 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
               <div className="flex w-full flex-col gap-3">
                 {['Average', 'Good', 'Excellent', 'Not Satisfied'].map(
                   option => (
-                    <label
+                    <RadioInput
                       key={option}
-                      className="flex cursor-pointer items-center gap-3"
-                    >
-                      <input
-                        type="radio"
-                        name={`question-${currentQuestion._id}`}
-                        value={option}
-                        checked={
-                          answers.find(
-                            answer => answer.questionId === currentQuestion._id,
-                          )?.answerText === option
-                        }
-                        onChange={() =>
-                          handleOptionChange(currentQuestion._id, option)
-                        }
-                        className="size-4 border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="text-gray-600 dark:text-gray-300">
-                        {option}
-                      </span>
-                    </label>
+                      id={`question-${currentQuestion._id}-${option}`}
+                      name={`question-${currentQuestion._id}`}
+                      value={option}
+                      checked={
+                        answers.find(
+                          answer => answer.questionId === currentQuestion._id,
+                        )?.answerText === option
+                      }
+                      onChange={() =>
+                        handleOptionChange(currentQuestion._id, option)
+                      }
+                      label={option}
+                    />
                   ),
                 )}
               </div>
