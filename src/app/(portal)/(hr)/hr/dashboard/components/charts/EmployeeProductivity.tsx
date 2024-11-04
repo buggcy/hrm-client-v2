@@ -104,7 +104,7 @@ export function EmployeeProductivity({ data }: EmployeeProductivityProps) {
               <LabelList
                 position="insideStart"
                 dataKey="day"
-                className="fill-white capitalize mix-blend-luminosity"
+                className="fill-foreground capitalize"
                 fontSize={11}
               />
             </RadialBar>
