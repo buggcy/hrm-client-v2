@@ -12,12 +12,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-export const description = 'A donut chart with text';
+import { HrStatsPayrollCount } from '@/libs/validations/hr-dashboard';
 
-const chartData = [
-  { type: 'paid', count: 275, fill: 'var(--color-paid)' },
-  { type: 'unpaid', count: 200, fill: 'var(--color-unpaid)' },
-];
+export const description = 'A donut chart with text';
 
 const chartConfig = {
   count: {
@@ -33,13 +30,25 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PayrollDistribution() {
+interface PayrollDistributionProps {
+  data?: HrStatsPayrollCount;
+}
+
+export function PayrollDistribution({ data }: PayrollDistributionProps) {
+  const chartData = React.useMemo(
+    () => [
+      { type: 'paid', count: data?.paid || 0, fill: 'var(--color-paid)' },
+      { type: 'unpaid', count: data?.unpaid || 0, fill: 'var(--color-unpaid)' },
+    ],
+    [data],
+  );
+
   const totalEmployees = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.count, 0);
-  }, []);
+  }, [chartData]);
 
   return (
-    <Card className="flex min-h-[250px] flex-col">
+    <Card className="col-span-1 flex min-h-[250px] flex-col">
       <CardHeader className="items-center pb-2">
         <CardTitle>Payroll Data</CardTitle>
       </CardHeader>
@@ -48,13 +57,13 @@ export function PayrollDistribution() {
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
             <p>
-              <span className="font-bold">275</span> Paid
+              <span className="font-bold">{data?.paid || 0}</span> Paid
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
             <p>
-              <span className="font-bold">200</span> Un-Paid
+              <span className="font-bold">{data?.unpaid || 0}</span> Un-Paid
             </p>
           </div>
         </div>

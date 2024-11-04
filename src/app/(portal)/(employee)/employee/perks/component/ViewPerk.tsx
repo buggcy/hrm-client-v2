@@ -8,12 +8,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import { PerkListType } from '@/libs/validations/perk';
+import { TransformedPerkData } from '@/libs/validations/perk';
 
 interface ViewPerkProps {
   open: boolean;
   onCloseChange: (open: boolean) => void;
-  viewData?: PerkListType | null;
+  viewData?: TransformedPerkData | null;
 }
 const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
   return (
@@ -65,7 +65,7 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
             </div>
             <div className="w-6/12">
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                {viewData?.assignedDecrementAmount} PKR
+                {viewData?.incrementAmount} PKR
               </p>
             </div>
           </div>

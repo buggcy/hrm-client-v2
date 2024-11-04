@@ -17,16 +17,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-export const description = 'A radial chart with a label';
+import { HrStatsProductivityData } from '@/libs/validations/hr-dashboard';
 
-const chartData = [
-  { day: '', productivity: 100, fill: 'var(--color-other)' },
-  { day: 'Monday', productivity: 79, fill: 'var(--color-Monday)' },
-  { day: 'Tuesday', productivity: 60, fill: 'var(--color-Tuesday)' },
-  { day: 'Wednesday', productivity: 71, fill: 'var(--color-Wednesday)' },
-  { day: 'Thursday', productivity: 76, fill: 'var(--color-Thursday)' },
-  { day: 'Friday', productivity: 85, fill: 'var(--color-Friday)' },
-];
+export const description = 'A radial chart with a label';
 
 const chartConfig = {
   productivity: {
@@ -54,9 +47,40 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function EmployeeProductivity() {
+interface EmployeeProductivityProps {
+  data?: HrStatsProductivityData;
+}
+
+export function EmployeeProductivity({ data }: EmployeeProductivityProps) {
+  const chartData = [
+    {
+      day: 'Monday',
+      productivity: data?.Monday || 0,
+      fill: 'var(--color-Monday)',
+    },
+    {
+      day: 'Tuesday',
+      productivity: data?.Tuesday || 0,
+      fill: 'var(--color-Tuesday)',
+    },
+    {
+      day: 'Wednesday',
+      productivity: data?.Wednesday || 0,
+      fill: 'var(--color-Wednesday)',
+    },
+    {
+      day: 'Thursday',
+      productivity: data?.Thursday || 0,
+      fill: 'var(--color-Thursday)',
+    },
+    {
+      day: 'Friday',
+      productivity: data?.Friday || 0,
+      fill: 'var(--color-Friday)',
+    },
+  ];
   return (
-    <Card className="flex flex-col">
+    <Card className="col-span-1 flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Employee Productivity</CardTitle>
       </CardHeader>

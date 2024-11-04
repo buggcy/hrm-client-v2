@@ -18,54 +18,10 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
+import { HrStatsPerkDistributionData } from '@/libs/validations/hr-dashboard';
 import { cn } from '@/utils';
 
 export const description = 'A radar chart with a custom label';
-
-const chartData = [
-  {
-    month: 'May',
-    approved: 186,
-    rejected: 80,
-    approvedAmount: 14000,
-    rejectedAmount: 8000,
-  },
-  {
-    month: 'June',
-    approved: 305,
-    rejected: 200,
-    approvedAmount: 14000,
-    rejectedAmount: 6000,
-  },
-  {
-    month: 'July',
-    approved: 237,
-    rejected: 120,
-    approvedAmount: 14000,
-    rejectedAmount: 6600,
-  },
-  {
-    month: 'August',
-    approved: 73,
-    rejected: 190,
-    approvedAmount: 14000,
-    rejectedAmount: 7000,
-  },
-  {
-    month: 'September',
-    approved: 209,
-    rejected: 130,
-    approvedAmount: 14000,
-    rejectedAmount: 7500,
-  },
-  {
-    month: 'October',
-    approved: 214,
-    rejected: 140,
-    approvedAmount: 14000,
-    rejectedAmount: 8000,
-  },
-];
 
 const chartConfig = {
   approved: {
@@ -86,7 +42,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PerksDistribution() {
+interface PerksDistributionProps {
+  data?: HrStatsPerkDistributionData[];
+}
+
+export function PerksDistribution({ data }: PerksDistributionProps) {
   return (
     <Card className="col-span-1">
       <CardHeader className="items-center pb-0">
@@ -101,7 +61,7 @@ export function PerksDistribution() {
           className="mx-auto aspect-square max-h-[310px]"
         >
           <RadarChart
-            data={chartData}
+            data={data}
             margin={{
               top: 10,
               right: 10,
@@ -151,7 +111,9 @@ export function PerksDistribution() {
             <PolarAngleAxis
               dataKey="month"
               tick={({ x, y, textAnchor, index, ...props }) => {
-                const data = chartData[index];
+                const chartData = data
+                  ? data[index]
+                  : { approved: '', rejected: '', month: '' };
 
                 return (
                   <text
@@ -162,16 +124,20 @@ export function PerksDistribution() {
                     fontWeight={500}
                     {...props}
                   >
-                    <tspan className="fill-foreground">{data.approved}</tspan>
+                    <tspan className="fill-foreground">
+                      {chartData.approved}
+                    </tspan>
                     <tspan className="fill-muted-foreground">/</tspan>
-                    <tspan className="fill-foreground">{data.rejected}</tspan>
+                    <tspan className="fill-foreground">
+                      {chartData.rejected}
+                    </tspan>
                     <tspan
                       x={x}
                       dy={'1rem'}
                       fontSize={12}
                       className="fill-muted-foreground"
                     >
-                      {data.month}
+                      {chartData.month}
                     </tspan>
                   </text>
                 );

@@ -59,6 +59,7 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
     setSelectedEmployeeData(data?.data.find(employee => employee.id === value));
   };
   const [perkData, setPerkData] = useState<HrEmployeeAllPerksApiResponse>();
+  console.log(perkData);
   const { data } = useHrPerksEmpoyeeQuery();
 
   const { data: employeePerks } = useHrEmpoyeeAllPerksQuery(

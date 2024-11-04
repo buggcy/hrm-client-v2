@@ -10,11 +10,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-export const description = 'A radial chart with stacked sections';
+import { HrStatsPendingRequests } from '@/libs/validations/hr-dashboard';
 
-const chartData = [
-  { month: 'january', employee: 21, leave: 27, perk: 20, resignation: 10 },
-];
+export const description = 'A radial chart with stacked sections';
 
 const chartConfig = {
   employee: {
@@ -35,7 +33,20 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function RequestDistribution() {
+interface RequestDistributionProps {
+  data?: HrStatsPendingRequests;
+}
+
+export function RequestDistribution({ data }: RequestDistributionProps) {
+  const chartData = [
+    {
+      month: 'january',
+      employee: data?.employee || 0,
+      leave: data?.leave || 0,
+      perk: data?.perk || 0,
+      resignation: data?.resignation || 0,
+    },
+  ];
   const totalRequests =
     chartData[0].employee +
     chartData[0].leave +
@@ -43,7 +54,7 @@ export function RequestDistribution() {
     chartData[0].resignation;
 
   return (
-    <Card className="flex min-h-[250px] flex-col">
+    <Card className="col-span-1 flex min-h-[250px] flex-col">
       <CardHeader className="items-center pb-2">
         <CardTitle>Pending Requests</CardTitle>
       </CardHeader>
@@ -52,25 +63,37 @@ export function RequestDistribution() {
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
             <p>
-              <span className="font-bold">21</span> Employee
+              <span className="font-bold">
+                {data?.employee.toLocaleString() || 0}
+              </span>{' '}
+              Employee
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
             <p>
-              <span className="font-bold">27</span> Leave
+              <span className="font-bold">
+                {data?.leave.toLocaleString() || 0}
+              </span>{' '}
+              Leave
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
             <p>
-              <span className="font-bold">20</span> Perk
+              <span className="font-bold">
+                {data?.perk.toLocaleString() || 0}
+              </span>{' '}
+              Perk
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
             <p>
-              <span className="font-bold">10</span> Resignation
+              <span className="font-bold">
+                {data?.resignation.toLocaleString() || 0}
+              </span>{' '}
+              Resignation
             </p>
           </div>
         </div>

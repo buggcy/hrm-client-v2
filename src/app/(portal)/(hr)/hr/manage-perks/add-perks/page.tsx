@@ -25,6 +25,7 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
 
   const router = useRouter();
   const { data: perkRequests } = useHrPerkRequestsQuery({});
+  console.log(perkRequests);
 
   const handleDialogOpen = () => {
     setDialogOpen(true);

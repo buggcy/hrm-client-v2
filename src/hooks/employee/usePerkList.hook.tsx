@@ -45,7 +45,7 @@ export const usePerkRecordQuery = (
   useQuery({
     queryKey: ['perkRecords', id, params],
     queryFn: () => getPerkRecords(params, id),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,

@@ -26,7 +26,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { PerkListType } from '@/libs/validations/perk';
+import { TransformedPerkData } from '@/libs/validations/perk';
 
 import { DataTablePagination } from './data-table-pagination';
 import { EmployeePerkListToolbar } from './toolbars/employee-perk-list.toolbar';
@@ -48,7 +48,10 @@ interface DataTableProps<TData, TValue> {
   filterValue: string[];
 }
 
-export function EmployeePerkDataTable<TData extends PerkListType, TValue>({
+export function EmployeePerkDataTable<
+  TData extends TransformedPerkData,
+  TValue,
+>({
   columns,
   data,
   pagination,

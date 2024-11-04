@@ -51,23 +51,44 @@ const availablePerkSchema = z.object({
   decrementAmount: z.number(),
 });
 
+const employeePerkApplicationSchema = z.object({
+  appliedAmount: z.number(),
+  hrApproval: z.string(),
+  decisionDate: z.string().optional().nullable(),
+  dateApplied: z.string(),
+  Proof_Document: z.string().optional(),
+  _id: z.string(),
+});
+
+const transformedPerkDataSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  incrementAmount: employeePerkApplicationSchema.shape.appliedAmount,
+  dateApplied: employeePerkApplicationSchema.shape.dateApplied,
+  decisionDate: employeePerkApplicationSchema.shape.decisionDate,
+  hrApproval: employeePerkApplicationSchema.shape.hrApproval,
+  userId: z.string(),
+  requestId: employeePerkApplicationSchema.shape._id,
+  assignedIncrementAmount: z.number(),
+  description: z.string(),
+});
+
+export type TransformedPerkData = z.infer<typeof transformedPerkDataSchema>;
+
 const perkListSchema = z.object({
   _id: z.string(),
   description: z.string(),
   name: z.string(),
-  document: z.string(),
   decrementAmount: z.number(),
+  incrementApplications: z.array(employeePerkApplicationSchema).optional(),
+  userId: z.string(),
   assignedDecrementAmount: z.number(),
   assignedIncrementAmount: z.number(),
-  incrementAmount: z.number(),
   __v: z.number(),
-  hrApproval: z.enum(hrApproval).optional(),
   isAvailable: z.boolean(),
   isAvailed: z.boolean(),
   salaryDecrement: z.boolean(),
   salaryIncrement: z.boolean(),
-  dateApplied: z.string().optional(),
-  decisionDate: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
@@ -80,8 +101,25 @@ const perkApiResponseSchema = z.object({
 const perkRecordApiResponseSchema = z.object({
   records: recordSchema,
   averages: averageSchema,
-  availableData: z.array(availablePerkSchema),
-  approvedData: z.array(availablePerkSchema),
+  availableData: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      assignedIncrementAmount: z.number(),
+      incrementAmount: z.number(),
+      differenceIncrementAmount: z.number(),
+    }),
+  ),
+  approvedData: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      assignedIncrementAmount: z.number(),
+      incrementAmount: z.number(),
+      assignedDecrementAmount: z.number(),
+      decrementAmount: z.number(),
+    }),
+  ),
 });
 
 export type PerkApiResponse = z.infer<typeof perkApiResponseSchema>;

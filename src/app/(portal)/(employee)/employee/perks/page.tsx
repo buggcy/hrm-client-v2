@@ -53,10 +53,8 @@ const Perk: FunctionComponent<PerkProps> = () => {
         <PerkModal
           open={modal}
           onCloseChange={handleClose}
-          type={modelType}
           user={user}
           perks={modelType === 'add' && Array.isArray(data) ? data : []}
-          perkToEdit={null}
         />
       )}
     </Layout>

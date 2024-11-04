@@ -21,10 +21,10 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { PerkModal } from '@/app/(portal)/(employee)/employee/perks/component/PerkModal';
+import { EditPerkModal } from '@/app/(portal)/(employee)/employee/perks/component/EditPerkModal';
 import ViewPerk from '@/app/(portal)/(employee)/employee/perks/component/ViewPerk';
 import { useAllPerkQuery } from '@/hooks/employee/usePerkList.hook';
-import { PerkListType } from '@/libs/validations/perk';
+import { TransformedPerkData } from '@/libs/validations/perk';
 import { unAvailPerk } from '@/services/employee/perk.service';
 import { useAuthStore } from '@/stores/auth';
 import { PerkStoreType } from '@/stores/employee/perks';
@@ -32,7 +32,7 @@ import { PerkStoreType } from '@/stores/employee/perks';
 import { MessageErrorResponse } from '@/types';
 
 interface DataTableRowActionsProps {
-  row: Row<PerkListType>;
+  row: Row<TransformedPerkData>;
 }
 
 export function PerkListRowActions({ row }: DataTableRowActionsProps) {
@@ -40,9 +40,8 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
   const [modal, setModal] = React.useState(false);
   const [isView, setIsView] = React.useState(false);
   const [modelType, setModelType] = React.useState('');
-  const [selectedPerk, setSelectedPerk] = React.useState<PerkListType | null>(
-    null,
-  );
+  const [selectedPerk, setSelectedPerk] =
+    React.useState<TransformedPerkData | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
   const data = row.original;
@@ -74,10 +73,11 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
     },
   });
   const handleDelete = () => {
-    if (userId && data?._id) {
+    if (userId && data?.id) {
       const payload = {
         employeeId: userId,
-        perkId: data._id,
+        perkId: data.id,
+        applicationId: data.requestId,
       };
 
       mutate(payload);
@@ -89,13 +89,13 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
   const viewToggle = () => {
     setIsView(false);
   };
-  const handleEdit = (perk: PerkListType) => {
+  const handleEdit = (perk: TransformedPerkData) => {
     setSelectedPerk(perk);
     setModelType('edit');
     setModal(true);
   };
 
-  const handleView = (perk: PerkListType) => {
+  const handleView = (perk: TransformedPerkData) => {
     setSelectedPerk(perk);
     setIsView(true);
   };
@@ -156,12 +156,10 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
         handleDelete={handleDelete}
       />
       {user && (
-        <PerkModal
+        <EditPerkModal
           open={modal}
           onCloseChange={handleClose}
-          type={modelType}
           user={user}
-          perks={[]}
           perkToEdit={modelType === 'edit' ? selectedPerk : null}
         />
       )}

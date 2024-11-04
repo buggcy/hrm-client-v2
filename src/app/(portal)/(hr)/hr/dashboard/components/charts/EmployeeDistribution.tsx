@@ -12,13 +12,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-export const description = 'A donut chart with text';
+import { HrStatsEmployeeCount } from '@/libs/validations/hr-dashboard';
 
-const chartData = [
-  { employee: 'intern', count: 275, fill: 'var(--color-intern)' },
-  { employee: 'probational', count: 200, fill: 'var(--color-probational)' },
-  { employee: 'fullTime', count: 287, fill: 'var(--color-fullTime)' },
-];
+export const description = 'A donut chart with text';
 
 const chartConfig = {
   count: {
@@ -38,13 +34,37 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function EmployeeDistribution() {
+interface EmployeeDistributionProps {
+  data?: HrStatsEmployeeCount;
+}
+
+export function EmployeeDistribution({ data }: EmployeeDistributionProps) {
+  const chartData = React.useMemo(
+    () => [
+      {
+        employee: 'intern',
+        count: data?.intern || 0,
+        fill: 'var(--color-intern)',
+      },
+      {
+        employee: 'probational',
+        count: data?.probational || 0,
+        fill: 'var(--color-probational)',
+      },
+      {
+        employee: 'fullTime',
+        count: data?.fullTime || 0,
+        fill: 'var(--color-fullTime)',
+      },
+    ],
+    [data],
+  );
   const totalEmployees = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.count, 0);
-  }, []);
+  }, [chartData]);
 
   return (
-    <Card className="flex min-h-[250px] flex-col">
+    <Card className="col-span-1 flex min-h-[250px] flex-col">
       <CardHeader className="items-center pb-2">
         <CardTitle>Employees</CardTitle>
       </CardHeader>
@@ -53,19 +73,20 @@ export function EmployeeDistribution() {
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
             <p>
-              <span className="font-bold">275</span> Full Time
+              <span className="font-bold">{data?.fullTime || 0}</span> Full Time
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
             <p>
-              <span className="font-bold">200</span> Probational
+              <span className="font-bold">{data?.probational || 0}</span>{' '}
+              Probational
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
             <p>
-              <span className="font-bold">287</span> Intern
+              <span className="font-bold">{data?.intern || 0}</span> Intern
             </p>
           </div>
         </div>

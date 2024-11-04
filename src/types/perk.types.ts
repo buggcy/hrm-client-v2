@@ -5,17 +5,24 @@ export interface Pagination {
   totalPages: number;
 }
 
+export interface IncrementApplication {
+  appliedAmount: number;
+  hrApproval: string;
+  decisionDate?: string;
+  dateApplied: string;
+  Proof_Document?: string;
+  _id: string;
+}
+
 export interface Perk {
   _id: string;
   assignedDecrementAmount: number;
   assignedIncrementAmount: number;
   createdAt: string;
-  dateApplied: string;
-  decisionDate: string;
   decrementAmount: number;
   description: string;
-  document: string;
-  hrApproval: 'approved' | 'rejected' | 'pending' | 'available';
+  incrementApplications: IncrementApplication[];
+  userId: string;
   incrementAmount: number;
   isAvailable: boolean;
   isAvailed: boolean;

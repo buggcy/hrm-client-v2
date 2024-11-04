@@ -24,6 +24,8 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
+import { HrStatsAttendanceData } from '@/libs/validations/hr-dashboard';
+
 export const description = 'A stacked bar chart with a legend';
 
 const chartData = [
@@ -58,7 +60,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function AttendanceDistribution() {
+interface AttendanceDistributionProps {
+  data?: HrStatsAttendanceData;
+}
+
+export function AttendanceDistribution({ data }: AttendanceDistributionProps) {
   return (
     <Card className="col-span-2 h-fit max-h-[385px]">
       <CardHeader>
@@ -71,7 +77,7 @@ export function AttendanceDistribution() {
           className="mx-auto size-full max-h-[280px] min-h-[200px]"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
+            <BarChart data={data?.reverse() ?? chartData}>
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="date"

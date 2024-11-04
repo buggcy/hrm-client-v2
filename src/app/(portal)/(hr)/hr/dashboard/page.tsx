@@ -11,9 +11,7 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 
-import BottomCharts from './components/BottomCharts.component';
-import MiddleCharts from './components/MiddleCharts.component';
-import TopCharts from './components/TopCharts.component';
+import HrDashboardCharts from './components/HrDashboardCharts';
 
 interface HrDashboardmeProps {}
 
@@ -26,11 +24,9 @@ const HrDashboardme: FunctionComponent<HrDashboardmeProps> = () => {
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper className="flex flex-col gap-4">
+      <LayoutWrapper className="flex flex-col gap-8">
         <Header subheading="Manage your employees, attendance, and more."></Header>
-        <TopCharts />
-        <MiddleCharts />
-        <BottomCharts />
+        <HrDashboardCharts />
       </LayoutWrapper>
     </Layout>
   );
