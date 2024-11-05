@@ -85,12 +85,12 @@ const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
     },
   });
 
-  const handleApprove = (id: string) => {
-    approvePerk({ id: id });
+  const handleApprove = (id: string, userId: string, perkId: string) => {
+    approvePerk({ id: id, employeeId: userId, perkId: perkId });
   };
 
-  const handleReject = (id: string) => {
-    rejectPerk({ id: id });
+  const handleReject = (id: string, userId: string, perkId: string) => {
+    rejectPerk({ id: id, employeeId: userId, perkId: perkId });
   };
   return (
     <Layout>

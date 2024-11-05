@@ -38,15 +38,13 @@ import {
   useHrEmpoyeeAllPerksQuery,
   useHrPerksEmpoyeeQuery,
 } from '@/hooks/hrPerksList/useHrPerksList.hook';
+import { HrEmployeeAllPerksApiResponse } from '@/libs/validations/hr-perks';
 import { perksHandler } from '@/services/hr/perks-list.service';
 
 import { PerkForm } from './components/PerkForm';
 
 import { MessageErrorResponse } from '@/types';
-import {
-  HrEmployeeAllPerksApiResponse,
-  HrPerksGetEmployees,
-} from '@/types/hr-perks-list.types';
+import { HrPerksGetEmployees } from '@/types/hr-perks-list.types';
 
 interface AwardPerksProps {}
 

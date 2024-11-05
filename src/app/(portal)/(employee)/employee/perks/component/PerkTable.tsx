@@ -148,6 +148,26 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
     ? searchPerkData?.pagination?.totalPages || 0
     : perkPostList?.pagination?.totalPages || 0;
 
+  const transformData = (perks: PerkListArrayType) => {
+    return perks.flatMap(
+      perk =>
+        perk.incrementApplications?.map(application => ({
+          id: perk._id,
+          name: perk.name,
+          incrementAmount: application.appliedAmount,
+          dateApplied: application.dateApplied,
+          decisionDate: application.decisionDate,
+          hrApproval: application.hrApproval,
+          userId: perk.userId,
+          requestId: application._id,
+          assignedIncrementAmount: perk.assignedIncrementAmount,
+          description: perk.description,
+        })) || [],
+    );
+  };
+
+  const flatPerkApplications = transformData(tableData);
+
   return (
     <>
       <Header subheading="Elevate Your Lifestyle — Discover Perks Designed for You!">
@@ -162,13 +182,13 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
         </Button>
       </Header>
 
-      <PerkCards records={perkRecords} />
+      <PerkCards data={perkRecords} />
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (
         <EmployeePerkDataTable
           searchLoading={isPending}
-          data={tableData || []}
+          data={flatPerkApplications || []}
           columns={employeePerkListColumns}
           pagination={{
             pageCount: tablePageCount || 1,

@@ -31,6 +31,15 @@ const HrPerksGetEmployeesApiResponseSchema = z.object({
   data: z.array(HrPerksGetEmployeesSchema),
 });
 
+const hrEmployeePerkApplicationSchema = z.object({
+  appliedAmount: z.number(),
+  hrApproval: z.string(),
+  decisionDate: z.string().optional().nullable(),
+  dateApplied: z.string(),
+  Proof_Document: z.string().optional().nullable(),
+  _id: z.string(),
+});
+
 const HrEmployeeAllPerksSchema = z.object({
   _id: z.string(),
   name: z.string(),
@@ -42,11 +51,7 @@ const HrEmployeeAllPerksSchema = z.object({
   assignedDecrementAmount: z.number(),
   assignedIncrementAmount: z.number(),
   decrementAmount: z.number(),
-  incrementAmount: z.number(),
-  dateApplied: z.string(),
-  hrApproval: z.string(),
-  decisionDate: z.string(),
-  document: z.string(),
+  incrementApplications: z.array(hrEmployeePerkApplicationSchema).optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   __v: z.number(),
@@ -55,6 +60,10 @@ const HrEmployeeAllPerksSchema = z.object({
 const HrEmployeeAllPerksApiResponseSchema = z.object({
   data: z.array(HrEmployeeAllPerksSchema),
 });
+
+export type HrEmployeeAllPerksApiResponse = z.infer<
+  typeof HrEmployeeAllPerksApiResponseSchema
+>;
 
 const HrPerkRequestsSchema = z.object({
   _id: z.string(),

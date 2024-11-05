@@ -58,7 +58,7 @@ export function BChart() {
   };
 
   return (
-    <Card>
+    <Card className="lg:h-[570px]">
       <CardHeader className="flex justify-between">
         <div className="flex w-full items-center">
           <CardDescription className="mr-4 grow text-lg font-bold text-black dark:text-white">
@@ -70,25 +70,18 @@ export function BChart() {
               onValueChange={value => setIsMonthlyView(value === 'monthly')}
             >
               <TabsList className="rounded-lg shadow-sm transition">
-                <TabsTrigger
-                  value="monthly"
-                  className={`${isMonthlyView ? 'rounded-lg text-white' : 'rounded-lg bg-gray-100 text-gray-700'} p-2`}
-                >
-                  monthly
-                </TabsTrigger>
-                <TabsTrigger
-                  value="weekly"
-                  className={`${!isMonthlyView ? 'rounded-lg text-white' : 'rounded-lg bg-gray-100 text-gray-700'} p-2`}
-                >
-                  weekly
-                </TabsTrigger>
+                <TabsTrigger value="monthly">Monthly</TabsTrigger>
+                <TabsTrigger value="weekly">Weekly</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="h-full pl-0">
-        <ChartContainer config={chartConfig} className="h-full">
+      <CardContent className="h-full pl-0 lg:h-[450px]">
+        <ChartContainer
+          config={chartConfig}
+          className="h-full lg:aspect-auto lg:h-[450px] lg:max-w-[1000px]"
+        >
           <BarChart
             data={isLoading || isFetching ? placeholderData : dataToShow}
             width={600}

@@ -22,8 +22,8 @@ interface PerkRequestCardProps {
   perkRequest: HrPerkRequests;
   isApproving: boolean;
   isRejecting: boolean;
-  handleApprove: (id: string) => void;
-  handleReject: (id: string) => void;
+  handleApprove: (id: string, userId: string, perkId: string) => void;
+  handleReject: (id: string, userId: string, perkId: string) => void;
 }
 
 const PerkRequestCard = ({
@@ -114,7 +114,13 @@ const PerkRequestCard = ({
           size="sm"
           loading={isRejecting}
           disabled={isApproving || isRejecting}
-          onClick={() => handleReject(perkRequest._id)}
+          onClick={() =>
+            handleReject(
+              perkRequest._id,
+              perkRequest.userId._id,
+              perkRequest.perksId._id,
+            )
+          }
         >
           Reject
         </LoadingButton>
@@ -123,7 +129,13 @@ const PerkRequestCard = ({
           size="sm"
           loading={isApproving}
           disabled={isApproving || isRejecting}
-          onClick={() => handleApprove(perkRequest._id)}
+          onClick={() =>
+            handleApprove(
+              perkRequest._id,
+              perkRequest.userId._id,
+              perkRequest.perksId._id,
+            )
+          }
         >
           Approve
         </LoadingButton>

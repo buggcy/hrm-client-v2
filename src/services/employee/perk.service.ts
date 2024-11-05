@@ -57,12 +57,14 @@ export const PerkList = async (id: string): Promise<AxiosResponse> => {
 export const unAvailPerk = async ({
   employeeId,
   perkId,
+  applicationId,
 }: {
   employeeId: string;
   perkId: string;
+  applicationId: string;
 }): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.delete(
-    `/employee/${employeeId}/perks/${perkId}/unavail`,
+    `/employee/${employeeId}/perks/${perkId}/application/${applicationId}/unavail`,
   );
   return { message };
 };
@@ -78,6 +80,24 @@ export const AvailPerk = async ({
 }): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.post(
     `/employee/${employeeId}/perks/${perkId}/avail`,
+    formData,
+  );
+  return { message };
+};
+
+export const updateAvailPerk = async ({
+  employeeId,
+  perkId,
+  applicationId,
+  formData,
+}: {
+  employeeId: string;
+  perkId: string;
+  applicationId: string;
+  formData: FormData;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/employee/${employeeId}/perks/${perkId}/applicationId/${applicationId}/updateAvail`,
     formData,
   );
   return { message };

@@ -30,7 +30,6 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useAllPerkQuery } from '@/hooks/employee/usePerkList.hook';
-import { PerkListType } from '@/libs/validations/perk';
 import { AvailPerk } from '@/services/employee/perk.service';
 import { PerkStoreType } from '@/stores/employee/perks';
 import { validateFile } from '@/utils/fileValidation.utils';
@@ -42,18 +41,14 @@ import { User } from '@/types/user.types';
 interface PerkModalProps {
   user: User;
   open: boolean;
-  type: string;
   perks: Perk[];
   onCloseChange: (open: boolean) => void;
-  perkToEdit: PerkListType | null;
 }
 
 const FormSchema = z.object({
   perkId: z.string().min(1, 'Please select a perk'),
   increment: z.string().min(1, 'Amount is required'),
   file: z.string().optional(),
-  salaryIncrement: z.boolean().optional(),
-  assignedIncrement: z.number().optional(),
 });
 
 export type PerkFormData = z.infer<typeof FormSchema>;
@@ -63,11 +58,8 @@ export function PerkModal({
   onCloseChange,
   user,
   perks,
-  type,
-  perkToEdit,
 }: PerkModalProps) {
   const [selectedPerk, setSelectedPerk] = useState<Perk | null>(null);
-  const [salaryIncrement, setSalaryIncrement] = useState<boolean>(false);
   const [assignedIncrement, setAssignedIncrement] = useState<number>(0);
   const { perkStore } = useStores() as { perkStore: PerkStoreType };
   const { refetch } = useAllPerkQuery(user?.id, {
@@ -79,7 +71,6 @@ export function PerkModal({
     handleSubmit,
     formState: { errors },
     setValue,
-    getValues,
     setError,
     clearErrors,
     reset,
@@ -89,8 +80,6 @@ export function PerkModal({
       perkId: '',
       increment: '0',
       file: '',
-      assignedIncrement: 0,
-      salaryIncrement: false,
     },
   });
 
@@ -106,7 +95,6 @@ export function PerkModal({
       await refetch();
       setRefetchPerkList(true);
       setSelectedPerk(null);
-      setSalaryIncrement(false);
       setAssignedIncrement(0);
       onCloseChange(false);
     },
@@ -122,7 +110,7 @@ export function PerkModal({
   const onSubmit = (data: PerkFormData) => {
     const fileInput = document.getElementById('file') as HTMLInputElement;
     const file = fileInput?.files ? fileInput.files[0] : null;
-    if (type === 'add' && !file) {
+    if (!file) {
       setError('file', {
         type: 'manual',
         message: 'Proof Document is Required!',
@@ -140,9 +128,7 @@ export function PerkModal({
       clearErrors('file');
     }
 
-    const assignedIncrementAmount = getValues('assignedIncrement') || 0;
-
-    if (Number(data?.increment) > assignedIncrementAmount) {
+    if (Number(data?.increment) > assignedIncrement) {
       setError('increment', {
         type: 'manual',
         message: 'Requested Amount Exceeds Assigned Max Amount',
@@ -171,105 +157,70 @@ export function PerkModal({
     if (perk) {
       setSelectedPerk(perk);
       setValue('perkId', perk._id);
-      setSalaryIncrement(perk.salaryIncrement);
       setAssignedIncrement(perk.assignedIncrementAmount);
     } else {
       setSelectedPerk(null);
       setValue('perkId', '');
-      setSalaryIncrement(false);
       setAssignedIncrement(0);
     }
   };
 
   useEffect(() => {
-    if (selectedPerk) {
-      setValue('salaryIncrement', selectedPerk.salaryIncrement);
-      setValue('assignedIncrement', selectedPerk.assignedIncrementAmount);
-    } else {
-      setValue('salaryIncrement', false);
-      setValue('assignedIncrement', 0);
-    }
-  }, [selectedPerk, setValue]);
-
-  useEffect(() => {
     if (!open) {
       reset();
       setSelectedPerk(null);
-      setSalaryIncrement(false);
       setAssignedIncrement(0);
     }
   }, [open, reset]);
-  useEffect(() => {
-    if (type === 'edit' && perkToEdit) {
-      reset({
-        perkId: perkToEdit?._id || '',
-        increment: perkToEdit?.incrementAmount?.toString() || '0',
-        file: '',
-        assignedIncrement: perkToEdit?.assignedIncrementAmount || 0,
-        salaryIncrement: perkToEdit?.salaryIncrement || false,
-      });
-    }
-  }, [perkToEdit, type, reset]);
 
   return (
     <Dialog open={open} onOpenChange={onCloseChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {' '}
-            {type === 'edit' ? 'Edit Perk Request' : 'Apply For Perk'}
-          </DialogTitle>
+          <DialogTitle>Apply For Perk</DialogTitle>
         </DialogHeader>
-        {(type === 'add' &&
-          perks?.some(
-            perk =>
-              perk.isAvailable &&
-              perk.hrApproval === 'available' &&
-              perk.salaryIncrement,
-          )) ||
-        type === 'edit' ? (
+        {perks?.some(
+          perk => perk.isAvailable && !perk.isAvailed && perk.salaryIncrement,
+        ) ? (
           <>
             <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
-              {type === 'add' && (
-                <div className="flex flex-wrap">
-                  <div className="flex flex-1 flex-col">
-                    <Label htmlFor="perkId" className="mb-2 text-left">
-                      Perks
-                    </Label>
-                    <Controller
-                      name="perkId"
-                      control={control}
-                      render={() => (
-                        <Select
-                          onValueChange={value => handlePerkChange(value)}
-                        >
-                          <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                            <SelectValue placeholder="Select a Perk" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup className="text-sm">
-                              {perks
-                                .filter(
-                                  perk =>
-                                    perk.isAvailable &&
-                                    perk.hrApproval === 'available' &&
-                                    perk.salaryIncrement,
-                                )
-                                .map(perk => (
-                                  <SelectItem key={perk._id} value={perk._id}>
-                                    {perk.name}
-                                  </SelectItem>
-                                ))}
-                            </SelectGroup>
-                          </SelectContent>
-                          <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
-                        </Select>
-                      )}
-                    />
-                  </div>
+              <div className="flex flex-wrap">
+                <div className="flex flex-1 flex-col">
+                  <Label htmlFor="perkId" className="mb-2 text-left">
+                    Perks
+                  </Label>
+                  <Controller
+                    name="perkId"
+                    control={control}
+                    render={() => (
+                      <Select onValueChange={value => handlePerkChange(value)}>
+                        <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                          <SelectValue placeholder="Select a Perk" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup className="text-sm">
+                            {perks
+                              .filter(
+                                perk =>
+                                  perk.isAvailable &&
+                                  !perk.isAvailed &&
+                                  perk.salaryIncrement,
+                              )
+                              .map(perk => (
+                                <SelectItem key={perk._id} value={perk._id}>
+                                  {perk.name}
+                                </SelectItem>
+                              ))}
+                          </SelectGroup>
+                        </SelectContent>
+                        <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                      </Select>
+                    )}
+                  />
                 </div>
-              )}
-              {(salaryIncrement || perkToEdit?.salaryIncrement) && (
+              </div>
+
+              {selectedPerk && (
                 <>
                   <div className="flex flex-wrap">
                     <div className="flex flex-1 flex-col">
@@ -283,7 +234,7 @@ export function PerkModal({
                           <Input
                             type="number"
                             id="increment"
-                            placeholder={`Enter Amount (Max: ${assignedIncrement || perkToEdit?.assignedIncrementAmount})`}
+                            placeholder={`Enter Amount (Max: ${assignedIncrement})`}
                             {...field}
                           />
                         )}
@@ -323,13 +274,8 @@ export function PerkModal({
                 </>
               )}
               <DialogFooter>
-                <Button
-                  type="submit"
-                  disabled={
-                    isPending || (type === 'add' && !getValues('perkId'))
-                  }
-                >
-                  {type === 'edit' ? 'Update' : 'Apply'}
+                <Button type="submit" disabled={isPending}>
+                  Apply
                 </Button>
                 <Button
                   variant="ghostSecondary"

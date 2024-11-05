@@ -8,7 +8,7 @@ import { perk_status_options } from '@/components/filters';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { PerkListType } from '@/libs/validations/perk';
+import { TransformedPerkData } from '@/libs/validations/perk';
 
 import { DataTableFacetedFilter } from '../data-table-faceted-filter';
 
@@ -21,7 +21,7 @@ interface DataTableToolbarProps<TData> {
   filterValue: string[];
 }
 
-export function EmployeePerkListToolbar<TData extends PerkListType>({
+export function EmployeePerkListToolbar<TData extends TransformedPerkData>({
   table,
   searchTerm,
   onSearch,

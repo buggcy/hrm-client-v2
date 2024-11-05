@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
 
 import { Button } from '@/components/ui/button';
@@ -38,14 +38,16 @@ const years = Array.from({ length: 2199 - 1965 + 1 }, (_, i) => 1965 + i);
 interface TestProps {
   initialDate?: Date;
   onDateChange: (date: Date | undefined) => void;
+  loading?: boolean;
 }
 
 export default function CustomDayPicker({
   initialDate,
   onDateChange,
+  loading,
 }: TestProps) {
   const [date, setDate] = React.useState<Date | undefined>(
-    initialDate || new Date(),
+    initialDate || undefined,
   );
   const [selectedMonth, setSelectedMonth] = React.useState<number>(
     date?.getMonth() || 0,
@@ -87,10 +89,15 @@ export default function CustomDayPicker({
       <PopoverTrigger asChild>
         <Button
           variant={'outline'}
-          className="w-[280px] justify-start text-left font-normal"
+          className={`relative h-[32px] justify-start text-left font-normal ${loading ? 'pr-10' : ''}`}
         >
           <CalendarIcon className="mr-2 size-4" />
           {date ? format(date, 'PPP') : <span>Pick a date</span>}
+          {loading && (
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <Loader2 className="size-4 animate-spin text-muted-foreground" />
+            </div>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

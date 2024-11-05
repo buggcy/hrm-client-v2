@@ -31,12 +31,13 @@ const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
           <Header subheading="Have a good day ahead!" />
         </div>
         <div className="flex w-full flex-col items-stretch gap-4 align-middle lg:flex-row">
-          <div className="w-full gap-4 lg:w-2/3">
+          <div className="flex size-full h-full flex-col gap-4 lg:w-2/3">
             <EmployeeCard />
-            <div className="mt-4">
+            <div className="h-full flex-1">
               <BChart />
             </div>
           </div>
+
           <div className="size-full lg:w-1/3">
             <RecentAnnouncements />
             <UpcomingEvents />
