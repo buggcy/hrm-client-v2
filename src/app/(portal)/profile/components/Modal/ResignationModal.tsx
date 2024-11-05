@@ -102,18 +102,15 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
 
   const handleCheckboxChange = (checked: boolean) => {
     setIsImmediate(checked);
-    const today = new Date();
     if (checked) {
       reset({
         ...getValues(),
-        appliedDate: today,
-        immedaiteDate: today,
+        immedaiteDate: getValues().appliedDate,
       });
     } else {
       reset({
         ...getValues(),
-        appliedDate: today,
-        immedaiteDate: today,
+        immedaiteDate: addDays(new Date(getValues().appliedDate), 30),
       });
     }
   };
@@ -243,7 +240,6 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
                           'justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
-                        disabled={isImmediate}
                       >
                         <CalendarIcon className="mr-2 size-4" />
                         {field.value ? (

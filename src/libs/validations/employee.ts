@@ -6,6 +6,7 @@ export const approvalStatus = [
   'Pending',
   'Rejected',
   'tba',
+  'Resigned',
 ] as const;
 export const resignedStatus = ['Approved', 'Pending', 'Rejected'] as const;
 export const maritalStatus = ['married', 'unmarried'] as const;

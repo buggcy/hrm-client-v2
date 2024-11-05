@@ -77,7 +77,7 @@ const ResignedApproval: FunctionComponent<ResignedRequestProps> = ({
 
   return (
     <>
-      <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-4 lg:gap-6">
+      <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-3 lg:gap-6">
         {isLoading || isFetching ? (
           <Skeleton className="h-6 w-full" />
         ) : pendingResigned?.pagination?.totalCount &&

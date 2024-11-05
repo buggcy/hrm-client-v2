@@ -25,7 +25,7 @@ export default function ResignedEmployeesPage() {
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper wrapperClassName="flex flex-1" className="mb-5 max-w-full">
+      <LayoutWrapper wrapperClassName="flex flex-1" className="mb-5">
         <Header subheading="Easily Track and Approve Employee Resignation Requests!">
           <DateRangePicker
             timeRange={timeRange}
