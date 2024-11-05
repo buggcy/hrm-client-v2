@@ -32,7 +32,7 @@ const EmployeeCard = () => {
   const noOfLeaves = attendanceReport?.noOfLeaves || 0;
   const noOfAbsents = attendanceReport?.noOfAbsents || 0;
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <Card className="rounded-lg p-0 dark:bg-zinc-900">
         <CardHeader>
           <div className="flex flex-row items-center justify-between">
@@ -40,7 +40,7 @@ const EmployeeCard = () => {
               Attendance
             </CardTitle>
             <a
-              href="/attendance/attendance-history"
+              href="/employee/attendance/attendance-history"
               className="flex justify-between align-middle text-xs text-blue-600 hover:underline dark:text-blue-400"
             >
               View Stats
@@ -88,7 +88,7 @@ const EmployeeCard = () => {
               Leave Records
             </CardTitle>
             <a
-              href="/attendance/leave-history"
+              href="/employee/attendance/leave-history"
               className="text-xs text-blue-600 hover:underline dark:text-blue-400"
             >
               View Stats

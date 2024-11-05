@@ -50,8 +50,12 @@ const personalSchema = z.object({
   lastName: z.string().min(3).max(50),
   companyEmail: z.string().email(),
   email: z.string().email(),
-  contactNo: z.string().min(11).max(13),
-  Emergency_Phone: z.string().min(11).max(13).optional(),
+  contactNo: z
+    .string()
+    .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
+  Emergency_Phone: z
+    .string()
+    .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
   Nationality: z.string().min(3).max(50).optional(),
   DOB: z.date(),
   Marital_Status: z.enum(['married', 'unmarried']).optional(),
@@ -62,7 +66,9 @@ const personalSchema = z.object({
   Joining_Date: z.date().optional(),
   Family_Name: z.string().optional(),
   Family_Relation: z.string().optional(),
-  Family_PhoneNo: z.string().min(11).max(13).optional(),
+  Family_PhoneNo: z
+    .string()
+    .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
   Family_Occupation: z.string().optional(),
 });
 
@@ -79,6 +85,9 @@ const Personal = ({ empId, data }: PersonalProps) => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setError,
+    clearErrors,
   } = useForm<PersonalSchemaFormData>({
     resolver: zodResolver(personalSchema),
     defaultValues: {
@@ -249,7 +258,24 @@ const Personal = ({ empId, data }: PersonalProps) => {
               name="contactNo"
               control={control}
               render={({ field }) => (
-                <Input {...field} id="contactNo" placeholder="03XXXXXXXXX" />
+                <Input
+                  {...field}
+                  id="contactNo"
+                  placeholder="03XXXXXXXXX"
+                  onBlur={() => {
+                    const phone = watch('contactNo');
+                    const strippedVal = phone.replace(/^(03|\+923)/, '');
+                    if (phone && strippedVal.length !== 9) {
+                      setError('contactNo', {
+                        type: 'manual',
+                        message:
+                          'Phone number must have exactly 9 digits after 03 or +923',
+                      });
+                    } else {
+                      clearErrors('contactNo');
+                    }
+                  }}
+                />
               )}
             />
             {errors.contactNo && (
@@ -271,6 +297,19 @@ const Personal = ({ empId, data }: PersonalProps) => {
                   {...field}
                   id="Emergency_Phone"
                   placeholder="03XXXXXXXXX"
+                  onBlur={() => {
+                    const phone = watch('Emergency_Phone');
+                    const strippedVal = phone.replace(/^(03|\+923)/, '');
+                    if (phone && strippedVal.length !== 9) {
+                      setError('Emergency_Phone', {
+                        type: 'manual',
+                        message:
+                          'Phone number must have exactly 9 digits after 03 or +923',
+                      });
+                    } else {
+                      clearErrors('Emergency_Phone');
+                    }
+                  }}
                 />
               )}
             />
@@ -544,6 +583,19 @@ const Personal = ({ empId, data }: PersonalProps) => {
                   {...field}
                   id="Family_PhoneNo"
                   placeholder="03XXXXXXXXX"
+                  onBlur={() => {
+                    const phone = watch('Family_PhoneNo');
+                    const strippedVal = phone.replace(/^(03|\+923)/, '');
+                    if (phone && strippedVal.length !== 9) {
+                      setError('Family_PhoneNo', {
+                        type: 'manual',
+                        message:
+                          'Phone number must have exactly 9 digits after 03 or +923',
+                      });
+                    } else {
+                      clearErrors('Family_PhoneNo');
+                    }
+                  }}
                 />
               )}
             />
