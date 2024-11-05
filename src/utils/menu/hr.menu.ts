@@ -10,6 +10,7 @@ import {
   Settings,
   UserCog,
   UserCog2,
+  UserMinus,
   UserPlus,
 } from 'lucide-react';
 
@@ -34,6 +35,11 @@ export const hrMenu: MenuItem[] = [
         title: 'Add Employees',
         icon: UserPlus,
         href: '/hr/add-employees',
+      },
+      {
+        title: 'Resigned/Fired',
+        icon: UserMinus,
+        href: '/hr/resigned-fired',
       },
     ],
   },

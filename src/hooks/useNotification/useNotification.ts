@@ -49,6 +49,8 @@ export const useNotificationsEmp = (id: string): NotificationQueryResult => {
     queryFn: () => fetchNotificationsEmp(id),
     refetchOnWindowFocus: true,
     staleTime: 1 * 60 * 1000,
+    refetchOnMount: true,
+    enabled: !!id,
   });
 
   useEffect(() => {
