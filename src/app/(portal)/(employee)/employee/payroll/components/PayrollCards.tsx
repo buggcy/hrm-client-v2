@@ -67,7 +67,7 @@ const PayrollCards: FunctionComponent = () => {
 
   const increments = latestMonthData.Increments || [];
   const totalIncrements = increments.reduce(
-    (acc, increment) => acc + increment.amount,
+    (acc, increment) => acc + (increment.amount ?? 0),
     0,
   );
 

@@ -52,10 +52,10 @@ const emp_Id_Schema = z.object({
   _id: z.string(),
 });
 const payrollIncrementSchema = z.object({
-  title: z.string(),
-  amount: z.number(),
-  date: z.string(),
-  _id: z.string(),
+  title: z.string().optional(),
+  amount: z.number().optional(),
+  date: z.string().optional(),
+  _id: z.string().optional(),
 });
 
 const employeeListSchema = z.object({
@@ -104,7 +104,7 @@ const employeeListSchema = z.object({
 
 const employeePayrollSchema = z.object({
   _id: z.string(),
-  Emp_ID: emp_Id_Schema,
+  Emp_ID: emp_Id_Schema.optional(),
   User_ID: z.string().optional(),
   Employee_Name: z.string().optional(),
   Date: z.string().optional(),
@@ -126,8 +126,10 @@ const employeePayrollSchema = z.object({
   isDeleted: z.boolean().optional(),
   Increments: z.array(payrollIncrementSchema).optional(),
   __v: z.number().optional(),
-  type: z.literal('employeePayroll').optional(),
+  // type: z.literal('employeePayroll').optional(),
+  type: z.string().optional(),
 });
+
 const hrEventsSchema = z.object({
   _id: z.string(),
   hrId: z.string().optional(),
