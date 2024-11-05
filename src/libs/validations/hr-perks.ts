@@ -34,9 +34,10 @@ const HrPerksGetEmployeesApiResponseSchema = z.object({
 const hrEmployeePerkApplicationSchema = z.object({
   appliedAmount: z.number(),
   hrApproval: z.string(),
-  decisionDate: z.string().optional(),
+  decisionDate: z.string().optional().nullable(),
   dateApplied: z.string(),
-  Proof_Document: z.string().optional(),
+  Proof_Document: z.string().optional().nullable(),
+  _id: z.string(),
 });
 
 const HrEmployeeAllPerksSchema = z.object({
@@ -50,7 +51,7 @@ const HrEmployeeAllPerksSchema = z.object({
   assignedDecrementAmount: z.number(),
   assignedIncrementAmount: z.number(),
   decrementAmount: z.number(),
-  incrementApplications: z.array(hrEmployeePerkApplicationSchema),
+  incrementApplications: z.array(hrEmployeePerkApplicationSchema).optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   __v: z.number(),

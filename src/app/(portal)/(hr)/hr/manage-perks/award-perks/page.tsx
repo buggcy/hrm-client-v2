@@ -38,15 +38,13 @@ import {
   useHrEmpoyeeAllPerksQuery,
   useHrPerksEmpoyeeQuery,
 } from '@/hooks/hrPerksList/useHrPerksList.hook';
+import { HrEmployeeAllPerksApiResponse } from '@/libs/validations/hr-perks';
 import { perksHandler } from '@/services/hr/perks-list.service';
 
 import { PerkForm } from './components/PerkForm';
 
 import { MessageErrorResponse } from '@/types';
-import {
-  HrEmployeeAllPerksApiResponse,
-  HrPerksGetEmployees,
-} from '@/types/hr-perks-list.types';
+import { HrPerksGetEmployees } from '@/types/hr-perks-list.types';
 
 interface AwardPerksProps {}
 
@@ -59,7 +57,6 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
     setSelectedEmployeeData(data?.data.find(employee => employee.id === value));
   };
   const [perkData, setPerkData] = useState<HrEmployeeAllPerksApiResponse>();
-  console.log(perkData);
   const { data } = useHrPerksEmpoyeeQuery();
 
   const { data: employeePerks } = useHrEmpoyeeAllPerksQuery(

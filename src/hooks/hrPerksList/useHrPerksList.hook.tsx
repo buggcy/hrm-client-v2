@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { HrEmployeeAllPerksApiResponse } from '@/libs/validations/hr-perks';
 import {
   fetchEmployeesAllPerks,
   fetchEmployeesForPerks,
@@ -12,7 +13,6 @@ import {
 
 import { UseQueryConfig } from '@/types';
 import {
-  HrEmployeeAllPerksApiResponse,
   HrPerkRecordApiResponse,
   HrPerkRequestsApiResponse,
   HrPerksGetEmployeesApiResponse,
