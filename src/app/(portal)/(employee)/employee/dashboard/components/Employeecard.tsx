@@ -1,5 +1,6 @@
 'use client';
 import { useEffect } from 'react';
+import Link from 'next/link';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -39,12 +40,12 @@ const EmployeeCard = () => {
             <CardTitle className="text-lg font-bold dark:text-white">
               Attendance
             </CardTitle>
-            <a
+            <Link
               href="/employee/attendance/attendance-history"
               className="flex justify-between align-middle text-xs text-blue-600 hover:underline dark:text-blue-400"
             >
               View Stats
-            </a>
+            </Link>
           </div>
         </CardHeader>
 
@@ -87,12 +88,12 @@ const EmployeeCard = () => {
             <CardTitle className="text-lg font-bold dark:text-white">
               Leave Records
             </CardTitle>
-            <a
+            <Link
               href="/employee/attendance/leave-history"
               className="text-xs text-blue-600 hover:underline dark:text-blue-400"
             >
               View Stats
-            </a>
+            </Link>
           </div>
         </CardHeader>
         <CardContent>
