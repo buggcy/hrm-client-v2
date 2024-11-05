@@ -32,6 +32,7 @@ export interface FeedbackList {
   feedbackTitle?: string;
   questions: Questions[];
   feedbackCategory?: string;
+  isSuggestion?: boolean;
   isDeleted?: boolean;
   isEnabled?: boolean;
   createdAt?: string;
@@ -77,7 +78,8 @@ export interface FeedbackRecordApiResponse {
     averagePercentage: number;
     goodPercentage: number;
     excellentPercentage: number;
-    notSatisfyPercentage: number;
+    belowAveragePercentage: number;
+    veryGoodPercentage: number;
   };
 }
 

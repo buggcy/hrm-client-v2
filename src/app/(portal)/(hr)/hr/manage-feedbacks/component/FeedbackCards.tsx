@@ -2,7 +2,14 @@
 
 import { FunctionComponent } from 'react';
 
-import { AlignJustify, Star, ThumbsDown, ThumbsUp, User } from 'lucide-react';
+import {
+  AlignJustify,
+  Smile,
+  Star,
+  ThumbsDown,
+  ThumbsUp,
+  User,
+} from 'lucide-react';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
@@ -17,7 +24,8 @@ interface FeedbackCardProps {
   averagePercentage?: number;
   goodPercentage?: number;
   excellentPercentage?: number;
-  notSatisfyPercentage?: number;
+  belowAveragePercentage?: number;
+  veryGoodPercentage?: number;
 }
 const Cards: FunctionComponent<CardsProps> = ({
   icon,
@@ -47,7 +55,8 @@ const FeedbackStatistics: FunctionComponent<FeedbackCardProps> = ({
   averagePercentage,
   goodPercentage,
   excellentPercentage,
-  notSatisfyPercentage,
+  belowAveragePercentage,
+  veryGoodPercentage,
 }) => {
   const CardsData = [
     {
@@ -59,37 +68,43 @@ const FeedbackStatistics: FunctionComponent<FeedbackCardProps> = ({
     },
     {
       id: 2,
-      title: 'Average',
-      value: averagePercentage || 0,
-      color: '#7f8c8d',
-      icon: <AlignJustify size={24} />,
-    },
-
-    {
-      id: 3,
-      title: 'Good',
-      value: goodPercentage || 0,
-      color: '#28a745',
-      icon: <ThumbsUp size={24} />,
-    },
-    {
-      id: 6,
       title: 'Excellent',
       value: excellentPercentage || 0,
       color: '#f39c12',
       icon: <Star size={24} />,
     },
     {
+      id: 3,
+      title: 'Very Good',
+      value: veryGoodPercentage || 0,
+      color: '#40E0D0',
+      icon: <Smile size={24} />,
+    },
+    {
+      id: 4,
+      title: 'Good',
+      value: goodPercentage || 0,
+      color: '#28a745',
+      icon: <ThumbsUp size={24} />,
+    },
+    {
       id: 5,
-      title: 'Not Satisfy',
-      value: notSatisfyPercentage || 0,
+      title: 'Average',
+      value: averagePercentage || 0,
+      color: '#7f8c8d',
+      icon: <AlignJustify size={24} />,
+    },
+    {
+      id: 5,
+      title: 'Below Average',
+      value: belowAveragePercentage || 0,
       color: '#dc3545',
       icon: <ThumbsDown size={24} />,
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
       {CardsData.map((card, index) => (
         <Cards key={index} {...card} />
       ))}

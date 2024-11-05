@@ -36,6 +36,7 @@ const FeedbackSchema = z.object({
   feedbackCategory: z.string().optional(),
   questions: z.array(questionSchema),
   isDeleted: z.boolean().optional(),
+  isSuggestion: z.boolean().optional(),
   isEnabled: z.boolean().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
@@ -56,7 +57,8 @@ const feedbackRecordSchema = z.object({
   averagePercentage: z.number(),
   goodPercentage: z.number(),
   excellentPercentage: z.number(),
-  notSatisfyPercentage: z.number(),
+  belowAveragePercentage: z.number(),
+  veryGoodPercentage: z.number(),
 });
 
 const EmployeeFeedbackSchema = z.object({

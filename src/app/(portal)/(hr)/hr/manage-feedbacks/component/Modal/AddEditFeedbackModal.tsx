@@ -180,6 +180,7 @@ export function AddEditFeedbackModal({
           feedbackTitle: data?.title,
           question: data?.questions,
           feedbackCategory: data?.category,
+          isSuggestion: true,
         },
       };
       mutate(addPayload);

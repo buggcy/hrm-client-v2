@@ -234,7 +234,10 @@ const FeedbackTable: FunctionComponent = () => {
             averagePercentage={feedbackRecord?.data?.averagePercentage}
             goodPercentage={feedbackRecord?.data?.goodPercentage}
             excellentPercentage={feedbackRecord?.data?.excellentPercentage}
-            notSatisfyPercentage={feedbackRecord?.data?.notSatisfyPercentage}
+            belowAveragePercentage={
+              feedbackRecord?.data?.belowAveragePercentage
+            }
+            veryGoodPercentage={feedbackRecord?.data?.veryGoodPercentage}
           />
           <div className="mt-6">
             <QuestionAnswerTypeTable

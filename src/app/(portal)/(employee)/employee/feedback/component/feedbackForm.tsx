@@ -3,11 +3,20 @@ import React, { useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { X } from 'lucide-react';
+import { CheckCircle2, Circle, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { RadioInput } from '@/components/ui/radio';
+import { Separator } from '@/components/ui/separator';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 
@@ -17,7 +26,6 @@ import { MessageErrorResponse } from '@/types';
 import { Questions } from '@/types/feedback.types';
 
 interface FeedbackFormProps {
-  title: string;
   questions: Questions[];
   onSubmit: () => void;
   onClose: () => void;
@@ -27,7 +35,6 @@ interface FeedbackFormProps {
 }
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
-  title,
   questions,
   onSubmit,
   onClose,
@@ -35,7 +42,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   id,
   setRefetchFeedbackList,
 }) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answers, setAnswers] = useState<
     { questionId: string; answerText: string }[]
   >([]);
@@ -70,17 +76,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     });
   };
 
-  const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
   const { mutate, isPending } = useMutation({
     mutationFn: addAnswer,
     onSuccess: response => {
@@ -114,105 +109,119 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     mutate(payload);
   };
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
-
-  const hasAnswer = answers.some(
-    answer => answer.questionId === currentQuestion._id,
-  );
-
   return (
-    <>
-      <div className="flex w-full flex-col gap-8 p-4 md:flex-row">
-        <div className="flex flex-col items-center justify-center space-y-4 text-xl font-semibold md:w-1/2">
-          <h3 className="text-lg">{title}</h3>
-          <ul className="list-disc space-y-2 pl-5 text-sm text-gray-600 dark:text-gray-300">
-            <li>Tell us about your experience with our service.</li>
-            <li>Share what you loved and what we can improve.</li>
-            <li>Your feedback helps us serve you better every day!</li>
-          </ul>
-        </div>
+    <Card className="relative w-full p-6">
+      <X
+        className="absolute right-3 top-3 size-4 cursor-pointer"
+        onClick={onClose}
+      />
+      <div className="flex flex-col items-center gap-6">
+        <h2 className="text-center text-2xl font-bold dark:text-white">
+          Feedback Form
+        </h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-20">Q. No.</TableHead>
+              <TableHead className="w-[640px]">Questions</TableHead>
+              <TableHead>Excellent</TableHead>
+              <TableHead>Very Good</TableHead>
+              <TableHead>Good</TableHead>
+              <TableHead>Average</TableHead>
+              <TableHead>Below Average</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {questions.slice(0, -1).map((question, index) => (
+              <TableRow key={question._id}>
+                <TableCell className="border px-4 py-2 text-center">
+                  {index + 1}
+                </TableCell>
+                <TableCell className="border px-4 py-2">
+                  {question.questionText}
+                </TableCell>
+                {[
+                  'Excellent',
+                  'Very Good',
+                  'Good',
+                  'Average',
+                  'Below Average',
+                ].map(option => (
+                  <TableCell
+                    key={option}
+                    className="cursor-pointer border px-4 py-2 text-center"
+                    onClick={() => handleOptionChange(question._id, option)}
+                  >
+                    {answers.find(
+                      answer =>
+                        answer.questionId === question._id &&
+                        answer.answerText === option,
+                    ) ? (
+                      <div className="flex justify-center align-middle">
+                        <CheckCircle2 />
+                      </div>
+                    ) : (
+                      <div className="relative flex justify-center align-middle">
+                        <RadioInput
+                          id={`question-${question._id}-${option}`}
+                          name={`question-${question._id}`}
+                          value={option}
+                          checked={
+                            answers.find(
+                              answer => answer.questionId === question._id,
+                            )?.answerText === option
+                          }
+                          onChange={() =>
+                            handleOptionChange(question._id, option)
+                          }
+                          className="hidden"
+                          label={''}
+                        />
+                        <Circle />
+                      </div>
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-        <Card className="relative p-6 md:w-1/2">
-          <X
-            className="absolute right-3 top-3 size-4 cursor-pointer"
-            onClick={onClose}
-          />
-          <div className="flex flex-col items-center gap-6">
-            <h2 className="text-center text-2xl font-bold dark:text-white">
-              Let’s Start!
-            </h2>
-
-            <div className="text-lg font-medium text-gray-600 dark:text-gray-300">
-              {`${currentQuestionIndex + 1}. ${currentQuestion.questionText}`}
+        <Separator />
+        <div className="w-full">
+          <div className="mt-2 flex w-full flex-col gap-4 md:flex-row">
+            <div className="w-full md:w-5/12 lg:w-5/12">
+              <span className="ml-1 text-gray-600 dark:text-white">
+                {questions[questions?.length - 1].questionText}
+              </span>
             </div>
-
-            {currentQuestionIndex < questions.length - 1 ? (
-              <div className="flex w-full flex-col gap-3">
-                {['Average', 'Good', 'Excellent', 'Not Satisfied'].map(
-                  option => (
-                    <RadioInput
-                      key={option}
-                      id={`question-${currentQuestion._id}-${option}`}
-                      name={`question-${currentQuestion._id}`}
-                      value={option}
-                      checked={
-                        answers.find(
-                          answer => answer.questionId === currentQuestion._id,
-                        )?.answerText === option
-                      }
-                      onChange={() =>
-                        handleOptionChange(currentQuestion._id, option)
-                      }
-                      label={option}
-                    />
-                  ),
-                )}
-              </div>
-            ) : (
+            <div className="w-full md:w-7/12 lg:w-7/12">
               <Textarea
                 value={
                   answers.find(
-                    answer => answer.questionId === currentQuestion._id,
+                    answer =>
+                      answer.questionId === questions[questions.length - 1]._id,
                   )?.answerText || ''
                 }
                 placeholder="Please share your feedback here..."
                 onChange={e =>
-                  handleTextareaChange(currentQuestion._id, e.target.value)
+                  handleTextareaChange(
+                    questions[questions.length - 1]._id,
+                    e.target.value,
+                  )
                 }
               />
-            )}
-            <div className="mt-4 text-xs text-gray-600 dark:text-gray-300">
-              {currentQuestionIndex + 1} out of {questions.length}
-            </div>
-
-            <div className="mt-4 flex justify-center gap-4">
-              {currentQuestionIndex > 0 && (
-                <Button
-                  onClick={handlePrev}
-                  className="bg-gray-300 text-gray-600 hover:bg-gray-300"
-                >
-                  Previous
-                </Button>
-              )}
-              {isLastQuestion ? (
-                <Button
-                  onClick={handleSubmit}
-                  disabled={isPending}
-                  className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-300"
-                >
-                  Submit
-                </Button>
-              ) : (
-                <Button onClick={handleNext} disabled={!hasAnswer}>
-                  Next
-                </Button>
-              )}
             </div>
           </div>
-        </Card>
+        </div>
       </div>
-    </>
+
+      <div className="mt-2 flex justify-end">
+        <Button onClick={handleSubmit} disabled={isPending} size={'sm'}>
+          Submit
+        </Button>
+      </div>
+    </Card>
   );
 };
 

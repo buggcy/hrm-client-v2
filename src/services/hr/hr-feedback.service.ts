@@ -168,6 +168,7 @@ interface Addbody {
   question?: string[];
   feedbackCategory: string;
   isEnabled?: boolean;
+  isSuggestion?: boolean;
 }
 
 export const addFeedback = async (payload: {

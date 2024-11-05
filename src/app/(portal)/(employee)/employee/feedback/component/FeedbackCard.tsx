@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 
+import { Clipboard, Lightbulb, List, ThumbsUp } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -70,6 +72,7 @@ const FeedbackCard: React.FC = () => {
       setShowForm(false);
     }
   };
+
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
@@ -82,10 +85,9 @@ const FeedbackCard: React.FC = () => {
       {isLoading || isFetching ? (
         <Skeleton className="h-8 w-full" />
       ) : (
-        <div className="flex justify-center p-4">
+        <div className="flex justify-center">
           {showForm && selectedFeedback ? (
             <FeedbackForm
-              title={selectedFeedback.feedbackTitle}
               id={selectedFeedback._id}
               questions={selectedFeedback.questions}
               onSubmit={handleFormSubmit}
@@ -94,41 +96,95 @@ const FeedbackCard: React.FC = () => {
               setRefetchFeedbackList={setRefetchFeedbackList}
             />
           ) : data?.data && data?.data?.length > 0 ? (
-            <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data?.data?.map(feedback => {
+            <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+              {data.data.map(feedback => {
                 const isUserAttempted = feedback?.userToAttempted?.includes(
                   userId || '',
                 );
                 const isFeedbackAttempted =
                   attemptedFeedbacks[feedback._id] || isUserAttempted;
+
+                if (isFeedbackAttempted) {
+                  return null;
+                }
+
                 return (
                   <Card
                     key={feedback._id}
-                    className="flex flex-col items-center p-6 shadow-md hover:shadow-lg"
+                    className="flex w-full max-w-[600px] flex-col items-center p-6 shadow-md hover:shadow-lg"
                   >
                     <h3 className="mb-4 text-center text-xl font-semibold text-gray-600 dark:text-gray-300">
                       {feedback.feedbackCategory}
                     </h3>
+                    <div className="mb-2 p-1">
+                      <h4 className="mb-2 text-base font-semibold text-gray-600 dark:text-gray-300">
+                        {feedback.feedbackTitle}
+                      </h4>
+                      <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
+                        We value your insights! Participate in our feedback
+                        process to help us improve our services. Your opinion
+                        matters and can lead to meaningful changes.
+                      </p>
+                      <ul className="mb-4 space-y-2 text-left text-sm text-gray-600 dark:text-gray-300">
+                        <li className="flex items-center">
+                          <Clipboard className="mr-2 text-blue-600" size={18} />
+                          Answer a few quick questions
+                        </li>
+                        <li className="flex items-center">
+                          <Lightbulb
+                            className="mr-2 text-yellow-600"
+                            size={18}
+                          />
+                          Share your thoughts on our services
+                        </li>
+                        <li className="flex items-center">
+                          <ThumbsUp className="mr-2 text-green-600" size={18} />
+                          Your feedback will help shape future improvements
+                        </li>
+                        <li className="flex items-center">
+                          <List className="mr-2 text-gray-600" size={18} />
+                          Total Questions: {feedback.questions.length}
+                        </li>
+                      </ul>
+                    </div>
                     <Button
-                      variant={isFeedbackAttempted ? 'card' : 'default'}
+                      variant={'default'}
                       size={'sm'}
                       onClick={() => handleFeedbackClick(feedback)}
-                      disabled={isFeedbackAttempted}
                     >
-                      {isFeedbackAttempted
-                        ? 'Feedback Submitted'
-                        : 'Quick Feedback'}
+                      Quick Feedback
                     </Button>
                   </Card>
                 );
               })}
             </div>
           ) : (
-            <p className="w-full text-base font-medium text-gray-600 dark:text-gray-300">
-              We are preparing a feedback to conduct user thoughts and
-              experiences. Please connect with us, stay tuned! The feedback form
-              will air soon.
-            </p>
+            <Card className="flex w-full flex-col items-center p-6 shadow-md hover:shadow-lg">
+              <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
+                We value your insights! Participate in our feedback process to
+                help us improve our services. Your opinion matters and can lead
+                to meaningful changes.
+              </p>
+              <p className="w-full text-base font-medium text-gray-600 dark:text-gray-300">
+                We are preparing a feedback to conduct user thoughts and
+                experiences. Please connect with us, stay tuned! The feedback
+                form will air soon.
+              </p>
+              <ul className="mb-4 space-y-2 text-left text-sm text-gray-600 dark:text-gray-300">
+                <li className="flex items-center">
+                  <Clipboard className="mr-2 text-blue-600" size={18} />
+                  Answer a few quick questions
+                </li>
+                <li className="flex items-center">
+                  <Lightbulb className="mr-2 text-yellow-600" size={18} />
+                  Share your thoughts on our services
+                </li>
+                <li className="flex items-center">
+                  <ThumbsUp className="mr-2 text-green-600" size={18} />
+                  Your feedback will help shape future improvements
+                </li>
+              </ul>
+            </Card>
           )}
         </div>
       )}
