@@ -41,6 +41,7 @@ const AttendanceHistoryTable: FunctionComponent<
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
 
   const {
     data: attendanceHistoryList,
@@ -54,6 +55,7 @@ const AttendanceHistoryTable: FunctionComponent<
     id: user?.Tahometer_ID,
     from: dates?.from?.toISOString(),
     to: dates?.to?.toISOString(),
+    status: statusFilter,
   });
 
   const {
@@ -65,10 +67,12 @@ const AttendanceHistoryTable: FunctionComponent<
       query,
       page,
       limit,
+      status,
     }: {
       query: string;
       page: number;
       limit: number;
+      status: string[];
     }) =>
       searchAttedanceHistoryList({
         query,
@@ -77,6 +81,7 @@ const AttendanceHistoryTable: FunctionComponent<
         id: user?.Tahometer_ID ? user.Tahometer_ID : '',
         from: dates?.from,
         to: dates?.to,
+        status,
       }),
     onError: err => {
       toast({
@@ -99,13 +104,13 @@ const AttendanceHistoryTable: FunctionComponent<
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({ query: debouncedSearchTerm, page, limit, status: statusFilter });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate]);
+  }, [debouncedSearchTerm, page, limit, refetch, mutate, statusFilter]);
 
   useEffect(() => {
     if (refetchAttendanceHistoryList) {
@@ -161,8 +166,8 @@ const AttendanceHistoryTable: FunctionComponent<
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
           toolbarType="attendanceHistory"
-          setFilterValue={(value: string[]) => console.log(value)}
-          filterValue={[]}
+          setFilterValue={setStatusFilter}
+          filterValue={statusFilter}
         />
       )}
     </>

@@ -55,7 +55,8 @@ const ProgressCircle = ({
               textAnchor="middle"
               dy=".3em"
               fontSize="1.5rem"
-              className="font-bold text-primary dark:text-white"
+              className="font-bold"
+              style={{ fill: 'hsl(var(--foreground))' }}
             >
               {value}
             </text>

@@ -6,7 +6,9 @@ export const approvalStatus = [
   'Pending',
   'Rejected',
   'tba',
+  'Resigned',
 ] as const;
+export const resignedStatus = ['Approved', 'Pending', 'Rejected'] as const;
 export const maritalStatus = ['married', 'unmarried'] as const;
 export const bloodgroupStatus = [
   'A+',
@@ -52,10 +54,10 @@ const emp_Id_Schema = z.object({
   _id: z.string(),
 });
 const payrollIncrementSchema = z.object({
-  title: z.string(),
-  amount: z.number(),
-  date: z.string(),
-  _id: z.string(),
+  title: z.string().optional(),
+  amount: z.number().optional(),
+  date: z.string().optional(),
+  _id: z.string().optional(),
 });
 
 const employeeListSchema = z.object({
@@ -104,7 +106,7 @@ const employeeListSchema = z.object({
 
 const employeePayrollSchema = z.object({
   _id: z.string(),
-  Emp_ID: emp_Id_Schema,
+  Emp_ID: emp_Id_Schema.optional(),
   User_ID: z.string().optional(),
   Employee_Name: z.string().optional(),
   Date: z.string().optional(),
@@ -126,8 +128,10 @@ const employeePayrollSchema = z.object({
   isDeleted: z.boolean().optional(),
   Increments: z.array(payrollIncrementSchema).optional(),
   __v: z.number().optional(),
-  type: z.literal('employeePayroll').optional(),
+  // type: z.literal('employeePayroll').optional(),
+  type: z.string().optional(),
 });
+
 const hrEventsSchema = z.object({
   _id: z.string(),
   hrId: z.string().optional(),
@@ -181,6 +185,44 @@ const employeeDobTableSchema = z.object({
   remainingDays: z.number(),
 });
 
+const employeeIdSchema = z.object({
+  _id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  companyEmail: z.string(),
+  Avatar: z.string().optional(),
+  Designation: z.string().optional(),
+  contactNo: z.string().optional(),
+});
+
+const hrIdSchema = z.object({
+  _id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  Avatar: z.string().optional(),
+  companyEmail: z.string().optional(),
+});
+
+const resignedSchema = z.object({
+  _id: z.string(),
+  employee: employeeIdSchema.optional(),
+  hr: hrIdSchema.optional(),
+  title: z.string(),
+  reason: z.string(),
+  description: z.string(),
+  appliedDate: z.string().optional(),
+  assignedDate: z.string().optional(),
+  immedaiteDate: z.string().optional(),
+  isApproved: z.enum(resignedStatus).optional(),
+  type: z.string().optional(),
+  isResigned: z.boolean().optional(),
+  isFired: z.boolean().optional(),
+  isDeleted: z.boolean().optional(),
+  __v: z.number().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+});
+
 const employeeApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeeListSchema),
@@ -197,6 +239,15 @@ const hrEventsApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(hrEventsSchema),
 });
+
+const resignedApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(resignedSchema),
+});
+
+export type ResignedListApiResponse = z.infer<typeof resignedApiResponseSchema>;
+export type ResignedListType = z.infer<typeof resignedSchema>;
+export type ResignedListArrayType = z.infer<typeof resignedSchema>[] | [];
 
 export type EmployeeApiResponse = z.infer<typeof employeeApiResponseSchema>;
 export type HrEventsApiResponse = z.infer<typeof hrEventsApiResponseSchema>;
@@ -222,6 +273,10 @@ export {
   employeePayrollSchema,
   employeePayrollApiResponseSchema,
   hrEventsApiResponseSchema,
+  resignedSchema,
+  resignedApiResponseSchema,
+  hrIdSchema,
+  employeeIdSchema,
   cardDataSchema,
   employeeDobDataSchema,
   employeeDobApiResponseSchema,

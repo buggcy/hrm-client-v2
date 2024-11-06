@@ -29,6 +29,15 @@ export interface HrPerksGetEmployeesApiResponse {
   data: HrPerksGetEmployees[];
 }
 
+export interface IncrementApplication {
+  appliedAmount: number;
+  hrApproval: string;
+  decisionDate?: string | null;
+  dateApplied: string;
+  Proof_Document?: string | null;
+  _id: string;
+}
+
 export interface HrEmployeeAllPerks {
   _id: string;
   name: string;
@@ -40,11 +49,7 @@ export interface HrEmployeeAllPerks {
   assignedDecrementAmount: number;
   assignedIncrementAmount: number;
   decrementAmount: number;
-  incrementAmount: number;
-  dateApplied: string;
-  hrApproval: string;
-  decisionDate: string;
-  document: string;
+  incrementApplications?: IncrementApplication[];
   createdAt: string;
   updatedAt: string;
   __v: number;

@@ -180,6 +180,8 @@ export function DataTable<TData extends DataTableType, TValue>({
             searchTerm={searchTerm}
             onSearch={onSearch}
             searchLoading={searchLoading}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
           />
         );
 
@@ -248,7 +250,18 @@ export function DataTable<TData extends DataTableType, TValue>({
             filterValue={filterValue}
           />
         );
-
+      case 'resignedFiredEmployeeList':
+        return (
+          <UnapprovedEmployeeToolbar
+            table={table}
+            searchTerm={searchTerm}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
+            type={'resigned'}
+          />
+        );
       default:
         return null;
     }

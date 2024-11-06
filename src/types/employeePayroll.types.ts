@@ -5,10 +5,10 @@ export interface Pagination {
   totalPages: number;
 }
 export interface Increment {
-  _id: string;
-  title: string;
-  amount: number;
-  date: string;
+  _id?: string;
+  title?: string;
+  amount?: number;
+  date?: string;
 }
 export interface EmpIdSchema {
   Avatar?: string;
@@ -18,8 +18,9 @@ export interface EmpIdSchema {
 }
 export interface EmployeePayroll {
   _id: string;
-  Emp_ID: EmpIdSchema;
+  Emp_ID?: EmpIdSchema;
   User_ID?: string;
+  type?: string;
   Employee_Name?: string;
   Date?: string;
   Basic_Salary?: number;

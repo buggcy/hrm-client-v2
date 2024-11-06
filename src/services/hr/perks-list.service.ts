@@ -1,6 +1,8 @@
 import { AddPerkFormData } from '@/app/(portal)/(hr)/hr/manage-perks/add-perks/components/AddPerksDialog';
 import {
+  HrEmployeeAllPerksApiResponse,
   HrEmployeeAllPerksApiResponseSchema,
+  HrPerkRecordApiResponse,
   hrPerkRecordApiResponseSchema,
   HrPerkRequestsApiResponseSchema,
   HrPerksGetEmployeesApiResponseSchema,
@@ -10,7 +12,6 @@ import { baseAPI, schemaParse } from '@/utils';
 
 import {
   HrEmployeeAllPerks,
-  HrEmployeeAllPerksApiResponse,
   HrPerkRequestsApiResponse,
   HrPerksGetEmployeesApiResponse,
   HrPerksListApiResponse,
@@ -193,32 +194,41 @@ export const fetchPerkRequests = async (
 
 export const approvePerkRequest = async ({
   id,
+  employeeId,
+  perkId,
 }: {
   id: string;
+  employeeId: string;
+  perkId: string;
 }): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.put(
-    `/hr/perk-requests/${id}/approve`,
+    `/hr/employee/${employeeId}/perks/${perkId}/perk-requests/${id}/approve`,
   );
   return { message };
 };
 
 export const rejectPerkRequest = async ({
   id,
+  employeeId,
+  perkId,
 }: {
   id: string;
+  employeeId: string;
+  perkId: string;
 }): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.put(
-    `/hr/perk-requests/${id}/reject`,
+    `hr/employee/${employeeId}/perks/${perkId}/perk-requests/${id}/reject`,
   );
   return { message };
 };
 
-export const getPerkCardRecords = async () => {
-  try {
-    const response = await baseAPI.get(`/hr/perks/record`);
-    return schemaParse(hrPerkRecordApiResponseSchema)(response);
-  } catch (error) {
-    console.error('Error fetching perks cards records:', error);
-    throw error;
-  }
-};
+export const getPerkCardRecords =
+  async (): Promise<HrPerkRecordApiResponse> => {
+    try {
+      const response = await baseAPI.get(`/hr/perks/record`);
+      return schemaParse(hrPerkRecordApiResponseSchema)(response);
+    } catch (error) {
+      console.error('Error fetching perks cards records:', error);
+      throw error;
+    }
+  };

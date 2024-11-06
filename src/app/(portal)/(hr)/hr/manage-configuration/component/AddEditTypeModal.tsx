@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -7,6 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -23,9 +24,11 @@ import {
   addDesignationType,
   addEducationType,
   addExperienceType,
+  addFeedbackType,
   editDesignationType,
   editEducationType,
   editExperienceType,
+  editFeedbackType,
 } from '@/services/hr/hrConfiguration.service';
 
 import { MessageErrorResponse } from '@/types';
@@ -65,6 +68,16 @@ export function AddEditTypeDialog({
       type: '',
     },
   });
+  const [isIntern, setIsIntern] = useState<boolean>(false);
+  const [isProbational, setIsProbational] = useState<boolean>(false);
+
+  const handleInternChange = (checked: boolean) => {
+    setIsIntern(checked);
+  };
+
+  const handleProbationalChange = (checked: boolean) => {
+    setIsProbational(checked);
+  };
 
   useEffect(() => {
     if (moduleType === 'Education' && type === 'edit' && TypeToEdit) {
@@ -79,12 +92,18 @@ export function AddEditTypeDialog({
       reset({
         type: TypeToEdit?.designationType || '',
       });
+    } else if (moduleType === 'Feedback' && type === 'edit' && TypeToEdit) {
+      reset({
+        type: TypeToEdit?.feedbackType || '',
+      });
     }
   }, [TypeToEdit, type, reset, moduleType]);
 
   useEffect(() => {
     if (!open) {
       reset();
+      setIsIntern(false);
+      setIsProbational(false);
     }
   }, [open, reset]);
 
@@ -224,6 +243,51 @@ export function AddEditTypeDialog({
       },
     });
 
+  const { mutate: AddFeedbackMutate, isPending: AddFeedbackPending } =
+    useMutation({
+      mutationFn: addFeedbackType,
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description: response?.message || 'Feedback Type Added Successfully!',
+          variant: 'success',
+        });
+        reset();
+        setRefetchConfigurationList(true);
+        onCloseChange(false);
+      },
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Error on adding feedback type!',
+          variant: 'error',
+        });
+      },
+    });
+
+  const { mutate: EditFeedbackMutate, isPending: EditFeedbackPending } =
+    useMutation({
+      mutationFn: editFeedbackType,
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description:
+            response?.message || 'Feedback Type Updated Successfully!',
+          variant: 'success',
+        });
+        reset();
+        setRefetchConfigurationList(true);
+        onCloseChange(false);
+      },
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Error on updating the feedback type!',
+          variant: 'error',
+        });
+      },
+    });
+
   const onSubmit = (data: TypeFormData) => {
     if (moduleType === 'Education') {
       const addEducationPayload = {
@@ -263,6 +327,8 @@ export function AddEditTypeDialog({
       const addDesignationPayload = {
         userId,
         designationType: data?.type,
+        isIntern,
+        isProbational,
       };
       const editDesignationPayload = {
         id: TypeToEdit?._id ?? '',
@@ -274,6 +340,23 @@ export function AddEditTypeDialog({
         AddDesignationMutate(addDesignationPayload);
       } else if (moduleType === 'Designation' && type === 'edit') {
         EditDesignationMutate(editDesignationPayload);
+      }
+    }
+    if (moduleType === 'Feedback') {
+      const addFeedbackPayload = {
+        userId,
+        feedbackType: data?.type,
+      };
+      const editFeedbackPayload = {
+        id: TypeToEdit?._id ?? '',
+        userId,
+        feedbackType: data?.type,
+      };
+
+      if (moduleType === 'Feedback' && type === 'add') {
+        AddFeedbackMutate(addFeedbackPayload);
+      } else if (moduleType === 'Feedback' && type === 'edit') {
+        EditFeedbackMutate(editFeedbackPayload);
       }
     }
   };
@@ -295,7 +378,11 @@ export function AddEditTypeDialog({
                       ? 'Edit Designation Type'
                       : moduleType === 'Designation' && type === 'add'
                         ? 'Add Designation Type'
-                        : null}
+                        : moduleType === 'Feedback' && type === 'edit'
+                          ? 'Edit Feedback Type'
+                          : moduleType === 'Feedback' && type === 'add'
+                            ? 'Add Feedback Type'
+                            : null}
           </DialogTitle>
         </DialogHeader>
         <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
@@ -316,6 +403,34 @@ export function AddEditTypeDialog({
                   />
                 )}
               />
+              {moduleType === 'Designation' && type === 'add' && (
+                <div className="mt-2 flex flex-row gap-3">
+                  <div className="m-1 flex flex-row gap-2">
+                    <Checkbox
+                      checked={isIntern}
+                      aria-label="Immediate Termination"
+                      className="translate-y-[2px]"
+                      onCheckedChange={checked => {
+                        const isChecked = Boolean(checked);
+                        handleInternChange(isChecked);
+                      }}
+                    />
+                    <Label className="mt-1 text-xs">Intern</Label>
+                  </div>
+                  <div className="m-1 flex flex-row gap-2">
+                    <Checkbox
+                      checked={isProbational}
+                      aria-label="Immediate Termination"
+                      className="translate-y-[2px]"
+                      onCheckedChange={checked => {
+                        const isChecked = Boolean(checked);
+                        handleProbationalChange(isChecked);
+                      }}
+                    />
+                    <Label className="mt-1 text-xs">Probational</Label>
+                  </div>
+                </div>
+              )}
               {errors.type && (
                 <span className="text-sm text-red-500">
                   {`${moduleType} ${errors.type.message}`}
@@ -339,7 +454,11 @@ export function AddEditTypeDialog({
                           ? AddDesignationPending
                           : moduleType === 'Designation' && type === 'edit'
                             ? EditDesignationPending
-                            : false
+                            : moduleType === 'Feedback' && type === 'add'
+                              ? AddFeedbackPending
+                              : moduleType === 'Feedback' && type === 'edit'
+                                ? EditFeedbackPending
+                                : false
               }
             >
               {moduleType === 'Education' && type === 'add'
@@ -354,7 +473,11 @@ export function AddEditTypeDialog({
                         ? 'Add'
                         : moduleType === 'Designation' && type === 'edit'
                           ? 'Edit'
-                          : null}
+                          : moduleType === 'Feedback' && type === 'add'
+                            ? 'Add'
+                            : moduleType === 'Feedback' && type === 'edit'
+                              ? 'Edit'
+                              : null}
             </Button>
             <Button
               variant="ghostSecondary"

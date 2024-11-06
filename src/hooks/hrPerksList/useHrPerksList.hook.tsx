@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { HrEmployeeAllPerksApiResponse } from '@/libs/validations/hr-perks';
 import {
   fetchEmployeesAllPerks,
   fetchEmployeesForPerks,
@@ -12,7 +13,6 @@ import {
 
 import { UseQueryConfig } from '@/types';
 import {
-  HrEmployeeAllPerksApiResponse,
   HrPerkRecordApiResponse,
   HrPerkRequestsApiResponse,
   HrPerksGetEmployeesApiResponse,
@@ -36,7 +36,7 @@ export const useHrPerksEmpoyeeQuery = (config: UseQueryConfig = {}) =>
   useQuery({
     queryKey: ['hrPerksEmployeeList'],
     queryFn: () => fetchEmployeesForPerks(),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
@@ -72,7 +72,7 @@ export const useHrPerkRecordQuery = (config: UseQueryConfig = {}) =>
   useQuery({
     queryKey: ['hrPerkRecords'],
     queryFn: () => getPerkCardRecords(),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,

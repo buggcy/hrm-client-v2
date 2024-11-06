@@ -123,6 +123,7 @@ const RecentAnnouncements = ({
         open={showViewDialog}
         onOpenChange={handleViewDialogClose}
         onCloseChange={handleViewDialogClose}
+        user="hr"
       />
     </Card>
   );

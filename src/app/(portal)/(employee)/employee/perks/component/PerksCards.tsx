@@ -1,4 +1,6 @@
-import React, { FunctionComponent, useState } from 'react';
+'use client';
+
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { Tooltip } from '@radix-ui/react-tooltip';
 import { ArrowDownRight, ArrowUpRight, Minus, Plus } from 'lucide-react';
@@ -24,7 +26,7 @@ import { PerkRecordApiResponse } from '@/libs/validations/perk';
 import { PerkRecordChart } from './Chart/PerkRecordChart';
 
 interface PerkCardProps {
-  records?: PerkRecordApiResponse;
+  data?: PerkRecordApiResponse;
 }
 interface MiddleCardsProps {
   icon: JSX.Element;
@@ -53,7 +55,13 @@ const MiddleCards: FunctionComponent<MiddleCardsProps> = ({
     </Card>
   );
 };
-const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
+const PerkCards: FunctionComponent<PerkCardProps> = ({ data }) => {
+  const [records, setRecords] = useState<PerkRecordApiResponse | null>(null);
+  useEffect(() => {
+    if (data) {
+      setRecords(data);
+    }
+  }, [data]);
   const MiddleCardsData = [
     {
       icon: <ArrowUpRight color="#4779e5" />,
@@ -113,69 +121,54 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
           {activeTab === 'Available' && (
             <ScrollArea className="mt-2 h-48 w-full">
               <div className="flex flex-col gap-4">
-                {records?.availableData && records.availableData.length > 0 ? (
-                  records.availableData.map(perk => {
-                    const {
-                      assignedIncrementAmount,
-                      incrementAmount,
-                      perksId,
-                    } = perk;
-                    const amountIncDifference =
-                      assignedIncrementAmount - incrementAmount;
+                {records?.availableData.map(perk => {
+                  const { assignedIncrementAmount, incrementAmount, name } =
+                    perk;
+                  const amountIncDifference =
+                    assignedIncrementAmount - incrementAmount;
 
-                    return (
-                      <>
-                        <div
-                          key={perk._id}
-                          className="flex flex-col rounded-lg border border-gray-200 p-2 dark:dark:border-gray-300 dark:text-white"
-                        >
-                          <div className="mb-2 flex items-center justify-between">
-                            <p className="text-base font-semibold">
-                              {perksId?.name}
-                            </p>
-                            <div>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <Badge
-                                      variant="outline"
-                                      className={`text-sm ${amountIncDifference < 0 ? 'text-red-500' : 'text-green-500'}`}
-                                    >
-                                      {`₨ : ${amountIncDifference}`}
-                                    </Badge>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    Remaining Increment
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                          </div>
-                          <div className="flex justify-between text-gray-700">
-                            <div className="flex flex-row justify-between">
-                              <p className="text-sm dark:text-gray-300">
-                                Increment{' '}
-                                <span className="ml-2 text-sm font-semibold dark:text-white">{`₨ ${assignedIncrementAmount}`}</span>
-                              </p>
-                            </div>
-                            <div className="flex flex-row justify-between">
-                              <p className="text-sm dark:text-gray-300">
-                                Used{' '}
-                                <span className="ml-2 text-sm font-semibold dark:text-white">{`₨ ${incrementAmount}`}</span>
-                              </p>
-                            </div>
-                          </div>
+                  return (
+                    <div
+                      key={perk.id}
+                      className="flex flex-col rounded-lg border border-gray-200 p-2 dark:dark:border-gray-300 dark:text-white"
+                    >
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-base font-semibold">{name}</p>
+                        <div>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-sm ${amountIncDifference < 0 ? 'text-red-500' : 'text-green-500'}`}
+                                >
+                                  {`₨ : ${amountIncDifference}`}
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                Remaining Increment
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
-                      </>
-                    );
-                  })
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <p className="text-gray-500">
-                      Currently No Perks Available!
-                    </p>
-                  </div>
-                )}
+                      </div>
+                      <div className="flex justify-between text-gray-700">
+                        <div className="flex flex-row justify-between">
+                          <p className="text-sm dark:text-gray-300">
+                            Increment{' '}
+                            <span className="ml-2 text-sm font-semibold dark:text-white">{`₨ ${assignedIncrementAmount}`}</span>
+                          </p>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <p className="text-sm dark:text-gray-300">
+                            Used{' '}
+                            <span className="ml-2 text-sm font-semibold dark:text-white">{`₨ ${incrementAmount}`}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </ScrollArea>
           )}
@@ -188,7 +181,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
                     const {
                       assignedIncrementAmount,
                       incrementAmount,
-                      perksId,
+                      name,
                       assignedDecrementAmount,
                       decrementAmount,
                     } = perk;
@@ -200,13 +193,11 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
                     return (
                       <>
                         <div
-                          key={perk._id}
+                          key={perk.id}
                           className="flex flex-col rounded-lg border border-gray-200 p-2 dark:dark:border-gray-300 dark:text-white"
                         >
                           <div className="mb-2 flex items-center justify-between">
-                            <p className="text-base font-semibold">
-                              {perksId?.name}
-                            </p>
+                            <p className="text-base font-semibold">{name}</p>
                             <div>
                               <TooltipProvider>
                                 <Tooltip>
@@ -223,24 +214,23 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
-                              {perk?.perksId?.salaryIncrement &&
-                                perk?.perksId?.salaryDecrement && (
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger>
-                                        <Badge
-                                          variant="outline"
-                                          className={`text-sm text-green-500`}
-                                        >
-                                          {`₨ : ${amountIncDifference}`}
-                                        </Badge>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        Remaining Increment
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                )}
+                              {perk?.assignedIncrementAmount > 0 && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <Badge
+                                        variant="outline"
+                                        className={`text-sm text-green-500`}
+                                      >
+                                        {`₨ : ${amountIncDifference}`}
+                                      </Badge>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      Remaining Increment
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
                             </div>
                           </div>
 
@@ -259,23 +249,22 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ records }) => {
                               <span className="ml-2 text-sm font-semibold dark:text-white">{`₨ ${decrementAmount}`}</span>
                             </div>
                           </div>
-                          {perk?.perksId?.salaryIncrement &&
-                            perk?.perksId?.salaryDecrement && (
-                              <div className="flex justify-between text-gray-700">
-                                <div className="flex flex-row justify-between">
-                                  <p className="mr-1 text-sm dark:text-gray-300">
-                                    Increment{' '}
-                                  </p>
-                                  <span className="ml-3 text-sm font-semibold dark:text-white">{`₨ ${assignedIncrementAmount}`}</span>
-                                </div>
-                                <div className="flex flex-row justify-between">
-                                  <p className="text-sm dark:text-gray-300">
-                                    Used{' '}
-                                  </p>
-                                  <span className="ml-2 text-sm font-semibold dark:text-white">{`₨ ${incrementAmount}`}</span>
-                                </div>
+                          {perk?.assignedIncrementAmount > 0 && (
+                            <div className="flex justify-between text-gray-700">
+                              <div className="flex flex-row justify-between">
+                                <p className="mr-1 text-sm dark:text-gray-300">
+                                  Increment{' '}
+                                </p>
+                                <span className="ml-3 text-sm font-semibold dark:text-white">{`₨ ${assignedIncrementAmount}`}</span>
                               </div>
-                            )}
+                              <div className="flex flex-row justify-between">
+                                <p className="text-sm dark:text-gray-300">
+                                  Used{' '}
+                                </p>
+                                <span className="ml-2 text-sm font-semibold dark:text-white">{`₨ ${incrementAmount}`}</span>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </>
                     );

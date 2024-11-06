@@ -14,6 +14,7 @@ import {
 import DesignationTypeTable from './DesignationTypeTable';
 import EducationTypeTable from './EducationTypeTable';
 import ExperienceTypeTable from './ExperienceTypeTable';
+import FeedbackTypeTable from './FeedbackTypeTable';
 
 interface ConfigurationTypeTableProps {}
 const ConfigurationTypeTable: FunctionComponent<
@@ -37,6 +38,7 @@ const ConfigurationTypeTable: FunctionComponent<
                 </SelectItem>
                 <SelectItem value="Education Type">Education Type</SelectItem>
                 <SelectItem value="Experience Type">Experience Type</SelectItem>
+                <SelectItem value="Feedback Type">Feedback Type</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -56,6 +58,11 @@ const ConfigurationTypeTable: FunctionComponent<
         {selectedType === 'Experience Type' && (
           <div>
             <ExperienceTypeTable />
+          </div>
+        )}
+        {selectedType === 'Feedback Type' && (
+          <div>
+            <FeedbackTypeTable />
           </div>
         )}
       </div>

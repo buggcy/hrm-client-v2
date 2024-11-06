@@ -13,6 +13,6 @@ export const useAttendanceReport = (
     queryFn: () => fetchAttendanceReport(tahometerId ?? '', monthYear),
     refetchOnMount: true,
     refetchOnWindowFocus: true,
-    enabled: !!monthYear,
+    enabled: !!tahometerId && !!monthYear,
   });
 };

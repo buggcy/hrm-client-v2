@@ -4,12 +4,12 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { perk_status_options } from '@/components/filters';
 
-import { PerkListType } from '@/libs/validations/perk';
+import { TransformedPerkData } from '@/libs/validations/perk';
 
 import { PerkListRowActions } from '../actions/employee-perk-list.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
-export const employeePerkListColumns: ColumnDef<PerkListType>[] = [
+export const employeePerkListColumns: ColumnDef<TransformedPerkData>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
