@@ -6,11 +6,9 @@ import { Clipboard, Lightbulb, List, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useStores } from '@/providers/Store.Provider';
 
 import { useEmployeeFeedbackQuery } from '@/hooks/hr/useFeedback.hook';
 import { useAuthStore } from '@/stores/auth';
-import { FeedbackStoreType } from '@/stores/hr/hr-feedback';
 
 import FeedbackForm from './feedbackForm';
 import FeedbackInfoCard from './FeedbackInfoCard';
@@ -22,8 +20,6 @@ const FeedbackCard: React.FC = () => {
   const userId: string | undefined = user?.id;
   const { data, error, isLoading, isFetching, refetch } =
     useEmployeeFeedbackQuery();
-  const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
-  const { setRefetchFeedbackList } = feedbackStore;
 
   const [showForm, setShowForm] = useState(false);
   const [selectedFeedback, setSelectedFeedback] =
@@ -94,9 +90,16 @@ const FeedbackCard: React.FC = () => {
               onSubmit={handleFormSubmit}
               onClose={() => setShowForm(false)}
               userId={userId}
-              setRefetchFeedbackList={setRefetchFeedbackList}
+              setRefetchFeedbackList={refetch}
             />
-          ) : data?.data && data?.data?.length > 0 ? (
+          ) : data?.data?.length === 0 ||
+            (data?.data &&
+              data?.data?.length > 0 &&
+              data.data.every(feedback =>
+                feedback.userToAttempted?.includes(userId || ''),
+              )) ? (
+            <FeedbackInfoCard />
+          ) : (
             <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {data?.data?.map(feedback => {
                 const isUserAttempted = feedback?.userToAttempted?.includes(
@@ -106,11 +109,7 @@ const FeedbackCard: React.FC = () => {
                   attemptedFeedbacks[feedback._id] || isUserAttempted;
 
                 if (isFeedbackAttempted) {
-                  return (
-                    <>
-                      <FeedbackInfoCard />
-                    </>
-                  );
+                  return null;
                 }
                 return (
                   <Card
@@ -162,8 +161,6 @@ const FeedbackCard: React.FC = () => {
                 );
               })}
             </div>
-          ) : (
-            <FeedbackInfoCard />
           )}
         </div>
       )}

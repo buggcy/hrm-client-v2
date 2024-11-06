@@ -31,7 +31,7 @@ interface FeedbackFormProps {
   onClose: () => void;
   userId?: string;
   id: string;
-  setRefetchFeedbackList: (refetch: boolean) => void;
+  setRefetchFeedbackList: () => void;
 }
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
@@ -85,8 +85,8 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
           response?.message || 'Thank You! Your response has been recorded.',
         variant: 'success',
       });
+      setRefetchFeedbackList();
       onSubmit();
-      setRefetchFeedbackList(true);
     },
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({

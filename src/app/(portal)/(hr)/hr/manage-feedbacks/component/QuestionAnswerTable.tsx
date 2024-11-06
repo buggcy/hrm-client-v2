@@ -8,6 +8,7 @@ import { AxiosError } from 'axios';
 import { hrQuestionAnswerColumns } from '@/components/data-table/columns/hr-question-answer.columns';
 import { QuestionAnswerDataTable } from '@/components/data-table/data-table-hr-question-answer';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import Header from '@/components/Header/Header';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -144,6 +145,7 @@ const QuestionAnswerTypeTable: FunctionComponent<TableProps> = () => {
 
   return (
     <>
+      <Header subheading="Analyze Feedback, Track Progress, and Fuel Positive Change with Every Response!"></Header>
       <FeedbackStatistics
         totalUsers={feedbackRecord?.data?.totalUsers}
         averagePercentage={feedbackRecord?.data?.averagePercentage}

@@ -30,7 +30,7 @@ export const description = 'A bar chart with a custom label';
 const chartConfig = {
   count: {
     label: 'Count',
-    color: 'hsl(var(--chart-5))',
+    color: 'hsl(var(--chart-1))',
   },
   label: {
     color: 'hsl(var(--background))',
