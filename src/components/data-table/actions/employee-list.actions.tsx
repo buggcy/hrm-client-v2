@@ -22,12 +22,15 @@ import { useStores } from '@/providers/Store.Provider';
 import { FiredModal } from '@/app/(portal)/(hr)/hr/manage-employees/Modal/FiredModal';
 import { EmployeeListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
+import { AuthStoreType } from '@/stores/auth';
 import { EmployeeStoreType } from '@/stores/hr/employee';
 interface DataTableRowActionsProps {
   row: Row<EmployeeListType>;
 }
 
 export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList } = employeeStore;
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
@@ -44,7 +47,13 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
     setModal(false);
   };
   const handleEditClick = () => {
-    router.push(`/hr/manage-employees/edit-employee?employee=${data._id}`);
+    if (user?.roleId === 3) {
+      router.push(
+        `/manager/manage-employees/edit-employee?employee=${data._id}`,
+      );
+    } else if (user?.roleId === 1) {
+      router.push(`/hr/manage-employees/edit-employee?employee=${data._id}`);
+    }
   };
 
   const handleViewDetails = () => {

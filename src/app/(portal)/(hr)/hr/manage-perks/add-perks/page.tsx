@@ -12,8 +12,10 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
+import { useStores } from '@/providers/Store.Provider';
 
 import { useHrPerkRequestsQuery } from '@/hooks/hrPerksList/useHrPerksList.hook';
+import { AuthStoreType } from '@/stores/auth';
 
 import { AddPerksDialog } from './components/AddPerksDialog';
 import HrPerksListTable from './components/HrPerksListTable.component';
@@ -21,6 +23,8 @@ import HrPerksListTable from './components/HrPerksListTable.component';
 interface AddPerksProps {}
 
 const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const router = useRouter();
@@ -47,7 +51,11 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
           <Button
             variant="outline"
             className="flex items-center"
-            onClick={() => router.push('/hr/manage-perks/perk-requests')}
+            onClick={() =>
+              router.push(
+                `/${user?.roleId === 3 ? 'manager' : 'hr'}/manage-perks/perk-requests`,
+              )
+            }
           >
             View Approval Requests
             <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
@@ -56,7 +64,11 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
           </Button>
           <Button
             variant="default"
-            onClick={() => router.push('/hr/manage-perks/award-perks')}
+            onClick={() =>
+              router.push(
+                `/${user?.roleId === 3 ? 'manager' : 'hr'}/manage-perks/award-perks`,
+              )
+            }
           >
             Assign Perks
           </Button>

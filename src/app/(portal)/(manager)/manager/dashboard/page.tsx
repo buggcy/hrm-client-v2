@@ -1,6 +1,5 @@
 'use client';
-
-import { Suspense } from 'react';
+import { FunctionComponent } from 'react';
 
 import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
@@ -12,23 +11,25 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 
-import EditEmployee from './EditEmployee';
+import HrDashboardCharts from '@/app/(portal)/(hr)/hr/dashboard/components/HrDashboardCharts';
 
-export default function EditEmployeesPage() {
+interface ManagerDashboardProps {}
+
+const ManagerDashboard: FunctionComponent<ManagerDashboardProps> = () => {
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="Edit Employee">
+      <LayoutHeader title="Dashboard">
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper className="flex w-full flex-col gap-4">
-        <Header subheading="Edit Employee"></Header>
-        <Suspense fallback={<div>Loading...</div>}>
-          <EditEmployee />
-        </Suspense>
+      <LayoutWrapper className="flex flex-col gap-8">
+        <Header subheading="Manage your employees, attendance, and more."></Header>
+        <HrDashboardCharts />
       </LayoutWrapper>
     </Layout>
   );
-}
+};
+
+export default ManagerDashboard;

@@ -17,7 +17,7 @@ import { HrEventsDialogDemo } from './components/AddHrEventsDialog';
 import HrEventsCalender from './components/HrEventsCalender';
 import HrEventsTable from './components/HrEventsTable';
 
-export default function ManageEmployeesPage() {
+export default function ManageEventsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
