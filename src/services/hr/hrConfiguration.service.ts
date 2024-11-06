@@ -101,12 +101,16 @@ export const addExperienceType = async (payload: {
 export const addDesignationType = async (payload: {
   userId: string;
   designationType?: string;
+  isIntern?: boolean;
+  isProbational?: boolean;
 }): Promise<SuccessMessageResponse> => {
-  const { userId, designationType } = payload;
+  const { userId, designationType, isIntern, isProbational } = payload;
   const { message }: SuccessMessageResponse = await baseAPI.post(`/add/types`, {
     userId,
     status: 'designation',
     designationType,
+    isIntern,
+    isProbational,
   });
   return { message };
 };
@@ -157,6 +161,36 @@ export const editDesignationType = async (payload: {
       userId,
       status: 'designation',
       designationType,
+    },
+  );
+  return { message };
+};
+
+export const addFeedbackType = async (payload: {
+  userId: string;
+  feedbackType?: string;
+}): Promise<SuccessMessageResponse> => {
+  const { userId, feedbackType } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(`/add/types`, {
+    userId,
+    status: 'feedback',
+    feedbackType,
+  });
+  return { message };
+};
+
+export const editFeedbackType = async (payload: {
+  id: string;
+  userId: string;
+  feedbackType?: string;
+}): Promise<SuccessMessageResponse> => {
+  const { id, userId, feedbackType } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/edit/types/${id}`,
+    {
+      userId,
+      status: 'feedback',
+      feedbackType,
     },
   );
   return { message };
