@@ -9,24 +9,30 @@ import { hrQuestionAnswerColumns } from '@/components/data-table/columns/hr-ques
 import { QuestionAnswerDataTable } from '@/components/data-table/data-table-hr-question-answer';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
+import { useStores } from '@/providers/Store.Provider';
 
-import { useQuestionAnswerQuery } from '@/hooks/hr/useFeedback.hook';
+import {
+  useFeedbackRecordQuery,
+  useQuestionAnswerQuery,
+} from '@/hooks/hr/useFeedback.hook';
 import { QuestionAnswerArrayType } from '@/libs/validations/hr-feedback';
 import { searchQuestionAnswer } from '@/services/hr/hr-feedback.service';
+import { FeedbackStoreType } from '@/stores/hr/hr-feedback';
+
+import FeedbackStatistics from './FeedbackCards';
 
 import { MessageErrorResponse } from '@/types';
 
-interface TableProps {
-  category: string;
-  refetchFeedbackList: boolean;
-  setRefetchFeedbackList: (refetch: boolean) => void;
-}
-const QuestionAnswerTypeTable: FunctionComponent<TableProps> = ({
-  category,
-  refetchFeedbackList,
-  setRefetchFeedbackList,
-}) => {
+interface TableProps {}
+const QuestionAnswerTypeTable: FunctionComponent<TableProps> = () => {
   const searchParams = useSearchParams();
+  const categoryFromParams =
+    typeof window !== 'undefined' ? searchParams.get('category') : undefined;
+
+  const { data: feedbackRecord, refetch: RecordRefetch } =
+    useFeedbackRecordQuery(categoryFromParams ?? '');
+  const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
+  const { setRefetchFeedbackList, refetchFeedbackList } = feedbackStore;
   const router = useRouter();
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
@@ -41,7 +47,7 @@ const QuestionAnswerTypeTable: FunctionComponent<TableProps> = ({
     isFetching,
     error,
     refetch,
-  } = useQuestionAnswerQuery(category, {
+  } = useQuestionAnswerQuery(categoryFromParams ?? '', {
     page,
     limit,
   });
@@ -80,25 +86,35 @@ const QuestionAnswerTypeTable: FunctionComponent<TableProps> = ({
         query: debouncedSearchTerm,
         page,
         limit,
-        category,
+        category: categoryFromParams ?? '',
       });
     } else {
       void (async () => {
         await refetch();
+        await RecordRefetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit, category]);
+  }, [
+    debouncedSearchTerm,
+    refetch,
+    mutate,
+    page,
+    limit,
+    categoryFromParams,
+    RecordRefetch,
+  ]);
   useEffect(() => {}, [getQuestionAnswer]);
 
   useEffect(() => {
     if (refetchFeedbackList) {
       void (async () => {
         await refetch();
+        await RecordRefetch();
       })();
 
       setRefetchFeedbackList(false);
     }
-  }, [refetchFeedbackList, setRefetchFeedbackList, refetch]);
+  }, [refetchFeedbackList, setRefetchFeedbackList, refetch, RecordRefetch]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -128,24 +144,34 @@ const QuestionAnswerTypeTable: FunctionComponent<TableProps> = ({
 
   return (
     <>
-      {isLoading || isFetching ? (
-        <DataTableLoading columnCount={4} rowCount={limit} />
-      ) : (
-        <QuestionAnswerDataTable
-          searchLoading={isPending}
-          data={tableData || []}
-          columns={hrQuestionAnswerColumns}
-          pagination={{
-            pageCount: tablePageCount || 1,
-            page: page,
-            limit: limit,
-            onPaginationChange: handlePaginationChange,
-          }}
-          onSearch={handleSearchChange}
-          searchTerm={searchTerm}
-          toolbarType={'getQuestionAnswer'}
-        />
-      )}
+      <FeedbackStatistics
+        totalUsers={feedbackRecord?.data?.totalUsers}
+        averagePercentage={feedbackRecord?.data?.averagePercentage}
+        goodPercentage={feedbackRecord?.data?.goodPercentage}
+        excellentPercentage={feedbackRecord?.data?.excellentPercentage}
+        belowAveragePercentage={feedbackRecord?.data?.belowAveragePercentage}
+        veryGoodPercentage={feedbackRecord?.data?.veryGoodPercentage}
+      />
+      <div className="mt-3">
+        {isLoading || isFetching ? (
+          <DataTableLoading columnCount={4} rowCount={limit} />
+        ) : (
+          <QuestionAnswerDataTable
+            searchLoading={isPending}
+            data={tableData || []}
+            columns={hrQuestionAnswerColumns}
+            pagination={{
+              pageCount: tablePageCount || 1,
+              page: page,
+              limit: limit,
+              onPaginationChange: handlePaginationChange,
+            }}
+            onSearch={handleSearchChange}
+            searchTerm={searchTerm}
+            toolbarType={'getQuestionAnswer'}
+          />
+        )}
+      </div>
     </>
   );
 };

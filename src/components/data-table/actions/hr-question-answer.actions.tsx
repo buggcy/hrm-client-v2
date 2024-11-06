@@ -140,7 +140,6 @@ export function QuestionAnswerRowActions({ row }: DataTableRowActionsProps) {
         open={isView}
         onCloseChange={viewToggle}
         answerData={selectedRow}
-        type={'answer'}
       />
       <UpdateQuestionDialog
         isOpen={isEdit}

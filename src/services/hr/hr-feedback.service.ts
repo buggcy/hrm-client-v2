@@ -5,6 +5,7 @@ import {
   FeedbackApiResponse,
   FeedbackApiResponseSchema,
   FeedbackCardApiResponseSchema,
+  FeedbackChatApiResponseSchema,
   QuestionAnswerApiResponse,
   QuestionAnswerApiResponseSchema,
 } from '@/libs/validations/hr-feedback';
@@ -237,4 +238,14 @@ export const addAnswer = async (payload: {
     body,
   );
   return { message };
+};
+
+export const getFeedbackChart = async () => {
+  try {
+    const response = await baseAPI.get(`/feedback/statistics`);
+    return schemaParse(FeedbackChatApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching feedback statistics!', error);
+    throw error;
+  }
 };

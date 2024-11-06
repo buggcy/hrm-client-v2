@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
@@ -16,7 +17,7 @@ import {
 
 import ConfirmDialog from '@/components/modals/cancel-modal';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +31,6 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { AddEditFeedbackModal } from '@/app/(portal)/(hr)/hr/manage-feedbacks/component/Modal/AddEditFeedbackModal';
 import UpdateQuestionDialog from '@/app/(portal)/(hr)/hr/manage-feedbacks/component/UpdateQuestionModal';
-import ViewFeedback from '@/app/(portal)/(hr)/hr/manage-feedbacks/component/ViewFeedbackModal';
 import { FeedbackType } from '@/libs/validations/hr-feedback';
 import {
   deleteFeedback,
@@ -51,7 +51,6 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
   const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
   const { setRefetchFeedbackList } = feedbackStore;
 
-  const [isView, setIsView] = React.useState(false);
   const [isEnable, setIsEnable] = React.useState(false);
   const [type, setType] = React.useState('');
   const [selectedRow, setSelectedRow] = React.useState<FeedbackType | null>(
@@ -60,7 +59,7 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
   const data = row.original;
   const [modal, setModal] = React.useState(false);
   const [modelType, setModelType] = React.useState('add');
-
+  const router = useRouter();
   const handleClose = () => {
     setModal(false);
   };
@@ -71,17 +70,15 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
     setSelectedRow(row);
   };
 
-  const viewToggle = () => {
-    setIsView(false);
-  };
   const toggleEnable = () => {
     setIsEnable(false);
   };
-
-  const handleView = (row: FeedbackType) => {
-    setSelectedRow(row);
-    setIsView(true);
+  const handleViewQuestions = () => {
+    router.push(
+      `/hr/manage-feedbacks/view-questions?category=${data.feedbackCategory}`,
+    );
   };
+
   const { mutate, isPending } = useMutation({
     mutationFn: deleteFeedback,
     onError: (err: AxiosError<MessageErrorResponse>) => {
@@ -181,10 +178,12 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
             )}
             {data?.isEnabled === true ? 'Disable' : 'Enable'} Feedback
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleView(data)}>
-            <Eye className="mr-2 size-4" />
-            View Questions
-          </DropdownMenuItem>
+          <DialogTrigger asChild onClick={() => {}}>
+            <DropdownMenuItem onClick={handleViewQuestions}>
+              <Eye className="mr-2 size-4" />
+              View Question
+            </DropdownMenuItem>
+          </DialogTrigger>
           <DropdownMenuItem
             className="text-red-600"
             onSelect={() => setShowDeleteDialog(true)}
@@ -202,12 +201,6 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
         isPending={isPending}
         description={'Are your sure you want to delete this feedback record?'}
         handleDelete={handleDelete}
-      />
-      <ViewFeedback
-        open={isView}
-        onCloseChange={viewToggle}
-        questionData={selectedRow}
-        type="question"
       />
       <UpdateQuestionDialog
         isOpen={isEnable}

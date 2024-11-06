@@ -59,6 +59,10 @@ export interface EmployeeFeedbackList {
   feedbackCategory: string;
   userToAttempted: string[];
 }
+export interface ChartList {
+  name: string;
+  count: number;
+}
 
 export type feedbackCategories = Array<string>;
 
@@ -85,4 +89,12 @@ export interface FeedbackRecordApiResponse {
 
 export interface EmployeeFeedbackApiResponse {
   data: EmployeeFeedbackList[];
+}
+
+export interface FeedbackChartApiResponse {
+  distributionChart: {
+    totalEnabled: number;
+    totalDisabled: number;
+  };
+  topAnswers: ChartList[];
 }

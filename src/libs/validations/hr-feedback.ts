@@ -68,7 +68,10 @@ const EmployeeFeedbackSchema = z.object({
   questions: z.array(questionSchema),
   userToAttempted: z.array(z.string()),
 });
-
+const feedbackChartSchema = z.object({
+  name: z.string(),
+  count: z.number(),
+});
 const FeedbackApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(FeedbackSchema),
@@ -87,9 +90,23 @@ const EmployeeFeedbackApiResponseSchema = z.object({
   data: z.array(EmployeeFeedbackSchema),
 });
 
+const FeedbackChatApiResponseSchema = z.object({
+  distributionChart: z.object({
+    totalEnabled: z.number(),
+    totalDisabled: z.number(),
+  }),
+  topAnswers: z.array(feedbackChartSchema),
+});
+
 export type FeedbackApiResponse = z.infer<typeof FeedbackApiResponseSchema>;
 export type FeedbackType = z.infer<typeof FeedbackSchema>;
 export type FeedbackArrayType = z.infer<typeof FeedbackSchema>[] | [];
+
+export type FeedbackChartApiResponse = z.infer<
+  typeof FeedbackChatApiResponseSchema
+>;
+export type FeedbackChartType = z.infer<typeof feedbackChartSchema>;
+export type FeedbackChartArrayType = z.infer<typeof feedbackChartSchema>[] | [];
 
 export type EmployeeFeedbackApiResponse = z.infer<
   typeof EmployeeFeedbackApiResponseSchema
@@ -114,10 +131,12 @@ export type QuestionAnswerArrayType =
 
 export {
   EmployeeFeedbackApiResponseSchema,
+  FeedbackChatApiResponseSchema,
   QuestionAnswerApiResponseSchema,
   FeedbackCardApiResponseSchema,
   FeedbackApiResponseSchema,
   userSchema,
+  feedbackChartSchema,
   feedbackRecordSchema,
   paginationSchema,
   QuestionAnswerSchema,

@@ -5,6 +5,7 @@ import {
   getEmployeeFeedback,
   getFeedbackCardData,
   getFeedbackCategory,
+  getFeedbackChart,
   getFeedbacks,
   getQuestionAnswer,
 } from '@/services/hr/hr-feedback.service';
@@ -13,6 +14,7 @@ import { UseQueryConfig } from '@/types';
 import {
   EmployeeFeedbackApiResponse,
   FeedBackApiResponse,
+  FeedbackChartApiResponse,
   FeedbackRecordApiResponse,
   IFeedbackCategoryResponse,
   QuestionAnswerApiResponse,
@@ -79,3 +81,13 @@ export const useEmployeeFeedbackQuery = (config: UseQueryConfig = {}) =>
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<EmployeeFeedbackApiResponse, Error>;
+
+export const useFeedbackStatisticsQuery = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['feedbackStatistics'],
+    queryFn: () => getFeedbackChart(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<FeedbackChartApiResponse, Error>;

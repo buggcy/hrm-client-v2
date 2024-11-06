@@ -10,41 +10,30 @@ import { FeedbackDataTable } from '@/components/data-table/data-table-hr-feedbac
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import Header from '@/components/Header/Header';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import {
-  useFeedbackCategoryQuery,
   useFeedbackQuery,
-  useFeedbackRecordQuery,
+  useFeedbackStatisticsQuery,
 } from '@/hooks/hr/useFeedback.hook';
 import { FeedbackArrayType } from '@/libs/validations/hr-feedback';
 import { searchFeedback } from '@/services/hr/hr-feedback.service';
 import { FeedbackStoreType } from '@/stores/hr/hr-feedback';
 
-import FeedbackStatistics from './FeedbackCards';
+import { FeedbackDistributionChart } from './Chart/FeedbackDistributionChart';
+import { TopFeedbackAnswer } from './Chart/TopAnswerChart';
 import { AddEditFeedbackModal } from './Modal/AddEditFeedbackModal';
-import QuestionAnswerTypeTable from './QuestionAnswerTable';
 
 import { MessageErrorResponse } from '@/types';
 
 const FeedbackTable: FunctionComponent = () => {
-  const [category, setCategory] = useState<string>('All');
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { data: feedbackCategory, refetch: CategoryRefetch } =
-    useFeedbackCategoryQuery();
   const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
   const { setRefetchFeedbackList, refetchFeedbackList } = feedbackStore;
-
+  const { data: feedbackStatistics, refetch: ChartRefetch } =
+    useFeedbackStatisticsQuery();
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
@@ -54,8 +43,7 @@ const FeedbackTable: FunctionComponent = () => {
     useState<string>(initialSearchTerm);
   const [modal, setModal] = useState(false);
   const [modelType, setModelType] = useState('add');
-  const { data: feedbackRecord, refetch: RecordRefetch } =
-    useFeedbackRecordQuery(category);
+
   const handleClose = () => {
     setModal(false);
   };
@@ -111,35 +99,23 @@ const FeedbackTable: FunctionComponent = () => {
     } else {
       void (async () => {
         await refetch();
-        await CategoryRefetch();
-        await RecordRefetch();
+        await ChartRefetch();
       })();
     }
-  }, [
-    debouncedSearchTerm,
-    refetch,
-    mutate,
-    page,
-    limit,
-    CategoryRefetch,
-    status,
-    RecordRefetch,
-  ]);
+  }, [debouncedSearchTerm, refetch, mutate, page, limit, status, ChartRefetch]);
 
   useEffect(() => {}, [getFeedbacks]);
-  useEffect(() => {}, [feedbackRecord]);
+  useEffect(() => {}, [feedbackStatistics]);
   useEffect(() => {
     if (refetchFeedbackList) {
       void (async () => {
         await refetch();
-        await CategoryRefetch();
-        await RecordRefetch();
+        await ChartRefetch();
       })();
       setRefetchFeedbackList(false);
     }
   }, [
-    CategoryRefetch,
-    RecordRefetch,
+    ChartRefetch,
     refetch,
     refetchFeedbackList,
     setRefetchFeedbackList,
@@ -175,79 +151,41 @@ const FeedbackTable: FunctionComponent = () => {
   return (
     <>
       <Header subheading="Seamlessly Track, Analyze, and Enhance Feedback for Continuous Improvement!">
-        <div className="flex flex-col-reverse justify-between gap-4 sm:flex-row">
-          <Select value={category} onValueChange={setCategory}>
-            <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[64%]">
-              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                <SelectValue>{category}</SelectValue>
-              </SelectTrigger>
-            </div>
-            <SelectContent>
-              <SelectGroup className="text-sm">
-                <SelectItem value="All">All</SelectItem>
-
-                {feedbackCategory?.feedbackCategories.map((type, index) => (
-                  <SelectItem key={index} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+        <Button variant="default" size={'sm'} onClick={handleAdd}>
+          Add Feedback
+        </Button>
       </Header>
 
-      {category === 'All' ? (
-        <>
-          <div className="mb-4 mt-6 flex justify-end">
-            <Button variant="default" size={'sm'} onClick={handleAdd}>
-              Add Feedback
-            </Button>
-          </div>
-          <div className="mt-6">
-            {isLoading || isFetching ? (
-              <DataTableLoading columnCount={6} rowCount={limit} />
-            ) : (
-              <FeedbackDataTable
-                searchLoading={isPending}
-                data={tableData || []}
-                columns={hrFeedbackColumns}
-                pagination={{
-                  pageCount: tablePageCount || 1,
-                  page: page,
-                  limit: limit,
-                  onPaginationChange: handlePaginationChange,
-                }}
-                onSearch={handleSearchChange}
-                searchTerm={searchTerm}
-                toolbarType={'getFeedbacks'}
-                setFilterValue={setStatus}
-                filterValue={status}
-              />
-            )}
-          </div>
-        </>
-      ) : (
-        <>
-          <FeedbackStatistics
-            totalUsers={feedbackRecord?.data?.totalUsers}
-            averagePercentage={feedbackRecord?.data?.averagePercentage}
-            goodPercentage={feedbackRecord?.data?.goodPercentage}
-            excellentPercentage={feedbackRecord?.data?.excellentPercentage}
-            belowAveragePercentage={
-              feedbackRecord?.data?.belowAveragePercentage
-            }
-            veryGoodPercentage={feedbackRecord?.data?.veryGoodPercentage}
+      <div className="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <TopFeedbackAnswer chartData={feedbackStatistics?.topAnswers} />
+        <FeedbackDistributionChart
+          totalEnabled={feedbackStatistics?.distributionChart?.totalEnabled}
+          totalDisabled={feedbackStatistics?.distributionChart?.totalDisabled}
+        />
+      </div>
+      <div className="mt-6">
+        {isLoading || isFetching ? (
+          <DataTableLoading columnCount={6} rowCount={limit} />
+        ) : (
+          <FeedbackDataTable
+            searchLoading={isPending}
+            data={tableData || []}
+            columns={hrFeedbackColumns}
+            pagination={{
+              pageCount: tablePageCount || 1,
+              page: page,
+              limit: limit,
+              onPaginationChange: handlePaginationChange,
+            }}
+            onSearch={handleSearchChange}
+            searchTerm={searchTerm}
+            toolbarType={'getFeedbacks'}
+            setFilterValue={setStatus}
+            filterValue={status}
           />
-          <div className="mt-6">
-            <QuestionAnswerTypeTable
-              category={category}
-              setRefetchFeedbackList={setRefetchFeedbackList}
-              refetchFeedbackList={refetchFeedbackList}
-            />
-          </div>
-        </>
-      )}
+        )}
+      </div>
+
       <AddEditFeedbackModal
         open={modal}
         onCloseChange={handleClose}
