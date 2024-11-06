@@ -393,55 +393,6 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
                 )}
               </div>
             </div>
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.city"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                City
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address.city"
-                  control={control}
-                  render={({ field }) => (
-                    <Input {...field} id="address.city" placeholder="City" />
-                  )}
-                />
-                {errors.address?.city && (
-                  <span className="text-red-500">
-                    {errors.address.city.message}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.street"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Street
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address.street"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="address.street"
-                      placeholder="Street"
-                    />
-                  )}
-                />
-                {errors.address?.street && (
-                  <span className="text-red-500">
-                    {errors.address.street.message}
-                  </span>
-                )}
-              </div>
-            </div>
 
             <div className="mb-4 grid grid-cols-12 gap-4">
               <Label
@@ -506,26 +457,49 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
 
             <div className="mb-4 grid grid-cols-12 gap-4">
               <Label
-                htmlFor="address.zip"
+                htmlFor="address.city"
                 className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
               >
-                Postal Code
+                City
               </Label>
               <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
                 <Controller
-                  name="address.zip"
+                  name="address.city"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} id="address.city" placeholder="City" />
+                  )}
+                />
+                {errors.address?.city && (
+                  <span className="text-red-500">
+                    {errors.address.city.message}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="mb-4 grid grid-cols-12 gap-4">
+              <Label
+                htmlFor="address.street"
+                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              >
+                Street
+              </Label>
+              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+                <Controller
+                  name="address.street"
                   control={control}
                   render={({ field }) => (
                     <Input
                       {...field}
-                      id="address.zip"
-                      placeholder="Postal Code"
+                      id="address.street"
+                      placeholder="Street"
                     />
                   )}
                 />
-                {errors.address?.zip?.message && (
+                {errors.address?.street && (
                   <span className="text-red-500">
-                    {errors.address.zip.message}
+                    {errors.address.street.message}
                   </span>
                 )}
               </div>
@@ -553,6 +527,33 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
                 {errors.address?.landMark && (
                   <span className="text-red-500">
                     {errors.address.landMark.message}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="mb-4 grid grid-cols-12 gap-4">
+              <Label
+                htmlFor="address.zip"
+                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              >
+                Postal Code
+              </Label>
+              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+                <Controller
+                  name="address.zip"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="address.zip"
+                      placeholder="Postal Code"
+                    />
+                  )}
+                />
+                {errors.address?.zip?.message && (
+                  <span className="text-red-500">
+                    {errors.address.zip.message}
                   </span>
                 )}
               </div>
