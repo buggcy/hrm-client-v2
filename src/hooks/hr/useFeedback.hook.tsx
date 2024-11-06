@@ -4,7 +4,6 @@ import {
   FeedbackParams,
   getEmployeeFeedback,
   getFeedbackCardData,
-  getFeedbackCategory,
   getFeedbackChart,
   getFeedbacks,
   getQuestionAnswer,
@@ -16,7 +15,6 @@ import {
   FeedBackApiResponse,
   FeedbackChartApiResponse,
   FeedbackRecordApiResponse,
-  IFeedbackCategoryResponse,
   QuestionAnswerApiResponse,
 } from '@/types/feedback.types';
 
@@ -47,16 +45,6 @@ export const useQuestionAnswerQuery = (
     ...config,
     enabled: !!category,
   }) as UseQueryResult<QuestionAnswerApiResponse, Error>;
-
-export const useFeedbackCategoryQuery = (config: UseQueryConfig = {}) =>
-  useQuery({
-    queryKey: ['feedbackCategory'],
-    queryFn: getFeedbackCategory,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchInterval: 1000 * 60 * 5,
-    ...config,
-  }) as UseQueryResult<IFeedbackCategoryResponse, Error>;
 
 export const useFeedbackRecordQuery = (
   category: string,

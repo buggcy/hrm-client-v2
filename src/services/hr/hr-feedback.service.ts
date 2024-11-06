@@ -1,5 +1,3 @@
-import { AxiosResponse } from 'axios';
-
 import {
   EmployeeFeedbackApiResponseSchema,
   FeedbackApiResponse,
@@ -193,11 +191,6 @@ export const updateFeedback = async (payload: {
     body,
   );
   return { message };
-};
-
-export const getFeedbackCategory = async (): Promise<AxiosResponse> => {
-  const res = await baseAPI.get('/feedback/category');
-  return res;
 };
 
 export const getFeedbackCardData = async (category: string) => {
