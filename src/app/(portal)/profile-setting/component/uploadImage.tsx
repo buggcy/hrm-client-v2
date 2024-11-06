@@ -27,27 +27,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ initialAvatar, onSave }) => {
     setPicture(prev => ({ ...prev, zoom: parseFloat(event.target.value) }));
   };
 
-  //   const handleSave = () => {
-  //     if (editorRef.current) {
-  //       const canvasScaled = editorRef.current.getImageScaledToCanvas();
-  //       const croppedImg = canvasScaled.toDataURL();
-
-  //       void fetch(croppedImg)
-  //         .then(res => res.blob())
-  //         .then(blob => {
-  //           const file = new File([blob], 'avatar.png', { type: 'image/png' });
-  //           onSave(file);
-  //         });
-
-  // setPicture(prev => ({
-  //   ...prev,
-  //   img: null,
-  //   cropperOpen: false,
-  //   croppedImg: croppedImg,
-  // }));
-  //       //   setDialogOpen(false);
-  //     }
-  //   };
   const handleSave = async () => {
     if (!editorRef.current) return;
 
@@ -67,7 +46,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ initialAvatar, onSave }) => {
         cropperOpen: false,
         croppedImg: croppedImg,
       }));
-      //   setPicture({ cropperOpen: false, img: null, zoom: 1 });
       setUploadedFiles([]);
     } catch (error) {
       console.error('Error saving image:', error);
@@ -94,7 +72,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ initialAvatar, onSave }) => {
       {uploadedFiles.length === 0 ? (
         <div {...getRootProps()} className="outline-none">
           <Input {...getInputProps()} />
-          <div className="flex cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6 hover:bg-gray-100">
+          <div className="flex cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800">
             <UploadCloud size={20} />
             <p className="ml-2">
               {isDragActive
@@ -126,7 +104,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ initialAvatar, onSave }) => {
             onChange={handleSliderChange}
             aria-label="Zoom level"
           />
-          <div className="mt-2 flex justify-between">
+          <div className="mt-2 flex justify-end">
             <Button onClick={handleSave}>Save</Button>
           </div>
         </div>
