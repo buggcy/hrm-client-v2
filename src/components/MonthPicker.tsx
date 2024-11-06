@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { CalendarIcon } from 'lucide-react';
 import DatePicker from 'react-datepicker';
@@ -18,11 +18,13 @@ import './MonthPicker.css';
 interface MonthPickerProps {
   setDateValue: (date: Date | null) => void;
   initialDate: Date | null;
+  minDate?: Date;
 }
 
 export function MonthPickerComponent({
   setDateValue,
   initialDate,
+  minDate = new Date(),
 }: MonthPickerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate);
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +34,11 @@ export function MonthPickerComponent({
     setIsOpen(false);
     setDateValue(date);
   };
-
+  useEffect(() => {
+    if (initialDate) {
+      setSelectedDate(initialDate);
+    }
+  }, [initialDate]);
   const toggleCalendar = () => setIsOpen(!isOpen);
 
   const formatDate = (date: Date | null) => {
@@ -59,6 +65,7 @@ export function MonthPickerComponent({
           dateFormat="MM/yyyy"
           showMonthYearPicker
           inline
+          {...(minDate ? { minDate } : {})}
         />
       </PopoverContent>
     </Popover>
