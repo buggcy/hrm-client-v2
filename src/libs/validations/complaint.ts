@@ -11,7 +11,7 @@ const userSchema = z.object({
   Avatar: z.string().optional(),
   contactNo: z.string().optional(),
   companyEmail: z.string().optional(),
-  DeleteResignation: z.string().optional(),
+  Designation: z.string().optional(),
   firstName: z.string(),
   lastName: z.string(),
   _id: z.string(),

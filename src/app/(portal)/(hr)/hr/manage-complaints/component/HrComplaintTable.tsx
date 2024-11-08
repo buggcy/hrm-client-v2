@@ -1,6 +1,7 @@
 'use client';
 
 import { FunctionComponent, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
@@ -11,6 +12,7 @@ import { ComplaintDataTable } from '@/components/data-table/data-table-complaint
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
+import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -167,6 +169,17 @@ const HrComplaintTable: FunctionComponent<Props> = () => {
           setTimeRange={setTimeRange}
           setDate={handleSetDate}
         />
+        <Button variant="outline" asChild>
+          <Link
+            href="/hr/manage-complaints/view-complaints"
+            className="flex items-center"
+          >
+            View Complaints
+            <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+              {complaintRecords?.records?.pendingCount || 0}
+            </span>
+          </Link>
+        </Button>
       </Header>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <ComplaintTrendChart chartData={complaintRecords?.data ?? []} />
