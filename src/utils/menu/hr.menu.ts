@@ -1,4 +1,5 @@
 import {
+  AlertTriangle,
   BadgeCheck,
   Banknote,
   CalendarCog,
@@ -108,7 +109,6 @@ export const hrMenu: MenuItem[] = [
       },
     ],
   },
-
   {
     title: 'Manage Configuration',
     icon: UserCog2,
@@ -117,6 +117,17 @@ export const hrMenu: MenuItem[] = [
         title: 'Manage Configuration',
         icon: Settings,
         href: '/hr/manage-configuration',
+      },
+    ],
+  },
+  {
+    title: 'Manage Complaint',
+    icon: UserCog2,
+    children: [
+      {
+        title: 'Manage Complaint',
+        icon: AlertTriangle,
+        href: '/hr/manage-complaints',
       },
     ],
   },

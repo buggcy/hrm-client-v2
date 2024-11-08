@@ -1,4 +1,5 @@
 import {
+  AlertOctagon,
   CalendarClock,
   DollarSignIcon,
   Gift,
@@ -56,6 +57,17 @@ export const employeeMenu: MenuItem[] = [
         title: 'Policies',
         icon: Shield,
         href: '/employee/policy',
+      },
+    ],
+  },
+  {
+    title: 'Complaint',
+    icon: Siren,
+    children: [
+      {
+        title: 'Complaint',
+        icon: AlertOctagon,
+        href: '/employee/complaint',
       },
     ],
   },

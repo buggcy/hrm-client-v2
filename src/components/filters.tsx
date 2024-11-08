@@ -348,3 +348,21 @@ export const announcement_status_options = [
     icon: XCircle,
   },
 ];
+
+export const complaint_options = [
+  {
+    value: 'Resolved',
+    label: 'Resolved',
+    icon: CheckCircle,
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Canceled',
+    label: 'Canceled',
+    icon: XCircle,
+  },
+];

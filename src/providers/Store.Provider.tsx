@@ -3,6 +3,7 @@
 import React, { createContext, ReactNode, useContext } from 'react';
 
 import { useAttendanceHistoryStore } from '@/stores/employee/attendance-history';
+import { useComplaintStore } from '@/stores/employee/complaint';
 import { useEmployeePayrollStore } from '@/stores/employee/employeePayroll';
 import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
 import { usePerkStore } from '@/stores/employee/perks';
@@ -43,6 +44,7 @@ interface StoreContextType {
   logStore: ReturnType<typeof useLogStore>;
   editEmployeeStore: ReturnType<typeof useEditEmployeeStore>;
   manageAnnouncementsStore: ReturnType<typeof useManageAnnouncementsStore>;
+  complaintStore: ReturnType<typeof useComplaintStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -68,6 +70,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const editEmployeeStore = useEditEmployeeStore();
 
   const manageAnnouncementsStore = useManageAnnouncementsStore();
+  const complaintStore = useComplaintStore();
   return (
     <StoreContext.Provider
       value={{
@@ -90,6 +93,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         logStore,
         editEmployeeStore,
         manageAnnouncementsStore,
+        complaintStore,
       }}
     >
       {children}
