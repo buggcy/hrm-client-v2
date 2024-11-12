@@ -20,6 +20,7 @@ import { useLogStore } from '@/stores/hr/logs';
 import { usePerkListStore } from '@/stores/hr/perk-list';
 
 import { useAuthStore } from '../stores/auth';
+import { useProjectStore } from '../stores/hr/project-department';
 import { usePolicyStore } from '../stores/hr-policies.Store';
 import { useNotificationStore } from '../stores/useNotificationStore';
 
@@ -43,6 +44,7 @@ interface StoreContextType {
   logStore: ReturnType<typeof useLogStore>;
   editEmployeeStore: ReturnType<typeof useEditEmployeeStore>;
   manageAnnouncementsStore: ReturnType<typeof useManageAnnouncementsStore>;
+  projectStore: ReturnType<typeof useProjectStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -68,6 +70,8 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const editEmployeeStore = useEditEmployeeStore();
 
   const manageAnnouncementsStore = useManageAnnouncementsStore();
+  const projectStore = useProjectStore();
+
   return (
     <StoreContext.Provider
       value={{
@@ -90,6 +94,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         logStore,
         editEmployeeStore,
         manageAnnouncementsStore,
+        projectStore,
       }}
     >
       {children}

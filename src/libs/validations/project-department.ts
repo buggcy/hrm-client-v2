@@ -1,0 +1,149 @@
+import { z } from 'zod';
+
+export const projectStatus = [
+  'Not Started',
+  'Completed',
+  'In Progress',
+  'Overdue',
+  'Pending',
+  'Cancelled',
+] as const;
+
+const paginationSchema = z.object({
+  page: z.number(),
+  limit: z.number(),
+  totalCount: z.number(),
+  totalPages: z.number(),
+});
+
+const userIdSchema = z.object({
+  _id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  companyEmail: z.string().optional(),
+  Avatar: z.string().optional(),
+  Designation: z.string().optional(),
+  contactNo: z.string().optional(),
+});
+
+const projectSchema = z.object({
+  _id: z.string(),
+  __v: z.number(),
+  updatedBy: userIdSchema.optional(),
+  teamLead: userIdSchema.optional(),
+  teamMembers: z.array(userIdSchema).optional(),
+  status: z.enum(projectStatus).optional(),
+  projectName: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  deadline: z.string().optional(),
+  projectTitle: z.string().optional(),
+  projectDescription: z.string().optional(),
+  techStack: z.array(z.string()).optional(),
+  isDeleted: z.boolean(),
+  isActive: z.boolean().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+});
+const headSchema = z.object({
+  user: userIdSchema.optional(),
+  isCurrent: z.boolean(),
+  appointDate: z.string(),
+  endDate: z.string().optional(),
+});
+const departmentSchema = z.object({
+  _id: z.string(),
+  __v: z.number(),
+  employees: z.array(userIdSchema).optional(),
+  projects: z.array(projectSchema).optional(),
+  departmentName: z.string().optional(),
+  departmentHead: z.array(headSchema).optional(),
+  departmentDirector: z.array(headSchema).optional(),
+  isDeleted: z.boolean(),
+  updatedBy: userIdSchema,
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+});
+
+const projectListSchema = z.object({
+  _id: z.string(),
+  projectName: z.string(),
+});
+
+const ProjectTrendChartSchema = z.object({
+  month: z.string(),
+  notStarted: z.number(),
+  inProgress: z.number(),
+  overdue: z.number(),
+  completed: z.number(),
+  pending: z.number(),
+  cancelled: z.number(),
+});
+
+const statisticsSchema = z.object({
+  totalCount: z.number(),
+  pendingCount: z.number(),
+  completedCount: z.number(),
+  inProgressCount: z.number(),
+  cancelledCount: z.number(),
+  notStartedCount: z.number(),
+  overdueCount: z.number(),
+});
+
+const recordsSchema = z.object({
+  activeCount: z.number(),
+  inactiveCount: z.number(),
+});
+
+const projectApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(projectSchema),
+});
+
+const projectListApiResponseSchema = z.object({
+  data: z.array(projectListSchema),
+});
+
+const ProjectChartApiResponseSchema = z.object({
+  data: z.array(ProjectTrendChartSchema),
+  statistics: statisticsSchema,
+  records: recordsSchema,
+});
+
+const departmentApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(departmentSchema),
+});
+
+export type ProjectListApiResponse = z.infer<typeof projectApiResponseSchema>;
+export type ProjectListType = z.infer<typeof projectSchema>;
+export type ProjectListArrayType = z.infer<typeof projectSchema>[] | [];
+
+export type DepartmentListApiResponse = z.infer<
+  typeof departmentApiResponseSchema
+>;
+export type DepartmentListType = z.infer<typeof departmentSchema>;
+export type DepartmentListArrayType = z.infer<typeof departmentSchema>[] | [];
+
+export type ProjectApiResponse = z.infer<typeof projectListApiResponseSchema>;
+
+export type ProjectChartType = z.infer<typeof ProjectTrendChartSchema>;
+export type ProjectChartApiResponse = z.infer<
+  typeof ProjectChartApiResponseSchema
+>;
+
+export {
+  projectApiResponseSchema,
+  ProjectChartApiResponseSchema,
+  userIdSchema,
+  paginationSchema,
+  departmentSchema,
+  projectSchema,
+  statisticsSchema,
+  recordsSchema,
+  departmentApiResponseSchema,
+  headSchema,
+  projectListApiResponseSchema,
+  projectListSchema,
+  ProjectTrendChartSchema,
+};
