@@ -11,6 +11,8 @@ import {
 } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 
+import DepartmentTable from './component/DepartmentTable';
+
 export default function ManageDepartment() {
   return (
     <Layout>
@@ -23,7 +25,7 @@ export default function ManageDepartment() {
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
         <Suspense fallback={<div>Loading...</div>}>
-          {'hello Departments'}
+          <DepartmentTable />
         </Suspense>
       </LayoutWrapper>
     </Layout>

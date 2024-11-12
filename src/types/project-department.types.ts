@@ -46,6 +46,19 @@ export interface Head {
   appointDate: string;
   endDate?: string;
 }
+export interface ProjectSchema {
+  projectName?: string;
+  projectTitle?: string;
+  techStack?: string[];
+  startDate?: string;
+  status?:
+    | 'Not Started'
+    | 'Completed'
+    | 'In Progress'
+    | 'Overdue'
+    | 'Pending'
+    | 'Cancelled';
+}
 
 export interface Departments {
   _id: string;
@@ -54,7 +67,7 @@ export interface Departments {
   departmentHead?: Head[];
   departmentDirector?: Head[];
   employees?: userType[];
-  projects?: Projects[];
+  projects?: ProjectSchema[];
   updatedBy?: userType;
   isDeleted: boolean;
   createdAt?: string;
@@ -64,7 +77,10 @@ export interface ProjectsList {
   _id: string;
   projectName: string;
 }
-
+export interface DepartmentList {
+  _id: string;
+  departmentName: string;
+}
 export interface TrendChartData {
   month: string;
   notStarted: number;
@@ -73,6 +89,15 @@ export interface TrendChartData {
   completed: number;
   pending: number;
   cancelled: number;
+}
+export interface TopChartData {
+  department: string;
+  employees: number;
+}
+export interface OverviewChartData {
+  department: string;
+  projects: number;
+  employees: number;
 }
 
 export interface ProjectApiResponse {
@@ -87,6 +112,10 @@ export interface ProjectListApiResponse {
 export interface DepartmentApiResponse {
   pagination: Pagination;
   data: Departments[];
+}
+
+export interface DepartmentListApiResponse {
+  data: DepartmentList[];
 }
 
 export interface ProjectChartApiResponse {
@@ -104,4 +133,9 @@ export interface ProjectChartApiResponse {
     activeCount: number;
     inactiveCount: number;
   };
+}
+
+export interface DepartmentChartApiResponse {
+  topChart: TopChartData[];
+  Overiew: OverviewChartData[];
 }

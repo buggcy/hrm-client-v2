@@ -1,6 +1,9 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import {
+  DepartmentParams,
+  getDepartmentRecords,
+  getDepartments,
   getProjectList,
   getProjectRecords,
   getProjects,
@@ -10,6 +13,9 @@ import {
 
 import { UseQueryConfig } from '@/types';
 import {
+  DepartmentApiResponse,
+  DepartmentChartApiResponse,
+  DepartmentListApiResponse,
   ProjectApiResponse,
   ProjectChartApiResponse,
   ProjectListApiResponse,
@@ -50,3 +56,36 @@ export const useProjectStatisticsQuery = (
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<ProjectChartApiResponse, Error>;
+
+export const useDepartmentQuery = (
+  params: DepartmentParams,
+  config: UseQueryConfig = {},
+) =>
+  useQuery({
+    queryKey: ['getDepartments', params],
+    queryFn: () => getDepartments(params),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<DepartmentApiResponse, Error>;
+
+export const useDepartmentListQuery = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['departmentList'],
+    queryFn: () => getProjectList(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<DepartmentListApiResponse, Error>;
+
+export const useDepartmentRecordQuery = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['departmentRecord'],
+    queryFn: () => getDepartmentRecords(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<DepartmentChartApiResponse, Error>;

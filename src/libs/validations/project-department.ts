@@ -45,6 +45,13 @@ const projectSchema = z.object({
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
+const projectIdSchema = z.object({
+  status: z.enum(projectStatus).optional(),
+  projectName: z.string().optional(),
+  startDate: z.string().optional(),
+  projectTitle: z.string().optional(),
+  techStack: z.array(z.string()).optional(),
+});
 const headSchema = z.object({
   user: userIdSchema.optional(),
   isCurrent: z.boolean(),
@@ -55,12 +62,12 @@ const departmentSchema = z.object({
   _id: z.string(),
   __v: z.number(),
   employees: z.array(userIdSchema).optional(),
-  projects: z.array(projectSchema).optional(),
+  projects: z.array(projectIdSchema).optional(),
   departmentName: z.string().optional(),
   departmentHead: z.array(headSchema).optional(),
   departmentDirector: z.array(headSchema).optional(),
   isDeleted: z.boolean(),
-  updatedBy: userIdSchema,
+  updatedBy: userIdSchema.optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
@@ -68,6 +75,11 @@ const departmentSchema = z.object({
 const projectListSchema = z.object({
   _id: z.string(),
   projectName: z.string(),
+});
+
+const departmentListSchema = z.object({
+  _id: z.string(),
+  departmentName: z.string(),
 });
 
 const ProjectTrendChartSchema = z.object({
@@ -95,6 +107,17 @@ const recordsSchema = z.object({
   inactiveCount: z.number(),
 });
 
+const TopChartSchema = z.object({
+  department: z.string(),
+  employees: z.number(),
+});
+
+const OverviewChartSchema = z.object({
+  department: z.string(),
+  projects: z.number(),
+  employees: z.number(),
+});
+
 const projectApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(projectSchema),
@@ -115,6 +138,15 @@ const departmentApiResponseSchema = z.object({
   data: z.array(departmentSchema),
 });
 
+const departmentListApiResponseSchema = z.object({
+  data: z.array(departmentListSchema),
+});
+
+const DepartmentChartApiResponseSchema = z.object({
+  topChart: z.array(TopChartSchema),
+  Overiew: z.array(OverviewChartSchema),
+});
+
 export type ProjectListApiResponse = z.infer<typeof projectApiResponseSchema>;
 export type ProjectListType = z.infer<typeof projectSchema>;
 export type ProjectListArrayType = z.infer<typeof projectSchema>[] | [];
@@ -132,9 +164,24 @@ export type ProjectChartApiResponse = z.infer<
   typeof ProjectChartApiResponseSchema
 >;
 
+export type DepartmentApiResponse = z.infer<
+  typeof departmentListApiResponseSchema
+>;
+
+export type DepartmentTopChartType = z.infer<typeof TopChartSchema>;
+export type DepartmentOverviewChartType = z.infer<typeof OverviewChartSchema>;
+
+export type DepartmentChartApiResponse = z.infer<
+  typeof DepartmentChartApiResponseSchema
+>;
+
 export {
+  OverviewChartSchema,
+  TopChartSchema,
+  DepartmentChartApiResponseSchema,
   projectApiResponseSchema,
   ProjectChartApiResponseSchema,
+  departmentListApiResponseSchema,
   userIdSchema,
   paginationSchema,
   departmentSchema,
