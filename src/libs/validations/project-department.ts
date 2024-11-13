@@ -46,6 +46,7 @@ const projectSchema = z.object({
   updatedAt: z.string().optional(),
 });
 const projectIdSchema = z.object({
+  _id: z.string().optional(),
   status: z.enum(projectStatus).optional(),
   projectName: z.string().optional(),
   startDate: z.string().optional(),

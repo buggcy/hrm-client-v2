@@ -47,6 +47,7 @@ export interface Head {
   endDate?: string;
 }
 export interface ProjectSchema {
+  _id?: string;
   projectName?: string;
   projectTitle?: string;
   techStack?: string[];
