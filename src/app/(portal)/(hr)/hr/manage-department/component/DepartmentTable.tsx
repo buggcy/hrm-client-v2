@@ -19,10 +19,12 @@ import {
 } from '@/hooks/hr/useProjectDepartment.hook';
 import { DepartmentListArrayType } from '@/libs/validations/project-department';
 import { searchDepartments } from '@/services/hr/project-department.service';
+import { useAuthStore } from '@/stores/auth';
 import { ProjectStoreType } from '@/stores/hr/project-department';
 
 import { DepartmentOverviewChat } from './Chart/DepartmentOverviewChart';
 import { TopDepartmentChart } from './Chart/TopDepartmentChart';
+import AddEditDepartmentModal from './Modal/AddEditDepartmentModal';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -30,6 +32,8 @@ interface TableProps {}
 const DepartmentTable: FunctionComponent<TableProps> = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { user } = useAuthStore();
+  const userId: string | undefined = user?.id;
   const { projectStore } = useStores() as { projectStore: ProjectStoreType };
   const { setRefetchProjectList, refetchProjectList } = projectStore;
   const page = Number(searchParams.get('page')) || 1;
@@ -38,7 +42,8 @@ const DepartmentTable: FunctionComponent<TableProps> = () => {
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
-
+  const [modal, setModal] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>('');
   const {
     data: getDepartments,
     isLoading,
@@ -129,10 +134,19 @@ const DepartmentTable: FunctionComponent<TableProps> = () => {
     ? searchData?.pagination?.totalPages || 0
     : getDepartments?.pagination?.totalPages || 0;
 
+  const handleClose = () => {
+    setModal(false);
+  };
+  const handleAdd = () => {
+    setModalType('add');
+    setModal(true);
+  };
   return (
     <>
       <Header subheading="Effortlessly Add, Organize, and Manage Departments to Drive Team Success!">
-        <Button size={'sm'}>Add Department</Button>
+        <Button size={'sm'} onClick={handleAdd}>
+          Add Department
+        </Button>
       </Header>
       <div className="mt-6 grid w-full grid-cols-1 gap-x-0 gap-y-4 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-0">
         <TopDepartmentChart chartData={departmentRecord?.topChart} />
@@ -158,6 +172,13 @@ const DepartmentTable: FunctionComponent<TableProps> = () => {
           />
         )}
       </div>
+      <AddEditDepartmentModal
+        open={modal}
+        onCloseChange={handleClose}
+        userId={userId}
+        type={modalType}
+        setRefetchProjectList={setRefetchProjectList}
+      />
     </>
   );
 };

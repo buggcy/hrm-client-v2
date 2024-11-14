@@ -29,12 +29,14 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import ActiveInactiveModel from '@/app/(portal)/(hr)/hr/manage-projects/component/Modal/ActiveInactiveModal';
+import AddEditProjectModal from '@/app/(portal)/(hr)/hr/manage-projects/component/Modal/AddEditProjectModal';
 import ViewProject from '@/app/(portal)/(hr)/hr/manage-projects/component/Modal/ViewProject';
 import { ProjectListType } from '@/libs/validations/project-department';
 import {
   deleteProjects,
   editProject,
 } from '@/services/hr/project-department.service';
+import { useAuthStore } from '@/stores/auth';
 import { ProjectStoreType } from '@/stores/hr/project-department';
 
 import { MessageErrorResponse } from '@/types';
@@ -48,6 +50,10 @@ export function ProjectRowActions({ row }: DataTableRowActionsProps) {
   const data = row.original;
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
+  const { user } = useAuthStore();
+  const userId: string | undefined = user?.id;
+  const [modal, setModal] = React.useState<boolean>(false);
+  const [modalType, setModalType] = React.useState<string>('');
   const [isActive, setIsActive] = React.useState<boolean>(false);
   const [type, setType] = React.useState<string>('');
   const { projectStore } = useStores() as { projectStore: ProjectStoreType };
@@ -138,7 +144,14 @@ export function ProjectRowActions({ row }: DataTableRowActionsProps) {
   const handleDelete = () => {
     mutate(data?._id);
   };
-
+  const handleClose = () => {
+    setModal(false);
+  };
+  const handleEdit = (row: ProjectListType) => {
+    setModalType('edit');
+    setModal(true);
+    setSelectedRow(row);
+  };
   return (
     <Dialog>
       <DropdownMenu>
@@ -154,7 +167,7 @@ export function ProjectRowActions({ row }: DataTableRowActionsProps) {
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DialogTrigger asChild>
+          <DialogTrigger asChild onClick={() => handleEdit(data)}>
             <DropdownMenuItem>
               <Pencil className="mr-2 size-4" />
               Edit Project
@@ -204,6 +217,14 @@ export function ProjectRowActions({ row }: DataTableRowActionsProps) {
         open={isView}
         onCloseChange={viewToggle}
         data={selectedRow}
+      />
+      <AddEditProjectModal
+        open={modal}
+        onCloseChange={handleClose}
+        userId={userId}
+        type={modalType}
+        setRefetchProjectList={setRefetchProjectList}
+        selectedRow={selectedRow}
       />
     </Dialog>
   );

@@ -21,9 +21,11 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import AddEditDepartmentModal from '@/app/(portal)/(hr)/hr/manage-department/component/Modal/AddEditDepartmentModal';
 import ViewDepartment from '@/app/(portal)/(hr)/hr/manage-department/component/Modal/ViewDepartment';
 import { DepartmentListType } from '@/libs/validations/project-department';
 import { deleteDepartment } from '@/services/hr/project-department.service';
+import { useAuthStore } from '@/stores/auth';
 import { ProjectStoreType } from '@/stores/hr/project-department';
 
 import { MessageErrorResponse } from '@/types';
@@ -37,6 +39,10 @@ export function DepartmentRowActions({ row }: DataTableRowActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
 
+  const { user } = useAuthStore();
+  const userId: string | undefined = user?.id;
+  const [modal, setModal] = React.useState<boolean>(false);
+  const [modalType, setModalType] = React.useState<string>('');
   const { projectStore } = useStores() as { projectStore: ProjectStoreType };
   const { setRefetchProjectList } = projectStore;
   const data = row.original;
@@ -74,7 +80,14 @@ export function DepartmentRowActions({ row }: DataTableRowActionsProps) {
   const handleDelete = () => {
     mutate(data?._id);
   };
-
+  const handleClose = () => {
+    setModal(false);
+  };
+  const handleEdit = (row: DepartmentListType) => {
+    setModalType('edit');
+    setModal(true);
+    setSelectedRow(row);
+  };
   return (
     <Dialog>
       <DropdownMenu>
@@ -90,7 +103,7 @@ export function DepartmentRowActions({ row }: DataTableRowActionsProps) {
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DialogTrigger asChild>
+          <DialogTrigger asChild onClick={() => handleEdit(data)}>
             <DropdownMenuItem>
               <Pencil className="mr-2 size-4" />
               Edit Department
@@ -122,6 +135,14 @@ export function DepartmentRowActions({ row }: DataTableRowActionsProps) {
         open={isView}
         onCloseChange={viewToggle}
         data={selectedRow}
+      />
+      <AddEditDepartmentModal
+        open={modal}
+        onCloseChange={handleClose}
+        userId={userId}
+        type={modalType}
+        setRefetchProjectList={setRefetchProjectList}
+        selectedRow={selectedRow}
       />
     </Dialog>
   );

@@ -20,21 +20,26 @@ import {
 } from '@/hooks/hr/useProjectDepartment.hook';
 import { ProjectListArrayType } from '@/libs/validations/project-department';
 import { searchProjects } from '@/services/hr/project-department.service';
+import { useAuthStore } from '@/stores/auth';
 import { ProjectStoreType } from '@/stores/hr/project-department';
 import { formatedDate } from '@/utils';
 
 import { ProjectActiveRecordChart } from './Charts/ProjectActiveChart';
 import { ProjectPieChart } from './Charts/ProjectPieChart';
 import { ProjectTrendChart } from './Charts/ProjectTrendChart';
+import AddEditProjectModal from './Modal/AddEditProjectModal';
 
 import { MessageErrorResponse } from '@/types';
 
 const ProjectTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { user } = useAuthStore();
+  const userId: string | undefined = user?.id;
   const { projectStore } = useStores() as { projectStore: ProjectStoreType };
   const { setRefetchProjectList, refetchProjectList } = projectStore;
-
+  const [modal, setModal] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>('');
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
@@ -161,7 +166,13 @@ const ProjectTable: FunctionComponent = () => {
   const tablePageCount: number = debouncedSearchTerm
     ? searchData?.pagination?.totalPages || 0
     : getProjects?.pagination?.totalPages || 0;
-
+  const handleClose = () => {
+    setModal(false);
+  };
+  const handleAdd = () => {
+    setModalType('add');
+    setModal(true);
+  };
   return (
     <>
       <Header subheading="Efficiently Add and Oversee Your Projects from Start to Finish!">
@@ -171,7 +182,9 @@ const ProjectTable: FunctionComponent = () => {
           setTimeRange={setTimeRange}
           setDate={handleSetDate}
         />
-        <Button size={'sm'}>Add Project</Button>
+        <Button size={'sm'} onClick={handleAdd}>
+          Add Project
+        </Button>
       </Header>
       <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-3">
         <ProjectActiveRecordChart
@@ -213,6 +226,13 @@ const ProjectTable: FunctionComponent = () => {
           />
         )}
       </div>
+      <AddEditProjectModal
+        open={modal}
+        onCloseChange={handleClose}
+        userId={userId}
+        type={modalType}
+        setRefetchProjectList={setRefetchProjectList}
+      />
     </>
   );
 };

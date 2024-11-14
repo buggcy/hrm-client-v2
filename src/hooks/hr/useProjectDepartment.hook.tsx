@@ -2,6 +2,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import {
   DepartmentParams,
+  getDepartmentList,
   getDepartmentRecords,
   getDepartments,
   getProjectList,
@@ -33,6 +34,16 @@ export const useProjectQuery = (
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<ProjectApiResponse, Error>;
+
+export const useDepartmentListQuery = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['departmentList'],
+    queryFn: () => getDepartmentList(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<DepartmentListApiResponse, Error>;
 
 export const useProjectListQuery = (config: UseQueryConfig = {}) =>
   useQuery({
@@ -69,16 +80,6 @@ export const useDepartmentQuery = (
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<DepartmentApiResponse, Error>;
-
-export const useDepartmentListQuery = (config: UseQueryConfig = {}) =>
-  useQuery({
-    queryKey: ['departmentList'],
-    queryFn: () => getProjectList(),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchInterval: 1000 * 60 * 5,
-    ...config,
-  }) as UseQueryResult<DepartmentListApiResponse, Error>;
 
 export const useDepartmentRecordQuery = (config: UseQueryConfig = {}) =>
   useQuery({
