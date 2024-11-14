@@ -5,9 +5,11 @@ import { queryClient } from '@/libs';
 import { baseAPI } from '@/utils';
 
 import { VerifyCodeResponseType } from '@/types/auth.types';
+import { UserPermission } from '@/types/user-permissions.types';
 
 type AuthResponse = {
   token: string;
+  userPermission: UserPermission;
 };
 export class CustomError extends Error {
   constructor(message: string) {
@@ -37,12 +39,12 @@ export const signInWithEmailAndPassword = async ({
   email: string;
   password: string;
 }): Promise<AuthResponse> => {
-  const { token }: AuthResponse = await baseAPI.post('/login', {
+  const { token, userPermission }: AuthResponse = await baseAPI.post('/login', {
     email: email.toLowerCase(),
     password,
   });
 
-  return { token };
+  return { token, userPermission };
 };
 
 export const sendPasswordResetEmail = async ({

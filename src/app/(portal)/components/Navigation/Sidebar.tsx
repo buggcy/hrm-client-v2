@@ -60,18 +60,23 @@ export const Sidebar = () => {
             <ScrollBar className="mr-[-17px]" />
             {menuItems.map(item =>
               item.children ? (
-                <NavSection title={item.title} key={item.title}>
-                  {item.children.map(child => (
-                    <li className="flex" key={child.href}>
-                      <NavigationItem
-                        title={child.title}
-                        icon={child.icon}
-                        href={child.href!}
-                        active={pathname === child.href}
-                      />
-                    </li>
-                  ))}
-                </NavSection>
+                !item.disabled && (
+                  <NavSection title={item.title} key={item.title}>
+                    {item.children.map(child => {
+                      if (child.disabled === false) {
+                        return (
+                          <NavigationItem
+                            key={child.href}
+                            title={child.title}
+                            icon={child.icon}
+                            href={child.href!}
+                            active={pathname === child.href}
+                          />
+                        );
+                      }
+                    })}
+                  </NavSection>
+                )
               ) : (
                 <li className="flex" key={item.href}>
                   <NavigationItem

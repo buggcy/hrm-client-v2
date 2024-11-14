@@ -27,8 +27,11 @@ import { PasswordInput } from '@/app/(authentication)/auth/sign-in/components/Pa
 import { signInWithEmailAndPassword } from '@/services';
 import { AuthStoreType } from '@/stores/auth';
 
+import { UserPermission } from '@/types/user-permissions.types';
+
 interface AuthResponse {
   token: string;
+  userPermission: UserPermission;
 }
 
 const FormSchema = z.object({
@@ -42,7 +45,7 @@ const FormSchema = z.object({
 
 export function SignInForm() {
   const { authStore } = useStores() as { authStore: AuthStoreType };
-  const { setUser } = authStore;
+  const { setUser, setPermissions } = authStore;
 
   const searchParams = useSearchParams();
   const { mutate, isPending } = useMutation({
@@ -56,6 +59,7 @@ export function SignInForm() {
     onSuccess: (response: AuthResponse) => {
       Cookies.set('hrmsToken', response?.token, { expires: 1 });
       setUser(response?.token);
+      setPermissions(response?.userPermission.permissions);
     },
   });
 
