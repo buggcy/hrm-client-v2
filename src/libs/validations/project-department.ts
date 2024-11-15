@@ -32,6 +32,7 @@ const projectSchema = z.object({
   updatedBy: userIdSchema.optional(),
   teamLead: userIdSchema.optional(),
   teamMembers: z.array(userIdSchema).optional(),
+  deletedMembers: z.array(userIdSchema).optional(),
   status: z.enum(projectStatus).optional(),
   projectName: z.string().optional(),
   startDate: z.string().optional(),
@@ -64,6 +65,8 @@ const departmentSchema = z.object({
   __v: z.number(),
   employees: z.array(userIdSchema).optional(),
   projects: z.array(projectIdSchema).optional(),
+  deletedEmployees: z.array(userIdSchema).optional(),
+  deletedProjects: z.array(projectIdSchema).optional(),
   departmentName: z.string().optional(),
   departmentHead: z.array(headSchema).optional(),
   departmentDirector: z.array(headSchema).optional(),
@@ -83,14 +86,10 @@ const departmentListSchema = z.object({
   departmentName: z.string(),
 });
 
-const ProjectTrendChartSchema = z.object({
-  month: z.string(),
-  notStarted: z.number(),
-  inProgress: z.number(),
-  overdue: z.number(),
-  completed: z.number(),
-  pending: z.number(),
-  cancelled: z.number(),
+const ProjectOverviewChartSchema = z.object({
+  projectName: z.string(),
+  deletedMembers: z.number(),
+  team: z.number(),
 });
 
 const statisticsSchema = z.object({
@@ -116,7 +115,8 @@ const TopChartSchema = z.object({
 const OverviewChartSchema = z.object({
   department: z.string(),
   projects: z.number(),
-  employees: z.number(),
+  deletedEmployees: z.number(),
+  deleteProjects: z.number(),
 });
 
 const projectApiResponseSchema = z.object({
@@ -129,7 +129,7 @@ const projectListApiResponseSchema = z.object({
 });
 
 const ProjectChartApiResponseSchema = z.object({
-  data: z.array(ProjectTrendChartSchema),
+  data: z.array(ProjectOverviewChartSchema),
   statistics: statisticsSchema,
   records: recordsSchema,
 });
@@ -160,7 +160,7 @@ export type DepartmentListArrayType = z.infer<typeof departmentSchema>[] | [];
 
 export type ProjectApiResponse = z.infer<typeof projectListApiResponseSchema>;
 
-export type ProjectChartType = z.infer<typeof ProjectTrendChartSchema>;
+export type ProjectChartType = z.infer<typeof ProjectOverviewChartSchema>;
 export type ProjectChartApiResponse = z.infer<
   typeof ProjectChartApiResponseSchema
 >;
@@ -193,5 +193,5 @@ export {
   headSchema,
   projectListApiResponseSchema,
   projectListSchema,
-  ProjectTrendChartSchema,
+  ProjectOverviewChartSchema,
 };

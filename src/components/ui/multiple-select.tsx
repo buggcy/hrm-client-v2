@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
@@ -28,7 +29,6 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     const updatedValues = selectedValues.includes(value)
       ? selectedValues.filter(item => item !== value)
       : [...selectedValues, value];
-
     onChange(updatedValues);
   };
 
@@ -37,15 +37,25 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     .map(option => option.label);
 
   const displayLabel =
-    selectedLabels.length > 0 ? selectedLabels.join(', ') : `Choose ${type}`;
+    selectedLabels.length > 0
+      ? selectedLabels
+          .slice(0, type === 'Technology' || type === 'Projects' ? 7 : 1)
+          .join(', ') +
+        (selectedLabels.length >
+        (type === 'Technology' || type === 'Projects' ? 7 : 1)
+          ? ', ...'
+          : '')
+      : `Choose ${type}`;
 
   return (
     <div className="relative">
       <div
         onClick={toggleDropdown}
-        className={`flex ${type === 'Departments' ? 'h-[40px]' : 'h-[50px]'} w-full items-center justify-between truncate rounded-md border px-3 py-2 text-left text-sm`}
+        className={`flex ${type === 'Technology' ? 'h-[49px]' : 'h-[40px]'} w-full items-center justify-between overflow-hidden truncate rounded-md border px-3 py-2 text-left text-sm`}
       >
-        {displayLabel}
+        <span className="overflow-hidden truncate whitespace-nowrap">
+          {displayLabel}
+        </span>
         <span className="opacity-50">
           {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </span>
@@ -53,7 +63,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
       {isOpen && (
         <div className="absolute z-50 mt-1 max-h-96 w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md">
-          <ScrollArea className="h-60">
+          <ScrollArea className={`h-40`}>
             <div className="p-1">
               {options.map(option => (
                 <div

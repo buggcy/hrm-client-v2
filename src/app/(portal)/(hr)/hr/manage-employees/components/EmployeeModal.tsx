@@ -98,6 +98,7 @@ export function AddEmployeeDialog({
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm<AddEmployeeFormData>({
     resolver: zodResolver(addEmployeeSchema),
     defaultValues: {
@@ -156,10 +157,10 @@ export function AddEmployeeDialog({
   const onSubmit = (data: AddEmployeeFormData) => {
     editData ? mutate({ data, id: editData?._id }) : mutate({ data, id: '' });
   };
-
+  const showDep = watch('dep_ID', []);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[510px] sm:max-w-[905px]">
+      <DialogContent className="sm:max-w-[905px]">
         <DialogHeader>
           <DialogTitle>
             {editData ? 'Edit Employee' : 'Add Employee'}
@@ -294,8 +295,8 @@ export function AddEmployeeDialog({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-8">
-            <div className="flex flex-1 flex-col">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="flex flex-col">
               <Label htmlFor="Joining_Date" className="mb-2 text-left">
                 Joining Date
               </Label>
@@ -308,7 +309,7 @@ export function AddEmployeeDialog({
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'w-[263.664px] justify-start text-left font-normal',
+                          'justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
                       >
@@ -340,7 +341,7 @@ export function AddEmployeeDialog({
               )}
             </div>
 
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-col">
               <Label htmlFor="Designation" className="mb-2 text-left">
                 Designation <span className="text-red-600">*</span>
               </Label>
@@ -352,7 +353,7 @@ export function AddEmployeeDialog({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="relative z-50 w-[263.664px] rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                       <SelectValue placeholder="Select Designation" />
                     </SelectTrigger>
                     <SelectContent>
@@ -381,10 +382,18 @@ export function AddEmployeeDialog({
                 </span>
               )}
             </div>
-            <div className="flex flex-1 flex-col">
-              <Label htmlFor="dep_ID" className="mb-2 text-left">
-                Select Departments<span className="text-red-600">*</span>
-              </Label>
+
+            <div className="flex flex-col">
+              <div className="mb-1 flex justify-between">
+                <Label htmlFor="dep_ID" className="mb-2 text-left">
+                  Select Departments<span className="text-red-600">*</span>
+                </Label>
+                {showDep.length > 0 && (
+                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                    {showDep.length || 0}
+                  </span>
+                )}
+              </div>
               <Controller
                 name="dep_ID"
                 control={control}

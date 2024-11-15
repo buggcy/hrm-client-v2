@@ -28,7 +28,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { RadioInput } from '@/components/ui/radio';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -251,7 +250,6 @@ const AddEditProjectModal = ({
     setValue('deleteTeam', deleteEmployeesSet);
   };
 
-  console.log('error: ', errors);
   const { mutate, isPending } = useMutation({
     mutationFn: addProject,
     onSuccess: response => {
@@ -353,7 +351,7 @@ const AddEditProjectModal = ({
     }
   };
   const showEmployees = watch('teamMembers', []);
-
+  const showTech = watch('techStack', []);
   return (
     <Dialog open={open} onOpenChange={onCloseChange}>
       <DialogContent className="md:max-w-4xl lg:max-w-4xl">
@@ -364,7 +362,7 @@ const AddEditProjectModal = ({
           </DialogTitle>
         </DialogHeader>
         <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             <div className="flex flex-col">
               <Label htmlFor="name" className="mb-2 text-left">
                 Project Name <span className="text-red-600">*</span>
@@ -409,9 +407,31 @@ const AddEditProjectModal = ({
                 </span>
               )}
             </div>
+            <div className="flex flex-col">
+              <Label htmlFor="description" className="mb-2 text-left">
+                Project Description <span className="text-red-600">*</span>
+              </Label>
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="text"
+                    id="name"
+                    placeholder="Please Enter project description"
+                    {...field}
+                  />
+                )}
+              />
+              {errors.description && (
+                <span className="text-sm text-red-500">
+                  {errors.description.message}
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             <div className="flex flex-col">
               <Label htmlFor="startDate" className="mb-2 text-left">
                 Start Date <span className="text-red-600">*</span>
@@ -496,31 +516,6 @@ const AddEditProjectModal = ({
                 </span>
               )}
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-2">
-            <div className="flex flex-col">
-              <Label htmlFor="description" className="mb-2 text-left">
-                Project Description <span className="text-red-600">*</span>
-              </Label>
-              <Controller
-                name="description"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    type="text"
-                    id="name"
-                    placeholder="Please Enter project description"
-                    {...field}
-                  />
-                )}
-              />
-              {errors.description && (
-                <span className="text-sm text-red-500">
-                  {errors.description.message}
-                </span>
-              )}
-            </div>
             <div className="flex flex-col">
               <Label htmlFor="deadline" className="mb-2 text-left">
                 Deadline <span className="text-red-600">*</span>
@@ -565,8 +560,8 @@ const AddEditProjectModal = ({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-4">
-            <div className="flex w-full flex-col sm:w-full md:w-1/2 md:flex-1 lg:flex-1">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="flex flex-1 flex-col">
               <Label htmlFor="lead" className="mb-2 text-left">
                 Project Lead <span className="text-red-600">*</span>
               </Label>
@@ -642,10 +637,49 @@ const AddEditProjectModal = ({
                 </span>
               )}
             </div>
-            <div className="flex w-full flex-col sm:w-full md:w-1/2 md:flex-1 lg:flex-1">
-              <Label htmlFor="techStack" className="mb-2 text-left">
-                Tech Stack<span className="text-red-600">*</span>
-              </Label>
+            <div className="flex flex-1 flex-col">
+              <div className="mb-1 flex justify-between">
+                <Label htmlFor="teamMembers" className="mb-2 text-left">
+                  Add Team <span className="text-red-600">*</span>
+                </Label>
+                {showEmployees.length > 0 && (
+                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                    {showEmployees.length || 0}
+                  </span>
+                )}
+              </div>
+              <Controller
+                name="teamMembers"
+                control={control}
+                render={({ field }) => (
+                  <MultiSelectEmployee
+                    label="Add Team"
+                    options={employees}
+                    selectedValues={field.value || []}
+                    onChange={(selectedIds: string[]) => {
+                      field.onChange(selectedIds);
+                      handleEmployeesChange(selectedIds);
+                    }}
+                  />
+                )}
+              />
+              {showEmployees?.length === 0 && errors.teamMembers && (
+                <span className="text-sm text-red-500">
+                  {errors.teamMembers.message}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-1 flex-col">
+              <div className="mb-1 flex justify-between">
+                <Label htmlFor="techStack" className="mb-2 text-left">
+                  Tech Stack<span className="text-red-600">*</span>
+                </Label>
+                {showTech.length > 0 && (
+                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                    {showTech.length || 0}
+                  </span>
+                )}
+              </div>
               <Controller
                 name="techStack"
                 control={control}
@@ -661,6 +695,7 @@ const AddEditProjectModal = ({
 
                   return (
                     <MultiSelect
+                      type={'Technology'}
                       label={labelText}
                       options={techOptions}
                       selectedValues={selectedIds}
@@ -678,7 +713,6 @@ const AddEditProjectModal = ({
               )}
             </div>
           </div>
-
           {type === 'edit' && selectedRow?.isActive === true && (
             <div className="flex justify-between space-x-4">
               <Label htmlFor="status" className="text-left">
@@ -734,72 +768,6 @@ const AddEditProjectModal = ({
               />
             </div>
           )}
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-2">
-            <div className="flex flex-1 flex-col">
-              <Label htmlFor="teamMembers" className="mb-2 text-left">
-                Add Team <span className="text-red-600">*</span>
-              </Label>
-              <Controller
-                name="teamMembers"
-                control={control}
-                render={({ field }) => (
-                  <MultiSelectEmployee
-                    label="Add Team"
-                    options={employees}
-                    selectedValues={field.value || []}
-                    onChange={(selectedIds: string[]) => {
-                      field.onChange(selectedIds);
-                      handleEmployeesChange(selectedIds);
-                    }}
-                  />
-                )}
-              />
-              {showEmployees?.length === 0 && errors.teamMembers && (
-                <span className="text-sm text-red-500">
-                  {errors.teamMembers.message}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              {showEmployees?.length > 0 && (
-                <div>
-                  <span className="text-xs"> Team List</span>
-                  <ScrollArea className="h-32">
-                    <div className="space-y-1">
-                      {showEmployees.map(id => {
-                        const employee = data?.data.find(emp => emp.id === id);
-                        return (
-                          employee && (
-                            <div
-                              key={id}
-                              className="flex items-center gap-2 rounded-md border px-3 py-2"
-                            >
-                              <Avatar className="size-8">
-                                <AvatarImage
-                                  src={employee?.avatar || ''}
-                                  alt={employee?.name}
-                                />
-                                <AvatarFallback className="uppercase">
-                                  {employee?.name.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex flex-col items-start">
-                                <p className="text-sm">{employee?.name}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {employee?.email}
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        );
-                      })}
-                    </div>
-                  </ScrollArea>
-                </div>
-              )}
-            </div>
-          </div>
 
           <DialogFooter>
             <Button

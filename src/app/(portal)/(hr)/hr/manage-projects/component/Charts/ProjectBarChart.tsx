@@ -24,49 +24,44 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-import { DepartmentOverviewChartType } from '@/libs/validations/project-department';
+import { ProjectChartType } from '@/libs/validations/project-department';
 
 export const description = 'A stacked bar chart with a legend';
 
 const chartConfig = {
-  projects: {
-    label: 'Projects',
-    color: 'hsl(var(--chart-5))',
-  },
-  deletedEmployees: {
-    label: 'Removed Employees',
-    color: 'hsl(var(--chart-4))',
-  },
-  deleteProjects: {
-    label: 'Removed Projects',
+  deletedMembers: {
+    label: 'Remove Members',
     color: 'hsl(var(--chart-3))',
+  },
+  team: {
+    label: 'Team Members',
+    color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;
 
 interface ChartProps {
-  chartData?: DepartmentOverviewChartType[];
+  chartData?: ProjectChartType[];
 }
 
-export function DepartmentOverviewChat({ chartData }: ChartProps) {
+export function ProjectBarChat({ chartData }: ChartProps) {
   return (
-    <Card className="col-span-2 h-fit max-h-[385px]">
+    <Card className="col-span-2 h-fit max-h-[368px]">
       <CardHeader>
-        <CardTitle className="text-sm">Department Statistics</CardTitle>
+        <CardTitle className="text-sm">Project Members Statistics</CardTitle>
         <CardDescription className="text-xs">
-          Showing removed employees and projects, and total projects for each
-          department.
+          Showing team and remove members for each projects.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
           config={chartConfig}
-          className="mx-auto size-full max-h-[280px] min-h-[200px]"
+          className="mx-auto size-full max-h-[270px] min-h-[200px]"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
               <CartesianGrid vertical={false} />
               <XAxis
-                dataKey="department"
+                dataKey="projectName"
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
@@ -76,23 +71,16 @@ export function DepartmentOverviewChat({ chartData }: ChartProps) {
               <ChartLegend content={<ChartLegendContent />} />
 
               <Bar
-                dataKey="projects"
+                dataKey="team"
                 stackId="a"
-                fill="var(--color-projects)"
+                fill="var(--color-team)"
                 radius={[0, 0, 4, 4]}
                 barSize={40}
               />
               <Bar
-                dataKey="deleteProjects"
+                dataKey="deletedMembers"
                 stackId="a"
-                fill="var(--color-deleteProjects)"
-                radius={[0, 0, 4, 4]}
-                barSize={40}
-              />
-              <Bar
-                dataKey="deletedEmployees"
-                stackId="a"
-                fill="var(--color-deletedEmployees)"
+                fill="var(--color-deletedMembers)"
                 radius={[0, 0, 4, 4]}
                 barSize={40}
               />

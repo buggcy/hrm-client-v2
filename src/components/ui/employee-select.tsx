@@ -37,12 +37,11 @@ const MultiSelectEmployee: React.FC<MultiSelectEmployeeProps> = ({
     <div className="relative">
       <div className="relative">
         <div
-          // type="button"
           className="flex h-[50px] w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm"
           onClick={() => setIsOpen(prev => !prev)}
         >
           {selectedValues.length > 0
-            ? 'Selected Employees'
+            ? `Selected Employees`
             : 'Select Employees'}
           <span className="opacity-50">
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}

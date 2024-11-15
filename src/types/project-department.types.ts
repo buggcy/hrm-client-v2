@@ -26,6 +26,7 @@ export interface Projects {
   endDate?: string;
   deadline?: string;
   teamMembers?: userType[];
+  deletedMembers?: userType[];
   updatedBy?: userType;
   teamLead?: userType;
   status?:
@@ -68,7 +69,9 @@ export interface Departments {
   departmentHead?: Head[];
   departmentDirector?: Head[];
   employees?: userType[];
+  deletedEmployees?: userType[];
   projects?: ProjectSchema[];
+  deletedProjects?: ProjectSchema[];
   updatedBy?: userType;
   isDeleted: boolean;
   createdAt?: string;
@@ -83,13 +86,9 @@ export interface DepartmentList {
   departmentName: string;
 }
 export interface TrendChartData {
-  month: string;
-  notStarted: number;
-  inProgress: number;
-  overdue: number;
-  completed: number;
-  pending: number;
-  cancelled: number;
+  projectName: string;
+  deletedMembers: number;
+  team: number;
 }
 export interface TopChartData {
   department: string;
@@ -98,7 +97,8 @@ export interface TopChartData {
 export interface OverviewChartData {
   department: string;
   projects: number;
-  employees: number;
+  deletedEmployees: number;
+  deleteProjects: number;
 }
 
 export interface ProjectApiResponse {

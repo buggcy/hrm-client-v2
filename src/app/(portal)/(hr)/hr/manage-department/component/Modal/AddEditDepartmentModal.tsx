@@ -20,7 +20,6 @@ import MultiSelectEmployee from '@/components/ui/employee-select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import MultiSelect from '@/components/ui/multiple-select';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -282,6 +281,7 @@ const AddEditDepartmentModal = ({
     }
   };
   const showEmployees = watch('employees', []);
+  const showProjects = watch('projects', []);
 
   return (
     <Dialog open={open} onOpenChange={onCloseChange}>
@@ -399,9 +399,16 @@ const AddEditDepartmentModal = ({
 
           <div className="flex flex-wrap">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="projects" className="mb-2 text-left">
-                Select Project<span className="text-red-600">*</span>
-              </Label>
+              <div className="mb-1 flex justify-between">
+                <Label htmlFor="projects" className="mb-2 text-left">
+                  Select Project<span className="text-red-600">*</span>{' '}
+                </Label>
+                {showProjects.length > 0 && (
+                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                    {showProjects.length || 0}
+                  </span>
+                )}
+              </div>
               <Controller
                 name="projects"
                 control={control}
@@ -417,6 +424,7 @@ const AddEditDepartmentModal = ({
 
                   return (
                     <MultiSelect
+                      type={'Projects'}
                       label={labelText}
                       options={projectOptions}
                       selectedValues={field.value || []}
@@ -437,9 +445,16 @@ const AddEditDepartmentModal = ({
 
           <div className="flex flex-wrap">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="employees" className="mb-2 text-left">
-                Add Employee <span className="text-red-600">*</span>
-              </Label>
+              <div className="mb-1 flex justify-between">
+                <Label htmlFor="employees" className="mb-2 text-left">
+                  Add Employee <span className="text-red-600">*</span>
+                </Label>
+                {showEmployees.length > 0 && (
+                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                    {showEmployees.length || 0}
+                  </span>
+                )}
+              </div>
               <Controller
                 name="employees"
                 control={control}
@@ -455,42 +470,6 @@ const AddEditDepartmentModal = ({
                   />
                 )}
               />
-
-              {showEmployees?.length > 0 && (
-                <div className="mt-2">
-                  <ScrollArea className="h-44">
-                    <div className="space-y-1">
-                      {showEmployees.map(id => {
-                        const employee = data?.data.find(emp => emp.id === id);
-                        return (
-                          employee && (
-                            <div
-                              key={id}
-                              className="flex items-center gap-2 rounded-md border px-3 py-2"
-                            >
-                              <Avatar className="size-8">
-                                <AvatarImage
-                                  src={employee?.avatar || ''}
-                                  alt={employee?.name}
-                                />
-                                <AvatarFallback className="uppercase">
-                                  {employee?.name.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex flex-col items-start">
-                                <p className="text-sm">{employee?.name}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {employee?.email}
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        );
-                      })}
-                    </div>
-                  </ScrollArea>
-                </div>
-              )}
               {showEmployees?.length === 0 && errors.employees && (
                 <span className="text-sm text-red-500">
                   {errors.employees.message}

@@ -2,7 +2,13 @@
 
 import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -10,17 +16,19 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
+import { cn } from '@/utils';
+
 export const description = 'A radial chart with stacked sections';
 
 const chartConfig = {
   active: {
     label: 'Active',
-    color: 'hsl(var(--chart-1))',
+    color: 'hsl(var(--chart-5))',
   },
 
   inactive: {
     label: 'Inactive',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--chart-4))',
   },
 } satisfies ChartConfig;
 interface RecordChartProps {
@@ -43,15 +51,19 @@ export function ProjectActiveRecordChart({
   const totalVisitors = totalCount || 0;
 
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="pb-0">
-        <CardTitle className="text-sm">Project Records</CardTitle>
+    <Card className="flex h-[368px] flex-col gap-3">
+      <CardHeader className={cn('items-left')}>
+        <CardTitle className="text-sm">Project Overview</CardTitle>
+        <CardDescription className="text-xs">
+          showing the distribution between active and inactive projects.
+        </CardDescription>
       </CardHeader>
+      <hr className="mx-auto w-10/12 border-gray-300 dark:border-gray-600" />{' '}
       <CardContent className="flex size-full flex-col">
         <div className="flex size-full items-center justify-between">
           <div className="flex flex-col gap-4 text-nowrap">
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
               <p className="font-semibold">
                 {activeCount}
                 <span className="ml-1 text-sm font-medium text-slate-400">
@@ -61,7 +73,7 @@ export function ProjectActiveRecordChart({
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
               <p className="font-semibold">
                 {inactiveCount}
                 <span className="ml-1 text-sm font-medium text-slate-400">
@@ -104,7 +116,7 @@ export function ProjectActiveRecordChart({
                             y={(viewBox.cy || 0) + 4}
                             className="fill-muted-foreground"
                           >
-                            Total
+                            Projects
                           </tspan>
                         </text>
                       );

@@ -43,6 +43,12 @@ export const hrMenu: MenuItem[] = [
         icon: UserMinus,
         href: '/hr/resigned-fired',
       },
+    ],
+  },
+  {
+    title: 'Manage Departments & Projects',
+    icon: UserCog2,
+    children: [
       {
         title: 'Projects',
         icon: Layers2Icon,

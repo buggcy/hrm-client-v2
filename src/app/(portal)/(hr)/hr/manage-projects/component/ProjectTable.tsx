@@ -25,8 +25,8 @@ import { ProjectStoreType } from '@/stores/hr/project-department';
 import { formatedDate } from '@/utils';
 
 import { ProjectActiveRecordChart } from './Charts/ProjectActiveChart';
+import { ProjectBarChat } from './Charts/ProjectBarChart';
 import { ProjectPieChart } from './Charts/ProjectPieChart';
-import { ProjectTrendChart } from './Charts/ProjectTrendChart';
 import AddEditProjectModal from './Modal/AddEditProjectModal';
 
 import { MessageErrorResponse } from '@/types';
@@ -186,25 +186,34 @@ const ProjectTable: FunctionComponent = () => {
           Add Project
         </Button>
       </Header>
-      <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-3">
-        <ProjectActiveRecordChart
-          activeCount={projectRecords?.records?.activeCount}
-          inactiveCount={projectRecords?.records?.inactiveCount}
-          totalCount={projectRecords?.statistics?.totalCount}
-        />
-        <ProjectTrendChart chartData={projectRecords?.data ?? []} />
-        <ProjectPieChart
-          pendingCount={projectRecords?.statistics?.pendingCount}
-          completedCount={projectRecords?.statistics?.completedCount}
-          inProgressCount={projectRecords?.statistics?.inProgressCount}
-          cancelledCount={projectRecords?.statistics?.cancelledCount}
-          notStartedCount={projectRecords?.statistics?.notStartedCount}
-          overdueCount={projectRecords?.statistics?.overdueCount}
-        />
+
+      <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-12">
+        <div className="col-span-1 md:col-span-3 lg:col-span-3">
+          {' '}
+          <ProjectPieChart
+            pendingCount={projectRecords?.statistics?.pendingCount}
+            completedCount={projectRecords?.statistics?.completedCount}
+            inProgressCount={projectRecords?.statistics?.inProgressCount}
+            cancelledCount={projectRecords?.statistics?.cancelledCount}
+            notStartedCount={projectRecords?.statistics?.notStartedCount}
+            overdueCount={projectRecords?.statistics?.overdueCount}
+          />
+        </div>
+        <div className="col-span-1 md:col-span-6 lg:col-span-6">
+          <ProjectBarChat chartData={projectRecords?.data ?? []} />
+        </div>
+        <div className="col-span-1 md:col-span-3 lg:col-span-3">
+          <ProjectActiveRecordChart
+            activeCount={projectRecords?.records?.activeCount}
+            inactiveCount={projectRecords?.records?.inactiveCount}
+            totalCount={projectRecords?.statistics?.totalCount}
+          />
+        </div>
       </div>
+
       <div className="mt-6">
         {isLoading || isFetching ? (
-          <DataTableLoading columnCount={8} rowCount={limit} />
+          <DataTableLoading columnCount={7} rowCount={limit} />
         ) : (
           <ProjectDataTable
             searchLoading={isPending}

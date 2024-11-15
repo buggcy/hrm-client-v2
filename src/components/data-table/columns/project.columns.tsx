@@ -89,27 +89,6 @@ export const ProjectColumns: ColumnDef<ProjectListType>[] = [
     },
   },
   {
-    accessorKey: 'teamMembers',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Team" />
-    ),
-    cell: ({ row }) => {
-      const teamMembers = row.getValue('teamMembers');
-
-      const teamMembersCount = Array.isArray(teamMembers)
-        ? teamMembers.length
-        : 0;
-
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {teamMembersCount}
-          </span>
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Project Status" />
