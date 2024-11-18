@@ -35,32 +35,29 @@ const ViewDepartment = ({ open, onCloseChange, data }: ModelProps) => {
           <DialogHeader>
             <DialogTitle>{`View Department Details`}</DialogTitle>
           </DialogHeader>
-          <div className="flex justify-end">
-            <Tabs value={activeTab} onValueChange={handleTabChange}>
-              <TabsList className="mb-2 flex h-9 p-0.5">
-                <TabsTrigger value="employee">
-                  Employees{' '}
-                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
-                    {data?.employees?.length || 0}
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger value="project">
-                  Projects{' '}
-                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
-                    {data?.projects?.length || 0}
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger value="head">
-                  Previous Heads{' '}
-                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
-                    {data?.departmentHead?.filter(
-                      employee => !employee.isCurrent,
-                    ).length || 0}
-                  </span>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
+            <TabsList className="flex h-9 p-0.5">
+              <TabsTrigger value="employee" className="flex-1 text-center">
+                Employees{' '}
+                <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                  {data?.employees?.length || 0}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="project" className="flex-1 text-center">
+                Projects{' '}
+                <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                  {data?.projects?.length || 0}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="head" className="flex-1 text-center">
+                Previous Heads{' '}
+                <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                  {data?.departmentHead?.filter(employee => !employee.isCurrent)
+                    .length || 0}
+                </span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
           {activeTab === 'employee' && (
             <>
@@ -186,8 +183,33 @@ const ViewDepartment = ({ open, onCloseChange, data }: ModelProps) => {
                     </div>
 
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <span className="font-semibold">Technology:</span>{' '}
-                      {project.techStack?.join(', ') || 'N/A'}
+                      <span className="text-sm">Technology:</span>{' '}
+                      {project?.techStack && project?.techStack?.length > 0 ? (
+                        <ul
+                          className="grid list-disc grid-cols-3 gap-x-6 pl-1"
+                          style={{
+                            listStyleType: 'disc',
+                            listStylePosition: 'inside',
+                          }}
+                        >
+                          {project.techStack.map((tech, index) => (
+                            <li
+                              key={index}
+                              className="text-sm text-gray-600 dark:text-gray-300"
+                              style={{
+                                fontSize: '0.8rem',
+                                lineHeight: '1rem',
+                              }}
+                            >
+                              {tech}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-center text-xs text-gray-600 dark:text-gray-300">
+                          No Tech Stack Available!
+                        </p>
+                      )}
                     </p>
                   </div>
                 ))}
@@ -235,6 +257,8 @@ const ViewDepartment = ({ open, onCloseChange, data }: ModelProps) => {
                                 </span>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   {companyEmail}
+                                  {employee?.user?.Designation &&
+                                    ` | ${employee?.user?.Designation}`}
                                 </p>
                               </div>
                             </div>
@@ -256,7 +280,7 @@ const ViewDepartment = ({ open, onCloseChange, data }: ModelProps) => {
                       })
                   ) : (
                     <p className="text-center text-xs text-gray-600 dark:text-gray-300">
-                      No Heads!
+                      No Heads Found!
                     </p>
                   )}
                 </div>

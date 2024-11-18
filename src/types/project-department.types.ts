@@ -37,6 +37,7 @@ export interface Projects {
     | 'Pending'
     | 'Cancelled';
   isActive?: boolean;
+  isContinue?: boolean;
   isDeleted: boolean;
   createdAt?: string;
   updatedAt?: string;

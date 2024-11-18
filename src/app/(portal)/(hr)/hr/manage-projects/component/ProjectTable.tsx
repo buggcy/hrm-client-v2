@@ -188,24 +188,25 @@ const ProjectTable: FunctionComponent = () => {
       </Header>
 
       <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-12">
+        <div className="col-span-1 md:col-span-6 lg:col-span-6">
+          <ProjectBarChat chartData={projectRecords?.data ?? []} />
+        </div>
         <div className="col-span-1 md:col-span-3 lg:col-span-3">
           {' '}
           <ProjectPieChart
+            activeCount={projectRecords?.records?.activeCount}
+            inactiveCount={projectRecords?.records?.inactiveCount}
+          />
+        </div>
+
+        <div className="col-span-1 md:col-span-3 lg:col-span-3">
+          <ProjectActiveRecordChart
             pendingCount={projectRecords?.statistics?.pendingCount}
             completedCount={projectRecords?.statistics?.completedCount}
             inProgressCount={projectRecords?.statistics?.inProgressCount}
             cancelledCount={projectRecords?.statistics?.cancelledCount}
             notStartedCount={projectRecords?.statistics?.notStartedCount}
             overdueCount={projectRecords?.statistics?.overdueCount}
-          />
-        </div>
-        <div className="col-span-1 md:col-span-6 lg:col-span-6">
-          <ProjectBarChat chartData={projectRecords?.data ?? []} />
-        </div>
-        <div className="col-span-1 md:col-span-3 lg:col-span-3">
-          <ProjectActiveRecordChart
-            activeCount={projectRecords?.records?.activeCount}
-            inactiveCount={projectRecords?.records?.inactiveCount}
             totalCount={projectRecords?.statistics?.totalCount}
           />
         </div>

@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -64,6 +65,7 @@ const FormSchema = z
     title: z.string().min(1, 'Project Title is required'),
     name: z.string().min(1, 'Project Name is required'),
     description: z.string().min(1, 'Project Description is required'),
+    reason: z.string().optional(),
     lead: z.string().min(1, 'Project Lead is required'),
     startDate: z.date(),
     endDate: z.date(),
@@ -100,6 +102,11 @@ const AddEditProjectModal = ({
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('');
   const [selectedEmployeeData, setSelectedEmployeeData] =
     useState<HrPerksGetEmployees>();
+  const [isContinue, setIsContinue] = useState<boolean>(false);
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setIsContinue(checked);
+  };
 
   const {
     control,
@@ -108,6 +115,7 @@ const AddEditProjectModal = ({
     formState: { errors },
     setValue,
     watch,
+    setError,
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -126,6 +134,7 @@ const AddEditProjectModal = ({
       newTeam: [],
       newTech: [],
       newLead: '',
+      reason: '',
     },
   });
   const handleEmployeeChange = (value: string) => {
@@ -177,7 +186,7 @@ const AddEditProjectModal = ({
         name: selectedRow?.projectName || '',
         title: selectedRow?.projectTitle || '',
         description: selectedRow?.projectDescription || '',
-
+        reason: selectedRow?.cancellationReason || '',
         startDate: selectedRow?.startDate
           ? new Date(selectedRow?.startDate)
           : new Date(),
@@ -188,7 +197,6 @@ const AddEditProjectModal = ({
           ? new Date(selectedRow?.deadline)
           : new Date(),
         status: selectedRow?.status || '',
-
         techStack: selectedRow?.techStack || [],
 
         teamMembers:
@@ -196,6 +204,9 @@ const AddEditProjectModal = ({
             selectedRow?.teamMembers.map(employee => employee._id)) ||
           [],
       });
+      if (selectedRow?.isContinue) {
+        setIsContinue(selectedRow?.isContinue);
+      }
       if (selectedRow?.teamLead) {
         setSelectedEmployeeId(selectedRow?.teamLead?._id);
         setSelectedEmployeeData({
@@ -227,8 +238,10 @@ const AddEditProjectModal = ({
         newTeam: [],
         newTech: [],
         newLead: '',
+        reason: '',
       });
       setSelectedEmployeeId('');
+      setIsContinue(false);
     }
   }, [open, reset, type]);
 
@@ -304,18 +317,28 @@ const AddEditProjectModal = ({
         startDate: data?.startDate
           ? new Date(data.startDate).toISOString().split('T')[0]
           : '',
-        endDate: data?.endDate
-          ? new Date(data.endDate).toISOString().split('T')[0]
-          : '',
+        endDate: isContinue
+          ? undefined
+          : data?.endDate
+            ? new Date(data.endDate).toISOString().split('T')[0]
+            : '',
         deadline: data?.deadline
           ? new Date(data.deadline).toISOString().split('T')[0]
           : '',
+        isContinue,
         techStack: data?.techStack,
         teamMembers: data?.teamMembers,
       };
       mutate({ body });
     }
     if (type === 'edit') {
+      if (data.status === 'Cancelled' && !data.reason) {
+        setError('reason', {
+          type: 'manual',
+          message: 'Cancellation reason is required!',
+        });
+        return;
+      }
       const body = {
         name: data?.name,
         title: data?.title,
@@ -343,6 +366,9 @@ const AddEditProjectModal = ({
         ...(data?.deleteTech && data?.deleteTech?.length > 0
           ? { deletedTechStack: data.deleteTech }
           : {}),
+        ...(data?.status === 'Cancelled' && data?.reason
+          ? { cancellationReason: data?.reason }
+          : {}),
       };
 
       const id = selectedRow?._id || '';
@@ -352,6 +378,7 @@ const AddEditProjectModal = ({
   };
   const showEmployees = watch('teamMembers', []);
   const showTech = watch('techStack', []);
+  const showStatus = watch('status', '');
   return (
     <Dialog open={open} onOpenChange={onCloseChange}>
       <DialogContent className="md:max-w-4xl lg:max-w-4xl">
@@ -490,6 +517,7 @@ const AddEditProjectModal = ({
                           'w-full justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
+                        disabled={isContinue}
                       >
                         <CalendarIcon className="mr-2 size-4" />
                         {field.value ? (
@@ -515,6 +543,18 @@ const AddEditProjectModal = ({
                   {errors.endDate.message}
                 </span>
               )}
+              <div className="m-1 flex flex-row gap-2">
+                <Checkbox
+                  checked={isContinue}
+                  aria-label="Continue"
+                  className="translate-y-[2px]"
+                  onCheckedChange={checked => {
+                    const isChecked = Boolean(checked);
+                    handleCheckboxChange(isChecked);
+                  }}
+                />
+                <Label className="mt-1 text-xs">Continue</Label>
+              </div>
             </div>
             <div className="flex flex-col">
               <Label htmlFor="deadline" className="mb-2 text-left">
@@ -768,7 +808,34 @@ const AddEditProjectModal = ({
               />
             </div>
           )}
-
+          {showStatus === 'Cancelled' && type === 'edit' && (
+            <>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-2">
+                <div className="flex flex-col">
+                  <Label htmlFor="reason" className="mb-2 text-left">
+                    Cancellation Reason <span className="text-red-600">*</span>
+                  </Label>
+                  <Controller
+                    name="reason"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="text"
+                        id="name"
+                        placeholder="Please enter cancellation reason"
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.reason && (
+                    <span className="text-sm text-red-500">
+                      {errors.reason.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
           <DialogFooter>
             <Button
               type="button"

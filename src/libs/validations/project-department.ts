@@ -40,9 +40,11 @@ const projectSchema = z.object({
   deadline: z.string().optional(),
   projectTitle: z.string().optional(),
   projectDescription: z.string().optional(),
+  cancellationReason: z.string().optional(),
   techStack: z.array(z.string()).optional(),
   isDeleted: z.boolean(),
   isActive: z.boolean().optional(),
+  isContinue: z.boolean().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });

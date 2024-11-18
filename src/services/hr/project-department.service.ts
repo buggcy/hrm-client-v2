@@ -44,6 +44,8 @@ export interface ProjectBody {
   endDate?: string;
   deadline?: string;
   isActive?: boolean;
+  isContinue?: boolean;
+  cancellationReason?: string;
   techStack?: string[];
   teamLead?: string;
   status?: string;

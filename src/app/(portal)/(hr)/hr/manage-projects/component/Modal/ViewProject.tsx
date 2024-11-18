@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 
-import { ScrollArea } from '@radix-ui/react-scroll-area';
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -10,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { ProjectListType } from '@/libs/validations/project-department';
@@ -35,17 +34,19 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
           <DialogHeader>
             <DialogTitle>{`View Project Details`}</DialogTitle>
           </DialogHeader>
-          <div className="flex justify-end">
+          <div>
             <Tabs value={activeTab} onValueChange={handleTabChange}>
-              <TabsList className="mb-2 flex h-9 p-0.5">
-                <TabsTrigger value="project">Project </TabsTrigger>
-                <TabsTrigger value="tech">
+              <TabsList className="flex h-9 p-0.5">
+                <TabsTrigger value="project" className="flex-1 text-center">
+                  Overview
+                </TabsTrigger>
+                <TabsTrigger value="tech" className="flex-1 text-center">
                   Tech Stack{' '}
                   <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
                     {data?.techStack?.length || 0}
                   </span>
                 </TabsTrigger>
-                <TabsTrigger value="team">
+                <TabsTrigger value="team" className="flex-1 text-center">
                   Team{' '}
                   <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
                     {data?.teamMembers?.length || 0}
@@ -54,6 +55,7 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
               </TabsList>
             </Tabs>
           </div>
+
           {activeTab === 'project' && (
             <>
               <div className="flex flex-row justify-between">
@@ -103,6 +105,18 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
                   </Badge>
                 </div>
               </div>
+              {data?.status === 'Cancelled' && (
+                <div className="flex flex-row justify-between">
+                  <div className="w-5/12">
+                    <p className="text-sm font-semibold">Cancellation Reason</p>
+                  </div>
+                  <div className="w-7/12">
+                    <p className="truncate text-sm text-gray-600 dark:text-gray-300">
+                      {data?.cancellationReason || '-'}
+                    </p>
+                  </div>
+                </div>
+              )}
               <div className="flex flex-row justify-between">
                 <div className="w-5/12">
                   <p className="text-sm font-semibold">Project Duration</p>
@@ -113,9 +127,11 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
                       ? new Date(data?.startDate).toDateString()
                       : 'N/A'}{' '}
                     {' - '}
-                    {data?.endDate
-                      ? new Date(data?.endDate).toDateString()
-                      : 'N/A'}
+                    {data?.isContinue === true
+                      ? 'Continue'
+                      : data?.endDate
+                        ? new Date(data?.endDate).toDateString()
+                        : 'N/A'}
                   </p>
                 </div>
               </div>
@@ -192,16 +208,23 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
               </div>
               <ScrollArea className="h-60 w-full">
                 {data?.techStack && data?.techStack?.length > 0 ? (
-                  <ol className="list-decimal pl-5">
+                  <ul
+                    className="grid list-disc grid-cols-2 gap-x-6 pl-5"
+                    style={{
+                      listStyleType: 'disc',
+                      listStylePosition: 'inside',
+                    }}
+                  >
                     {data.techStack.map((tech, index) => (
                       <li
                         key={index}
                         className="text-sm text-gray-600 dark:text-gray-300"
+                        style={{ fontSize: '1.1rem', lineHeight: '1.5rem' }}
                       >
                         {tech}
                       </li>
                     ))}
-                  </ol>
+                  </ul>
                 ) : (
                   <p className="text-center text-xs text-gray-600 dark:text-gray-300">
                     No Tech Stack Available!
