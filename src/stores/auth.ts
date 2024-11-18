@@ -10,7 +10,9 @@ export type AuthState = {
   loading: boolean;
   user: User | null;
   token: string | null;
-  permissions: Permission[];
+  accessPermissions: Permission[];
+  readPermissions: Permission[];
+  writePermissions: Permission[];
 };
 
 export type AuthActions = {
@@ -18,7 +20,9 @@ export type AuthActions = {
   setLoadingFalse: () => void;
   setUser: (token: string) => void;
   setToken: (token: string) => void;
-  setPermissions: (permissions: Permission[]) => void;
+  setAccessPermissions: (permissions: Permission[]) => void;
+  setReadPermissions: (permissions: Permission[]) => void;
+  setWritePermissions: (permissions: Permission[]) => void;
   resetSession: () => void;
 };
 
@@ -31,7 +35,9 @@ export const useAuthStore = create<AuthStoreType>()(
         loading: false,
         user: null,
         token: null,
-        permissions: [],
+        accessPermissions: [],
+        readPermissions: [],
+        writePermissions: [],
 
         // Actions
         setLoadingTrue: () => set({ loading: true }),
@@ -41,12 +47,19 @@ export const useAuthStore = create<AuthStoreType>()(
           set({ user, token });
         },
         setToken: (token: string) => set({ token }),
-        setPermissions: (permissions: Permission[]) => set({ permissions }),
+        setAccessPermissions: (permissions: Permission[]) =>
+          set({ accessPermissions: permissions }),
+        setReadPermissions: (permissions: Permission[]) =>
+          set({ readPermissions: permissions }),
+        setWritePermissions: (permissions: Permission[]) =>
+          set({ writePermissions: permissions }),
         resetSession: () => {
           Cookies.remove('hrmsToken');
           set({ token: null });
           set({ user: null });
-          set({ permissions: [] });
+          set({ accessPermissions: [] });
+          set({ readPermissions: [] });
+          set({ writePermissions: [] });
         },
       }),
       {

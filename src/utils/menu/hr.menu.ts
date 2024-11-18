@@ -16,10 +16,7 @@ import {
 
 import { useAuthStore } from '@/stores/auth';
 
-const { permissions } = useAuthStore.getState();
-const accessPermissions = permissions.filter(permission =>
-  permission.name.startsWith('access'),
-);
+const { accessPermissions } = useAuthStore.getState();
 
 import { MenuItem } from '@/types/menu';
 

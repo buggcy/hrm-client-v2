@@ -18,10 +18,7 @@ import { useAuthStore } from '@/stores/auth';
 
 import { MenuItem } from '@/types/menu';
 
-const { permissions } = useAuthStore.getState();
-const accessPermissions = permissions.filter(permission =>
-  permission.name.startsWith('access'),
-);
+const { accessPermissions } = useAuthStore.getState();
 
 export const hrManagerMenu: MenuItem[] = [
   {

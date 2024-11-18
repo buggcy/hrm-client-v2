@@ -45,7 +45,12 @@ const FormSchema = z.object({
 
 export function SignInForm() {
   const { authStore } = useStores() as { authStore: AuthStoreType };
-  const { setUser, setPermissions } = authStore;
+  const {
+    setUser,
+    setAccessPermissions,
+    setReadPermissions,
+    setWritePermissions,
+  } = authStore;
 
   const searchParams = useSearchParams();
   const { mutate, isPending } = useMutation({
@@ -59,7 +64,19 @@ export function SignInForm() {
     onSuccess: (response: AuthResponse) => {
       Cookies.set('hrmsToken', response?.token, { expires: 1 });
       setUser(response?.token);
-      setPermissions(response?.userPermission.permissions);
+      const permissions = response?.userPermission.permissions;
+      const accessPermissions = permissions.filter(permission =>
+        permission.name.startsWith('access'),
+      );
+      const readPermissions = permissions.filter(permission =>
+        permission.name.startsWith('canRead'),
+      );
+      const writePermissions = permissions.filter(permission =>
+        permission.name.startsWith('canWrite'),
+      );
+      setAccessPermissions(accessPermissions);
+      setReadPermissions(readPermissions);
+      setWritePermissions(writePermissions);
     },
   });
 

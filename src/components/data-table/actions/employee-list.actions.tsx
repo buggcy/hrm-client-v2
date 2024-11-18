@@ -24,6 +24,7 @@ import { EmployeeListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
 import { AuthStoreType } from '@/stores/auth';
 import { EmployeeStoreType } from '@/stores/hr/employee';
+import { getWritePermissions } from '@/utils/permissions.utils';
 interface DataTableRowActionsProps {
   row: Row<EmployeeListType>;
 }
@@ -31,6 +32,7 @@ interface DataTableRowActionsProps {
 export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
+  const writeEmployeePermission = getWritePermissions('canWriteEmployees');
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList } = employeeStore;
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
@@ -84,25 +86,29 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
               View Details
             </DropdownMenuItem>
           </DialogTrigger>
-          <DialogTrigger asChild onClick={handleEditClick}>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 size-4" />
-              Edit Details
-            </DropdownMenuItem>
-          </DialogTrigger>
-          <DialogTrigger asChild onClick={() => {}}>
-            <DropdownMenuItem onClick={() => handleFire(data?._id)}>
-              <UserX className="mr-2 size-4" />
-              Fire Employee
-            </DropdownMenuItem>
-          </DialogTrigger>
-          <DropdownMenuItem
-            onSelect={() => setShowDeleteDialog(true)}
-            className="text-red-600"
-          >
-            <Trash2 className="mr-2 size-4" />
-            Delete Details
-          </DropdownMenuItem>
+          {writeEmployeePermission && (
+            <>
+              <DialogTrigger asChild onClick={handleEditClick}>
+                <DropdownMenuItem>
+                  <Pencil className="mr-2 size-4" />
+                  Edit Details
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogTrigger asChild onClick={() => {}}>
+                <DropdownMenuItem onClick={() => handleFire(data?._id)}>
+                  <UserX className="mr-2 size-4" />
+                  Fire Employee
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DropdownMenuItem
+                onSelect={() => setShowDeleteDialog(true)}
+                className="text-red-600"
+              >
+                <Trash2 className="mr-2 size-4" />
+                Delete Details
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}

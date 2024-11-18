@@ -30,6 +30,7 @@ import {
   resendEmployeeInvitation,
 } from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
+import { getWritePermissions } from '@/utils/permissions.utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -40,6 +41,7 @@ interface DataTableRowActionsProps {
 export function UnapprovedEmployeeRowActions({
   row,
 }: DataTableRowActionsProps) {
+  const writePermission = getWritePermissions('canWriteEmployees');
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
 
@@ -119,10 +121,12 @@ export function UnapprovedEmployeeRowActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => mutate(data?._id)}>
-            <Mail className="mr-2 size-4" />
-            Resend Invitation
-          </DropdownMenuItem>
+          {writePermission && (
+            <DropdownMenuItem onClick={() => mutate(data?._id)}>
+              <Mail className="mr-2 size-4" />
+              Resend Invitation
+            </DropdownMenuItem>
+          )}
 
           <DropdownMenuSeparator />
           <DialogTrigger asChild onClick={() => {}}>
@@ -131,19 +135,23 @@ export function UnapprovedEmployeeRowActions({
               View Details
             </DropdownMenuItem>
           </DialogTrigger>
-          <DialogTrigger asChild onClick={handleEditClick}>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 size-4" />
-              Edit Details
-            </DropdownMenuItem>
-          </DialogTrigger>
-          <DropdownMenuItem
-            onSelect={() => setShowDeleteDialog(true)}
-            className="text-red-600"
-          >
-            <Trash2 className="mr-2 size-4" />
-            Delete Details
-          </DropdownMenuItem>
+          {writePermission && (
+            <>
+              <DialogTrigger asChild onClick={handleEditClick}>
+                <DropdownMenuItem>
+                  <Pencil className="mr-2 size-4" />
+                  Edit Details
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DropdownMenuItem
+                onSelect={() => setShowDeleteDialog(true)}
+                className="text-red-600"
+              >
+                <Trash2 className="mr-2 size-4" />
+                Delete Details
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <AddEmployeeDialog
