@@ -80,7 +80,7 @@ export function ProjectActiveRecordChart({
   return (
     <Card className="flex h-[368px] flex-col gap-3">
       <CardHeader className={cn('items-left')}>
-        <CardTitle className="text-sm">Project status </CardTitle>
+        <CardTitle className="text-sm">Project Status </CardTitle>
         <CardDescription className="text-xs">
           showing the distribution between project statuses.
         </CardDescription>
