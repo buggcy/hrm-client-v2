@@ -270,7 +270,12 @@ export const EditProfile = async ({
   );
   return { message, token };
 };
-
+export interface EmployeeChart {
+  month: string;
+  added: number;
+  resigned: number;
+  fired: number;
+}
 export interface CardData {
   Card2Data: {
     pending: number;
@@ -289,6 +294,7 @@ export interface CardData {
       pending: number;
     };
   };
+  employeeChart: EmployeeChart[];
 }
 
 export interface DobData {

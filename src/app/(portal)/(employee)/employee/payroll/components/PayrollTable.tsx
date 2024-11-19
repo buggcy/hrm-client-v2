@@ -13,7 +13,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { usePayrollQuery } from '@/hooks/payroll/usePayroll.hook';
 import { EmployeePayrollListType } from '@/libs/validations/employee';
-import { searchEmployeePayrollList } from '@/services/employee/employeePayroll.service';
+import { searchPayoutList } from '@/services/employee/employeePayroll.service';
 import { AuthStoreType } from '@/stores/auth';
 import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
 
@@ -36,25 +36,31 @@ const PayrollTable: FunctionComponent = () => {
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
-
+  const [status, setStatus] = useState<string[]>([]);
   const {
     data: payrollList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = usePayrollQuery({
-    page,
-    limit,
-    userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
-  });
+  } = usePayrollQuery(
+    {
+      page,
+      limit,
+      userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
+      status,
+    },
+    {
+      enabled: !!user?.Tahometer_ID,
+    },
+  );
 
   const {
     mutate,
     isPending,
     data: searchPayrollEmployeeData,
   } = useMutation({
-    mutationFn: searchEmployeePayrollList,
+    mutationFn: searchPayoutList,
     onError: (err: unknown) => {
       const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({
@@ -79,19 +85,33 @@ const PayrollTable: FunctionComponent = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        status,
+        userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
+      });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate]);
+  }, [
+    debouncedSearchTerm,
+    page,
+    limit,
+    refetch,
+    mutate,
+    status,
+    user?.Tahometer_ID,
+  ]);
 
   useEffect(() => {
     void (async () => {
       await refetch();
     })();
-  }, [page, limit, refetch]);
+  }, [page, limit, refetch, status]);
 
   useEffect(() => {
     if (refetchEmployeePayrollList) {
@@ -107,6 +127,7 @@ const PayrollTable: FunctionComponent = () => {
     limit,
     setRefetchEmployeePayrollList,
     refetch,
+    status,
   ]);
 
   const handleSearchChange = (term: string) => {
@@ -152,9 +173,9 @@ const PayrollTable: FunctionComponent = () => {
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
-          toolbarType="payrollList"
-          setFilterValue={(value: string[]) => console.log(value)}
-          filterValue={[]}
+          toolbarType="hrPayrollList"
+          setFilterValue={setStatus}
+          filterValue={status}
         />
       )}
     </>

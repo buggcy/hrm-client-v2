@@ -18,17 +18,10 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
+import { EmployeeChart } from '@/services/hr/employee.service';
+
 export const description =
   'An area chart showing employee changes (Add, Resign, Fired)';
-
-const chartData = [
-  { month: 'January', added: 5, resigned: 1, fired: 5 },
-  { month: 'February', added: 8, resigned: 2, fired: 1 },
-  { month: 'March', added: 6, resigned: 15, fired: 0 },
-  { month: 'April', added: 7, resigned: 3, fired: 1 },
-  { month: 'May', added: 9, resigned: 2, fired: 1 },
-  { month: 'June', added: 1, resigned: 3, fired: 0 },
-];
 
 const chartConfig = {
   added: {
@@ -44,8 +37,10 @@ const chartConfig = {
     color: 'hsl(var(--chart-3))',
   },
 } satisfies ChartConfig;
-
-export function EmpAreaChart() {
+interface EmployeeChartProps {
+  chartData: EmployeeChart[];
+}
+export function EmpAreaChart({ chartData }: EmployeeChartProps) {
   return (
     <Card className="h-[330px] w-full max-lg:w-full">
       <CardHeader>
