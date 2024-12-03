@@ -170,10 +170,11 @@ export function Details({ onNext }: { onNext: () => void }) {
               placeholder="03XXXXXXXXX"
               disabled
               onBlur={() => {
-                const phone = watch('additionalInfo.Emergency_Phone');
+                const phone = watch('additionalInfo.contactNo');
                 const strippedVal = phone.replace(/^(03|\+923)/, '');
-                if (phone && strippedVal.length !== 9) {
-                  setError('additionalInfo.Emergency_Phone', {
+                const isDigit = /^\d+$/.test(strippedVal);
+                if (phone && (strippedVal.length !== 9 || !isDigit)) {
+                  setError('additionalInfo.contactNo', {
                     type: 'manual',
                     message:
                       'Phone number must have exactly 9 digits after 03 or +923',
@@ -200,7 +201,8 @@ export function Details({ onNext }: { onNext: () => void }) {
               onBlur={() => {
                 const phone = watch('additionalInfo.Emergency_Phone');
                 const strippedVal = phone.replace(/^(03|\+923)/, '');
-                if (phone && strippedVal.length !== 9) {
+                const isDigit = /^\d+$/.test(strippedVal);
+                if (phone && (strippedVal.length !== 9 || !isDigit)) {
                   setError('additionalInfo.Emergency_Phone', {
                     type: 'manual',
                     message:
@@ -487,10 +489,11 @@ export function Details({ onNext }: { onNext: () => void }) {
               {...register('additionalInfo.Family_PhoneNo')}
               placeholder="03XXXXXXXXX"
               onBlur={() => {
-                const phone = watch('additionalInfo.Emergency_Phone');
+                const phone = watch('additionalInfo.Family_PhoneNo');
                 const strippedVal = phone.replace(/^(03|\+923)/, '');
-                if (phone && strippedVal.length !== 9) {
-                  setError('additionalInfo.Emergency_Phone', {
+                const isDigit = /^\d+$/.test(strippedVal);
+                if (phone && (strippedVal.length !== 9 || !isDigit)) {
+                  setError('additionalInfo.Family_PhoneNo', {
                     type: 'manual',
                     message:
                       'Phone number must have exactly 9 digits after 03 or +923',

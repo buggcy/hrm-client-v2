@@ -13,6 +13,8 @@ import {
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 
+import { getWritePermissions } from '@/utils/permissions.utils';
+
 import { AnnouncementDialog } from './components/AddAnnouncementDialog.component';
 import ManageAnnouncementsCharts from './components/ManageAnnouncementsCharts.component';
 import ManageAnnouncementTable from './components/ManageAnnouncementsTable.component';
@@ -20,6 +22,7 @@ import ManageAnnouncementTable from './components/ManageAnnouncementsTable.compo
 interface ManageAnnouncementProps {}
 
 const ManageAnnouncements: FunctionComponent<ManageAnnouncementProps> = () => {
+  const writePermission = getWritePermissions('canWriteAnnouncements');
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -46,7 +49,11 @@ const ManageAnnouncements: FunctionComponent<ManageAnnouncementProps> = () => {
             setTimeRange={setTimeRange}
             setDate={handleSetDate}
           />
-          <Button variant="default" onClick={handleDialogOpen}>
+          <Button
+            variant="default"
+            onClick={handleDialogOpen}
+            disabled={!writePermission}
+          >
             Add Announcement
           </Button>
         </Header>
