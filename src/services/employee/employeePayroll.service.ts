@@ -67,13 +67,15 @@ export const searchEmployeePayrollList = async ({
   query,
   page,
   limit,
+  userId,
 }: {
   query: string;
   page: number;
   limit: number;
+  userId: string;
 }): Promise<EmployeePayrollApiResponse> => {
   const res = await baseAPI.get(
-    `/user/search?page=${page}&limit=${limit}&query=${query}`,
+    `/payoutbyidV2?page=${page}&limit=${limit}&userId=${userId}&month=${query}`,
   );
   return schemaParse(employeePayrollApiResponseSchema)(res);
 };

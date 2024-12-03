@@ -23,6 +23,7 @@ import { ViewAnnouncement } from '@/app/(portal)/(hr)/hr/manage-announcements/co
 import { AnnouncementType } from '@/libs/validations/hr-announcements';
 import { deleteAnnouncement } from '@/services/hr/manage-announcements.service';
 import { AnnouncementsStoreType } from '@/stores/hr/announcements';
+import { getWritePermissions } from '@/utils/permissions.utils';
 
 interface DataTableRowActionsProps {
   row: Row<AnnouncementType>;
@@ -31,6 +32,7 @@ interface DataTableRowActionsProps {
 export function ManageAnnouncementRowActions({
   row,
 }: DataTableRowActionsProps) {
+  const writePermission = getWritePermissions('canWriteAnnouncements');
   const { manageAnnouncementsStore } = useStores() as {
     manageAnnouncementsStore: AnnouncementsStoreType;
   };
@@ -72,25 +74,29 @@ export function ManageAnnouncementRowActions({
         <DropdownMenuContent align="end" className="w-[150px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DialogTrigger asChild onClick={handleEditDialogOpen}>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 size-4" />
-              Edit
-            </DropdownMenuItem>
-          </DialogTrigger>
           <DialogTrigger asChild onClick={handleViewDialogOpen}>
             <DropdownMenuItem>
               <Eye className="mr-2 size-4" />
               View
             </DropdownMenuItem>
           </DialogTrigger>
-          <DropdownMenuItem
-            onSelect={() => setShowDeleteDialog(true)}
-            className="text-red-600"
-          >
-            <Trash2 className="mr-2 size-4" />
-            Delete
-          </DropdownMenuItem>
+          {writePermission && (
+            <>
+              <DialogTrigger asChild onClick={handleEditDialogOpen}>
+                <DropdownMenuItem>
+                  <Pencil className="mr-2 size-4" />
+                  Edit
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DropdownMenuItem
+                onSelect={() => setShowDeleteDialog(true)}
+                className="text-red-600"
+              >
+                <Trash2 className="mr-2 size-4" />
+                Delete
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}

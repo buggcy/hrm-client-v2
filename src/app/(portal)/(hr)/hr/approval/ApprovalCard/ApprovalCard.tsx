@@ -26,6 +26,7 @@ import { approvalStatus, EmployeeListType } from '@/libs/validations/employee';
 import { employeeApprovalRequest } from '@/services/hr/employee.service';
 import { AuthStoreType } from '@/stores/auth';
 import { cn } from '@/utils';
+import { getWritePermissions } from '@/utils/permissions.utils';
 
 import { RejectDialog } from './RejectDialog';
 
@@ -65,6 +66,7 @@ export const ApprovalCard = ({
   isLoading?: boolean;
   refetchApprovalList: () => void;
 }) => {
+  const writePermission = getWritePermissions('canWriteEmployees');
   const [isRejectDialogOpen, setRejectDialogOpen] = useState(false);
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
@@ -209,26 +211,28 @@ export const ApprovalCard = ({
           </p>
         </div>
       </CardContent>
-      <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
-        <LoadingButton
-          className="p-2 text-sm"
-          variant="outline"
-          loading={isPending}
-          disabled={isPending}
-          onClick={handleRejectClick}
-        >
-          Reject Request
-        </LoadingButton>
-        <LoadingButton
-          className="p-2 text-sm"
-          variant="primary-inverted"
-          onClick={handleAccept}
-          loading={isPending}
-          disabled={isPending}
-        >
-          Accept Request
-        </LoadingButton>
-      </CardFooter>
+      {writePermission && (
+        <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
+          <LoadingButton
+            className="p-2 text-sm"
+            variant="outline"
+            loading={isPending}
+            disabled={isPending}
+            onClick={handleRejectClick}
+          >
+            Reject Request
+          </LoadingButton>
+          <LoadingButton
+            className="p-2 text-sm"
+            variant="primary-inverted"
+            onClick={handleAccept}
+            loading={isPending}
+            disabled={isPending}
+          >
+            Accept Request
+          </LoadingButton>
+        </CardFooter>
+      )}
       <RejectDialog
         isOpen={isRejectDialogOpen}
         onClose={closeRejectDialog}

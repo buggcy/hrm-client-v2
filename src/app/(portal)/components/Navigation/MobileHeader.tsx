@@ -16,6 +16,7 @@ import { useStores } from '@/providers/Store.Provider';
 import { AuthStoreType } from '@/stores/auth';
 import { employeeMenu } from '@/utils/menu/employee.menu';
 import { hrMenu } from '@/utils/menu/hr.menu';
+import { managerMenu } from '@/utils/menu/manager.menu';
 
 import { MobileNavigationItem } from './components/MobileNavigationItem';
 import { NavSection } from './components/NavSection';
@@ -27,8 +28,13 @@ import { MenuItem } from '@/types/menu';
 export const MobileHeader = () => {
   const pathname = usePathname();
   const { authStore } = useStores() as { authStore: AuthStoreType };
-  const { user } = authStore;
-  const menuItems: MenuItem[] = user?.roleId === 1 ? hrMenu : employeeMenu;
+  const { user, accessPermissions } = authStore;
+  const menuItems: MenuItem[] =
+    user?.roleId === 1
+      ? hrMenu(accessPermissions)
+      : user?.roleId === 3
+        ? managerMenu(accessPermissions)
+        : employeeMenu(accessPermissions);
   const [open, setOpen] = useState(false);
 
   const onClose = useCallback(() => {
