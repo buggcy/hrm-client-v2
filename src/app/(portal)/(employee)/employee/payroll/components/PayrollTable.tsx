@@ -79,13 +79,18 @@ const PayrollTable: FunctionComponent = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
+      });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate]);
+  }, [debouncedSearchTerm, page, limit, refetch, mutate, user?.Tahometer_ID]);
 
   useEffect(() => {
     void (async () => {

@@ -23,12 +23,14 @@ import { ViewHrEvent } from '@/app/(portal)/(hr)/hr/manage-events/components/Vie
 import { HrEventsListType } from '@/libs/validations/employee';
 import { deleteHrEvent } from '@/services/hr/hrEvents.service';
 import { HrEventsStoreType } from '@/stores/hr/hrEvents';
+import { getWritePermissions } from '@/utils/permissions.utils';
 
 interface DataTableRowActionsProps {
   row: Row<HrEventsListType>;
 }
 
 export function HrEventsListRowActions({ row }: DataTableRowActionsProps) {
+  const writePermission = getWritePermissions('canWriteEvents');
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
@@ -76,23 +78,27 @@ export function HrEventsListRowActions({ row }: DataTableRowActionsProps) {
               View Event
             </DropdownMenuItem>
           </DialogTrigger>
-          <DialogTrigger asChild onClick={handleDialogOpen}>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 size-4" />
-              Edit Event
-            </DropdownMenuItem>
-          </DialogTrigger>
-          <DialogTrigger
-            asChild
-            onClick={() => {
-              setShowDeleteDialog(true);
-            }}
-          >
-            <DropdownMenuItem className="text-red-600">
-              <Trash2 className="mr-2 size-4" />
-              Delete Event
-            </DropdownMenuItem>
-          </DialogTrigger>
+          {writePermission && (
+            <>
+              <DialogTrigger asChild onClick={handleDialogOpen}>
+                <DropdownMenuItem>
+                  <Pencil className="mr-2 size-4" />
+                  Edit Event
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogTrigger
+                asChild
+                onClick={() => {
+                  setShowDeleteDialog(true);
+                }}
+              >
+                <DropdownMenuItem className="text-red-600">
+                  <Trash2 className="mr-2 size-4" />
+                  Delete Event
+                </DropdownMenuItem>
+              </DialogTrigger>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
