@@ -8,21 +8,21 @@ import {
   Home,
   Megaphone,
   Settings,
+  ShieldCheck,
   UserCog,
   UserCog2,
-  UserMinus,
   UserPlus,
 } from 'lucide-react';
 
 import { MenuItem } from '@/types/menu';
 import { Permission } from '@/types/user-permissions.types';
 
-export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
+export const managerMenu = (accessPermissions: Permission[]): MenuItem[] => {
   return [
     {
       title: 'Home',
       icon: Home,
-      href: '/hr/dashboard',
+      href: '/manager/dashboard',
       disabled: false,
     },
     {
@@ -36,17 +36,13 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         accessPermissions.some(
           permission =>
             permission.name === 'accessAddEmployee' && permission.allowed,
-        ) ||
-        accessPermissions.some(
-          permission =>
-            permission.name === 'accessResigned' && permission.allowed,
         )
       ),
       children: [
         {
           title: 'Employees',
           icon: UserCog,
-          href: '/hr/manage-employees',
+          href: '/manager/manage-employees',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessManageEmployees' && permission.allowed,
@@ -55,19 +51,10 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Add Employees',
           icon: UserPlus,
-          href: '/hr/add-employees',
+          href: '/manager/add-employees',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessAddEmployee' && permission.allowed,
-          ),
-        },
-        {
-          title: 'Resigned/Fired',
-          icon: UserMinus,
-          href: '/hr/resigned-fired',
-          disabled: !accessPermissions.some(
-            permission =>
-              permission.name === 'accessResigned' && permission.allowed,
           ),
         },
       ],
@@ -94,7 +81,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Events',
           icon: CalendarCog,
-          href: '/hr/manage-events',
+          href: '/manager/manage-events',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessEvents' && permission.allowed,
@@ -103,7 +90,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Announcements',
           icon: Megaphone,
-          href: '/hr/manage-announcements',
+          href: '/manager/manage-announcements',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessAnnouncements' && permission.allowed,
@@ -112,7 +99,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Manage Birthday',
           icon: CalendarCog,
-          href: '/hr/manage-birthday',
+          href: '/manager/manage-birthday',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessBirthdayAndAnniversary' &&
@@ -139,7 +126,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Attendance List',
           icon: ClipboardList,
-          href: '/hr/manage-attendance/attendance-list',
+          href: '/manager/manage-attendance/attendance-list',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessAttendanceList' && permission.allowed,
@@ -148,7 +135,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Leave List',
           icon: CalendarDays,
-          href: '/hr/manage-attendance/leave-list',
+          href: '/manager/manage-attendance/leave-list',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessLeaveList' && permission.allowed,
@@ -173,7 +160,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Perks & Benefits',
           icon: Gift,
-          href: '/hr/manage-perks/add-perks',
+          href: '/manager/manage-perks/add-perks',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessAddPerks' && permission.allowed,
@@ -182,7 +169,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Payroll',
           icon: Banknote,
-          href: '/hr/manage-payroll',
+          href: '/manager/manage-payroll',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessPayroll' && permission.allowed,
@@ -201,7 +188,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Manage Policy',
           icon: BadgeCheck,
-          href: '/hr/manage-policies',
+          href: '/manager/manage-policies',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessPolicies' && permission.allowed,
@@ -221,10 +208,30 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         {
           title: 'Manage Configuration',
           icon: Settings,
-          href: '/hr/manage-configuration',
+          href: '/manager/manage-configuration',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessConfiguration' && permission.allowed,
+          ),
+        },
+      ],
+    },
+
+    {
+      title: 'Manage Permissions',
+      icon: ShieldCheck,
+      disabled: !accessPermissions.some(
+        permission =>
+          permission.name === 'accessPermissions' && permission.allowed,
+      ),
+      children: [
+        {
+          title: 'Manage Permissions',
+          icon: ShieldCheck,
+          href: '/manager/manage-permissions',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessPermissions' && permission.allowed,
           ),
         },
       ],

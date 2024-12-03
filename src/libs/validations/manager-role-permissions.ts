@@ -13,12 +13,33 @@ const roleSchema = z.object({
   permissions: z.array(permissionSchema),
 });
 
+const categorizePermissionSchema = z.object({
+  category: z.string(),
+  read: z.boolean(),
+  write: z.boolean(),
+});
+
+const categorizedPermissionsRoleSchema = z.object({
+  _id: z.string(),
+  roleId: z.number(),
+  roleName: z.string(),
+  permissions: z.array(categorizePermissionSchema),
+});
+
+const categorizedManagerRolePermissionsApiResponseSchema = z.object({
+  data: z.array(categorizedPermissionsRoleSchema),
+});
+
 const managerRolePermissionsApiResponseSchema = z.object({
   data: z.array(roleSchema),
 });
 
 export type ManagerRolePermissionsApiResponse = z.infer<
   typeof managerRolePermissionsApiResponseSchema
+>;
+
+export type CategorizedPermissionsRole = z.infer<
+  typeof categorizedManagerRolePermissionsApiResponseSchema
 >;
 
 const userSchema = z.object({

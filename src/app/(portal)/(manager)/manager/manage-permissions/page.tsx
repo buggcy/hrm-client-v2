@@ -14,15 +14,6 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/use-toast';
 
@@ -30,18 +21,54 @@ import {
   usePagePermissionsQuery,
   usePermissionsQuery,
 } from '@/hooks/manager/usePermissions.hook';
-import { ManagerRolePermissionsApiResponse } from '@/libs/validations/manager-role-permissions';
+import {
+  CategorizedPermissionsRole,
+  ManagerRolePermissionsApiResponse,
+} from '@/libs/validations/manager-role-permissions';
 import { changeRolePermission } from '@/services/manager/manage-permissions.service';
 
 import { AddPermissionDialog } from './components/AddPermissionDialog.components';
+import PagePermissionsTab from './components/PagePermissionsTab.component';
+import RolePermissionsTab from './components/RolePermissionsTab.component';
 import UserPermissionsTab from './components/UserPermissionsTab.component';
 
 import { MessageErrorResponse } from '@/types';
 
-function formatCamelCase(text: string) {
-  return text
-    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before each uppercase letter
-    .replace(/^./, str => str.toUpperCase()); // Capitalize the first letter
+function categorizeRolePermissions(
+  permissions?: ManagerRolePermissionsApiResponse,
+) {
+  if (!permissions || !permissions.data) return { data: [] };
+
+  const categorizedData: CategorizedPermissionsRole = {
+    ...permissions,
+    data: permissions.data.map(role => ({
+      ...role,
+      permissions: Object.entries(
+        role.permissions.reduce<
+          Record<string, { read: boolean; write: boolean }>
+        >((acc, permission) => {
+          const match = permission.name.match(
+            /can(Read|Write)([A-Z][a-zA-Z]+)$/,
+          );
+          if (match) {
+            const action = match[1].toLowerCase();
+            const category = match[2];
+            if (!acc[category]) {
+              acc[category] = { read: false, write: false };
+            }
+
+            acc[category][action as 'read' | 'write'] = permission.allowed;
+          }
+          return acc;
+        }, {}),
+      ).map(([category, actions]) => ({
+        category,
+        ...actions,
+      })),
+    })),
+  };
+
+  return categorizedData;
 }
 
 const Page = () => {
@@ -50,7 +77,7 @@ const Page = () => {
     { roleId: number; roleName: string }[] | undefined
   >();
   const [rolePermissions, setRolePermissions] =
-    useState<ManagerRolePermissionsApiResponse>();
+    useState<CategorizedPermissionsRole>();
   const [pagePermissions, setPagePermissions] =
     useState<ManagerRolePermissionsApiResponse>();
 
@@ -86,8 +113,11 @@ const Page = () => {
     roleId: number,
     name: string,
     allowed: boolean,
+    action?: 'Read' | 'Write',
   ) => {
-    updatePermission({ roleId, name, allowed });
+    const nameAction = action ? `can${action}${name}` : name;
+    updatePermission({ roleId, name: nameAction, allowed });
+    console.log({ roleId, name: nameAction, allowed });
   };
   useEffect(() => {
     if (rolePermissions) {
@@ -102,7 +132,8 @@ const Page = () => {
 
   useEffect(() => {
     if (data) {
-      setRolePermissions(data);
+      const categorizedData = categorizeRolePermissions(data);
+      setRolePermissions(categorizedData);
     }
   }, [data]);
 
@@ -111,6 +142,7 @@ const Page = () => {
       setPagePermissions(pagePermissionsData);
     }
   }, [pagePermissionsData]);
+  console.log(rolePermissions);
   return (
     <Layout>
       <LayoutHeader title="Manage Permissions">
@@ -139,138 +171,20 @@ const Page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="page">
-            <div className="size-full">
-              <Tabs
-                className="flex size-full flex-col gap-4 md:flex-row"
-                defaultValue={
-                  pagePermissions?.data[0]._id || pagePermissions?.data[0]._id
-                }
-              >
-                <TabsList className="flex h-full flex-col py-4">
-                  {pagePermissions?.data.map(role => (
-                    <TabsTrigger
-                      key={role._id}
-                      value={role._id}
-                      className="mx-12 flex w-full justify-start py-2 text-left capitalize md:w-full"
-                    >
-                      {role.roleName}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                <div className="w-full">
-                  {pagePermissions?.data?.map(role => (
-                    <TabsContent
-                      key={role._id}
-                      value={role._id}
-                      className="size-full max-h-[500px] overflow-y-auto"
-                    >
-                      <Table className="max-h-[500px] w-full overflow-y-auto">
-                        <TableHead className="w-full">
-                          <TableRow className="flex flex-row justify-between">
-                            <TableHeader className="w-1/2">
-                              Permission
-                            </TableHeader>
-                            <TableHeader className="-mr-20 w-1/2 text-right">
-                              Allowed
-                            </TableHeader>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody className="max-h-[500px] overflow-y-auto">
-                          {role.permissions.map(permission => (
-                            <TableRow key={permission._id}>
-                              <TableCell>
-                                {formatCamelCase(permission.name)}
-                              </TableCell>
-                              <TableCell>
-                                <Switch
-                                  checked={permission.allowed}
-                                  onCheckedChange={checked => {
-                                    handleCheckChange(
-                                      role.roleId,
-                                      permission.name,
-                                      checked,
-                                    );
-                                  }}
-                                  disabled={
-                                    isPending || isUpdating || isPagePending
-                                  }
-                                />
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TabsContent>
-                  ))}
-                </div>
-              </Tabs>
-            </div>
+            <PagePermissionsTab
+              pagePermissions={pagePermissions}
+              data={data}
+              handleCheckChange={handleCheckChange}
+              loading={isPending || isUpdating || isPagePending}
+            />
           </TabsContent>
           <TabsContent value="role">
-            <div className="size-full">
-              <Tabs
-                className="flex size-full flex-col gap-4 md:flex-row"
-                defaultValue={rolePermissions?.data[0]._id || data?.data[0]._id}
-              >
-                <TabsList className="flex h-full flex-col py-4">
-                  {rolePermissions?.data.map(role => (
-                    <TabsTrigger
-                      key={role._id}
-                      value={role._id}
-                      className="mx-12 flex w-full justify-start py-2 text-left capitalize md:w-full"
-                    >
-                      {role.roleName}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                <div className="w-full">
-                  {rolePermissions?.data?.map(role => (
-                    <TabsContent
-                      key={role._id}
-                      value={role._id}
-                      className="size-full max-h-[500px] overflow-y-auto"
-                    >
-                      <Table className="max-h-[500px] w-full overflow-y-auto">
-                        <TableHead className="w-full">
-                          <TableRow className="flex flex-row justify-between">
-                            <TableHeader className="w-1/2">
-                              Permission
-                            </TableHeader>
-                            <TableHeader className="-mr-20 w-1/2 text-right">
-                              Allowed
-                            </TableHeader>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody className="max-h-[500px] overflow-y-auto">
-                          {role.permissions.map(permission => (
-                            <TableRow key={permission._id}>
-                              <TableCell>
-                                {formatCamelCase(permission.name)}
-                              </TableCell>
-                              <TableCell>
-                                <Switch
-                                  checked={permission.allowed}
-                                  onCheckedChange={checked => {
-                                    handleCheckChange(
-                                      role.roleId,
-                                      permission.name,
-                                      checked,
-                                    );
-                                  }}
-                                  disabled={
-                                    isPending || isUpdating || isPagePending
-                                  }
-                                />
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TabsContent>
-                  ))}
-                </div>
-              </Tabs>
-            </div>
+            <RolePermissionsTab
+              rolePermissions={rolePermissions}
+              data={data}
+              handleCheckChange={handleCheckChange}
+              loading={isPending || isUpdating || isPagePending}
+            />
           </TabsContent>
           <TabsContent value="user">
             <UserPermissionsTab />

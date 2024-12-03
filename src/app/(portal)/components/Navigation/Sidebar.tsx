@@ -12,7 +12,7 @@ import { useStores } from '@/providers/Store.Provider';
 import { AuthStoreType } from '@/stores/auth';
 import { employeeMenu } from '@/utils/menu/employee.menu';
 import { hrMenu } from '@/utils/menu/hr.menu';
-import { hrManagerMenu } from '@/utils/menu/hrManager.menu';
+import { managerMenu } from '@/utils/menu/manager.menu';
 
 import { NavigationItem } from './components/NavigationItem';
 import { NavSection } from './components/NavSection';
@@ -24,13 +24,13 @@ import { MenuItem } from '@/types/menu';
 export const Sidebar = () => {
   const pathname = usePathname();
   const { authStore } = useStores() as { authStore: AuthStoreType };
-  const { user } = authStore;
+  const { user, accessPermissions } = authStore;
   const menuItems: MenuItem[] =
     user?.roleId === 1
-      ? hrMenu
+      ? hrMenu(accessPermissions)
       : user?.roleId === 3
-        ? hrManagerMenu
-        : employeeMenu;
+        ? managerMenu(accessPermissions)
+        : employeeMenu(accessPermissions);
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r bg-background sm:flex">

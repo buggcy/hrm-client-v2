@@ -33,8 +33,8 @@ import { MessageErrorResponse } from '@/types';
 
 function formatCamelCase(text: string) {
   return text
-    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before each uppercase letter
-    .replace(/^./, str => str.toUpperCase()); // Capitalize the first letter
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/^./, str => str.toUpperCase());
 }
 
 const UserPermissionsTab = () => {
@@ -189,36 +189,78 @@ const UserPermissionsTab = () => {
           </SelectContent>
         </Select>
         {selectedEmployee && selectedEmployeeData && (
-          <Table className="max-h-[500px] w-full overflow-y-auto">
-            <TableHead className="w-full">
-              <TableRow className="flex flex-row justify-between">
-                <TableHeader className="w-1/2">Permission</TableHeader>
-                <TableHeader className="-mr-20 w-1/2 text-right">
-                  Allowed
-                </TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody className="max-h-[500px] overflow-y-auto">
-              {selectedEmployeeData.permissions.map(permission => (
-                <TableRow key={permission._id}>
-                  <TableCell>{formatCamelCase(permission.name)}</TableCell>
-                  <TableCell>
-                    <Switch
-                      checked={permission.allowed}
-                      onCheckedChange={checked => {
-                        handleCheckChange(
-                          selectedEmployeeData.userId._id,
-                          permission.name,
-                          checked,
-                        );
-                      }}
-                      disabled={isPending || isUpdating}
-                    />
-                  </TableCell>
+          <>
+            <Table className="max-h-[500px] w-full overflow-y-auto">
+              <TableHead className="w-full">
+                <TableRow className="flex flex-row justify-between">
+                  <TableHeader className="w-1/2">Page</TableHeader>
+                  <TableHeader className="-mr-20 w-1/2 text-right">
+                    Access
+                  </TableHeader>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody className="max-h-[500px] overflow-y-auto">
+                {selectedEmployeeData.permissions.map(
+                  permission =>
+                    permission.name.startsWith('access') && (
+                      <TableRow key={permission._id}>
+                        <TableCell>
+                          {formatCamelCase(permission.name).slice(7)}
+                        </TableCell>
+                        <TableCell>
+                          <Switch
+                            checked={permission.allowed}
+                            onCheckedChange={checked => {
+                              handleCheckChange(
+                                selectedEmployeeData.userId._id,
+                                permission.name,
+                                checked,
+                              );
+                            }}
+                            disabled={isPending || isUpdating}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ),
+                )}
+              </TableBody>
+            </Table>
+            <Table className="max-h-[500px] w-full overflow-y-auto">
+              <TableHead className="w-full">
+                <TableRow className="flex flex-row justify-between">
+                  <TableHeader className="w-1/2">Permission</TableHeader>
+                  <TableHeader className="-mr-20 w-1/2 text-right">
+                    Allowed
+                  </TableHeader>
+                </TableRow>
+              </TableHead>
+              <TableBody className="max-h-[500px] overflow-y-auto">
+                {selectedEmployeeData.permissions.map(
+                  permission =>
+                    permission.name.startsWith('can') && (
+                      <TableRow key={permission._id}>
+                        <TableCell>
+                          {formatCamelCase(permission.name).slice(4)}
+                        </TableCell>
+                        <TableCell>
+                          <Switch
+                            checked={permission.allowed}
+                            onCheckedChange={checked => {
+                              handleCheckChange(
+                                selectedEmployeeData.userId._id,
+                                permission.name,
+                                checked,
+                              );
+                            }}
+                            disabled={isPending || isUpdating}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ),
+                )}
+              </TableBody>
+            </Table>
+          </>
         )}
       </div>
     </div>
