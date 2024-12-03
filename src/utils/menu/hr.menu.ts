@@ -79,16 +79,34 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
     {
       title: 'Manage Departments & Projects',
       icon: UserCog2,
+      disabled: !(
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessProjects' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessDepartments' && permission.allowed,
+        )
+      ),
       children: [
         {
           title: 'Projects',
           icon: Layers2Icon,
           href: '/hr/manage-projects',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessProjects' && permission.allowed,
+          ),
         },
         {
           title: 'Departments',
           icon: Building,
           href: '/hr/manage-department',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessDepartments' && permission.allowed,
+          ),
         },
       ],
     },
