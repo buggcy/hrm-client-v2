@@ -168,6 +168,7 @@ export const addEmployeeData = async ({
     basicSalary: data.basicSalary,
     Joining_Date: data.Joining_Date,
     Designation: data.Designation,
+    dep_ID: data.dep_ID,
   });
   return { message };
 };

@@ -12,6 +12,7 @@ import {
   CircleArrowOutUpRight,
   CircleFadingPlus,
   HelpCircle,
+  Loader,
   PackagePlus,
   PersonStanding,
   ScrollText,
@@ -364,5 +365,50 @@ export const complaint_options = [
     value: 'Canceled',
     label: 'Canceled',
     icon: XCircle,
+  },
+];
+export const project_active_options = [
+  {
+    value: 'Active',
+    label: 'Active',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Inactive',
+    label: 'Inactive',
+    icon: XCircle,
+  },
+];
+
+export const project_status_options = [
+  {
+    value: 'Completed',
+    label: 'Completed',
+    icon: CheckCircle,
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Cancelled',
+    label: 'Cancelled',
+    icon: XCircle,
+  },
+  {
+    value: 'Not Started',
+    label: 'Not Started',
+    icon: Circle,
+  },
+  {
+    value: 'In Progress',
+    label: 'In Progress',
+    icon: Loader,
+  },
+  {
+    value: 'Overdue',
+    label: 'Overdue',
+    icon: AlertCircle,
   },
 ];

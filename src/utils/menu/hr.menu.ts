@@ -2,11 +2,13 @@ import {
   AlertTriangle,
   BadgeCheck,
   Banknote,
+  Building,
   CalendarCog,
   CalendarDays,
   ClipboardList,
   Gift,
   Home,
+  Layers2Icon,
   Megaphone,
   Settings,
   ThumbsUp,
@@ -71,6 +73,22 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
             permission =>
               permission.name === 'accessResigned' && permission.allowed,
           ),
+        },
+      ],
+    },
+    {
+      title: 'Manage Departments & Projects',
+      icon: UserCog2,
+      children: [
+        {
+          title: 'Projects',
+          icon: Layers2Icon,
+          href: '/hr/manage-projects',
+        },
+        {
+          title: 'Departments',
+          icon: Building,
+          href: '/hr/manage-department',
         },
       ],
     },
