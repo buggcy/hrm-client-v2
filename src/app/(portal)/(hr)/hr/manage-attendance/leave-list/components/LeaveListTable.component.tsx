@@ -23,6 +23,7 @@ import {
 } from '@/hooks/hr/useLeaveList.hook';
 import { LeaveListArrayType } from '@/libs/validations/hr-leave-list';
 import { searchLeaveList } from '@/services/hr/leave-list.service';
+import { AuthStoreType } from '@/stores/auth';
 import { LeaveListStoreType } from '@/stores/hr/leave-list';
 import { formatedDate } from '@/utils';
 
@@ -34,6 +35,8 @@ import { MessageErrorResponse } from '@/types';
 interface HrLeaveListProps {}
 
 const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const searchParams = useSearchParams();
   const router = useRouter();
   const { leaveListStore } = useStores() as {
@@ -180,7 +183,7 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
         />
         <Button variant="outline" asChild>
           <Link
-            href="/hr/manage-attendance/leave-requests"
+            href={`/${user?.roleId === 3 ? 'manager' : user?.roleId === 1 ? 'hr' : ''}/manage-attendance/leave-requests`}
             className="flex items-center"
           >
             View Leave Requests

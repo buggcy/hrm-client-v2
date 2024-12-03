@@ -12,6 +12,7 @@ import { useStores } from '@/providers/Store.Provider';
 import { AuthStoreType } from '@/stores/auth';
 import { employeeMenu } from '@/utils/menu/employee.menu';
 import { hrMenu } from '@/utils/menu/hr.menu';
+import { managerMenu } from '@/utils/menu/manager.menu';
 
 import { NavigationItem } from './components/NavigationItem';
 import { NavSection } from './components/NavSection';
@@ -23,8 +24,13 @@ import { MenuItem } from '@/types/menu';
 export const Sidebar = () => {
   const pathname = usePathname();
   const { authStore } = useStores() as { authStore: AuthStoreType };
-  const { user } = authStore;
-  const menuItems: MenuItem[] = user?.roleId === 1 ? hrMenu : employeeMenu;
+  const { user, accessPermissions } = authStore;
+  const menuItems: MenuItem[] =
+    user?.roleId === 1
+      ? hrMenu(accessPermissions)
+      : user?.roleId === 3
+        ? managerMenu(accessPermissions)
+        : employeeMenu(accessPermissions);
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r bg-background sm:flex">
@@ -54,18 +60,23 @@ export const Sidebar = () => {
             <ScrollBar className="mr-[-17px]" />
             {menuItems.map(item =>
               item.children ? (
-                <NavSection title={item.title} key={item.title}>
-                  {item.children.map(child => (
-                    <li className="flex" key={child.href}>
-                      <NavigationItem
-                        title={child.title}
-                        icon={child.icon}
-                        href={child.href!}
-                        active={pathname === child.href}
-                      />
-                    </li>
-                  ))}
-                </NavSection>
+                !item.disabled && (
+                  <NavSection title={item.title} key={item.title}>
+                    {item.children.map(child => {
+                      if (child.disabled === false) {
+                        return (
+                          <NavigationItem
+                            key={child.href}
+                            title={child.title}
+                            icon={child.icon}
+                            href={child.href!}
+                            active={pathname === child.href}
+                          />
+                        );
+                      }
+                    })}
+                  </NavSection>
+                )
               ) : (
                 <li className="flex" key={item.href}>
                   <NavigationItem
