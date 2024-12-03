@@ -1,4 +1,5 @@
 import {
+  AlertTriangle,
   BadgeCheck,
   Banknote,
   CalendarCog,
@@ -122,7 +123,6 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         },
       ],
     },
-
     {
       title: 'Manage Attendance',
       icon: UserCog2,
@@ -225,6 +225,25 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessConfiguration' && permission.allowed,
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Manage Complaint',
+      icon: UserCog2,
+      disabled: !accessPermissions.some(
+        permission =>
+          permission.name === 'accessComplaints' && permission.allowed,
+      ),
+      children: [
+        {
+          title: 'Manage Complaint',
+          icon: AlertTriangle,
+          href: '/hr/manage-complaints',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessComplaints' && permission.allowed,
           ),
         },
       ],

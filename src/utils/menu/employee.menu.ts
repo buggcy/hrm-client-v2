@@ -1,4 +1,5 @@
 import {
+  AlertOctagon,
   CalendarClock,
   DollarSignIcon,
   Gift,
@@ -106,6 +107,25 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessPolicies' && permission.allowed,
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Complaint',
+      icon: Siren,
+      disabled: !accessPermissions.some(
+        permission =>
+          permission.name === 'accessComplaints' && permission.allowed,
+      ),
+      children: [
+        {
+          title: 'Complaint',
+          icon: AlertOctagon,
+          href: '/employee/complaint',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessComplaints' && permission.allowed,
           ),
         },
       ],

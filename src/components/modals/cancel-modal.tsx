@@ -18,6 +18,7 @@ type DeleteProps = {
   title: string;
   isPending: boolean;
   description: string;
+  type?: string;
   handleDelete: () => void;
   showActionToggle: (open: boolean) => void;
 };
@@ -29,6 +30,7 @@ export default function ConfirmDialog({
   isPending,
   handleDelete,
   showActionToggle,
+  type,
 }: DeleteProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={showActionToggle}>
@@ -50,7 +52,7 @@ export default function ConfirmDialog({
             onClick={handleDelete}
             disabled={isPending}
           >
-            Delete
+            {type === 'cancel' ? 'Cancel' : ' Delete'}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
