@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -75,7 +74,6 @@ const personalSchema = z.object({
 export type PersonalSchemaFormData = z.infer<typeof personalSchema>;
 
 const Personal = ({ empId, data }: PersonalProps) => {
-  const router = useRouter();
   const { editEmployeeStore } = useStores() as {
     editEmployeeStore: EditEmployeeStoreType;
   };
@@ -164,7 +162,6 @@ const Personal = ({ empId, data }: PersonalProps) => {
       id: empId || '',
       body: newData,
     });
-    router.push('/hr/manage-employees');
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
