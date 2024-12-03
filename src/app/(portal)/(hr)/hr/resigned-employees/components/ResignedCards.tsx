@@ -24,6 +24,7 @@ import { ResignedListType } from '@/libs/validations/employee';
 import { ApprovedRejectResignation } from '@/services/hr/employee.service';
 import { AuthStoreType } from '@/stores/auth';
 import { cn } from '@/utils';
+import { getWritePermissions } from '@/utils/permissions.utils';
 
 import AcceptRejectDialog from './AcceptRejectResignedModal';
 
@@ -44,6 +45,7 @@ export const ResignedRequestCard = ({
   isLoading?: boolean;
   setRefetchEmployeeList: (value: boolean) => void;
 }) => {
+  const writePermission = getWritePermissions('canWriteEmployees');
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
   const userId: string | undefined = user?.id;
@@ -200,32 +202,34 @@ export const ResignedRequestCard = ({
             </span>
           </div>
         </CardContent>
-        <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
-          <Button
-            className="p-2 text-sm"
-            variant="outline"
-            onClick={() => {
-              setModalType('reject');
-              setSelectedId(person?._id);
-              setEmployeeId(person?.employee ? person?.employee?._id : '');
-              setModal(true);
-            }}
-          >
-            Reject Request
-          </Button>
-          <Button
-            className="p-2 text-sm"
-            variant="primary-inverted"
-            onClick={() => {
-              setModalType('accept');
-              setSelectedId(person?._id);
-              setEmployeeId(person?.employee ? person?.employee?._id : '');
-              setModal(true);
-            }}
-          >
-            Accept Request
-          </Button>
-        </CardFooter>
+        {writePermission && (
+          <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
+            <Button
+              className="p-2 text-sm"
+              variant="outline"
+              onClick={() => {
+                setModalType('reject');
+                setSelectedId(person?._id);
+                setEmployeeId(person?.employee ? person?.employee?._id : '');
+                setModal(true);
+              }}
+            >
+              Reject Request
+            </Button>
+            <Button
+              className="p-2 text-sm"
+              variant="primary-inverted"
+              onClick={() => {
+                setModalType('accept');
+                setSelectedId(person?._id);
+                setEmployeeId(person?.employee ? person?.employee?._id : '');
+                setModal(true);
+              }}
+            >
+              Accept Request
+            </Button>
+          </CardFooter>
+        )}
       </Card>
       <AcceptRejectDialog
         isOpen={modal}

@@ -265,7 +265,8 @@ const Personal = ({ empId, data }: PersonalProps) => {
                   onBlur={() => {
                     const phone = watch('contactNo');
                     const strippedVal = phone.replace(/^(03|\+923)/, '');
-                    if (phone && strippedVal.length !== 9) {
+                    const isDigit = /^\d+$/.test(strippedVal);
+                    if (phone && (strippedVal.length !== 9 || !isDigit)) {
                       setError('contactNo', {
                         type: 'manual',
                         message:
@@ -300,7 +301,8 @@ const Personal = ({ empId, data }: PersonalProps) => {
                   onBlur={() => {
                     const phone = watch('Emergency_Phone');
                     const strippedVal = phone.replace(/^(03|\+923)/, '');
-                    if (phone && strippedVal.length !== 9) {
+                    const isDigit = /^\d+$/.test(strippedVal);
+                    if (phone && (strippedVal.length !== 9 || !isDigit)) {
                       setError('Emergency_Phone', {
                         type: 'manual',
                         message:
@@ -586,7 +588,8 @@ const Personal = ({ empId, data }: PersonalProps) => {
                   onBlur={() => {
                     const phone = watch('Family_PhoneNo');
                     const strippedVal = phone.replace(/^(03|\+923)/, '');
-                    if (phone && strippedVal.length !== 9) {
+                    const isDigit = /^\d+$/.test(strippedVal);
+                    if (phone && (strippedVal.length !== 9 || !isDigit)) {
                       setError('Family_PhoneNo', {
                         type: 'manual',
                         message:

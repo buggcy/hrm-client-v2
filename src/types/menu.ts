@@ -5,4 +5,5 @@ export type MenuItem = {
   icon: LucideIcon;
   href?: string;
   children?: MenuItem[];
+  disabled?: boolean;
 };

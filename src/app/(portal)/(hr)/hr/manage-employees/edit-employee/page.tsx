@@ -14,7 +14,7 @@ import { Notification } from '@/components/NotificationIcon';
 
 import EditEmployee from './EditEmployee';
 
-export default function Page() {
+export default function EditEmployeesPage() {
   return (
     <Layout>
       <HighTrafficBanner />

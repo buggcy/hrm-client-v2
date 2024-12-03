@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import BirthdayChartPage from './components/BirthdayChartPage';
 import TabPages from './components/TabPages';
 
-function page() {
+function ManageBirthday() {
   return (
     <Layout>
       <LayoutHeader title="Manage Birthday">
@@ -33,4 +33,4 @@ function page() {
   );
 }
 
-export default page;
+export default ManageBirthday;
