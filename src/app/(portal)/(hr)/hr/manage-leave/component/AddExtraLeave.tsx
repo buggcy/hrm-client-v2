@@ -232,6 +232,7 @@ export function AddExtraLeaveModal({
                 <MonthPickerComponent
                   setDateValue={setDateValue}
                   initialDate={initialDate}
+                  minDate={new Date()}
                 />
               </div>
             </div>

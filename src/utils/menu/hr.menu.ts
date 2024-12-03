@@ -8,6 +8,7 @@ import {
   Home,
   Megaphone,
   Settings,
+  ThumbsUp,
   UserCog,
   UserCog2,
   UserMinus,
@@ -209,7 +210,6 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
         },
       ],
     },
-
     {
       title: 'Manage Configuration',
       icon: UserCog2,
@@ -225,6 +225,25 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessConfiguration' && permission.allowed,
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Manage Feedbacks',
+      icon: UserCog2,
+      disabled: !accessPermissions.some(
+        permission =>
+          permission.name === 'accessFeedbacks' && permission.allowed,
+      ),
+      children: [
+        {
+          title: 'Manage Feedbacks',
+          icon: ThumbsUp,
+          href: '/hr/manage-feedbacks',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessFeedbacks' && permission.allowed,
           ),
         },
       ],

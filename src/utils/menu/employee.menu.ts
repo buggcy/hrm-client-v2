@@ -4,6 +4,8 @@ import {
   Gift,
   Home,
   LogOut,
+  MessageCircle,
+  MessageSquare,
   Shield,
   Siren,
 } from 'lucide-react';
@@ -104,6 +106,25 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessPolicies' && permission.allowed,
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Feedback',
+      icon: MessageCircle,
+      disabled: !accessPermissions.some(
+        permission =>
+          permission.name === 'accessFeedbacks' && permission.allowed,
+      ),
+      children: [
+        {
+          title: 'Feedback',
+          icon: MessageSquare,
+          href: '/employee/feedback',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessFeedbacks' && permission.allowed,
           ),
         },
       ],
