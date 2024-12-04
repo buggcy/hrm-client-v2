@@ -5,7 +5,6 @@ import {
   Gift,
   Home,
   LogOut,
-  MessageCircle,
   MessageSquare,
   Shield,
   Siren,
@@ -112,11 +111,17 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
       ],
     },
     {
-      title: 'Complaint',
-      icon: Siren,
-      disabled: !accessPermissions.some(
-        permission =>
-          permission.name === 'accessComplaints' && permission.allowed,
+      title: 'Complaint & Feedback',
+      icon: AlertOctagon,
+      disabled: !(
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessComplaints' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessFeedbacks' && permission.allowed,
+        )
       ),
       children: [
         {
@@ -128,16 +133,6 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
               permission.name === 'accessComplaints' && permission.allowed,
           ),
         },
-      ],
-    },
-    {
-      title: 'Feedback',
-      icon: MessageCircle,
-      disabled: !accessPermissions.some(
-        permission =>
-          permission.name === 'accessFeedbacks' && permission.allowed,
-      ),
-      children: [
         {
           title: 'Feedback',
           icon: MessageSquare,

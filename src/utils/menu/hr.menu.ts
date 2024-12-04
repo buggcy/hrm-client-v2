@@ -266,15 +266,21 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
       ],
     },
     {
-      title: 'Manage Complaint',
+      title: 'Manage Complaint & Feedback',
       icon: UserCog2,
-      disabled: !accessPermissions.some(
-        permission =>
-          permission.name === 'accessComplaints' && permission.allowed,
+      disabled: !(
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessComplaints' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessFeedbacks' && permission.allowed,
+        )
       ),
       children: [
         {
-          title: 'Manage Complaint',
+          title: 'Complaints',
           icon: AlertTriangle,
           href: '/hr/manage-complaints',
           disabled: !accessPermissions.some(
@@ -282,18 +288,8 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
               permission.name === 'accessComplaints' && permission.allowed,
           ),
         },
-      ],
-    },
-    {
-      title: 'Manage Feedbacks',
-      icon: UserCog2,
-      disabled: !accessPermissions.some(
-        permission =>
-          permission.name === 'accessFeedbacks' && permission.allowed,
-      ),
-      children: [
         {
-          title: 'Manage Feedbacks',
+          title: 'Feedbacks',
           icon: ThumbsUp,
           href: '/hr/manage-feedbacks',
           disabled: !accessPermissions.some(
