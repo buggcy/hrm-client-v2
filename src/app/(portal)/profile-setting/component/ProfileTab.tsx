@@ -82,19 +82,15 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
   const [selectedProvince, setSelectedProvince] = useState<string>('PB');
   const { data: countries } = useCountriesQuery();
   const { data: states } = useStatesQuery({ countryId: selectedCountry });
-  console.log('states', states);
   const { data: cities } = useCitiesQuery({
     countryId: selectedCountry,
     stateId: selectedProvince,
   });
-  console.log('contry', countries, states, cities);
 
   const { data, refetch } = useReadEmployeeRecordQuery(userId, {
     enabled: !!userId,
   });
-  console.log('data', data?.output?.employee?.Family_Name);
-  console.log('data', data?.output?.employee?.Family_Relation);
-  console.log('data', data?.output?.employee?.Marital_Status);
+
   const [updatedImg, setUpdatedImg] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
