@@ -38,6 +38,9 @@ const FeedbackSchema = z.object({
   isDeleted: z.boolean().optional(),
   isSuggestion: z.boolean().optional(),
   isEnabled: z.boolean().optional(),
+  isContinue: z.boolean().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });

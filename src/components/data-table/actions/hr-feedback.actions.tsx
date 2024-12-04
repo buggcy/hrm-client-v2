@@ -74,9 +74,7 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
     setIsEnable(false);
   };
   const handleViewQuestions = () => {
-    router.push(
-      `/hr/manage-feedbacks/view-questions?category=${data.feedbackCategory}`,
-    );
+    router.push(`/hr/manage-feedbacks/view-questions?id=${data?._id}`);
   };
 
   const { mutate, isPending } = useMutation({

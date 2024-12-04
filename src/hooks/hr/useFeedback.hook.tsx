@@ -32,32 +32,32 @@ export const useFeedbackQuery = (
   }) as UseQueryResult<FeedBackApiResponse, Error>;
 
 export const useQuestionAnswerQuery = (
-  category: string,
+  id: string,
   params: FeedbackParams,
   config: UseQueryConfig = {},
 ) =>
   useQuery({
-    queryKey: ['getQuestionAnswer', category, params],
-    queryFn: () => getQuestionAnswer(category, params),
+    queryKey: ['getQuestionAnswer', id, params],
+    queryFn: () => getQuestionAnswer(id, params),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
-    enabled: !!category,
+    enabled: !!id,
   }) as UseQueryResult<QuestionAnswerApiResponse, Error>;
 
 export const useFeedbackRecordQuery = (
-  category: string,
+  id: string,
   config: UseQueryConfig = {},
 ) =>
   useQuery({
-    queryKey: ['feedbackRecord', category],
-    queryFn: () => getFeedbackCardData(category),
+    queryKey: ['feedbackRecord', id],
+    queryFn: () => getFeedbackCardData(id),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
-    enabled: !!category,
+    enabled: !!id,
   }) as UseQueryResult<FeedbackRecordApiResponse, Error>;
 
 export const useEmployeeFeedbackQuery = (config: UseQueryConfig = {}) =>

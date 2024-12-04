@@ -35,6 +35,9 @@ export interface FeedbackList {
   isSuggestion?: boolean;
   isDeleted?: boolean;
   isEnabled?: boolean;
+  isContinue?: boolean;
+  startDate?: string;
+  endDate?: string;
   createdAt?: string;
   updatedAt?: string;
 }

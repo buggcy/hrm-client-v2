@@ -57,7 +57,7 @@ export function TopFeedbackAnswer({ chartData }: ChartProps) {
             data={chartData}
             layout="vertical"
             margin={{
-              right: 16,
+              right: 50,
             }}
           >
             <CartesianGrid horizontal={false} />

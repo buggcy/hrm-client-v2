@@ -27,11 +27,11 @@ import { MessageErrorResponse } from '@/types';
 interface TableProps {}
 const QuestionAnswerTypeTable: FunctionComponent<TableProps> = () => {
   const searchParams = useSearchParams();
-  const categoryFromParams =
-    typeof window !== 'undefined' ? searchParams.get('category') : undefined;
+  const fIdFromParams =
+    typeof window !== 'undefined' ? searchParams.get('id') : undefined;
 
   const { data: feedbackRecord, refetch: RecordRefetch } =
-    useFeedbackRecordQuery(categoryFromParams ?? '');
+    useFeedbackRecordQuery(fIdFromParams ?? '');
   const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
   const { setRefetchFeedbackList, refetchFeedbackList } = feedbackStore;
   const router = useRouter();
@@ -48,7 +48,7 @@ const QuestionAnswerTypeTable: FunctionComponent<TableProps> = () => {
     isFetching,
     error,
     refetch,
-  } = useQuestionAnswerQuery(categoryFromParams ?? '', {
+  } = useQuestionAnswerQuery(fIdFromParams ?? '', {
     page,
     limit,
   });
@@ -87,7 +87,7 @@ const QuestionAnswerTypeTable: FunctionComponent<TableProps> = () => {
         query: debouncedSearchTerm,
         page,
         limit,
-        category: categoryFromParams ?? '',
+        id: fIdFromParams ?? '',
       });
     } else {
       void (async () => {
@@ -101,7 +101,7 @@ const QuestionAnswerTypeTable: FunctionComponent<TableProps> = () => {
     mutate,
     page,
     limit,
-    categoryFromParams,
+    fIdFromParams,
     RecordRefetch,
   ]);
   useEffect(() => {}, [getQuestionAnswer]);

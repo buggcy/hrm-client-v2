@@ -480,14 +480,8 @@ const AddEditDepartmentModal = ({
 
           <DialogFooter>
             <Button
-              type="button"
-              variant="outline"
-              onClick={() => onCloseChange(false)}
-            >
-              Close
-            </Button>
-            <Button
               type="submit"
+              size={'sm'}
               disabled={type === 'add' ? isPending : EditPending}
             >
               {type === 'add' ? 'Add ' : 'Update '}

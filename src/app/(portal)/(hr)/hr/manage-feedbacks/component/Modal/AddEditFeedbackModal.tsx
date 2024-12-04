@@ -4,11 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { ChevronDown, Plus, X } from 'lucide-react';
+import { format } from 'date-fns';
+import { CalendarIcon, ChevronDown, Plus, X } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -18,6 +21,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
@@ -37,6 +45,7 @@ import {
   updateFeedback,
 } from '@/services/hr/hr-feedback.service';
 import { useAuthStore } from '@/stores/auth';
+import { cn } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -54,6 +63,8 @@ const FormSchema = z.object({
   questionText: z.string().optional(),
   questions: z.array(z.string()).min(1, 'At least one question is required'),
   deleteQuestions: z.array(z.string()).optional(),
+  startDate: z.date(),
+  endDate: z.date(),
 });
 
 export type FormData = z.infer<typeof FormSchema>;
@@ -67,6 +78,7 @@ export function AddEditFeedbackModal({
 }: ModalProps) {
   const [initialQuestions, setInitialQuestions] = useState<string[]>([]);
   const { data: types } = useTypesQuery();
+  const [isContinue, setIsContinue] = useState<boolean>(false);
 
   const { user } = useAuthStore();
   const userId = user?.id;
@@ -76,6 +88,7 @@ export function AddEditFeedbackModal({
     formState: { errors },
     setValue,
     getValues,
+    setError,
     watch,
     reset,
   } = useForm<FormData>({
@@ -86,11 +99,13 @@ export function AddEditFeedbackModal({
       questions: [],
       questionText: '',
       deleteQuestions: [],
+      startDate: new Date(),
+      endDate: new Date(),
     },
   });
 
   const questions = watch('questions');
-
+  const questionText = watch('questionText');
   useEffect(() => {
     if (open && type === 'edit' && selectedRow) {
       setValue('title', selectedRow.feedbackTitle || '');
@@ -98,10 +113,22 @@ export function AddEditFeedbackModal({
       const existingQuestions = selectedRow.questions.map(
         question => question.questionText,
       );
+      setValue(
+        'startDate',
+        selectedRow?.startDate ? new Date(selectedRow?.startDate) : new Date(),
+      );
+      setValue(
+        'endDate',
+        selectedRow?.endDate ? new Date(selectedRow?.endDate) : new Date(),
+      );
+      if (selectedRow?.isContinue) {
+        setIsContinue(selectedRow?.isContinue);
+      }
       setValue('questions', existingQuestions);
       setInitialQuestions(existingQuestions);
     } else if (!open) {
       reset();
+      setIsContinue(false);
       setInitialQuestions([]);
     }
   }, [open, reset, setValue, type, selectedRow]);
@@ -125,6 +152,10 @@ export function AddEditFeedbackModal({
       setValue('deleteQuestions', [...currentDeleteQuestions, questionId]);
     }
   };
+  const handleCheckboxChange = (checked: boolean) => {
+    setIsContinue(checked);
+  };
+
   const { mutate, isPending } = useMutation({
     mutationFn: addFeedback,
     onSuccess: response => {
@@ -172,7 +203,13 @@ export function AddEditFeedbackModal({
     const newQuestions = data.questions.filter(
       question => !initialQuestions.includes(question),
     );
-
+    if (!isContinue && data.startDate > data.endDate) {
+      setError('endDate', {
+        type: 'manual',
+        message: 'End date should be greater than or equal to the start date!',
+      });
+      return;
+    }
     if (type === 'add') {
       const addPayload = {
         body: {
@@ -180,6 +217,15 @@ export function AddEditFeedbackModal({
           feedbackTitle: data?.title,
           question: data?.questions,
           feedbackCategory: data?.category,
+          startDate: data?.startDate
+            ? new Date(data.startDate).toISOString().split('T')[0]
+            : '',
+          endDate: isContinue
+            ? undefined
+            : data?.endDate
+              ? new Date(data.endDate).toISOString().split('T')[0]
+              : '',
+          isContinue,
           isSuggestion: true,
         },
       };
@@ -195,6 +241,13 @@ export function AddEditFeedbackModal({
         body: {
           feedbackTitle: data?.title,
           feedbackCategory: data?.category,
+          isContinue,
+          startDate: data?.startDate
+            ? new Date(data.startDate).toISOString().split('T')[0]
+            : '',
+          endDate: data?.endDate
+            ? new Date(data.endDate).toISOString().split('T')[0]
+            : '',
         },
       };
 
@@ -279,12 +332,111 @@ export function AddEditFeedbackModal({
               )}
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-2">
+            <div className="flex flex-col">
+              <Label htmlFor="startDate" className="mb-2 text-left">
+                Start Date <span className="text-red-600">*</span>
+              </Label>
+              <Controller
+                name="startDate"
+                control={control}
+                render={({ field }) => (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        className={cn(
+                          'w-full justify-start text-left font-normal',
+                          !field.value && 'text-muted-foreground',
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 size-4" />
+                        {field.value ? (
+                          format(field.value, 'PPP')
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={date => date < new Date()}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
+              {errors.startDate && (
+                <span className="text-sm text-red-500">
+                  {errors.startDate.message}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <Label htmlFor="endDate" className="mb-2 text-left">
+                End Date <span className="text-red-600">*</span>
+              </Label>
+              <Controller
+                name="endDate"
+                control={control}
+                render={({ field }) => (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        className={cn(
+                          'w-full justify-start text-left font-normal',
+                          !field.value && 'text-muted-foreground',
+                        )}
+                        disabled={isContinue}
+                      >
+                        <CalendarIcon className="mr-2 size-4" />
+                        {field.value ? (
+                          format(field.value, 'PPP')
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={date => date < new Date()}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
+              {errors?.endDate && (
+                <span className="text-sm text-red-500">
+                  {errors?.endDate?.message}
+                </span>
+              )}
+              <div className="m-1 flex flex-row gap-2">
+                <Checkbox
+                  checked={isContinue}
+                  aria-label="Continue"
+                  className="translate-y-[2px]"
+                  onCheckedChange={checked => {
+                    const isChecked = Boolean(checked);
+                    handleCheckboxChange(isChecked);
+                  }}
+                />
+                <Label className="mt-1 text-xs">Continue</Label>
+              </div>
+            </div>
+          </div>
           <div className="flex flex-col flex-wrap">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="questionText" className="mb-2 text-left">
                 Add Questions
               </Label>
-              <div className="flex flex-row justify-between">
+              <div className="relative flex flex-row justify-between">
                 <Controller
                   name="questionText"
                   control={control}
@@ -300,10 +452,11 @@ export function AddEditFeedbackModal({
                 />
                 <Button
                   type="button"
-                  className="ml-1"
-                  size="icon"
-                  variant="card"
+                  className="absolute right-0 top-0 h-full px-2 py-1"
+                  size="sm"
+                  variant={`${questionText?.trim() ? 'default' : 'card'}`}
                   onClick={handleAddQuestion}
+                  disabled={!questionText?.trim()}
                 >
                   <Plus />
                 </Button>
@@ -341,16 +494,10 @@ export function AddEditFeedbackModal({
           <DialogFooter>
             <Button
               type="submit"
+              size="sm"
               disabled={type === 'add' ? isPending : EditPending}
             >
               {type === 'edit' ? 'Update' : 'Add'}
-            </Button>
-            <Button
-              variant="ghostSecondary"
-              type="button"
-              onClick={() => onCloseChange(false)}
-            >
-              Close
             </Button>
           </DialogFooter>
         </form>

@@ -81,9 +81,6 @@ const FormSchema = z
     newTech: z.array(z.string()).optional(),
     newLead: z.string().optional(),
   })
-  .refine(data => data.startDate <= data.endDate, {
-    message: 'End date should be greater than start date',
-  })
   .refine(data => data.startDate <= data.deadline, {
     message: 'Deadline date should be greater than start date',
   });
@@ -307,6 +304,13 @@ const AddEditProjectModal = ({
   });
 
   const onSubmit = (data: FormData) => {
+    if (!isContinue && data.startDate > data.endDate) {
+      setError('endDate', {
+        type: 'manual',
+        message: 'End date should be greater than or equal to the start date!',
+      });
+      return;
+    }
     if (type === 'add') {
       const body = {
         userId,
@@ -838,13 +842,7 @@ const AddEditProjectModal = ({
           )}
           <DialogFooter>
             <Button
-              type="button"
-              variant="outline"
-              onClick={() => onCloseChange(false)}
-            >
-              Close
-            </Button>
-            <Button
+              size={'sm'}
               type="submit"
               disabled={type === 'add' ? isPending : EditPending}
             >

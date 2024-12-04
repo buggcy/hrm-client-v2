@@ -54,7 +54,7 @@ export const searchFeedback = async ({
 };
 
 export const getQuestionAnswer = async (
-  category: string,
+  id: string,
   params: FeedbackParams = {},
 ): Promise<QuestionAnswerApiResponse> => {
   const defaultParams: FeedbackParams = {
@@ -78,7 +78,7 @@ export const getQuestionAnswer = async (
 
   try {
     const response = await baseAPI.get(
-      `/get/all/question/answer/${category}?${queryParams.toString()}`,
+      `/get/all/question/answer/${id}?${queryParams.toString()}`,
     );
     return schemaParse(QuestionAnswerApiResponseSchema)(response);
   } catch (error) {
@@ -91,15 +91,15 @@ export const searchQuestionAnswer = async ({
   query,
   page,
   limit,
-  category,
+  id,
 }: {
   query: string;
   page: number;
   limit: number;
-  category: string;
+  id: string;
 }): Promise<FeedbackApiResponse> => {
   const { data, pagination }: FeedbackApiResponse = await baseAPI.get(
-    `/search/all/question/answer/${category}?page=${page}&limit=${limit}&query=${query}`,
+    `/search/all/question/answer/${id}?page=${page}&limit=${limit}&query=${query}`,
   );
 
   return { data, pagination };
@@ -160,6 +160,9 @@ export interface Editbody {
   feedbackCategory?: string;
   isEnabled?: boolean;
   deleteQuestions?: string[];
+  isContinue?: boolean;
+  startDate?: string;
+  endDate?: string;
 }
 interface Addbody {
   hr: string;
@@ -168,6 +171,9 @@ interface Addbody {
   feedbackCategory: string;
   isEnabled?: boolean;
   isSuggestion?: boolean;
+  isContinue?: boolean;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const addFeedback = async (payload: {
@@ -193,9 +199,9 @@ export const updateFeedback = async (payload: {
   return { message };
 };
 
-export const getFeedbackCardData = async (category: string) => {
+export const getFeedbackCardData = async (id: string) => {
   try {
-    const response = await baseAPI.get(`/feedback/record/${category}`);
+    const response = await baseAPI.get(`/feedback/record/${id}`);
     return schemaParse(FeedbackCardApiResponseSchema)(response);
   } catch (error) {
     console.error('Error fetching feedback records!', error);

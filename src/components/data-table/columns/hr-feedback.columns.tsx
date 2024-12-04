@@ -84,12 +84,12 @@ export const hrFeedbackColumns: ColumnDef<FeedbackType>[] = [
     },
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'startDate',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
+      <DataTableColumnHeader column={column} title="Start Date" />
     ),
     cell: ({ row }) => {
-      const field = new Date(Date.parse(row.getValue('createdAt')));
+      const field = new Date(Date.parse(row.getValue('startDate')));
       const day = field.toLocaleDateString('en-US', { weekday: 'short' });
       const date = field.toDateString().slice(4);
 
@@ -97,6 +97,30 @@ export const hrFeedbackColumns: ColumnDef<FeedbackType>[] = [
         <div className="flex items-center space-x-2">
           <Badge variant="outline">{day}</Badge>
           <span className="max-w-[500px] truncate">{date}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'endDate',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="End Date" />
+    ),
+    cell: ({ row }) => {
+      const field = new Date(Date.parse(row.getValue('endDate')));
+      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = field.toDateString().slice(4);
+      const isContinue = row.original.isContinue;
+      return (
+        <div className="flex items-center space-x-2">
+          {isContinue === true ? (
+            <span className="max-w-[500px] truncate">{'Continue'}</span>
+          ) : (
+            <>
+              <Badge variant="outline">{day}</Badge>
+              <span className="max-w-[500px] truncate">{date}</span>
+            </>
+          )}
         </div>
       );
     },
