@@ -95,6 +95,7 @@ export function AddPermissionDialog({
       });
       reset();
       onCloseChange();
+      setSelectedRoleIds([]);
       refetch && refetch();
     },
   });
@@ -146,7 +147,14 @@ export function AddPermissionDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        onOpenChange();
+        setSelectedRoleIds([]);
+        reset();
+      }}
+    >
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add Permission</DialogTitle>
