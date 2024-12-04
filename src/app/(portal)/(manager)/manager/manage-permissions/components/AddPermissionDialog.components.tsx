@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { ChevronDown } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -18,6 +19,14 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/components/ui/use-toast';
 
@@ -26,7 +35,8 @@ import { addPermission } from '@/services/manager/manage-permissions.service';
 import { MessageErrorResponse } from '@/types';
 
 const addPermissionSchema = z.object({
-  permissionName: z.string(),
+  permissionType: z.enum(['access', 'canRead', 'canWrite']),
+  permissionName: z.string().min(1, 'Permission Name is required'),
 });
 
 export type AddPermissionFormData = z.infer<typeof addPermissionSchema>;
@@ -56,13 +66,16 @@ export function AddPermissionDialog({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<AddPermissionFormData>({
     resolver: zodResolver(addPermissionSchema),
     defaultValues: {
+      permissionType: 'access',
       permissionName: '',
     },
   });
   const [selectedRoleIds, setSelectedRoleIds] = useState<number[]>([]);
+  const [permission, setPermission] = useState<string>();
 
   const { mutate: addPermissionData, isPending: isAdding } = useMutation({
     mutationFn: addPermission,
@@ -86,9 +99,40 @@ export function AddPermissionDialog({
     },
   });
 
+  const permissionType = watch('permissionType');
+  const permissionName = watch('permissionName');
+
+  useEffect(() => {
+    if (permissionName) {
+      const name = permissionName
+        .toLowerCase()
+        .split(' ')
+        .map((word, index) =>
+          index === 0
+            ? word.charAt(0).toUpperCase() + word.slice(1)
+            : word.charAt(0).toUpperCase() + word.slice(1),
+        )
+        .join('');
+      setPermission(`${permissionType}${name}`);
+    } else {
+      setPermission(`${permissionType}`);
+    }
+  }, [permissionName, permissionType]);
+
   const onSubmit = (formData: AddPermissionFormData) => {
+    const name = formData.permissionName
+      .toLowerCase()
+      .split(' ')
+      .map((word, index) =>
+        index === 0
+          ? word.charAt(0).toUpperCase() + word.slice(1)
+          : word.charAt(0).toUpperCase() + word.slice(1),
+      )
+      .join('');
+
+    const permissionFullName = `${formData.permissionType}${name}`;
     addPermissionData({
-      name: formData.permissionName,
+      name: permissionFullName,
       roleIds: selectedRoleIds,
     });
   };
@@ -109,6 +153,41 @@ export function AddPermissionDialog({
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-0">
           <div className="grid grid-cols-1 gap-8">
+            <div className="flex flex-col">
+              <Label htmlFor="permissionType" className="mb-2 text-left">
+                Leave Type
+              </Label>
+              <Controller
+                name="permissionType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="relative z-50 w-full rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select Permission Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="N" disabled>
+                          Select Permission Type
+                        </SelectItem>
+                        <SelectItem value="access">Access</SelectItem>
+                        <SelectItem value="canRead">Read</SelectItem>
+                        <SelectItem value="canWrite">Write</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                    <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                  </Select>
+                )}
+              />
+              {errors.permissionType && (
+                <span className="text-sm text-red-500">
+                  {errors.permissionType.message}
+                </span>
+              )}
+            </div>
             <div className="flex flex-1 flex-col">
               <Label htmlFor="permissionName" className="mb-2 text-left">
                 Permission Name
@@ -126,10 +205,20 @@ export function AddPermissionDialog({
                 )}
               />
               {errors.permissionName && (
-                <span className="text-sm text-red-500">
+                <span className="mt-4 text-sm text-red-500">
                   {errors.permissionName.message}
                 </span>
               )}
+            </div>
+            <div className="flex flex-1 flex-col">
+              <Label className="mb-2 text-left">
+                Permission:{' '}
+                <span
+                  className={`${permissionName ? 'text-success' : 'text-error'}`}
+                >
+                  {permission}
+                </span>
+              </Label>
             </div>
             <div className="flex flex-row flex-wrap gap-4">
               {data?.map((role, index) => (

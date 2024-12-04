@@ -117,7 +117,6 @@ const Page = () => {
   ) => {
     const nameAction = action ? `can${action}${name}` : name;
     updatePermission({ roleId, name: nameAction, allowed });
-    console.log({ roleId, name: nameAction, allowed });
   };
   useEffect(() => {
     if (rolePermissions) {
@@ -142,7 +141,6 @@ const Page = () => {
       setPagePermissions(pagePermissionsData);
     }
   }, [pagePermissionsData]);
-  console.log(rolePermissions);
   return (
     <Layout>
       <LayoutHeader title="Manage Permissions">
