@@ -25,6 +25,7 @@ import ViewResignedModal from '@/app/(portal)/(hr)/hr/resigned-employees/compone
 import { ResignedListType } from '@/libs/validations/employee';
 import { DeleteResignation } from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
+import { getWritePermissions } from '@/utils/permissions.utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -33,6 +34,7 @@ interface DataTableRowActionsProps {
 }
 
 export function ResignationRowActions({ row }: DataTableRowActionsProps) {
+  const writePermission = getWritePermissions('canWriteEmployees');
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList } = employeeStore;
@@ -103,13 +105,15 @@ export function ResignationRowActions({ row }: DataTableRowActionsProps) {
             <Eye className="mr-2 size-4" />
             View Request
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={() => setShowDeleteDialog(true)}
-            className="text-red-600"
-          >
-            <Trash2 className="mr-2 size-4" />
-            Delete Request
-          </DropdownMenuItem>
+          {writePermission && (
+            <DropdownMenuItem
+              onSelect={() => setShowDeleteDialog(true)}
+              className="text-red-600"
+            >
+              <Trash2 className="mr-2 size-4" />
+              Delete Request
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
