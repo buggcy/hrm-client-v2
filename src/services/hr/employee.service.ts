@@ -437,13 +437,17 @@ export const searchResignedEmployee = async ({
   query,
   page,
   limit,
+  from,
+  to,
 }: {
   query: string;
   page: number;
   limit: number;
+  from?: string;
+  to?: string;
 }): Promise<ResignedListApiResponse> => {
   const { data, pagination }: ResignedListApiResponse = await baseAPI.get(
-    `/resignations/search?page=${page}&limit=${limit}&query=${query}`,
+    `/resignations/search?page=${page}&limit=${limit}&query=${query}&from=${from}&to=${to}`,
   );
 
   return { data, pagination };
