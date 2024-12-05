@@ -376,499 +376,493 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
             {errors.contactNo.message}
           </span>
         )}
-        {user?.roleId === 2 && (
-          <>
-            <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
-              Address Details
-            </h2>
+        <>
+          <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
+            Address Details
+          </h2>
 
-            {/* <div className="flex flex-col">
+          {/* <div className="flex flex-col">
               <Label htmlFor="address.country" className="mb-2 text-left">
                 Country <span className="text-destructive/90">*</span>
               </Label> */}
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.country"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Country
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address.country"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      onValueChange={value => {
-                        field.onChange(value);
-                        setSelectedCountry(() => {
-                          const oneCountry = countries?.find(
-                            country => country.name === value,
-                          );
-                          return oneCountry?.iso2 || '';
-                        });
-                      }}
-                      value={
-                        field.value || data?.output?.employee?.Address?.country
-                      }
-                    >
-                      <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                        <SelectValue placeholder="Select Country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup className="text-sm">
-                          <SelectItem value="Select Country" disabled>
-                            Select Country
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="address.country"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Country
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="address.country"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    onValueChange={value => {
+                      field.onChange(value);
+                      setSelectedCountry(() => {
+                        const oneCountry = countries?.find(
+                          country => country.name === value,
+                        );
+                        return oneCountry?.iso2 || '';
+                      });
+                    }}
+                    value={
+                      field.value || data?.output?.employee?.Address?.country
+                    }
+                  >
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select Country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="Select Country" disabled>
+                          Select Country
+                        </SelectItem>
+                        {countries?.map(country => (
+                          <SelectItem
+                            key={country.id}
+                            value={country.name}
+                            className="cursor-pointer rounded px-8 py-2 hover:bg-gray-200 dark:hover:bg-gray-600"
+                          >
+                            {country.name}
                           </SelectItem>
-                          {countries?.map(country => (
-                            <SelectItem
-                              key={country.id}
-                              value={country.name}
-                              className="cursor-pointer rounded px-8 py-2 hover:bg-gray-200 dark:hover:bg-gray-600"
-                            >
-                              {country.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.address?.country && (
-                  <span className="text-sm text-red-500">
-                    {errors.address.country.message}
-                  </span>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 )}
-              </div>
+              />
+              {errors.address?.country && (
+                <span className="text-sm text-red-500">
+                  {errors.address.country.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.province"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Province
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address.province"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      value={
-                        field.value ||
-                        data?.output?.employee?.Address?.province ||
-                        'Select Province'
-                      }
-                      onValueChange={value => {
-                        field.onChange(value);
-                        setSelectedProvince(() => {
-                          const selectedProvince = states?.find(
-                            state => state.name === value,
-                          );
-                          return selectedProvince?.iso2 || '';
-                        });
-                      }}
-                    >
-                      <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                        <SelectValue placeholder="Select Province" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup className="text-sm">
-                          <SelectItem value="No Province" disabled>
-                            Select Province
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="address.province"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Province
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="address.province"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    value={
+                      field.value ||
+                      data?.output?.employee?.Address?.province ||
+                      'Select Province'
+                    }
+                    onValueChange={value => {
+                      field.onChange(value);
+                      setSelectedProvince(() => {
+                        const selectedProvince = states?.find(
+                          state => state.name === value,
+                        );
+                        return selectedProvince?.iso2 || '';
+                      });
+                    }}
+                  >
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select Province" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="No Province" disabled>
+                          Select Province
+                        </SelectItem>
+                        {states?.map(state => (
+                          <SelectItem
+                            key={state.id}
+                            value={state.name}
+                            className="cursor-pointer rounded px-8 py-2 hover:bg-gray-200 dark:hover:bg-gray-600"
+                          >
+                            {state.name}
                           </SelectItem>
-                          {states?.map(state => (
-                            <SelectItem
-                              key={state.id}
-                              value={state.name}
-                              className="cursor-pointer rounded px-8 py-2 hover:bg-gray-200 dark:hover:bg-gray-600"
-                            >
-                              {state.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.address?.province && (
-                  <span className="text-sm text-red-500">
-                    {errors.address.province.message}
-                  </span>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 )}
-              </div>
+              />
+              {errors.address?.province && (
+                <span className="text-sm text-red-500">
+                  {errors.address.province.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.city"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                City
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address.city"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      value={
-                        field.value ||
-                        data?.output?.employee?.Address?.city ||
-                        'Select City'
-                      }
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                        <SelectValue placeholder="Select City" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup className="text-sm">
-                          <SelectItem value="No City" disabled>
-                            Select City
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="address.city"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              City
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="address.city"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    value={
+                      field.value ||
+                      data?.output?.employee?.Address?.city ||
+                      'Select City'
+                    }
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select City" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="No City" disabled>
+                          Select City
+                        </SelectItem>
+                        {cities?.map(city => (
+                          <SelectItem key={city.id} value={city.name}>
+                            {city.name}
                           </SelectItem>
-                          {cities?.map(city => (
-                            <SelectItem key={city.id} value={city.name}>
-                              {city.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.address?.city && (
-                  <span className="text-sm text-red-500">
-                    {errors.address.city.message}
-                  </span>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 )}
-              </div>
+              />
+              {errors.address?.city && (
+                <span className="text-sm text-red-500">
+                  {errors.address.city.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.street"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Street
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address.street"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="address.street"
-                      placeholder="Street"
-                    />
-                  )}
-                />
-                {errors.address?.street && (
-                  <span className="text-red-500">
-                    {errors.address.street.message}
-                  </span>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="address.street"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Street
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="address.street"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} id="address.street" placeholder="Street" />
                 )}
-              </div>
+              />
+              {errors.address?.street && (
+                <span className="text-red-500">
+                  {errors.address.street.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.landMark"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Landmark
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address.landMark"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="address.landMark"
-                      placeholder="Landmark"
-                    />
-                  )}
-                />
-                {errors.address?.landMark && (
-                  <span className="text-red-500">
-                    {errors.address.landMark.message}
-                  </span>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="address.landMark"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Landmark
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="address.landMark"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="address.landMark"
+                    placeholder="Landmark"
+                  />
                 )}
-              </div>
+              />
+              {errors.address?.landMark && (
+                <span className="text-red-500">
+                  {errors.address.landMark.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.zip"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Postal Code
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address.zip"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="address.zip"
-                      placeholder="Postal Code"
-                    />
-                  )}
-                />
-                {errors.address?.zip?.message && (
-                  <span className="text-red-500">
-                    {errors.address.zip.message}
-                  </span>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="address.zip"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Postal Code
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="address.zip"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="address.zip"
+                    placeholder="Postal Code"
+                  />
                 )}
-              </div>
+              />
+              {errors.address?.zip?.message && (
+                <span className="text-red-500">
+                  {errors.address.zip.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="address.fullAddress"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Full Address
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="address"
-                  control={control}
-                  render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <Textarea
-                      id="address.fullAddress"
-                      placeholder="Full Address"
-                      value={value?.full || ''}
-                      onChange={e => {
-                        const fullAddress = e.target.value;
-                        onChange({ ...value, full: fullAddress });
-                      }}
-                      onBlur={onBlur}
-                      ref={ref}
-                    />
-                  )}
-                />
-                {errors.address?.full && (
-                  <span className="text-red-500">
-                    {errors.address.full.message}
-                  </span>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="address.fullAddress"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Full Address
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="address"
+                control={control}
+                render={({ field: { onChange, onBlur, value, ref } }) => (
+                  <Textarea
+                    id="address.fullAddress"
+                    placeholder="Full Address"
+                    value={value?.full || ''}
+                    onChange={e => {
+                      const fullAddress = e.target.value;
+                      onChange({ ...value, full: fullAddress });
+                    }}
+                    onBlur={onBlur}
+                    ref={ref}
+                  />
                 )}
-              </div>
+              />
+              {errors.address?.full && (
+                <span className="text-red-500">
+                  {errors.address.full.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
-              Basic Information
-            </h2>
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="Emergency_Phone"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Emergency Phone Number
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="Emergency_Phone"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="Emergency_Phone"
-                      placeholder="Emergency Phone Number"
-                      type="tel"
-                      value={
-                        field.value ||
-                        data?.output?.employee?.Emergency_Phone ||
-                        ''
-                      }
-                    />
-                  )}
-                />
-                {errors?.Emergency_Phone && (
-                  <span className="text-red-500">
-                    {errors?.Emergency_Phone.message}
-                  </span>
+          <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
+            Basic Information
+          </h2>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Emergency_Phone"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Emergency Phone Number
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Emergency_Phone"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="Emergency_Phone"
+                    placeholder="Emergency Phone Number"
+                    type="tel"
+                    value={
+                      field.value ||
+                      data?.output?.employee?.Emergency_Phone ||
+                      ''
+                    }
+                  />
                 )}
-              </div>
+              />
+              {errors?.Emergency_Phone && (
+                <span className="text-red-500">
+                  {errors?.Emergency_Phone.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="Marital_Status"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Marital Status
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="Marital_Status"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={
-                        field.value || data?.output?.employee?.Marital_Status
-                      }
-                    >
-                      <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                        <SelectValue placeholder="Select Marital Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup className="text-sm">
-                          <SelectItem value="married">Married</SelectItem>
-                          <SelectItem value="unmarried">Unmarried</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors?.Marital_Status && (
-                  <span className="text-red-500">
-                    {errors?.Marital_Status.message}
-                  </span>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Marital_Status"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Marital Status
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Marital_Status"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={
+                      field.value || data?.output?.employee?.Marital_Status
+                    }
+                  >
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select Marital Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="married">Married</SelectItem>
+                        <SelectItem value="unmarried">Unmarried</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 )}
-              </div>
+              />
+              {errors?.Marital_Status && (
+                <span className="text-red-500">
+                  {errors?.Marital_Status.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
-              Family Details
-            </h2>
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="Family_Name"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Family Name
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="Family_Name"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="Family_Name"
-                      placeholder="Family Name"
-                      value={
-                        field.value || data?.output?.employee?.Family_Name || ''
-                      }
-                    />
-                  )}
-                />
-                {errors?.Family_Name && (
-                  <span className="text-red-500">
-                    {errors?.Family_Name.message}
-                  </span>
+          <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
+            Family Details
+          </h2>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Family_Name"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Family Name
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Family_Name"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="Family_Name"
+                    placeholder="Family Name"
+                    value={
+                      field.value || data?.output?.employee?.Family_Name || ''
+                    }
+                  />
                 )}
-              </div>
+              />
+              {errors?.Family_Name && (
+                <span className="text-red-500">
+                  {errors?.Family_Name.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="Family_Relation"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Family Relation
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="Family_Relation"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="Family_Relation"
-                      placeholder="Family Relation"
-                      value={
-                        field.value ||
-                        data?.output?.employee?.Family_Relation ||
-                        ''
-                      }
-                    />
-                  )}
-                />
-                {errors?.Family_Relation && (
-                  <span className="text-red-500">
-                    {errors?.Family_Relation.message}
-                  </span>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Family_Relation"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Family Relation
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Family_Relation"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="Family_Relation"
+                    placeholder="Family Relation"
+                    value={
+                      field.value ||
+                      data?.output?.employee?.Family_Relation ||
+                      ''
+                    }
+                  />
                 )}
-              </div>
+              />
+              {errors?.Family_Relation && (
+                <span className="text-red-500">
+                  {errors?.Family_Relation.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="Family_Occupation"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Family Occupation
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="Family_Occupation"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="Family_Occupation"
-                      placeholder="Family Occupation"
-                      value={
-                        field.value ||
-                        data?.output?.employee?.Family_Occupation ||
-                        ''
-                      }
-                    />
-                  )}
-                />
-                {errors?.Family_Occupation && (
-                  <span className="text-red-500">
-                    {errors?.Family_Occupation.message}
-                  </span>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Family_Occupation"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Family Occupation
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Family_Occupation"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="Family_Occupation"
+                    placeholder="Family Occupation"
+                    value={
+                      field.value ||
+                      data?.output?.employee?.Family_Occupation ||
+                      ''
+                    }
+                  />
                 )}
-              </div>
+              />
+              {errors?.Family_Occupation && (
+                <span className="text-red-500">
+                  {errors?.Family_Occupation.message}
+                </span>
+              )}
             </div>
+          </div>
 
-            <div className="mb-4 grid grid-cols-12 gap-4">
-              <Label
-                htmlFor="Family_PhoneNo"
-                className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
-              >
-                Family Phone Number
-              </Label>
-              <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
-                <Controller
-                  name="Family_PhoneNo"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="Family_PhoneNo"
-                      placeholder="Family Phone Number"
-                      type="tel"
-                      value={
-                        field.value ||
-                        data?.output?.employee?.Family_PhoneNo ||
-                        ''
-                      }
-                    />
-                  )}
-                />
-                {errors?.Family_PhoneNo && (
-                  <span className="text-red-500">
-                    {errors?.Family_PhoneNo.message}
-                  </span>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Family_PhoneNo"
+              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            >
+              Family Phone Number
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Family_PhoneNo"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="Family_PhoneNo"
+                    placeholder="Family Phone Number"
+                    type="tel"
+                    value={
+                      field.value ||
+                      data?.output?.employee?.Family_PhoneNo ||
+                      ''
+                    }
+                  />
                 )}
-              </div>
+              />
+              {errors?.Family_PhoneNo && (
+                <span className="text-red-500">
+                  {errors?.Family_PhoneNo.message}
+                </span>
+              )}
             </div>
-          </>
-        )}
+          </div>
+        </>
 
         <div className="mb-4 grid grid-cols-12 gap-4">
           <Label

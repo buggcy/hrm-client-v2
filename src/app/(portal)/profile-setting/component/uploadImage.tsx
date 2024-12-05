@@ -13,6 +13,7 @@ interface ImageUploadProps {
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ initialAvatar, onSave }) => {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   const editorRef = useRef<AvatarEditor | null>(null);
   const [picture, setPicture] = useState({
     cropperOpen: false,
@@ -31,7 +32,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ initialAvatar, onSave }) => {
     if (!editorRef.current) return;
 
     const canvasScaled = editorRef.current.getImageScaledToCanvas();
-    const croppedImg = canvasScaled.toDataURL();
+    const croppedImg: string = canvasScaled.toDataURL();
 
     try {
       const response = await fetch(croppedImg);
@@ -39,7 +40,15 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ initialAvatar, onSave }) => {
       const blob = await response.blob();
       const file = new File([blob], 'avatar.png', { type: 'image/png' });
 
-      onSave(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        const fileContent = reader.result as string;
+        onSave(fileContent);
+      };
+      reader.onerror = err => {
+        console.error('Error reading file:', err);
+      };
+      reader.readAsDataURL(file);
       setPicture(prev => ({
         ...prev,
         img: null,
