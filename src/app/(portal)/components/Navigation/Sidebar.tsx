@@ -1,7 +1,10 @@
 'use client';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
+import { Search } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
@@ -32,6 +35,22 @@ export const Sidebar = () => {
         ? managerMenu(accessPermissions)
         : employeeMenu(accessPermissions);
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredMenuItems = menuItems.filter(item => {
+    const matchesTitle = item.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesChildren =
+      item.children &&
+      item.children.some(child =>
+        child.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+
+    return matchesTitle || matchesChildren;
+  });
+
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r bg-background sm:flex">
       <div className="group relative flex size-full w-w-sidebar flex-col gap-2 px-4 pb-8 pt-6 transition-all duration-300 hover:w-w-sidebar-open">
@@ -58,13 +77,35 @@ export const Sidebar = () => {
             hideScrollbar={true}
           >
             <ScrollBar className="mr-[-17px]" />
-            {menuItems.map(item =>
-              item.children ? (
-                !item.disabled && (
-                  <NavSection title={item.title} key={item.title}>
-                    {item.children.map(child => {
-                      if (child.disabled === false) {
-                        return (
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 overflow-hidden text-muted-foreground" />{' '}
+              {/* Search Icon */}
+              <input
+                type="text"
+                placeholder="Search pages..."
+                className="w-full rounded-md border bg-transparent py-2 pl-10 pr-4 text-sm text-foreground outline-none"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </div>
+            {filteredMenuItems.length === 0 ? (
+              <div className="mt-4 text-center text-sm text-muted-foreground">
+                No pages found
+              </div>
+            ) : (
+              filteredMenuItems.map(item =>
+                item.children ? (
+                  !item.disabled && (
+                    <NavSection title={item.title} key={item.title}>
+                      {item.children
+                        .filter(
+                          child =>
+                            !child.disabled &&
+                            child.title
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase()),
+                        )
+                        .map(child => (
                           <NavigationItem
                             key={child.href}
                             title={child.title}
@@ -72,21 +113,20 @@ export const Sidebar = () => {
                             href={child.href!}
                             active={pathname === child.href}
                           />
-                        );
-                      }
-                    })}
-                  </NavSection>
-                )
-              ) : (
-                <li className="flex" key={item.href}>
-                  <NavigationItem
-                    title={item.title}
-                    icon={item.icon}
-                    href={item.href!}
-                    active={pathname === item.href}
-                  />
-                </li>
-              ),
+                        ))}
+                    </NavSection>
+                  )
+                ) : (
+                  <li className="flex" key={item.href}>
+                    <NavigationItem
+                      title={item.title}
+                      icon={item.icon}
+                      href={item.href!}
+                      active={pathname === item.href}
+                    />
+                  </li>
+                ),
+              )
             )}
           </ScrollArea>
         </nav>
