@@ -1,9 +1,11 @@
 import {
+  AlertOctagon,
   CalendarClock,
   DollarSignIcon,
   Gift,
   Home,
   LogOut,
+  MessageSquare,
   Shield,
   Siren,
 } from 'lucide-react';
@@ -104,6 +106,40 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessPolicies' && permission.allowed,
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Complaint & Feedback',
+      icon: AlertOctagon,
+      disabled: !(
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessComplaints' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessFeedbacks' && permission.allowed,
+        )
+      ),
+      children: [
+        {
+          title: 'Complaint',
+          icon: AlertOctagon,
+          href: '/employee/complaint',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessComplaints' && permission.allowed,
+          ),
+        },
+        {
+          title: 'Feedback',
+          icon: MessageSquare,
+          href: '/employee/feedback',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessFeedbacks' && permission.allowed,
           ),
         },
       ],
