@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
+import NextTopLoader from 'nextjs-toploader';
 
 import '@/libs/i18n';
 
@@ -40,6 +41,7 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
+        <NextTopLoader color="#30bbf2" height={6} />
         <QueryClientProvider>
           <StoreProvider>
             <ThemeProvider

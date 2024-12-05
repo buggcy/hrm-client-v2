@@ -25,14 +25,12 @@ const Perk: FunctionComponent<PerkProps> = () => {
     enabled: !!userId,
   });
   const [modal, setModal] = useState(false);
-  const [modelType, setModelType] = useState('add');
 
   const handleClose = () => {
     setModal(false);
   };
 
   const handleAdd = () => {
-    setModelType('add');
     setModal(true);
   };
 
@@ -54,7 +52,7 @@ const Perk: FunctionComponent<PerkProps> = () => {
           open={modal}
           onCloseChange={handleClose}
           user={user}
-          perks={modelType === 'add' && Array.isArray(data) ? data : []}
+          perks={Array.isArray(data) ? data : []}
         />
       )}
     </Layout>
