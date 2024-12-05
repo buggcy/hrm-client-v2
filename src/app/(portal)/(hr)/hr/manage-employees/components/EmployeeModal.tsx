@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import MultiSelect from '@/components/ui/multiple-select';
 import {
   Popover,
   PopoverContent,
@@ -37,6 +38,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { useDepartmentListQuery } from '@/hooks/hr/useProjectDepartment.hook';
 import { useTypesQuery } from '@/hooks/types.hook';
 import { EmployeeListType } from '@/libs/validations/employee';
 import {
@@ -61,6 +63,7 @@ const addEmployeeSchema = z.object({
     .regex(/^\d+$/, 'Salary must be a valid number'),
   Joining_Date: z.date(),
   Designation: z.string().min(1, 'Designation is required'),
+  dep_ID: z.array(z.string()).min(1, 'Department is required'),
 });
 
 export type AddEmployeeFormData = z.infer<typeof addEmployeeSchema>;
@@ -79,14 +82,23 @@ export function AddEmployeeDialog({
   editData,
 }: AddEmployeeDialogProps) {
   const { data: types, isLoading } = useTypesQuery();
+  const { data: departmentList } = useDepartmentListQuery();
+
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList } = employeeStore;
+  const depOptions =
+    departmentList?.data?.map(dep => ({
+      value: dep._id,
+      label: dep.departmentName,
+    })) || [];
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    watch,
   } = useForm<AddEmployeeFormData>({
     resolver: zodResolver(addEmployeeSchema),
     defaultValues: {
@@ -98,9 +110,13 @@ export function AddEmployeeDialog({
       basicSalary: '0',
       Joining_Date: new Date(),
       Designation: '',
+      dep_ID: [],
     },
   });
 
+  const handleDepChange = (newSelectedIds: string[]) => {
+    setValue('dep_ID', newSelectedIds);
+  };
   useEffect(() => {
     if (editData) {
       reset({
@@ -141,10 +157,10 @@ export function AddEmployeeDialog({
   const onSubmit = (data: AddEmployeeFormData) => {
     editData ? mutate({ data, id: editData?._id }) : mutate({ data, id: '' });
   };
-
+  const showDep = watch('dep_ID', []);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[470px] sm:max-w-[905px]">
+      <DialogContent className="sm:max-w-[905px]">
         <DialogHeader>
           <DialogTitle>
             {editData ? 'Edit Employee' : 'Add Employee'}
@@ -279,8 +295,8 @@ export function AddEmployeeDialog({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-8 sm:max-w-[570px]">
-            <div className="flex flex-1 flex-col">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="flex flex-col">
               <Label htmlFor="Joining_Date" className="mb-2 text-left">
                 Joining Date
               </Label>
@@ -293,7 +309,7 @@ export function AddEmployeeDialog({
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'w-[263.664px] justify-start text-left font-normal',
+                          'justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
                       >
@@ -325,7 +341,7 @@ export function AddEmployeeDialog({
               )}
             </div>
 
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-col">
               <Label htmlFor="Designation" className="mb-2 text-left">
                 Designation <span className="text-red-600">*</span>
               </Label>
@@ -337,7 +353,7 @@ export function AddEmployeeDialog({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="relative z-50 w-[263.664px] rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                       <SelectValue placeholder="Select Designation" />
                     </SelectTrigger>
                     <SelectContent>
@@ -363,6 +379,50 @@ export function AddEmployeeDialog({
               {errors.Designation && (
                 <span className="text-sm text-red-500">
                   {errors.Designation.message}
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <div className="mb-1 flex justify-between">
+                <Label htmlFor="dep_ID" className="mb-2 text-left">
+                  Select Departments<span className="text-red-600">*</span>
+                </Label>
+                {showDep.length > 0 && (
+                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                    {showDep.length || 0}
+                  </span>
+                )}
+              </div>
+              <Controller
+                name="dep_ID"
+                control={control}
+                render={({ field }) => {
+                  const selectedNames = depOptions
+                    .filter(option => field.value?.includes(option.value))
+                    .map(option => option.label);
+
+                  const labelText =
+                    selectedNames.length > 0
+                      ? selectedNames.join(', ')
+                      : 'Select Departments';
+
+                  return (
+                    <MultiSelect
+                      type={'Departments'}
+                      label={labelText}
+                      options={depOptions}
+                      selectedValues={field.value || []}
+                      onChange={(selectedValues: string[]) =>
+                        handleDepChange(selectedValues)
+                      }
+                    />
+                  );
+                }}
+              />
+              {errors.dep_ID && (
+                <span className="text-sm text-red-500">
+                  {errors.dep_ID.message}
                 </span>
               )}
             </div>
