@@ -41,7 +41,7 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <NextTopLoader color="#30bbf2" height={6} />
+        <NextTopLoader color="#30bbf2" height={4} showSpinner={false} />
         <QueryClientProvider>
           <StoreProvider>
             <ThemeProvider
