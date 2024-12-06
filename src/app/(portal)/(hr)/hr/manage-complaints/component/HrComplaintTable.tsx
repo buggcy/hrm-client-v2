@@ -99,7 +99,14 @@ const HrComplaintTable: FunctionComponent<Props> = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit, userId: '' });
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        userId: '',
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
+      });
     } else {
       void (async () => {
         await refetch();
@@ -114,6 +121,8 @@ const HrComplaintTable: FunctionComponent<Props> = () => {
     limit,
     status,
     refetchRecord,
+    selectedDate?.from,
+    selectedDate?.to,
   ]);
 
   useEffect(() => {}, [getComplaints, selectedDate]);

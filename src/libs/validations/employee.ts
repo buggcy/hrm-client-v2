@@ -7,6 +7,7 @@ export const approvalStatus = [
   'Rejected',
   'tba',
   'Resigned',
+  'Fired',
 ] as const;
 export const resignedStatus = ['Approved', 'Pending', 'Rejected'] as const;
 export const maritalStatus = ['married', 'unmarried'] as const;
@@ -145,6 +146,13 @@ const hrEventsSchema = z.object({
   __v: z.number().optional(),
 });
 
+const EmployeeChart = z.object({
+  month: z.string(),
+  added: z.number(),
+  resigned: z.number(),
+  fired: z.number(),
+});
+
 const cardDataSchema = z.object({
   Card2Data: z.object({
     pending: z.number(),
@@ -163,6 +171,7 @@ const cardDataSchema = z.object({
       pending: z.number(),
     }),
   }),
+  employeeChart: z.array(EmployeeChart),
 });
 
 const employeeDobDataSchema = z.array(

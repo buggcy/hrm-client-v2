@@ -8,13 +8,18 @@ import { AxiosError } from 'axios';
 import { employeeListColumns } from '@/components/data-table/columns/employee-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import Header from '@/components/Header/Header';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { useEmployeeApprovalStatsQuery } from '@/hooks/employee/useApprovalEmployee.hook';
 import { useEmployeeListQuery } from '@/hooks/employee/useEmployeeList.hook';
+import { useHrDashboardStatsQuery } from '@/hooks/hr/useDasdhboard.hook';
 import { EmployeeListArrayType } from '@/libs/validations/employee';
 import { searchEmployeeList } from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
+
+import ChartsPage from './ChartsPage';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -23,7 +28,10 @@ const EmployeeTable: FunctionComponent = () => {
   const router = useRouter();
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList, refetchEmployeeList } = employeeStore;
-
+  const { data: hrDashboardStats, refetch: RefetchDashboard } =
+    useHrDashboardStatsQuery();
+  const { data: hrEmployeeApprovalStats, refetch: RefetchEmployee } =
+    useEmployeeApprovalStatsQuery();
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
@@ -75,19 +83,38 @@ const EmployeeTable: FunctionComponent = () => {
     } else {
       void (async () => {
         await refetch();
+        await RefetchDashboard();
+        await RefetchEmployee();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit, genderFilter]);
+  }, [
+    debouncedSearchTerm,
+    refetch,
+    mutate,
+    page,
+    limit,
+    genderFilter,
+    RefetchDashboard,
+    RefetchEmployee,
+  ]);
 
   useEffect(() => {
     if (refetchEmployeeList) {
       void (async () => {
         await refetch();
+        await RefetchDashboard();
+        await RefetchEmployee();
       })();
 
       setRefetchEmployeeList(false);
     }
-  }, [refetchEmployeeList, setRefetchEmployeeList, refetch]);
+  }, [
+    refetchEmployeeList,
+    setRefetchEmployeeList,
+    refetch,
+    RefetchDashboard,
+    RefetchEmployee,
+  ]);
 
   useEffect(() => {
     void (async () => {
@@ -123,6 +150,13 @@ const EmployeeTable: FunctionComponent = () => {
 
   return (
     <>
+      <Header subheading="Transforming employee management into a journey of growth and success."></Header>
+      <div className="mb-6">
+        <ChartsPage
+          hrDashboardStats={hrDashboardStats?.employeeCount}
+          hrEmployeeApprovalStats={hrEmployeeApprovalStats?.employeeChart}
+        />
+      </div>
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={7} rowCount={limit} />
       ) : (

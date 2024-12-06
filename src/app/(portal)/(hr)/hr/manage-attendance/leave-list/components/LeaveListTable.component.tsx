@@ -109,13 +109,28 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
+      });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit, status]);
+  }, [
+    debouncedSearchTerm,
+    refetch,
+    mutate,
+    page,
+    limit,
+    status,
+    selectedDate?.from,
+    selectedDate?.to,
+  ]);
 
   const fetchChartData = async (): Promise<void> => {
     await refetchChartData();

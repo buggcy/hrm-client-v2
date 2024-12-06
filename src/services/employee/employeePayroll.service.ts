@@ -19,6 +19,55 @@ export interface PayrollListParams {
   Pay_Status?: string;
 }
 
+export interface PayrollV2Params {
+  page?: number;
+  limit?: number;
+  userId?: string;
+  status?: string[];
+}
+
+export const postPayout = async (
+  params: PayrollV2Params = {},
+): Promise<EmployeePayrollApiResponse> => {
+  const defaultParams: PayrollV2Params = {
+    page: 1,
+    limit: 5,
+    userId: '',
+    status: [],
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  try {
+    const response = await baseAPI.post(`/read/v2/payoutbyId`, mergedParams);
+    return schemaParse(employeePayrollApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching payroll data:', error);
+    throw error;
+  }
+};
+
+export const searchPayoutList = async ({
+  query,
+  page,
+  limit,
+  userId,
+  status = [],
+}: {
+  query: string;
+  page: number;
+  limit: number;
+  userId: string;
+  status: string[];
+}): Promise<EmployeePayrollApiResponse> => {
+  const { data, pagination }: EmployeePayrollApiResponse = await baseAPI.post(
+    `/search/payout`,
+    { query, page, limit, userId, status },
+  );
+
+  return { data, pagination };
+};
+
 export const getPayrollList = async (
   params: PayrollListParams = {
     userId: '',

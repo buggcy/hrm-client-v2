@@ -21,47 +21,46 @@ import { cn } from '@/utils';
 export const description = 'A radial chart with stacked sections';
 
 const chartConfig = {
-  pending: {
-    label: 'Pending',
-    color: 'hsl(var(--chart-4))',
+  intern: {
+    label: 'Intern',
+    color: 'hsl(var(--chart-5))',
   },
-  rejected: {
-    label: 'Rejected',
-    color: 'hsl(var(--chart-3))',
-  },
-  tba: {
-    label: 'TBA',
+  probational: {
+    label: 'Probational',
     color: 'hsl(var(--chart-2))',
+  },
+  fullTime: {
+    label: 'FullTime',
+    color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;
 
 export interface Card2Data {
   data?: {
-    pending: number;
-    tba: number;
-    rejected: number;
-    approved: number;
+    intern: number;
+    probational: number;
+    fullTime: number;
   };
 }
 
 export function EmpRedicalChart({ data }: Card2Data) {
   const defaultData = {
+    intern: 0,
     probational: 0,
-    Internee: 0,
-    FullTime: 0,
-    approved: 0,
+    fullTime: 0,
   };
 
   const chartData = [
     {
       name: 'Status',
-      Probational: data?.pending || defaultData.probational,
-      Internee: data?.rejected || defaultData.Internee,
-      FullTime: data?.tba || defaultData.FullTime,
+      probational: data?.probational || defaultData.probational,
+      intern: data?.intern || defaultData.intern,
+      fullTime: data?.fullTime || defaultData.fullTime,
     },
   ];
 
-  const total = (data?.pending || 0) + (data?.rejected || 0) + (data?.tba || 0);
+  const total =
+    (data?.intern || 0) + (data?.probational || 0) + (data?.fullTime || 0);
 
   return (
     <Card className="flex h-[330px] w-[27%] flex-col gap-5 max-lg:w-full">
@@ -113,21 +112,21 @@ export function EmpRedicalChart({ data }: Card2Data) {
                 />
               </PolarRadiusAxis>
               <RadialBar
-                dataKey="Pending"
+                dataKey="intern"
                 stackId="a"
-                fill="var(--color-pending)"
+                fill="var(--color-intern)"
                 className="stroke-transparent stroke-2"
               />
               <RadialBar
-                dataKey="rejected"
+                dataKey="probational"
                 stackId="a"
-                fill="var(--color-rejected)"
+                fill="var(--color-probational)"
                 className="stroke-transparent stroke-2"
               />
               <RadialBar
-                dataKey="tba"
+                dataKey="fullTime"
                 stackId="a"
-                fill="var(--color-tba)"
+                fill="var(--color-fullTime)"
                 className="stroke-transparent stroke-2"
               />
             </RadialBarChart>
@@ -136,16 +135,18 @@ export function EmpRedicalChart({ data }: Card2Data) {
         <CardFooter className="flex-col gap-2 p-0 pl-6 text-sm">
           <div className="flex flex-col gap-3 leading-none text-muted-foreground">
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
-              <p className="text-[12px]">Probational: {data?.pending || 0}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
-              <p className="text-[12px]">Internee: {data?.rejected || 0}</p>
-            </div>
-            <div className="flex items-center gap-2">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
-              <p className="text-[12px]">Full Time: {data?.tba || 0}</p>
+              <p className="text-[12px]">
+                Probational: {data?.probational || 0}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
+              <p className="text-[12px]">Internee: {data?.intern || 0}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
+              <p className="text-[12px]">Full Time: {data?.fullTime || 0}</p>
             </div>
           </div>
         </CardFooter>

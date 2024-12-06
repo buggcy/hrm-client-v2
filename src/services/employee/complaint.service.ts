@@ -100,14 +100,18 @@ export const searchComplaints = async ({
   page,
   limit,
   userId,
+  from,
+  to,
 }: {
   query: string;
   page: number;
   limit: number;
   userId?: string;
+  from?: string;
+  to?: string;
 }): Promise<ComplaintListApiResponse> => {
   const { data, pagination }: ComplaintListApiResponse = await baseAPI.get(
-    `/search/complaints?page=${page}&limit=${limit}&query=${query}&userId=${userId}`,
+    `/search/complaints?page=${page}&limit=${limit}&query=${query}&userId=${userId}&from=${from}&to=${to}`,
   );
 
   return { data, pagination };

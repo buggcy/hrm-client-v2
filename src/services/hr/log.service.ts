@@ -38,13 +38,17 @@ export const searchLog = async ({
   query,
   page,
   limit,
+  from,
+  to,
 }: {
   query: string;
   page: number;
   limit: number;
+  from?: string;
+  to?: string;
 }): Promise<LogListApiResponse> => {
   const { data, pagination }: LogListApiResponse = await baseAPI.get(
-    `/search/logs?page=${page}&limit=${limit}&query=${query}`,
+    `/search/logs?page=${page}&limit=${limit}&query=${query}&from=${from}&to=${to}`,
   );
 
   return { data, pagination };
