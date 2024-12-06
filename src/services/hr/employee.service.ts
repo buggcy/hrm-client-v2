@@ -271,7 +271,12 @@ export const EditProfile = async ({
   );
   return { message, token };
 };
-
+export interface EmployeeChart {
+  month: string;
+  added: number;
+  resigned: number;
+  fired: number;
+}
 export interface CardData {
   Card2Data: {
     pending: number;
@@ -290,6 +295,7 @@ export interface CardData {
       pending: number;
     };
   };
+  employeeChart: EmployeeChart[];
 }
 
 export interface DobData {
@@ -431,13 +437,17 @@ export const searchResignedEmployee = async ({
   query,
   page,
   limit,
+  from,
+  to,
 }: {
   query: string;
   page: number;
   limit: number;
+  from?: string;
+  to?: string;
 }): Promise<ResignedListApiResponse> => {
   const { data, pagination }: ResignedListApiResponse = await baseAPI.get(
-    `/resignations/search?page=${page}&limit=${limit}&query=${query}`,
+    `/resignations/search?page=${page}&limit=${limit}&query=${query}&from=${from}&to=${to}`,
   );
 
   return { data, pagination };

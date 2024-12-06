@@ -103,7 +103,13 @@ const ProjectTable: FunctionComponent = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
+      });
     } else {
       void (async () => {
         await refetch();
@@ -119,6 +125,8 @@ const ProjectTable: FunctionComponent = () => {
     status,
     isActive,
     refetchRecord,
+    selectedDate?.from,
+    selectedDate?.to,
   ]);
 
   useEffect(() => {}, [getProjects, selectedDate]);

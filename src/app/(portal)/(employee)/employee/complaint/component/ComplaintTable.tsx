@@ -98,13 +98,30 @@ const ComplaintTable: FunctionComponent<TableProps> = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit, userId });
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        userId,
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
+      });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit, status, userId]);
+  }, [
+    debouncedSearchTerm,
+    refetch,
+    mutate,
+    page,
+    limit,
+    status,
+    userId,
+    selectedDate?.from,
+    selectedDate?.to,
+  ]);
 
   useEffect(() => {}, [getComplaints, selectedDate]);
 

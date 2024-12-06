@@ -85,7 +85,7 @@ export interface Employee {
   Gender?: 'male' | 'female';
   Marital_Status?: 'married' | 'unmarried';
   Nationality?: string;
-  isApproved: 'Approved' | 'Pending' | 'Rejected';
+  isApproved: 'Approved' | 'Pending' | 'Rejected' | 'Resigned' | 'Fired';
   password: string;
   rejectedReason: string;
   Avatar?: string | null;
@@ -140,7 +140,7 @@ export interface EmployeeById {
   Gender?: 'male' | 'female';
   Marital_Status?: 'married' | 'unmarried';
   Nationality?: string;
-  isApproved: 'Approved' | 'Pending' | 'Rejected';
+  isApproved: 'Approved' | 'Pending' | 'Rejected' | 'Resigned' | 'Fired';
   password: string;
   rejectedReason: string;
   Avatar?: string | null;

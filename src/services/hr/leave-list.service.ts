@@ -131,13 +131,17 @@ export const searchLeaveList = async ({
   query,
   page,
   limit,
+  from,
+  to,
 }: {
   query: string;
   page: number;
   limit: number;
+  from?: string;
+  to?: string;
 }): Promise<LeaveListApiResponse> => {
   const { data, pagination }: LeaveListApiResponse = await baseAPI.get(
-    `/search/leave/list?page=${page}&limit=${limit}&query=${query}`,
+    `/search/leave/list?page=${page}&limit=${limit}&query=${query}&from=${from}&to=${to}`,
   );
 
   return { data, pagination };
