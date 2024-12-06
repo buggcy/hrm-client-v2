@@ -39,13 +39,16 @@ const chartConfig = {
 } satisfies ChartConfig;
 interface ChartProps {
   chartData?: DepartmentTopChartType[];
+  type?: string;
 }
-export function TopDepartmentChart({ chartData }: ChartProps) {
+export function TopDepartmentChart({ chartData, type }: ChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm">Top Departments</CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle className={`${type === 'dashboard' ? '' : 'text-sm'}`}>
+          Top Departments
+        </CardTitle>
+        <CardDescription className={`${type === 'dashboard' ? '' : 'text-xs'}`}>
           No. of Employees in Each Department
         </CardDescription>
       </CardHeader>
