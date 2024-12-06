@@ -116,6 +116,8 @@ export function logout(): Promise<void> {
     queryClient.clear();
     localStorage.clear();
     sessionStorage.clear();
+    Cookies.remove('hrmsToken');
+    window.location.href = '/auth/sign-in';
     resolve();
   });
 }

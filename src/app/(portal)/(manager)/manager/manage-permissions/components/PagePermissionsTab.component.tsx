@@ -72,7 +72,9 @@ const PagePermissionsTab = ({
                 <TableBody className="max-h-[500px] overflow-y-auto">
                   {role.permissions.map(permission => (
                     <TableRow key={permission._id}>
-                      <TableCell>{formatCamelCase(permission.name)}</TableCell>
+                      <TableCell>
+                        {formatCamelCase(permission.name).slice(7)}
+                      </TableCell>
                       <TableCell>
                         <Switch
                           checked={permission.allowed}
