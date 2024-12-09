@@ -101,7 +101,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
   } = useForm<EditPasswordFormData>({
     resolver: zodResolver(FormSchema),
@@ -116,7 +116,6 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       Family_PhoneNo: '',
       Emergency_Phone: '',
       Marital_Status: '',
-      // country:'',
     },
   });
 
@@ -901,7 +900,11 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
         </div>
 
         <div className="flex justify-end">
-          <Button size={'sm'} type="submit" disabled={isLoading || isPending}>
+          <Button
+            size={'sm'}
+            type="submit"
+            disabled={isLoading || isPending || !isDirty}
+          >
             Update Profile {isPending && '...'}
           </Button>
         </div>
