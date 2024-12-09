@@ -91,7 +91,10 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
     enabled: !!userId,
   });
 
-  const [updatedImg, setUpdatedImg] = useState<string | null>(null);
+  const [previousAvatar, setPreviousAvatar] = useState(
+    data?.output?.employee?.Avatar,
+  );
+
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { isLoading } = useTypesQuery();
@@ -113,24 +116,29 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       Family_PhoneNo: '',
       Emergency_Phone: '',
       Marital_Status: '',
+      // country:'',
     },
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && data.output.employee.Address) {
+      if (data.output.employee.Avatar !== previousAvatar) {
+        setPreviousAvatar(data.output.employee.Avatar);
+      }
+
       reset({
         personalEmail: data.output.employee.email,
         contactNo: data.output.employee.contactNo,
         availability: data.output.employee.Current_Status,
         profileDescription: data.output.employee.profileDescription,
         address: {
-          country: data.output.employee.Address?.country || '',
-          city: data.output.employee.Address?.city || '',
-          street: data.output.employee.Address?.street || '',
-          province: data.output.employee.Address?.province || '',
-          landMark: data.output.employee.Address?.landMark || '',
-          zip: data.output.employee.Address?.zip || '',
-          full: data.output.employee.Address?.full || '',
+          country: data.output.employee.Address?.country,
+          city: data.output.employee.Address?.city,
+          street: data.output.employee.Address?.street,
+          province: data.output.employee.Address?.province,
+          landMark: data.output.employee.Address?.landMark,
+          zip: data.output.employee.Address?.zip,
+          full: data.output.employee.Address?.full,
         },
         Family_Name: data.output.employee?.Family_Name || '',
         Family_Relation: data.output.employee?.Family_Relation || '',
@@ -140,7 +148,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
         Marital_Status: data.output.employee?.Marital_Status,
       });
     }
-  }, [data, reset]);
+  }, [data, reset, previousAvatar]);
 
   const { setUser } = useAuthStore();
   const { mutate, isPending } = useMutation({
@@ -169,6 +177,14 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       });
     },
   });
+  const handleAvatarSave = (image: File) => {
+    const formData = new FormData();
+    formData.append('Avatar', image);
+
+    const payload = { id: user.id, formData };
+    mutate(payload);
+  };
+
   const onSubmit = (data: EditPasswordFormData) => {
     const fileInput = document.getElementById('file') as HTMLInputElement;
     const file = fileInput?.files ? fileInput.files[0] : null;
@@ -202,10 +218,8 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
     formData.append('Marital_Status', data.Marital_Status || '');
     formData.append('Emergency_Phone', data.Emergency_Phone || '');
 
-    const avatar = file || updatedImg;
-
-    if (avatar) {
-      formData.append('Avatar', avatar);
+    if (file) {
+      formData.append('Avatar', file);
     }
 
     const payload = {
@@ -294,15 +308,15 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
               <DialogTitle className="mb-2 text-center">
                 Upload your Photo
               </DialogTitle>
-              <DialogDescription className="text-center">
+              <DialogDescription className="text-center text-muted-foreground">
                 Please select a clear, high-resolution image.
               </DialogDescription>
             </DialogHeader>
             <div className="mx-auto grid gap-4 py-4">
               <ImageUpload
                 initialAvatar={data?.output.employee.Avatar ?? ''}
-                onSave={image => {
-                  setUpdatedImg(image);
+                onSave={(image: File) => {
+                  handleAvatarSave(image);
                   setDialogOpen(false);
                 }}
               />
