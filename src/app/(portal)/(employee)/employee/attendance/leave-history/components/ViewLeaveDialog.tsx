@@ -5,11 +5,9 @@ import React from 'react';
 import { Eye } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -20,14 +18,13 @@ interface DialogDemoProps {
   data: LeaveHistoryListType;
   open: boolean;
   onOpenChange: () => void;
-  onCloseChange: () => void;
+  onCloseChange?: () => void;
 }
 
 export function ViewLeaveHistoryDialog({
   data,
   open,
   onOpenChange,
-  onCloseChange,
 }: DialogDemoProps) {
   const startDate = new Date(data.Start_Date);
   const endDate = new Date(data.End_Date);
@@ -84,11 +81,6 @@ export function ViewLeaveHistoryDialog({
           <span className="col-span-2 font-bold">Description</span>
           <span className="col-span-2">{data.Description}</span>
         </div>
-        <DialogFooter>
-          <Button onClick={onCloseChange} size="sm">
-            Close
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

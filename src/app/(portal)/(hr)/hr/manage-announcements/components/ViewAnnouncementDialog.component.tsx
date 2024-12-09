@@ -3,7 +3,6 @@ import React from 'react';
 import { BookImage, Calendar, Tag } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -20,14 +19,13 @@ import './ViewAnnouncement.css';
 interface ViewAnnouncementDialogProps {
   announcement?: AnnouncementType | RecentAnnouncement;
   onOpenChange: () => void;
-  onCloseChange: () => void;
+  onCloseChange?: () => void;
   open: boolean;
   user?: string;
 }
 
 export function ViewAnnouncement({
   announcement,
-  onCloseChange,
   onOpenChange,
   open,
   user,
@@ -100,9 +98,6 @@ export function ViewAnnouncement({
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex justify-end pt-4">
-          <Button onClick={onCloseChange}>Close</Button>
         </div>
       </DialogContent>
     </Dialog>

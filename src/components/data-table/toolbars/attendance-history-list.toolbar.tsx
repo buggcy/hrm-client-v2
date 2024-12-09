@@ -72,6 +72,7 @@ export function AttendanceHistoryListToolbar<TData extends DataTableType>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <CustomDayPicker
+          type="search"
           onDateChange={date => onSearch(date?.toISOString() || '')}
           initialDate={searchTerm ? new Date(searchTerm) : undefined}
           loading={searchLoading}
