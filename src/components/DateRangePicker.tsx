@@ -66,10 +66,11 @@ export const DateRangePicker = ({
   }, [selectedDate, timeRange]);
 
   useEffect(() => {
+    const now = new Date();
     if (timeRange === 'Current Month') {
       setDate({
-        from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-        to: new Date(),
+        from: new Date(now.getFullYear(), now.getMonth(), 1),
+        to: new Date(now.getFullYear(), now.getMonth() + 1, 0),
       });
     } else if (timeRange === 'Last Month') {
       setDate({
