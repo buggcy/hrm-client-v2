@@ -55,6 +55,21 @@ export const fetchCurrentMonthEvents = async (): Promise<EventData[]> => {
   return events;
 };
 
+export const fetchWeeklyEvents = async (): Promise<EventData[]> => {
+  const response = await baseAPI.get<RawEventData[]>(`/weekly/events`);
+  const events: EventData[] = response?.data?.map((event: RawEventData) => ({
+    id: event._id,
+    title: event.Event_Name,
+    start: new Date(event.Event_Start),
+    end: new Date(event.Event_End),
+    Event_Discription: event.Event_Discription,
+    type: event.Event_Type,
+    hrId: event.hrId,
+    isEnabled: event.isEnabled,
+  }));
+  return events;
+};
+
 export const fetchAttendanceReport = async (
   tahometerId: string,
   monthYear: string,
@@ -71,12 +86,19 @@ export const fetchAttendanceReport = async (
 };
 
 export const fetchRecentAnnouncements = async () => {
-  const response: RecentAnnouncement = await baseAPI.get(`/recent`);
+  const response: RecentAnnouncement = await baseAPI.get(
+    `/recent?filter=weekly`,
+  );
   return response;
 };
 
 export const fetchUpcomingBirthdays = async (): Promise<BirthdayResponse> => {
   const response: BirthdayResponse = await baseAPI.get('/birthdays');
+  return response;
+};
+
+export const fetchWeeklyBirthdays = async (): Promise<BirthdayResponse> => {
+  const response: BirthdayResponse = await baseAPI.get('/weekly/birthdays');
   return response;
 };
 

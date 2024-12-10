@@ -3,7 +3,6 @@ import React from 'react';
 import { BookImage, Calendar, Tag } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 import { HrEventsListType } from '@/libs/validations/employee';
@@ -13,13 +12,12 @@ import './ViewHrEvent.css';
 interface EventDetailsCardProps {
   event: HrEventsListType;
   open: boolean;
-  onCloseChange: () => void;
+  onCloseChange?: () => void;
   onOpenChange: () => void;
 }
 
 export function ViewHrEvent({
   event,
-  onCloseChange,
   open,
   onOpenChange,
 }: EventDetailsCardProps) {
@@ -102,9 +100,6 @@ export function ViewHrEvent({
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex justify-end">
-          <Button onClick={onCloseChange}>Close</Button>
         </div>
       </DialogContent>
     </Dialog>
