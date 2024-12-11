@@ -1,5 +1,7 @@
 import { FunctionComponent } from 'react';
 
+import { DateRange } from 'react-day-picker';
+
 import { usePayrollStatisticsQuery } from '@/hooks/hr/useHrPayroll.hook';
 
 import MonthlyPayrollGraph from './Chart/MonthlyPayrollChart';
@@ -7,17 +9,13 @@ import PayrollStatistics from './Chart/PayrollStatistics';
 import { MonthlyPayrollTrendChart } from './Chart/PayrollTrendChart';
 
 interface PayrollCardProps {
-  formattedMonth: string;
-  year: string;
+  dates?: DateRange;
 }
 
-const PayrollCard: FunctionComponent<PayrollCardProps> = ({
-  formattedMonth,
-  year,
-}) => {
+const PayrollCard: FunctionComponent<PayrollCardProps> = ({ dates }) => {
   const { data: payrollStats } = usePayrollStatisticsQuery({
-    month: formattedMonth,
-    year: year,
+    from: dates?.from?.toISOString(),
+    to: dates?.to?.toISOString(),
   });
 
   return (

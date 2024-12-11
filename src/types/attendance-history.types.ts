@@ -53,3 +53,18 @@ export interface AttendanceApiResponse {
   card2Data: Card2Data;
   card3Data: Card3Data;
 }
+
+export interface TodayAttendance {
+  _id: string;
+  Total_Time: string;
+  Start_Date: string;
+  End_Date: string;
+  Status: string;
+  breaks?: AttendanceBreaks[];
+  Remaining_Minutes: string;
+  Late_Minutes: number;
+}
+
+export interface todayAttendenceApiResponse {
+  data: TodayAttendance;
+}

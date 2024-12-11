@@ -7,6 +7,7 @@ import { baseAPI, schemaParse } from '@/utils';
 import {
   AttendanceApiResponse,
   AttendanceHistoryApiResponse,
+  todayAttendenceApiResponse,
 } from '@/types/attendance-history.types';
 
 export interface AttendanceHistoryListParams {
@@ -97,5 +98,13 @@ export const exportAttendanceHistoryCSVData = async (
   ids: Array<string>,
 ): Promise<BlobPart> => {
   const res: BlobPart = await baseAPI.post(`/attendences/export-csv`, { ids });
+  return res;
+};
+
+export const getTodayAttendence = async (
+  userId: string,
+  date: string,
+): Promise<todayAttendenceApiResponse> => {
+  const res = await baseAPI.get(`/v2/todays-attendence/${userId}/${date}`);
   return res;
 };

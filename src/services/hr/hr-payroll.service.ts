@@ -5,15 +5,15 @@ import {
 import { baseAPI, schemaParse } from '@/utils';
 
 export interface PayrollRecordParams {
-  month?: string;
-  year?: string;
+  from?: string;
+  to?: string;
 }
 export const getPayrollStatistics = async (
   params: PayrollRecordParams = {},
 ): Promise<PayrollRecordApiResponse> => {
   const defaultParams: PayrollRecordParams = {
-    month: '',
-    year: '',
+    from: new Date().toISOString(),
+    to: new Date().toISOString(),
   };
 
   const mergedParams = { ...defaultParams, ...params };

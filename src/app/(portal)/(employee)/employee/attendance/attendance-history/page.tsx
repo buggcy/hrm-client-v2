@@ -3,6 +3,7 @@
 import { FunctionComponent, Suspense, useEffect } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
+import moment from 'moment';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
@@ -17,6 +18,7 @@ import { Notification } from '@/components/NotificationIcon';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { useTodayAttendence } from '@/hooks/attendanceHistory/useAttendanceHistoryList.hook';
 import { getAttendanceHistoryStats } from '@/services/employee/attendance-history.service';
 import { AuthStoreType } from '@/stores/auth';
 
@@ -30,6 +32,12 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     useTimeRange();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
+  const todayDate = moment().format('YYYY-MM-DD');
+
+  const { data } = useTodayAttendence(
+    user?.Tahometer_ID || '',
+    user?.Tahometer_ID ? todayDate : '',
+  );
 
   const {
     mutate,
@@ -78,7 +86,22 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-12 px-2">
-        <Header subheading="You are 15 minutes late today!">
+        <Header
+          subheading={
+            data?.data?.Status
+              ? data?.data?.Status === 'Absent'
+                ? 'You are Absent Today!'
+                : data?.data?.Status === 'Leave'
+                  ? 'You are on leave today.'
+                  : data?.data?.Status === 'Holiday'
+                    ? 'Today is marked as a holiday and an off day.'
+                    : data?.data?.Status === 'Present' &&
+                        data?.data?.Late_Minutes === 0
+                      ? "You're marked as present today! Great job, you're on time!"
+                      : `You are ${data?.data?.Late_Minutes} minutes late today!`
+              : "Your today's attendance not recorded yet."
+          }
+        >
           <DateRangePicker
             timeRange={timeRange}
             selectedDate={selectedDate}
