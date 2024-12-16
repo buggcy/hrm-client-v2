@@ -39,12 +39,14 @@ interface TestProps {
   initialDate?: Date;
   onDateChange: (date: Date | undefined) => void;
   loading?: boolean;
+  type?: string;
 }
 
 export default function CustomDayPicker({
   initialDate,
   onDateChange,
   loading,
+  type,
 }: TestProps) {
   const [date, setDate] = React.useState<Date | undefined>(
     initialDate || undefined,
@@ -92,7 +94,17 @@ export default function CustomDayPicker({
           className={`relative h-[32px] justify-start text-left font-normal ${loading ? 'pr-10' : ''}`}
         >
           <CalendarIcon className="mr-2 size-4" />
-          {date ? format(date, 'PPP') : <span>Pick a date</span>}
+          {type === 'search' ? (
+            date ? (
+              format(date, 'PPP')
+            ) : (
+              <span>Search by date</span>
+            )
+          ) : date ? (
+            format(date, 'PPP')
+          ) : (
+            <span>Pick a date</span>
+          )}
           {loading && (
             <div className="absolute inset-y-0 right-0 flex items-center pr-3">
               <Loader2 className="size-4 animate-spin text-muted-foreground" />

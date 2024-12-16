@@ -293,16 +293,6 @@ export function AddEditComplaintModal({
               >
                 {type === 'add' ? 'Register' : 'Update'}
               </Button>
-              <Button
-                variant="ghostSecondary"
-                type="button"
-                onClick={() => {
-                  reset();
-                  onCloseChange(false);
-                }}
-              >
-                Close
-              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

@@ -378,13 +378,6 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
             <Button type="submit" disabled={isPending} size={'sm'}>
               Apply
             </Button>
-            <Button
-              variant="ghostSecondary"
-              type="button"
-              onClick={() => onCloseChange(false)}
-            >
-              Close
-            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

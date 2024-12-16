@@ -213,13 +213,6 @@ export function EditPerkModal({
               >
                 Update
               </Button>
-              <Button
-                variant="ghostSecondary"
-                type="button"
-                onClick={() => onCloseChange(false)}
-              >
-                Close
-              </Button>
             </DialogFooter>
           </form>
         </>

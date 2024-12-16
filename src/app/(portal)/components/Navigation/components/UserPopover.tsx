@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
 import { useMutation } from '@tanstack/react-query';
@@ -39,7 +40,7 @@ import { AuthStoreType } from '@/stores/auth';
 export const UserPopover = () => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user, resetSession } = authStore;
-
+  const router = useRouter();
   const [logoutDialog, setLogoutDialog] = useState<boolean>(false);
 
   const { theme, setTheme } = useTheme();
@@ -50,6 +51,7 @@ export const UserPopover = () => {
   const handleLogout = () => {
     resetSession();
     logout();
+    router.push('/auth/sign-in');
   };
 
   const username = `${user?.firstName} ${user?.lastName}`;

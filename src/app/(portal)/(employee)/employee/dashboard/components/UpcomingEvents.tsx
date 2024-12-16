@@ -2,7 +2,14 @@
 
 import { useState } from 'react';
 
-import { Briefcase, Building } from 'lucide-react';
+import {
+  BookImage,
+  Briefcase,
+  Building,
+  Calendar,
+  Eye,
+  Tag,
+} from 'lucide-react';
 
 import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -17,9 +24,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
-import { useEventsData } from '@/hooks/employee/useEventData';
-import { useUpcomingBirthdays } from '@/hooks/employee/useUpcomingBirthdays.hook';
+import { useWeeklyEvents } from '@/hooks/employee/useEventData';
+import { useWeeklyBirthdays } from '@/hooks/employee/useUpcomingBirthdays.hook';
 
 import { Birthday } from '@/types/Birthday.types';
 import { EventData } from '@/types/events.types';
@@ -28,22 +42,22 @@ type CombinedData = EventData | Birthday;
 
 const EventsAndBirthdays = () => {
   const {
-    data: eventsData,
+    data: weeklyEvents,
     isLoading: isLoadingEvents,
     isFetching: isFetchingEvents,
-  } = useEventsData();
+  } = useWeeklyEvents();
   const {
-    data: birthdayData,
+    data: weeklyBirthdays,
     isLoading: isLoadingBirthdays,
     error: birthdayError,
-  } = useUpcomingBirthdays();
+  } = useWeeklyBirthdays();
 
   // const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [, setSelectedEvent] = useState<EventData | null>(null);
 
-  const events = isLoadingEvents || isFetchingEvents ? [] : eventsData || [];
+  const events = isLoadingEvents || isFetchingEvents ? [] : weeklyEvents || [];
   const upcomingBirthdays =
-    isLoadingBirthdays || birthdayError ? [] : birthdayData?.data || [];
+    isLoadingBirthdays || birthdayError ? [] : weeklyBirthdays?.data || [];
 
   const combinedData = [...upcomingBirthdays, ...events].sort((a, b) => {
     const dateA = (a as Birthday).DOB
@@ -69,6 +83,19 @@ const EventsAndBirthdays = () => {
         );
     }
   };
+  const formatDate = (dateInput?: string | Date): string => {
+    if (!dateInput) return 'Invalid date';
+
+    const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+
+    if (isNaN(date.getTime())) return 'Invalid date';
+
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
 
   const handleEventClick = (event: EventData) => {
     setSelectedEvent(event);
@@ -81,125 +108,180 @@ const EventsAndBirthdays = () => {
           <h2 className="text-lg font-semibold dark:text-white">
             Birthdays & Events
           </h2>
-          <Badge variant="outline">{combinedData.length || '0'} Upcoming</Badge>
+          <Badge variant="outline">
+            {combinedData?.length || '0'} Upcoming
+          </Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[307px] space-y-4 overflow-y-auto">
-          {combinedData.length === 0 ? (
-            <div className="text-gray-500 dark:text-gray-300">
-              No upcoming birthdays or events.
-            </div>
-          ) : (
-            combinedData.map((item: CombinedData, index) => (
-              <div key={index} className="flex items-start space-x-4">
-                {'DOB' in item ? (
-                  // Render Birthday
-                  <>
-                    <Avatar className="size-6">
-                      {item.Avatar ? (
-                        <img
-                          src={item.Avatar}
-                          alt={`${item.firstName} ${item.lastName}`}
-                          className="rounded-full"
-                        />
-                      ) : (
-                        <div className="flex size-6 items-center justify-center rounded-full bg-blue-400 text-white">
-                          {item.firstName[0]}
-                          {item.lastName[0]}
-                        </div>
-                      )}
-                    </Avatar>
-                    <div className="-ml-4">
-                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                        {item.firstName} {item.lastName}
-                      </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-300">
-                        {new Date(item.DOB).toLocaleDateString('en-US', {
-                          day: 'numeric',
-                          month: 'long',
-                        })}
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  // Render Event
-                  <>
-                    {getEventIcon(item.type)}
-                    <div>
-                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                        {item.title || 'No Title'}
-                      </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-300">
-                        {item.type || 'No Type'}
-                      </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-300">
-                        {new Date(item.start).toLocaleDateString('en-US', {
-                          day: 'numeric',
-                          month: 'long',
-                        })}
-                      </p>
-                      <Dialog>
-                        <DialogTrigger>
-                          <Button
-                            className="text-left"
-                            variant="link"
-                            onClick={() => handleEventClick(item)}
-                          >
-                            View Details
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="dark:text-white">
-                          <DialogHeader>
-                            <DialogTitle className="dark:text-white">
-                              Event Details
-                            </DialogTitle>
-                            <DialogDescription className="dark:text-gray-300">
-                              <div className="space-y-2">
-                                <div className="flex justify-between">
-                                  <span className="text-sm font-semibold dark:text-white">
-                                    Title:
-                                  </span>
-                                  <span className="text-sm dark:text-gray-300">
-                                    {item.title}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-sm font-semibold dark:text-white">
-                                    Description:
-                                  </span>
-                                  <span className="text-sm dark:text-gray-300">
-                                    {item.Event_Discription}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    Start Date:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {new Date(item.start).toLocaleString()}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold dark:text-white">
-                                    End Date:
-                                  </span>
-                                  <span className="dark:text-gray-300">
-                                    {new Date(item.end).toLocaleString()}
-                                  </span>
-                                </div>
-                              </div>
-                            </DialogDescription>
-                          </DialogHeader>
-                          <DialogClose />
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </>
-                )}
+        <div className="h-[307px] space-y-4">
+          <ScrollArea className="h-[300px] w-full">
+            {combinedData?.length === 0 ? (
+              <div className="text-gray-500 dark:text-gray-300">
+                No upcoming birthdays or events.
               </div>
-            ))
-          )}
+            ) : (
+              combinedData.map((item: CombinedData, index) => (
+                <div
+                  key={index}
+                  className="mb-2 flex items-start space-x-4 rounded-md border p-2"
+                >
+                  {'DOB' in item ? (
+                    // Render Birthday
+                    <>
+                      <Avatar className="size-6">
+                        {item.Avatar ? (
+                          <img
+                            src={item.Avatar}
+                            alt={`${item.firstName} ${item.lastName}`}
+                            className="rounded-full"
+                          />
+                        ) : (
+                          <div className="flex size-6 items-center justify-center rounded-full bg-blue-400 text-white">
+                            {item.firstName[0]}
+                            {item.lastName[0]}
+                          </div>
+                        )}
+                      </Avatar>
+                      <div className="-ml-4">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {item.firstName} {item.lastName}
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-300">
+                          {new Date(item.DOB).toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'long',
+                          })}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    // Render Event
+                    <>
+                      {getEventIcon(item.type)}
+                      <div className="group relative w-full">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {item.title || 'No Title'}
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-300">
+                          {item.type || 'No Type'}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-300">
+                          {new Date(item.start).toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'long',
+                          })}
+                        </p>
+                        <Dialog>
+                          <DialogTrigger className="absolute right-0 top-0 hidden group-hover:flex">
+                            <Button
+                              variant="link"
+                              onClick={() => handleEventClick(item)}
+                            >
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span>
+                                      <Eye
+                                        className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                                        size={18}
+                                      />
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent>View Details</TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="flex max-h-[550px] flex-col p-6 max-sm:max-h-[600px] sm:max-w-[600px]">
+                            <DialogHeader>
+                              <DialogTitle className="dark:text-white">
+                                Event Details
+                              </DialogTitle>
+                              <DialogDescription className="dark:text-gray-300">
+                                <div className="flex flex-col gap-3">
+                                  <div className="flex h-fit justify-between">
+                                    <div className="grid h-fit w-full gap-4 pt-4 text-left">
+                                      <div className="grid h-fit w-full grid-cols-1 max-sm:gap-3 sm:grid-cols-2">
+                                        <div className="flex space-x-3 max-sm:justify-between">
+                                          <div className="flex gap-3">
+                                            <BookImage className="size-4 text-blue-500" />
+                                            <span className="text-sm font-medium">
+                                              Event Name:
+                                            </span>
+                                          </div>
+                                          <p className="text-sm">
+                                            {item.title || ''}
+                                          </p>
+                                        </div>
+                                        <div className="flex space-x-3 max-sm:justify-between">
+                                          <div className="flex gap-3">
+                                            <Tag className="size-4 text-blue-500" />
+                                            <span className="text-sm font-medium">
+                                              Type:
+                                            </span>
+                                          </div>
+                                          <p className="text-sm">
+                                            {item.type === 'company'
+                                              ? 'Non Holiday'
+                                              : 'Holiday'}
+                                          </p>
+                                        </div>
+                                      </div>
+
+                                      <div className="grid h-fit grid-cols-1 max-sm:gap-3 sm:grid-cols-2">
+                                        <div className="flex space-x-3 max-sm:justify-between">
+                                          <div className="flex gap-3">
+                                            <Calendar className="size-4 text-blue-500" />
+                                            <span className="text-sm font-medium">
+                                              Start Date:
+                                            </span>
+                                          </div>
+                                          <p className="text-sm">
+                                            {formatDate(item?.start)}
+                                          </p>
+                                        </div>
+                                        <div className="flex space-x-3 max-sm:justify-between">
+                                          <div className="flex gap-3">
+                                            <Calendar className="size-4 text-blue-500" />
+                                            <span className="text-sm font-medium">
+                                              End Date:
+                                            </span>
+                                          </div>
+                                          <p className="text-sm">
+                                            {formatDate(item?.end)}
+                                          </p>
+                                        </div>
+                                      </div>
+
+                                      <div className="flex flex-col space-y-3">
+                                        <span className="text-sm font-medium">
+                                          Description:
+                                        </span>
+                                        <div className="description-content max-h-60 overflow-y-auto px-8 text-sm">
+                                          <div
+                                            dangerouslySetInnerHTML={{
+                                              __html:
+                                                item.Event_Discription || '',
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogClose />
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))
+            )}
+          </ScrollArea>
         </div>
       </CardContent>
     </Card>
