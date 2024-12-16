@@ -2,6 +2,8 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 
+import moment from 'moment';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { useAttendanceReport } from '@/hooks/employee/useAttendenceReport';
@@ -14,7 +16,7 @@ import Typography from '../components/Typography';
 
 const EmployeeCard = () => {
   const userId = useUserId();
-  const monthYear = '2024-09';
+  const monthYear = moment().format('YYYY-MM');
   const totalDays: number = getTotalWorkingDaysInCurrentMonth();
   const {
     data: empdata,
