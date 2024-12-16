@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Button } from '@/components/ui/button';
@@ -50,6 +50,9 @@ export const Sidebar = () => {
 
     return matchesTitle || matchesChildren;
   });
+  const clearSearch = () => {
+    setSearchQuery('');
+  };
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r bg-background sm:flex">
@@ -78,8 +81,7 @@ export const Sidebar = () => {
           >
             <ScrollBar className="mr-[-17px]" />
             <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 overflow-hidden text-muted-foreground" />{' '}
-              {/* Search Icon */}
+              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 overflow-hidden text-muted-foreground" />{' '}
               <input
                 type="text"
                 placeholder="Search pages..."
@@ -87,6 +89,15 @@ export const Sidebar = () => {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
+              {searchQuery && (
+                <button
+                  className="absolute right-3 top-1/2 flex size-5 -translate-y-1/2 items-center justify-center rounded-full bg-transparent text-muted-foreground transition-all hover:bg-muted group-hover:text-muted-foreground/70"
+                  onClick={clearSearch}
+                  aria-label="Clear search"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
             </div>
             {filteredMenuItems.length === 0 ? (
               <div className="mt-4 text-center text-sm text-muted-foreground">
