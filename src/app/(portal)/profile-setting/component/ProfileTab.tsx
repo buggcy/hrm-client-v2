@@ -230,9 +230,62 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
 
   return (
     <>
-      <div className="mb-2 mt-6 flex items-center justify-between text-base font-normal dark:text-white">
-        <h2 className="pl-3 text-lg font-semibold">Profile Edit</h2>
-        <div className="flex flex-wrap space-x-4 space-y-2 md:flex-nowrap md:space-y-0">
+      <h2 className="mt-6 pl-3 text-lg font-semibold">Profile Edit</h2>
+      <div className="mb-2 mt-6 flex flex-col items-center justify-between text-base font-normal dark:text-white lg:flex-row">
+        <div className="mb-4 flex items-center justify-center lg:mb-0 lg:justify-start">
+          <div className="relative inline-block transition-opacity hover:opacity-75">
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <div
+                  className="absolute inset-0 cursor-pointer rounded-full bg-primary"
+                  style={{
+                    padding: `${120 * 0.04}px`,
+                  }}
+                >
+                  <Avatar className="size-full border-4 border-background">
+                    <AvatarImage
+                      src={data?.output?.employee?.Avatar || ''}
+                      alt={user?.firstName}
+                    />
+                    <AvatarFallback className="uppercase">
+                      {`${user?.firstName?.charAt(0) || ''} ${user?.lastName?.charAt(0) || ''}`}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100">
+                    <Pencil className="rounded-full bg-black p-2 text-white" />
+                  </div>
+                </div>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle className="mb-2 text-center">
+                    Upload your Photo
+                  </DialogTitle>
+                  <DialogDescription className="text-center text-muted-foreground">
+                    Please select a clear, high-resolution image.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="mx-auto grid gap-4 py-4">
+                  <ImageUpload
+                    initialAvatar={data?.output.employee.Avatar ?? ''}
+                    onSave={(image: File) => {
+                      handleAvatarSave(image);
+                      setDialogOpen(false);
+                    }}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
+            <div
+              style={{
+                width: `${120}px`,
+                height: `${120}px`,
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap space-x-2 md:flex-nowrap md:space-y-0 lg:space-x-4">
           <Controller
             name="availability"
             control={control}
@@ -266,7 +319,6 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
                   checked={field.value === 'Offline'}
                   onChange={event => field.onChange(event.target.value)}
                 />
-
                 <RadioInput
                   id="break"
                   label="Break"
@@ -279,66 +331,16 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           />
         </div>
       </div>
-      <div className="relative inline-block transition-opacity hover:opacity-75">
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <div
-              className="absolute inset-0 cursor-pointer rounded-full bg-primary"
-              style={{
-                padding: `${120 * 0.04}px`,
-              }}
-            >
-              <Avatar className="size-full border-4 border-background">
-                <AvatarImage
-                  src={data?.output?.employee?.Avatar || ''}
-                  alt={user?.firstName}
-                />
-                <AvatarFallback className="uppercase">
-                  {`${user?.firstName?.charAt(0) || ''} ${user?.lastName?.charAt(0) || ''}`}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100">
-                <Pencil className="rounded-full bg-black p-2 text-white" />
-              </div>
-            </div>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle className="mb-2 text-center">
-                Upload your Photo
-              </DialogTitle>
-              <DialogDescription className="text-center text-muted-foreground">
-                Please select a clear, high-resolution image.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="mx-auto grid gap-4 py-4">
-              <ImageUpload
-                initialAvatar={data?.output.employee.Avatar ?? ''}
-                onSave={(image: File) => {
-                  handleAvatarSave(image);
-                  setDialogOpen(false);
-                }}
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
-        <div
-          style={{
-            width: `${120}px`,
-            height: `${120}px`,
-          }}
-        />
-      </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
+        <h2 className="mb-2 mt-4 pl-0 text-sm font-semibold text-muted-foreground lg:pl-5">
           Personal Info
         </h2>
 
         <div className="mb-4 grid grid-cols-12 gap-4">
           <Label
             htmlFor="personalEmail"
-            className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
           >
             Personal Email
           </Label>
@@ -365,7 +367,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
         <div className="mb-4 grid grid-cols-12 gap-4">
           <Label
             htmlFor="contactNo"
-            className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
           >
             Contact No.
           </Label>
@@ -390,7 +392,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           </span>
         )}
         <>
-          <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
+          <h2 className="mb-2 mt-4 pl-0 text-sm font-semibold text-muted-foreground lg:pl-5">
             Address Details
           </h2>
 
@@ -401,7 +403,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="address.country"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Country
             </Label>
@@ -458,7 +460,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="address.province"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Province
             </Label>
@@ -517,7 +519,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="address.city"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               City
             </Label>
@@ -564,7 +566,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="address.street"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Street
             </Label>
@@ -587,7 +589,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="address.landMark"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Landmark
             </Label>
@@ -614,7 +616,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="address.zip"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Postal Code
             </Label>
@@ -641,7 +643,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="address.fullAddress"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Full Address
             </Label>
@@ -671,13 +673,13 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
             </div>
           </div>
 
-          <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
+          <h2 className="mb-2 mt-4 pl-0 text-sm font-semibold text-muted-foreground lg:pl-5">
             Basic Information
           </h2>
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="Emergency_Phone"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Emergency Phone Number
             </Label>
@@ -710,7 +712,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="Marital_Status"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Marital Status
             </Label>
@@ -746,13 +748,13 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
             </div>
           </div>
 
-          <h2 className="mb-2 mt-4 pl-5 text-sm font-semibold text-muted-foreground">
+          <h2 className="mb-2 mt-4 pl-0 text-sm font-semibold text-muted-foreground lg:pl-5">
             Family Details
           </h2>
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="Family_Name"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Family Name
             </Label>
@@ -782,7 +784,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="Family_Relation"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Family Relation
             </Label>
@@ -814,7 +816,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="Family_Occupation"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Family Occupation
             </Label>
@@ -846,7 +848,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
               htmlFor="Family_PhoneNo"
-              className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
               Family Phone Number
             </Label>
@@ -880,7 +882,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
         <div className="mb-4 grid grid-cols-12 gap-4">
           <Label
             htmlFor="profileDescription"
-            className="col-span-12 mt-3 text-right md:col-span-4 lg:col-span-4"
+            className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
           >
             Profile Description
           </Label>
