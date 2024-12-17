@@ -52,6 +52,11 @@ export default function RootLayout({
           name="description"
           content={metadata.description || 'Developer portal'}
         />
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href="/images/buggcy/logo-buggcy-small.png"
+        />
       </head>
       <body
         className={cn(
