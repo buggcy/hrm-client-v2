@@ -120,6 +120,16 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
   });
 
   useEffect(() => {
+    const initialProvince = data?.output?.employee?.Address?.province;
+    if (initialProvince) {
+      const matchedProvince = states?.find(
+        state => state.name === initialProvince,
+      );
+      setSelectedProvince(matchedProvince?.iso2 || '');
+    }
+  }, [data, states]);
+
+  useEffect(() => {
     if (data && data.output.employee.Address) {
       if (data.output.employee.Avatar !== previousAvatar) {
         setPreviousAvatar(data.output.employee.Avatar);
@@ -285,12 +295,12 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap space-x-2 md:flex-nowrap md:space-y-0 lg:space-x-4">
+        <div className="flex flex-wrap space-x-4 md:flex-nowrap md:space-y-0 lg:space-x-4">
           <Controller
             name="availability"
             control={control}
             render={({ field }) => (
-              <>
+              <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
                 <RadioInput
                   id="available"
                   label="Available"
@@ -326,7 +336,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
                   checked={field.value === 'Break'}
                   onChange={event => field.onChange(event.target.value)}
                 />
-              </>
+              </div>
             )}
           />
         </div>
