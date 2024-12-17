@@ -107,7 +107,7 @@ const config = {
       },
       spacing: {
         'w-sidebar': '4.5rem',
-        'w-sidebar-open': '15rem',
+        'w-sidebar-open': '17rem',
         'w-sidebar-item': '13rem',
         6.5: '1.625rem',
         13: '3.25rem',
