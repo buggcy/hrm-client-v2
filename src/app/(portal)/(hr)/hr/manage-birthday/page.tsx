@@ -1,14 +1,12 @@
 import React, { Suspense } from 'react';
 
-import { Bell } from 'lucide-react';
-
 import {
   Layout,
   LayoutHeader,
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { Button } from '@/components/ui/button';
+import { Notification } from '@/components/NotificationIcon';
 
 import BirthdayChartPage from './components/BirthdayChartPage';
 import TabPages from './components/TabPages';
@@ -18,9 +16,7 @@ function ManageBirthday() {
     <Layout>
       <LayoutHeader title="Manage Birthday">
         <LayoutHeaderButtonsBlock>
-          <Button variant="outline" size="icon" className="rounded-full">
-            <Bell className="size-5" />
-          </Button>
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1" className="space-y-5">

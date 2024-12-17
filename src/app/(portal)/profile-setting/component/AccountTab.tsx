@@ -150,13 +150,13 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="absolute inset-y-0 right-0 flex items-center pr-13"
                 onClick={() => setShowOldPassword(!showOldPassword)}
               >
                 {showOldPassword ? (
-                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
-                ) : (
                   <Eye className="size-5 text-gray-600 dark:text-gray-300" />
+                ) : (
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>
@@ -192,13 +192,13 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="absolute inset-y-0 right-0 flex items-center pr-13"
                 onClick={() => setShowNewPassword(!showNewPassword)}
               >
                 {showNewPassword ? (
-                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
-                ) : (
                   <Eye className="size-5 text-gray-600 dark:text-gray-300" />
+                ) : (
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>
@@ -234,13 +234,13 @@ const AccountTab: React.FC<UserProps> = ({ user }) => {
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="absolute inset-y-0 right-0 flex items-center pr-13"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
-                ) : (
                   <Eye className="size-5 text-gray-600 dark:text-gray-300" />
+                ) : (
+                  <EyeOff className="size-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>
