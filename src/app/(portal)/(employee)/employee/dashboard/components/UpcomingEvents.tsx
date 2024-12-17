@@ -206,7 +206,7 @@ const EventsAndBirthdays = () => {
                                         <div className="flex space-x-3 max-sm:justify-between">
                                           <div className="flex gap-3">
                                             <BookImage className="size-4 text-blue-500" />
-                                            <span className="text-sm font-medium">
+                                            <span className="text-sm font-medium text-black dark:text-white">
                                               Event Name:
                                             </span>
                                           </div>
@@ -217,7 +217,7 @@ const EventsAndBirthdays = () => {
                                         <div className="flex space-x-3 max-sm:justify-between">
                                           <div className="flex gap-3">
                                             <Tag className="size-4 text-blue-500" />
-                                            <span className="text-sm font-medium">
+                                            <span className="text-sm font-medium text-black dark:text-white">
                                               Type:
                                             </span>
                                           </div>
@@ -233,7 +233,7 @@ const EventsAndBirthdays = () => {
                                         <div className="flex space-x-3 max-sm:justify-between">
                                           <div className="flex gap-3">
                                             <Calendar className="size-4 text-blue-500" />
-                                            <span className="text-sm font-medium">
+                                            <span className="text-sm font-medium text-black dark:text-white">
                                               Start Date:
                                             </span>
                                           </div>
@@ -244,7 +244,7 @@ const EventsAndBirthdays = () => {
                                         <div className="flex space-x-3 max-sm:justify-between">
                                           <div className="flex gap-3">
                                             <Calendar className="size-4 text-blue-500" />
-                                            <span className="text-sm font-medium">
+                                            <span className="text-sm font-medium text-black dark:text-white">
                                               End Date:
                                             </span>
                                           </div>
@@ -255,7 +255,7 @@ const EventsAndBirthdays = () => {
                                       </div>
 
                                       <div className="flex flex-col space-y-3">
-                                        <span className="text-sm font-medium">
+                                        <span className="text-sm font-medium text-black dark:text-white">
                                           Description:
                                         </span>
                                         <div className="description-content max-h-60 overflow-y-auto px-8 text-sm">

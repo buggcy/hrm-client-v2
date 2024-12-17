@@ -9,15 +9,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAttendanceReport } from '@/hooks/employee/useAttendenceReport';
 import { useEmployeeAttendance } from '@/hooks/employee/useEmployeeAttendance';
 import { useUserId } from '@/hooks/employee/useUserId';
-import { getTotalWorkingDaysInCurrentMonth } from '@/utils';
 
-import ProgressCircle from './ProgressCircle';
+import { EmployeeAttendenceCard } from './AttendenceRecord';
 import Typography from '../components/Typography';
 
 const EmployeeCard = () => {
   const userId = useUserId();
   const monthYear = moment().format('YYYY-MM');
-  const totalDays: number = getTotalWorkingDaysInCurrentMonth();
+
   const {
     data: empdata,
     isLoading,
@@ -40,7 +39,7 @@ const EmployeeCard = () => {
         <CardHeader>
           <div className="flex flex-row items-center justify-between">
             <CardTitle className="text-lg font-bold dark:text-white">
-              Attendance
+              Today&apos;s Attendance
             </CardTitle>
             <Link
               href="/employee/attendance/attendance-history"
@@ -74,62 +73,15 @@ const EmployeeCard = () => {
                 Today&apos;s Start Time
               </Typography>
             </div>
-            <ProgressCircle
-              value={noOfPresents}
-              max={totalDays}
-              strokeColor="#30BBF2"
-              tooltipText="Presents"
-            />
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-lg p-0 dark:bg-zinc-900">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-bold dark:text-white">
-              Leave Records
-            </CardTitle>
-            <Link
-              href="/employee/attendance/leave-history"
-              className="text-xs text-blue-600 hover:underline dark:text-blue-400"
-            >
-              View Stats
-            </Link>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <hr className="mb-3 mt-0 border-gray-200 dark:border-gray-700" />
-          <div className="flex items-center justify-between">
-            <div>
-              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
-                <strong className="text-black dark:text-white">
-                  {noOfPresents}
-                </strong>{' '}
-                Total Presents
-              </Typography>
-              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
-                <strong className="text-black dark:text-white">
-                  {noOfLeaves}
-                </strong>{' '}
-                Total Leaves
-              </Typography>
-              <Typography className="py-2.5 text-sm font-normal text-gray-500 dark:text-gray-300">
-                <strong className="text-black dark:text-white">
-                  {noOfAbsents}
-                </strong>{' '}
-                Total Absents
-              </Typography>
-            </div>
-            <ProgressCircle
-              value={noOfLeaves}
-              max={totalDays}
-              strokeColor="#10B981"
-              tooltipText="Leaves"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <EmployeeAttendenceCard
+        noOfPresents={noOfPresents}
+        noOfAbsents={noOfAbsents}
+        noOfLeaves={noOfLeaves}
+      />
     </div>
   );
 };
