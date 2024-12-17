@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { AlignJustify } from 'lucide-react';
+import { AlignJustify, Search, X } from 'lucide-react';
 
 import { LogoHorizontal } from '@/components/LogoHorizontal';
 import { Notification } from '@/components/NotificationIcon';
@@ -36,10 +36,24 @@ export const MobileHeader = () => {
         ? managerMenu(accessPermissions)
         : employeeMenu(accessPermissions);
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const onClose = useCallback(() => setOpen(false), []);
 
-  const onClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const clearSearch = () => setSearchQuery('');
+
+  const filteredMenuItems = menuItems.filter(item => {
+    const matchesTitle = item.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesChildren =
+      item.children &&
+      item.children.some(child =>
+        child.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+
+    return matchesTitle || matchesChildren;
+  });
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
@@ -78,7 +92,28 @@ export const MobileHeader = () => {
                 </Link>
 
                 <Separator className="w-full" />
-                {menuItems.map(item =>
+
+                <div className="relative mb-4 mt-2">
+                  <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search pages..."
+                    className="w-full rounded-md border bg-transparent py-2 pl-10 pr-4 text-sm text-foreground outline-none"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                  />
+                  {searchQuery && (
+                    <button
+                      className="absolute right-3 top-1/2 flex size-5 -translate-y-1/2 items-center justify-center rounded-full bg-transparent text-muted-foreground hover:bg-muted"
+                      onClick={clearSearch}
+                      aria-label="Clear search"
+                    >
+                      <X className="size-4" />
+                    </button>
+                  )}
+                </div>
+
+                {filteredMenuItems.map(item =>
                   item.children ? (
                     <NavSection title={item.title} key={item.title}>
                       {item.children.map(child => (

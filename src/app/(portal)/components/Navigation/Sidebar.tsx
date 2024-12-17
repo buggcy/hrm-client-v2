@@ -85,7 +85,7 @@ export const Sidebar = () => {
               <input
                 type="text"
                 placeholder="Search pages..."
-                className="w-full rounded-md border bg-transparent py-2 pl-10 pr-4 text-sm text-foreground outline-none"
+                className="w-full rounded-md bg-muted py-2 pl-10 pr-4 text-sm text-foreground outline-none group-hover:border"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
@@ -101,7 +101,7 @@ export const Sidebar = () => {
             </div>
             {filteredMenuItems.length === 0 ? (
               <div className="mt-4 text-center text-sm text-muted-foreground">
-                No pages found
+                No results found
               </div>
             ) : (
               filteredMenuItems.map(item =>
