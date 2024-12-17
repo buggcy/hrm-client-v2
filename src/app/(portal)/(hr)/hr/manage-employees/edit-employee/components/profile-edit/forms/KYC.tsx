@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -56,7 +55,6 @@ const kycSchema = z.object({
 export type KYCFormData = z.infer<typeof kycSchema>;
 
 const KYC = ({ data, empId }: KYCProps) => {
-  const router = useRouter();
   const { editEmployeeStore } = useStores() as {
     editEmployeeStore: EditEmployeeStoreType;
   };
@@ -97,7 +95,6 @@ const KYC = ({ data, empId }: KYCProps) => {
       });
       setRefetchEditEmployeeData(true);
       reset();
-      router.push('/hr/manage-employees');
     },
   });
   const onSubmit = (newData: KYCFormData) => {

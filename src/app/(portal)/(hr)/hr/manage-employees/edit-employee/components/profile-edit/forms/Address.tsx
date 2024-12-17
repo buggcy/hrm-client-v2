@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -52,7 +51,6 @@ const employeeAddressSchema = z.object({
 export type EmployeeAddressFormData = z.infer<typeof employeeAddressSchema>;
 
 const Address = ({ data, empId }: EmployeeAddressProps) => {
-  const router = useRouter();
   const { editEmployeeStore } = useStores() as {
     editEmployeeStore: EditEmployeeStoreType;
   };
@@ -70,7 +68,6 @@ const Address = ({ data, empId }: EmployeeAddressProps) => {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<EmployeeAddressFormData>({
     resolver: zodResolver(employeeAddressSchema),
     defaultValues: {
@@ -101,8 +98,6 @@ const Address = ({ data, empId }: EmployeeAddressProps) => {
         variant: 'success',
       });
       setRefetchEditEmployeeData(true);
-      reset();
-      router.push('/hr/manage-employees');
     },
   });
   const onSubmit = (data: EmployeeAddressFormData) => {
