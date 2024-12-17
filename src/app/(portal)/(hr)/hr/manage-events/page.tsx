@@ -1,8 +1,6 @@
 'use client';
 import React, { Suspense, useState } from 'react';
 
-import { Bell } from 'lucide-react';
-
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import {
@@ -11,6 +9,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
+import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 
 import { getWritePermissions } from '@/utils/permissions.utils';
@@ -37,9 +36,7 @@ export default function ManageEventsPage() {
     <Layout>
       <LayoutHeader title="Manage Events">
         <LayoutHeaderButtonsBlock>
-          <Button variant="outline" size="icon" className="rounded-full">
-            <Bell className="size-5" />
-          </Button>
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1" className="space-y-5">

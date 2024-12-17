@@ -101,7 +101,7 @@ export const Notification: React.FC = () => {
         </div>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="absolute left-2 min-w-[350px] -translate-x-full md:left-6 md:min-w-max">
+      <DropdownMenuContent className="absolute left-2 min-w-[350px] -translate-x-full md:left-6">
         <NotificationHeader
           unreadCount={unreadCount}
           handleMarkAllAsRead={handleMarkAllAsRead}

@@ -20,7 +20,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
   loadingNotificationId,
   handleMarkAsReadClick,
 }) => (
-  <ScrollArea className="h-72 w-full">
+  <ScrollArea className="h-72 min-w-[350px] md:min-w-[500px]">
     {isMarkingAllAsRead && (
       <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
         <Loader className="mr-2 animate-spin" />

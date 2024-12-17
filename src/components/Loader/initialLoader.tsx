@@ -56,7 +56,8 @@ const InitialLoader: React.FC = () => {
           </svg>
         </div>
         <div className="flex items-center justify-between border-t border-[#e2e2e2] py-2">
-          Please Wait. Loading...
+          <p>Please Wait</p>
+          <p>Loading...</p>
         </div>
       </div>
     </div>
