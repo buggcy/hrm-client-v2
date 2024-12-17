@@ -105,21 +105,25 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ data }) => {
     <section className="flex w-full flex-col gap-4 lg:flex-row">
       <Card className="w-full lg:max-w-[33%]">
         <CardHeader className="pb-0">
-          <div className="flex justify-between border-b-2 pb-4">
+          <div className="flex justify-between border-b-2 pb-1.5">
             <CardTitle className="mt-2.5 text-sm font-semibold">
               {`${activeTab} Perks`}
             </CardTitle>
             <Tabs value={activeTab} onValueChange={handleTabChange}>
-              <TabsList className="flex">
-                <TabsTrigger value="Available">Available</TabsTrigger>
-                <TabsTrigger value="Approved">Approved</TabsTrigger>
+              <TabsList className="flex h-auto">
+                <TabsTrigger className="py-1 text-xs" value="Available">
+                  Available
+                </TabsTrigger>
+                <TabsTrigger className="py-1 text-xs" value="Approved">
+                  Approved
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
         </CardHeader>
         <CardContent>
           {activeTab === 'Available' && (
-            <ScrollArea className="mt-2 h-48 w-full">
+            <ScrollArea className="mt-3 h-48 w-full">
               <div className="flex flex-col gap-4">
                 {records?.availableData.map(perk => {
                   const { assignedIncrementAmount, incrementAmount, name } =
@@ -133,7 +137,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ data }) => {
                       className="flex flex-col rounded-lg border border-gray-200 p-2 dark:dark:border-gray-300 dark:text-white"
                     >
                       <div className="mb-2 flex items-center justify-between">
-                        <p className="text-base font-semibold">{name}</p>
+                        <p className="text-sm font-semibold">{name}</p>
                         <div>
                           <TooltipProvider>
                             <Tooltip>
@@ -197,7 +201,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ data }) => {
                           className="flex flex-col rounded-lg border border-gray-200 p-2 dark:dark:border-gray-300 dark:text-white"
                         >
                           <div className="mb-2 flex items-center justify-between">
-                            <p className="text-base font-semibold">{name}</p>
+                            <p className="text-sm font-semibold">{name}</p>
                             <div>
                               <TooltipProvider>
                                 <Tooltip>

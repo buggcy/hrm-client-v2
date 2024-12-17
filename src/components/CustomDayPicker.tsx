@@ -51,8 +51,9 @@ export default function CustomDayPicker({
   const [date, setDate] = React.useState<Date | undefined>(
     initialDate || undefined,
   );
+
   const [selectedMonth, setSelectedMonth] = React.useState<number>(
-    date?.getMonth() || 0,
+    date?.getMonth() || new Date().getMonth(),
   );
   const [selectedYear, setSelectedYear] = React.useState<number>(
     date?.getFullYear() || new Date().getFullYear(),
