@@ -4,12 +4,6 @@ import { Loader } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 
 import { timeAgo } from '@/utils/notification.utills';
 
@@ -20,11 +14,6 @@ interface NotificationItemProps {
   loadingNotificationId: string | null;
   handleMarkAsReadClick: (id: string) => void;
 }
-const truncateNotification = (message: string, maxWords = 7) => {
-  const words = message.split(' ');
-  if (words.length <= maxWords) return message;
-  return words.slice(0, maxWords).join(' ') + '...';
-};
 
 export const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
@@ -57,28 +46,13 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
     </Avatar>
 
     <div className="flex-1">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <p className="min-w-[200px] cursor-pointer text-sm">
-              <span className="font-bold">
-                {notification.senderId?.firstName || 'Unknown'}{' '}
-                {notification.senderId?.lastName || 'User'}
-              </span>{' '}
-              {truncateNotification(notification.message)}
-            </p>
-          </TooltipTrigger>
-          <TooltipContent className="max-w-xs">
-            <p className="mb-1 text-sm font-normal">
-              <span className="font-bold">
-                {notification.senderId?.firstName || 'Unknown'}{' '}
-                {notification.senderId?.lastName || 'User'}
-              </span>{' '}
-              {notification.message}
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <p className="text-sm">
+        <span className="font-bold">
+          {notification.senderId?.firstName || 'Unknown'}{' '}
+          {notification.senderId?.lastName || 'User'}
+        </span>{' '}
+        {notification.message}
+      </p>
     </div>
 
     <div className="mx-2 text-xs text-gray-500">
