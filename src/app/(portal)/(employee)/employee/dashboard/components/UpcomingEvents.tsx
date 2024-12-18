@@ -258,7 +258,7 @@ const EventsAndBirthdays = () => {
                                         <span className="text-sm font-medium text-black dark:text-white">
                                           Description:
                                         </span>
-                                        <div className="description-content max-h-60 overflow-y-auto px-8 text-sm">
+                                        <div className="description-content max-h-60 overflow-y-auto rounded-md bg-muted/70 p-4 text-sm">
                                           <div
                                             dangerouslySetInnerHTML={{
                                               __html:

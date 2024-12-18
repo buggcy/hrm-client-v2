@@ -66,7 +66,7 @@ export function BirthdayAreaChart() {
   });
 
   return (
-    <Card className="h-[330px] max-lg:w-full lg:w-3/5">
+    <Card className="h-[340px] max-lg:w-full lg:w-3/5">
       <CardHeader>
         <CardTitle>Birthdays and Anniversarys per month</CardTitle>
         <CardDescription>
