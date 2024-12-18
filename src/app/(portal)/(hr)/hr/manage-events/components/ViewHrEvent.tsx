@@ -90,7 +90,7 @@ export function ViewHrEvent({
 
             <div className="flex flex-col space-y-3">
               <span className="text-sm font-medium">Description:</span>
-              <div className="description-content max-h-60 overflow-y-auto px-8 text-sm">
+              <div className="description-content max-h-60 overflow-y-auto rounded-md bg-muted/70 p-4 text-sm">
                 {/* Render the HTML content from Quill */}
                 <div
                   dangerouslySetInnerHTML={{

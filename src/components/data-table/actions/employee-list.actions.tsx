@@ -41,6 +41,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
 
   const [modal, setModal] = React.useState<boolean>(false);
   const [firedId, setFiredId] = React.useState<string>('');
+  const [userDesignation, setUserDesignation] = React.useState<string>('');
 
   const data = row.original;
 
@@ -61,8 +62,9 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
   const handleViewDetails = () => {
     router.push(`/profile?userId=${data._id}`);
   };
-  const handleFire = (id: string) => {
-    setFiredId(id);
+  const handleFire = (data: EmployeeListType) => {
+    setFiredId(data?._id);
+    setUserDesignation(data?.Designation || '');
     setModal(true);
   };
   return (
@@ -95,7 +97,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogTrigger asChild onClick={() => {}}>
-                <DropdownMenuItem onClick={() => handleFire(data?._id)}>
+                <DropdownMenuItem onClick={() => handleFire(data)}>
                   <UserX className="mr-2 size-4" />
                   Fire Employee
                 </DropdownMenuItem>
@@ -123,6 +125,7 @@ export function EmployeeListRowActions({ row }: DataTableRowActionsProps) {
         open={modal}
         onCloseChange={handleClose}
         fireId={firedId}
+        userDesignation={userDesignation}
         setRefetchEmployeeList={setRefetchEmployeeList}
       />
     </Dialog>

@@ -90,7 +90,10 @@ export function ResignationModal({ open, onCloseChange, refetch }: ModalProps) {
   const appliedDate = watch('appliedDate', new Date());
   useEffect(() => {
     if (open && !isImmediate) {
-      if (user?.Designation === 'Intern') {
+      if (
+        user?.Designation === 'Intern' ||
+        user?.Designation === 'Probational'
+      ) {
         const oneWeek = addDays(appliedDate, 7);
         setValue('immedaiteDate', oneWeek);
       } else {

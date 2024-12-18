@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { format } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -41,6 +41,7 @@ interface ModalProps {
   onCloseChange: (open: boolean) => void;
   fireId: string;
   setRefetchEmployeeList: (refetch: boolean) => void;
+  userDesignation?: string;
 }
 const FormSchema = z.object({
   title: z.string().min(1, 'Fire Title is required'),
@@ -61,6 +62,7 @@ export function FiredModal({
   onCloseChange,
   fireId,
   setRefetchEmployeeList,
+  userDesignation,
 }: ModalProps) {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
@@ -68,15 +70,14 @@ export function FiredModal({
   const userId = user?.id || '';
   const [isImmediate, setIsImmediate] = useState(false);
 
-  const handleCheckboxChange = (checked: boolean) => {
-    setIsImmediate(checked);
-  };
-
   const {
     control,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
+    getValues,
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -90,10 +91,45 @@ export function FiredModal({
 
   useEffect(() => {
     if (!open) {
-      reset();
+      reset({
+        title: '',
+        reason: '',
+        description: '',
+        appliedDate: new Date(),
+        immedaiteDate: new Date(),
+      });
       setIsImmediate(false);
     }
   }, [open, reset]);
+
+  const appliedDate = watch('appliedDate', new Date());
+
+  useEffect(() => {
+    if (open && !isImmediate) {
+      if (userDesignation === 'Intern' || userDesignation === 'Probational') {
+        const oneWeek = addDays(appliedDate, 7);
+        setValue('immedaiteDate', oneWeek);
+      } else {
+        const oneMonthLater = addDays(appliedDate, 30);
+        setValue('immedaiteDate', oneMonthLater);
+      }
+    }
+  }, [open, appliedDate, setValue, isImmediate, userDesignation]);
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setIsImmediate(checked);
+    if (checked) {
+      reset({
+        ...getValues(),
+        immedaiteDate: getValues().appliedDate,
+      });
+    } else {
+      reset({
+        ...getValues(),
+        immedaiteDate: addDays(new Date(getValues().appliedDate), 30),
+      });
+    }
+  };
 
   const { mutate, isPending } = useMutation({
     mutationFn: FireEmployee,
@@ -266,7 +302,7 @@ export function FiredModal({
                           'justify-start text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
-                        disabled={!isImmediate}
+                        disabled={true}
                       >
                         <CalendarIcon className="mr-2 size-4" />
                         {field.value ? (
