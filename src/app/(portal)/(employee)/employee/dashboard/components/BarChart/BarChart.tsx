@@ -69,9 +69,13 @@ export function BChart() {
               value={isMonthlyView ? 'monthly' : 'weekly'}
               onValueChange={value => setIsMonthlyView(value === 'monthly')}
             >
-              <TabsList className="rounded-lg shadow-sm transition">
-                <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                <TabsTrigger value="weekly">Weekly</TabsTrigger>
+              <TabsList className="h-auto rounded-lg shadow-sm transition">
+                <TabsTrigger className="py-1 text-xs" value="monthly">
+                  Monthly
+                </TabsTrigger>
+                <TabsTrigger className="py-1 text-xs" value="weekly">
+                  Weekly
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
