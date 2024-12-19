@@ -18,7 +18,7 @@ export interface EmpIdSchema {
 }
 export interface EmployeePayroll {
   _id: string;
-  Emp_ID?: EmpIdSchema;
+  Emp_ID?: EmpIdSchema | null;
   User_ID?: string;
   type?: string;
   Employee_Name?: string;

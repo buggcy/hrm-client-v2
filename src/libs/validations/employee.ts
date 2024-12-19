@@ -107,7 +107,7 @@ const employeeListSchema = z.object({
 
 const employeePayrollSchema = z.object({
   _id: z.string(),
-  Emp_ID: emp_Id_Schema.optional(),
+  Emp_ID: emp_Id_Schema.nullable(),
   User_ID: z.string().optional(),
   Employee_Name: z.string().optional(),
   Date: z.string().optional(),
