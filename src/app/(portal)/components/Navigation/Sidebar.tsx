@@ -106,27 +106,19 @@ export const Sidebar = () => {
             ) : (
               filteredMenuItems.map(item =>
                 item.children ? (
-                  !item.disabled && (
-                    <NavSection title={item.title} key={item.title}>
-                      {item.children
-                        .filter(
-                          child =>
-                            !child.disabled &&
-                            child.title
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase()),
-                        )
-                        .map(child => (
-                          <NavigationItem
-                            key={child.href}
-                            title={child.title}
-                            icon={child.icon}
-                            href={child.href!}
-                            active={pathname === child.href}
-                          />
-                        ))}
-                    </NavSection>
-                  )
+                  <NavSection title={item.title} key={item.title}>
+                    {item.children.map(child => (
+                      <li className="flex" key={child.href}>
+                        <NavigationItem
+                          key={child.href}
+                          title={child.title}
+                          icon={child.icon}
+                          href={child.href!}
+                          active={pathname === child.href}
+                        />
+                      </li>
+                    ))}
+                  </NavSection>
                 ) : (
                   <li className="flex" key={item.href}>
                     <NavigationItem
