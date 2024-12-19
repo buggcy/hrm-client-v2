@@ -224,8 +224,8 @@ export default function HrEventsCalendar() {
         color: 'hsl(var(--primary))',
       },
       anniversary: {
-        backgroundColor: '#f43f5e',
-        color: '#ffe4e6',
+        backgroundColor: '#F1F4FFFF',
+        color: '#0F172A',
       },
     };
 
@@ -257,7 +257,13 @@ export default function HrEventsCalendar() {
           )}
           <h3 className="font-bold">{event.title}</h3>
         </div>
-        <p>{event.Event_Type}</p>
+        <p>
+          {' '}
+          {event.Event_Type
+            ? event.Event_Type.charAt(0).toUpperCase() +
+              event.Event_Type.slice(1).toLowerCase()
+            : ''}
+        </p>
       </div>
     );
   };
@@ -405,7 +411,7 @@ export default function HrEventsCalendar() {
           <Cake className="mr-2 inline-block size-4" />
         )}
         {event.Event_Type === 'anniversary' && (
-          <Gift className="mr-2 inline-block size-4" />
+          <Gift color="#0F172A" className="mr-2 inline-block size-4" />
         )}
         {event.Event_Type === 'company' || event.Event_Type === 'holiday'
           ? event.title

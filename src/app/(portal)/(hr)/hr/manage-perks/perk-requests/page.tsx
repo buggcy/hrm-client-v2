@@ -17,6 +17,7 @@ import {
 import { Notification } from '@/components/NotificationIcon';
 import { toast } from '@/components/ui/use-toast';
 
+import EmptyCard from '@/app/(authentication)/auth/register/components/emptyCard';
 import { useHrPerkRequestsQuery } from '@/hooks/hrPerksList/useHrPerksList.hook';
 import {
   approvePerkRequest,
@@ -109,21 +110,18 @@ const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
             setDate={handleSetDate}
           />
         </Header>
+        {data?.data.length === 0 && <EmptyCard />}
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {data?.data.length ? (
-            data.data.map(perkRequest => (
-              <PerkRequestCard
-                key={perkRequest._id}
-                perkRequest={perkRequest}
-                isApproving={isApproving}
-                isRejecting={isRejecting}
-                handleApprove={handleApprove}
-                handleReject={handleReject}
-              />
-            ))
-          ) : (
-            <div>No data</div>
-          )}
+          {data?.data.map(perkRequest => (
+            <PerkRequestCard
+              key={perkRequest._id}
+              perkRequest={perkRequest}
+              isApproving={isApproving}
+              isRejecting={isRejecting}
+              handleApprove={handleApprove}
+              handleReject={handleReject}
+            />
+          ))}
         </div>
       </LayoutWrapper>
     </Layout>
