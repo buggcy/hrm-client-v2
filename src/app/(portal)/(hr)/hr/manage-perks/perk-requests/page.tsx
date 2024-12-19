@@ -110,7 +110,9 @@ const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
             setDate={handleSetDate}
           />
         </Header>
-        {data?.data.length === 0 && <EmptyCard />}
+        {data?.data.length === 0 && (
+          <EmptyCard message={'Employee Perks Requests'} />
+        )}
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {data?.data.map(perkRequest => (
             <PerkRequestCard
