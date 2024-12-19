@@ -25,7 +25,7 @@ const attendanceHistoryListSchema = z.object({
   date: z.string(),
   Total_Time: z.string(),
   Start_Date: z.string(),
-  End_Date: z.string(),
+  End_Date: z.string().nullable(),
   Productivity: z.string(),
   Status: z.enum(attendance_history_status),
   breaks: z.array(breakSchema),

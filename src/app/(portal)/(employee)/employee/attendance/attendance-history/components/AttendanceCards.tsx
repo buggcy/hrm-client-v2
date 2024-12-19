@@ -106,7 +106,19 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
         <CardHeader className="pb-0">
           <div className="flex justify-between border-b-2 pb-6">
             <CardTitle className="text-sm">Today</CardTitle>
-            <Badge variant="destructive">{card1Data?.status}</Badge>
+            <Badge
+              variant={
+                card1Data?.status === 'Present'
+                  ? 'success'
+                  : card1Data?.status === 'Absent'
+                    ? 'destructive'
+                    : card1Data?.status === 'Leave'
+                      ? 'warning'
+                      : 'default'
+              }
+            >
+              {card1Data?.status}
+            </Badge>
           </div>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-between pt-6 sm:flex-row sm:gap-2">
