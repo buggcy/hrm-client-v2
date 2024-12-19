@@ -1,7 +1,7 @@
 export interface AttendanceBreaks {
   _id: string;
-  Start_Break: string;
-  End_Break: string;
+  Start_Break?: string;
+  End_Break?: string;
 }
 
 export interface AttendanceHistory {
@@ -9,10 +9,10 @@ export interface AttendanceHistory {
   date: string;
   Total_Time: string;
   Start_Date: string;
-  End_Date: string;
+  End_Date: string | null;
   Productivity: string;
   Status: string;
-  breaks: AttendanceBreaks[];
+  breaks?: AttendanceBreaks[];
 }
 
 export interface Pagination {
