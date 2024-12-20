@@ -92,7 +92,7 @@ const ResignedApproval: FunctionComponent<ResignedRequestProps> = ({
           ))
         ) : (
           <div className="col-span-full flex items-center justify-center">
-            <EmptyCard message="Resignation Requests Available" />
+            <EmptyCard message="Resignation Requests available" />
           </div>
         )}
       </div>

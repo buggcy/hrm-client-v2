@@ -80,7 +80,7 @@ const ComplaintResolved: FunctionComponent<Props> = () => {
           ))
         ) : (
           <div className="col-span-full flex items-center justify-center">
-            <EmptyCard message="Complaints Available" />
+            <EmptyCard message="Complaints available" />
           </div>
         )}
       </div>
