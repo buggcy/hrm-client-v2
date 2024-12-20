@@ -36,7 +36,7 @@ const AttendanceHistoryDialog = ({
   onCloseChange,
 }: AttendanceHistoryDialogProps) => {
   const startTime = formatUTCToLocalTime(data?.Start_Date);
-  const endTime = formatUTCToLocalTime(data?.End_Date);
+  const endTime = formatUTCToLocalTime(data?.End_Date || '');
   const totalTimeStr = data?.Total_Time;
   let totalTimeInMinutes = 0;
   if (typeof totalTimeStr === 'string') {
