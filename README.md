@@ -48,7 +48,7 @@ UI components are general interface elements used throughout the application. Th
 
 ### Usage and Creation
 
-When creating new UI components or utilizing existing ones, it's important to follow the guidelines and component structures provided in the Shadcn UI library
+When creating new UI components or utilizing existing ones, it's important to follow the guidelines and component structures provided in the Shadcn UI library.
 
 For detailed documentation on how to use or create these UI components, refer to the Shadcn UI documentation available at [Shadcn UI Components](https://ui.shadcn.com/docs/components).
 All general UI components are stored under: _`src/components/ui`_
