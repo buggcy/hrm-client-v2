@@ -67,7 +67,7 @@ export const UserPopover = () => {
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="h-10 w-full justify-start overflow-hidden p-0 pl-1 transition-all duration-200 group-hover:w-52 sm:w-10"
+            className="h-10 w-full justify-start overflow-hidden p-0 pl-1 transition-all duration-200 group-hover:w-60 sm:w-10"
           >
             <div className="flex w-52 items-center gap-2.5">
               <Avatar className="size-8">

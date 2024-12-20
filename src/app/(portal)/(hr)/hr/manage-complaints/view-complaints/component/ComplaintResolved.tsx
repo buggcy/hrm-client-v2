@@ -8,6 +8,7 @@ import Header from '@/components/Header/Header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
+import EmptyCard from '@/app/(authentication)/auth/register/components/emptyCard';
 import { usePendingComplaintQuery } from '@/hooks/complaint/useComplaint.hook';
 import { ComplaintStoreType } from '@/stores/employee/complaint';
 import { formatedDate } from '@/utils';
@@ -78,8 +79,8 @@ const ComplaintResolved: FunctionComponent<Props> = () => {
             <PendingComplaints key={complaint?._id} data={complaint} />
           ))
         ) : (
-          <div className="flex size-full items-center justify-center">
-            <span>No Pending Complaints Available!</span>
+          <div className="col-span-full flex items-center justify-center">
+            <EmptyCard message="Complaints Available" />
           </div>
         )}
       </div>

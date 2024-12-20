@@ -45,7 +45,6 @@ interface AttendanceHistoryBarChartProps {
 
 export function AttendanceHistoryBarChart({
   data,
-  date,
 }: AttendanceHistoryBarChartProps) {
   const formatDate = (date?: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -55,54 +54,29 @@ export function AttendanceHistoryBarChart({
     }).format(date);
   };
 
-  const formattedDateRange = date
-    ? `${formatDate(date.from)} - ${formatDate(date.to)}`
-    : '';
+  const today = new Date();
+  const last7Days = Array.from({ length: 7 })
+    .map((_, index) => {
+      const day = new Date();
+      day.setDate(today.getDate() - index);
+      return {
+        date: day,
+        dayName: day.toLocaleDateString('en-US', { weekday: 'long' }),
+      };
+    })
+    .reverse();
 
-  const chartData = [
-    {
-      day: 'Monday',
-      present: data?.Monday.Present || 0,
-      absent: data?.Monday.Absent || 0,
-      leave: data?.Monday.Leave || 0,
-    },
-    {
-      day: 'Tuesday',
-      present: data?.Tuesday.Present || 0,
-      absent: data?.Tuesday.Absent,
-      leave: data?.Tuesday.Leave || 0,
-    },
-    {
-      day: 'Wednesday',
-      present: data?.Wednesday.Present || 0,
-      absent: data?.Wednesday.Absent || 0,
-      leave: data?.Wednesday.Leave || 0,
-    },
-    {
-      day: 'Thursday',
-      present: data?.Thursday.Present || 0,
-      absent: data?.Thursday.Absent || 0,
-      leave: data?.Thursday.Leave || 0,
-    },
-    {
-      day: 'Friday',
-      present: data?.Friday.Present || 0,
-      absent: data?.Friday.Absent || 0,
-      leave: data?.Friday.Leave || 0,
-    },
-    {
-      day: 'Saturday',
-      present: data?.Saturday.Present || 0,
-      absent: data?.Saturday.Absent || 0,
-      leave: data?.Saturday.Leave || 0,
-    },
-    {
-      day: 'Sunday',
-      present: data?.Sunday.Present || 0,
-      absent: data?.Sunday.Absent || 0,
-      leave: data?.Sunday.Leave || 0,
-    },
-  ];
+  const formattedDateRange = `${formatDate(last7Days[0].date)} - ${formatDate(
+    last7Days[last7Days.length - 1].date,
+  )}`;
+
+  const chartData = last7Days.map(dayInfo => ({
+    day: dayInfo.dayName,
+    present: data?.[dayInfo.dayName]?.Present || 0,
+    absent: data?.[dayInfo.dayName]?.Absent || 0,
+    leave: data?.[dayInfo.dayName]?.Leave || 0,
+  }));
+
   return (
     <Card>
       <CardHeader>

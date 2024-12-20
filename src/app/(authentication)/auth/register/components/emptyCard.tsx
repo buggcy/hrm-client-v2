@@ -9,7 +9,7 @@ const EmptyCard: React.FC<EmptyCardProps> = ({ message }) => (
         <span className="font-bold">No Results Found</span>
       </h1>
       <p className="text-sm text-gray-500">
-        There are no Pending {message} at the moment.
+        There are no pending {message} at the moment.
       </p>
     </div>
   </div>

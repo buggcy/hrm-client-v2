@@ -13,7 +13,7 @@ export const NavigationSupportBtn = ({
     <Button
       variant="ghost"
       className={cn(
-        'h-10 w-full justify-start overflow-hidden pl-2.5 text-muted-foreground transition-all duration-200 group-hover:w-52 sm:size-10',
+        'h-10 w-full justify-start overflow-hidden pl-2.5 text-muted-foreground transition-all duration-200 group-hover:w-60 sm:size-10',
         className,
       )}
       {...props}

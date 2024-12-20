@@ -20,7 +20,7 @@ export const NavigationItem: FC<{
       className={cn(
         'justify-start overflow-hidden pl-2.5 text-muted-foreground',
         {
-          'bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary':
+          'bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary group-hover:w-60':
             active,
         },
       )}
