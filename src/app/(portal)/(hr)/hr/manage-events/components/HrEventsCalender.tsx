@@ -251,19 +251,22 @@ export default function HrEventsCalendar() {
           transform: isVisible ? 'translateY(0)' : 'translateY(-10px)',
         }}
       >
-        <div className="flex items-center">
-          {event.Event_Type === 'birthday' && (
-            <Cake className="mr-2 inline-block size-4" />
-          )}
-          <h3 className="font-bold">{event.title}</h3>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <h3 className="mr-2 font-bold">
+              {event.title}{' '}
+              {event.Event_Type
+                ? event.Event_Type.charAt(0).toUpperCase() +
+                  event.Event_Type.slice(1).toLowerCase()
+                : ''}
+            </h3>
+          </div>
+          {event.Event_Type === 'birthday' ? (
+            <Cake className="inline-block size-4" />
+          ) : event.Event_Type === 'anniversary' ? (
+            <Gift className="inline-block size-4" />
+          ) : null}
         </div>
-        <p>
-          {' '}
-          {event.Event_Type
-            ? event.Event_Type.charAt(0).toUpperCase() +
-              event.Event_Type.slice(1).toLowerCase()
-            : ''}
-        </p>
       </div>
     );
   };
@@ -434,7 +437,7 @@ export default function HrEventsCalendar() {
 
         eventsForBirthday.push({
           id: `dob-${dobEvent.firstName}-${dobEvent.lastName}-${year}`,
-          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Birthday`,
+          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}`,
           start: birthdayThisYear,
           end: new Date(birthdayThisYear.setDate(birthdayThisYear.getDate())),
           Event_Type: 'birthday',
@@ -463,7 +466,7 @@ export default function HrEventsCalendar() {
 
         eventsForAnniversary.push({
           id: `anniversary-${dobEvent.firstName}-${dobEvent.lastName}-${year}`,
-          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Joining Anniversary`,
+          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}`,
           start: anniversaryThisYear,
           end: new Date(
             anniversaryThisYear.setDate(anniversaryThisYear.getDate()),
