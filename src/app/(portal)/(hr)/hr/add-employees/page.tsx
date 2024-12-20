@@ -13,7 +13,6 @@ import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 
 import { useApprovalEmployeeQuery } from '@/hooks/employee/useApprovalEmployee.hook';
-import { getWritePermissions } from '@/utils/permissions.utils';
 
 import AddEmpCards from './components/AddEmpCards';
 import UnApprovedEmployeeTable from './components/UnapprovedEmployee.component';
@@ -30,7 +29,8 @@ export default function AddEmployeesPage() {
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
-  const addPermission = getWritePermissions('canWriteEmployees');
+  // const addPermission = getWritePermissions('canWriteEmployees');
+
   return (
     <Layout>
       <LayoutHeader title="Add Employees">
@@ -40,13 +40,15 @@ export default function AddEmployeesPage() {
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
         <Header subheading="Creating a culture where people thrive and businesses grow.">
+          {/* {addPermission && ( */}
           <Button
             variant="default"
             onClick={handleDialogOpen}
-            disabled={!addPermission}
+            // disabled={!addPermission}
           >
             Add Employee
           </Button>
+          {/* )} */}
           <Button variant="outline" asChild>
             <Link href="/hr/approval" className="flex items-center">
               View Approval Requests

@@ -76,7 +76,7 @@ const attendanceListSchema = z.object({
   _id: z.string(),
   User_ID: z.string(),
   Start_Date: z.string(),
-  End_Date: z.string(),
+  End_Date: z.string().nullable(),
   Total_Time: z.string(),
   Status: z.string(),
   isDeleted: z.boolean(),
@@ -176,7 +176,7 @@ const attendanceUsersApiResponseSchema = z.object({
 
 const userDateAttendanceSchema = z.object({
   Start_Date: z.string().optional(),
-  End_Date: z.string().optional(),
+  End_Date: z.string().optional().nullable(),
   Total_Time: z.string().optional(),
   Status: z.string().optional(),
   message: z.string().optional(),

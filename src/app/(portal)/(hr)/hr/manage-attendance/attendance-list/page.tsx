@@ -45,7 +45,7 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
-        <Header subheading="You are 15 minutes late today!">
+        <Header subheading="Track and Manage Attendance Seamlessly for Every User!">
           <DateRangePicker
             timeRange={timeRange}
             selectedDate={selectedDate}
