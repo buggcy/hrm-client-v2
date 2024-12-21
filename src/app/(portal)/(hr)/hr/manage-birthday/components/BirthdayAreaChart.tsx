@@ -27,7 +27,7 @@ interface Employee {
   firstName: string;
   lastName: string;
   DOB: Date;
-  Joining_Date: Date;
+  Joining_Date?: Date | null;
   remainingDays: number;
 }
 
@@ -51,11 +51,11 @@ export function BirthdayAreaChart() {
       month: 'long',
     });
     const dobThisMonth = myData?.filter(
-      (employee: Employee) => new Date(employee.DOB).getMonth() === index,
+      (employee: Employee) => new Date(employee?.DOB).getMonth() === index,
     );
     const anniversaryThisMonth = myData?.filter(
       (employee: Employee) =>
-        new Date(employee.Joining_Date).getMonth() === index,
+        new Date(employee?.Joining_Date || '').getMonth() === index,
     );
 
     return {

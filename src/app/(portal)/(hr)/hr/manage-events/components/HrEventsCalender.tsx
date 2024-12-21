@@ -48,7 +48,7 @@ type EmployeeDob = {
   firstName: string;
   lastName: string;
   DOB: Date;
-  Joining_Date: Date;
+  Joining_Date?: Date | null;
 };
 
 const localizer = dateFnsLocalizer({
@@ -416,7 +416,7 @@ export default function HrEventsCalendar() {
 
   const formattedDobEvents: MyEvent[] | undefined = empDobDate?.flatMap(
     (dobEvent: EmployeeDob) => {
-      const dob = new Date(dobEvent.DOB);
+      const dob = new Date(dobEvent?.DOB ?? '');
       const currentYear = new Date().getFullYear();
 
       const yearRange = 5;
@@ -441,7 +441,7 @@ export default function HrEventsCalendar() {
 
   const formattedAnniversaryEvents: MyEvent[] | undefined = empDobDate?.flatMap(
     (dobEvent: EmployeeDob) => {
-      const joiningDate = new Date(dobEvent.Joining_Date);
+      const joiningDate = new Date(dobEvent?.Joining_Date ?? '');
       const currentYear = new Date().getFullYear();
 
       const yearRange = 5;
@@ -456,8 +456,8 @@ export default function HrEventsCalendar() {
         );
 
         eventsForAnniversary.push({
-          id: `anniversary-${dobEvent.firstName}-${dobEvent.lastName}-${year}`,
-          title: `${dobEvent.firstName.trim()} ${dobEvent.lastName.trim()}'s Joining Anniversary`,
+          id: `anniversary-${dobEvent?.firstName}-${dobEvent?.lastName}-${year}`,
+          title: `${dobEvent.firstName.trim()} ${dobEvent?.lastName.trim()}'s Joining Anniversary`,
           start: anniversaryThisYear,
           end: new Date(
             anniversaryThisYear.setDate(anniversaryThisYear.getDate()),

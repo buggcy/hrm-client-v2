@@ -49,7 +49,7 @@ export function ViewAttendanceDialog({
   const initials = `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
 
   const startTime = formatUTCToLocalTime(data?.Start_Date);
-  const endTime = formatUTCToLocalTime(data?.End_Date);
+  const endTime = formatUTCToLocalTime(data?.End_Date ?? '');
   const totalTimeStr = data?.Total_Time;
   let totalTimeInMinutes = 0;
   if (typeof totalTimeStr === 'string') {

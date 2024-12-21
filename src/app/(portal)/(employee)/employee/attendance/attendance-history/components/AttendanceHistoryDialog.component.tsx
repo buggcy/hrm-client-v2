@@ -36,7 +36,7 @@ const AttendanceHistoryDialog = ({
   onCloseChange,
 }: AttendanceHistoryDialogProps) => {
   const startTime = formatUTCToLocalTime(data?.Start_Date);
-  const endTime = formatUTCToLocalTime(data?.End_Date);
+  const endTime = formatUTCToLocalTime(data?.End_Date ?? '');
   const totalTimeStr = data?.Total_Time;
   let totalTimeInMinutes = 0;
   if (typeof totalTimeStr === 'string') {
@@ -50,7 +50,7 @@ const AttendanceHistoryDialog = ({
   const formattedMinutes = minutes.toString().padStart(2, '0');
   const totalTime = `${formattedHours}:${formattedMinutes}`;
   const status = data?.Status;
-  const date = data?.date ? new Date(data.date) : new Date();
+  const date = data?.date ? new Date(data?.date) : new Date();
   const breaks: AttendanceBreaks[] = data?.breaks;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

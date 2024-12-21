@@ -138,7 +138,7 @@ export function AttendanceDialog({
           : '',
       outTime:
         type === 'edit' && data?.Start_Date
-          ? formatUTCToLocalTime(data.End_Date)
+          ? formatUTCToLocalTime(data.End_Date ?? '')
           : '',
       totalTime:
         type === 'edit' && data?.Total_Time ? parseInt(data.Total_Time, 10) : 0,
