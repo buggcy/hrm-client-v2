@@ -88,12 +88,13 @@ export function HrPolicyToolbar<TData extends DataTableType>({
             onFilterChange={setFilterValue}
           />
         )}
-        {(isFiltered || searchTerm) && (
+        {(isFiltered || searchTerm || filterValue.length > 0) && (
           <Button
             variant="ghost"
             onClick={() => {
               table.resetColumnFilters();
               onSearch('');
+              setFilterValue([]);
             }}
             className="h-8 px-2 lg:px-3"
           >
