@@ -479,16 +479,6 @@ export function AddEditTypeDialog({
                               ? 'Edit'
                               : null}
             </Button>
-            <Button
-              variant="ghostSecondary"
-              type="button"
-              onClick={() => {
-                reset();
-                onCloseChange(false);
-              }}
-            >
-              Close
-            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
