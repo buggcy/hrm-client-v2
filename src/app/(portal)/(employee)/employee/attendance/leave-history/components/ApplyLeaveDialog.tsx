@@ -375,7 +375,7 @@ export function ApplyLeaveDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[905px]">
         <DialogHeader>
-          <DialogTitle>Apply For Leave</DialogTitle>
+          <DialogTitle> {data ? 'Edit' : 'Apply For'} Leave</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 py-4">
           <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-center gap-4">
@@ -570,7 +570,7 @@ export function ApplyLeaveDialog({
 
           <DialogFooter>
             <Button type="submit" disabled={isApplying || isUpdating}>
-              {data ? 'Update' : 'Apply For'} Leave
+              {data ? 'Edit' : 'Apply For'} Leave
             </Button>
           </DialogFooter>
         </form>

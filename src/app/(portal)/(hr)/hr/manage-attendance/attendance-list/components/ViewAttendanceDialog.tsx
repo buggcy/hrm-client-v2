@@ -11,11 +11,9 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -33,14 +31,13 @@ interface DialogDemoProps {
   data: AttendanceListType;
   open: boolean;
   onOpenChange: () => void;
-  onCloseChange: () => void;
+  onCloseChange?: () => void;
 }
 
 export function ViewAttendanceDialog({
   data,
   open,
   onOpenChange,
-  onCloseChange,
 }: DialogDemoProps) {
   const user: AttendanceUser = data?.user;
   const firstName = user?.firstName;
@@ -67,7 +64,7 @@ export function ViewAttendanceDialog({
   const breaks: AttendanceBreaks[] = data?.breaks;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-fit p-8">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Attendance Details</DialogTitle>
         </DialogHeader>
@@ -136,11 +133,6 @@ export function ViewAttendanceDialog({
           <span className="pb-4">Breaks:</span>
           <BreaksTable data={breaks} />
         </div>
-        <DialogFooter>
-          <Button onClick={onCloseChange} size="sm">
-            Close
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

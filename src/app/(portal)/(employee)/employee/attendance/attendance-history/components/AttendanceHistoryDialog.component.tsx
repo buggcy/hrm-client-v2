@@ -8,11 +8,9 @@ import {
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -26,14 +24,13 @@ interface AttendanceHistoryDialogProps {
   data: AttendanceHistoryListType;
   open: boolean;
   onOpenChange: () => void;
-  onCloseChange: () => void;
+  onCloseChange?: () => void;
 }
 
 const AttendanceHistoryDialog = ({
   data,
   open,
   onOpenChange,
-  onCloseChange,
 }: AttendanceHistoryDialogProps) => {
   const startTime = formatUTCToLocalTime(data?.Start_Date);
   const endTime = formatUTCToLocalTime(data?.End_Date || '');
@@ -54,8 +51,8 @@ const AttendanceHistoryDialog = ({
   const breaks: AttendanceBreaks[] = data?.breaks;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-fit p-8">
-        <DialogHeader className="flex flex-row items-center justify-between">
+      <DialogContent>
+        <DialogHeader className="mt-2 flex flex-row items-center justify-between">
           <DialogTitle>Attendance Details</DialogTitle>
           <Badge
             className="ml-2 px-2 py-1"
@@ -106,11 +103,6 @@ const AttendanceHistoryDialog = ({
           <span className="pb-4">Breaks:</span>
           <BreaksTable data={breaks} />
         </div>
-        <DialogFooter>
-          <Button onClick={onCloseChange} size="sm">
-            Close
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
