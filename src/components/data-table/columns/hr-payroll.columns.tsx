@@ -48,10 +48,17 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const firstName = row.original.Emp_ID.firstName;
-      const lastName = row.original.Emp_ID.lastName;
-      const avatar = row.original.Emp_ID.Avatar;
-      const initials = `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
+      const firstName = row.original?.Emp_ID?.firstName;
+      const lastName = row.original?.Emp_ID?.lastName;
+      const avatar = row.original?.Emp_ID?.Avatar;
+      const employeeName = row.original?.Employee_Name;
+      const initials =
+        `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}` ||
+        `${employeeName
+          ?.split(' ')
+          .filter(word => word)
+          .map(word => word.charAt(0))
+          .join('')}`;
 
       return (
         <div className="flex items-center space-x-2">
@@ -59,10 +66,21 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
             <AvatarImage src={avatar || ''} alt={`${firstName} ${lastName}`} />
             <AvatarFallback className="uppercase">{initials}</AvatarFallback>
           </Avatar>
-
-          <span className="max-w-[500px] truncate font-medium capitalize">
-            {`${firstName} ${lastName}`}
-          </span>
+          {firstName ? (
+            <>
+              {' '}
+              <span className="max-w-[500px] truncate font-medium capitalize">
+                {`${firstName} ${lastName}`}
+              </span>
+            </>
+          ) : (
+            <>
+              {' '}
+              <span className="max-w-[500px] truncate font-medium capitalize">
+                {`${employeeName}`}
+              </span>
+            </>
+          )}
         </div>
       );
     },
