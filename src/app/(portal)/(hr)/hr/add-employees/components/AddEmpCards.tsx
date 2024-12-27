@@ -36,7 +36,7 @@ function AddEmpCards() {
           </CardContent>
         </Card>
 
-        <Card className="flex h-full flex-col justify-center bg-white p-1 shadow-md dark:bg-[#18181b] max-lg:w-full">
+        <Card className="flex h-[125px] flex-col justify-center bg-white p-1 shadow-md dark:bg-[#18181b] max-lg:w-full lg:h-full">
           <CardHeader className="flex gap-2 p-3">
             <ClipboardList className="size-5 text-green-900" />
           </CardHeader>
