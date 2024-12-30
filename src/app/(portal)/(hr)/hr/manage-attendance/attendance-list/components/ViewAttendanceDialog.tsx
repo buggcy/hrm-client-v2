@@ -46,7 +46,9 @@ export function ViewAttendanceDialog({
   const initials = `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
 
   const startTime = formatUTCToLocalTime(data?.Start_Date);
-  const endTime = formatUTCToLocalTime(data?.End_Date ?? '');
+  const endTime = data?.End_Date
+    ? formatUTCToLocalTime(data?.End_Date ?? '')
+    : '00:00';
   const totalTimeStr = data?.Total_Time;
   let totalTimeInMinutes = 0;
   if (typeof totalTimeStr === 'string') {
@@ -62,6 +64,7 @@ export function ViewAttendanceDialog({
   const status = data?.Status;
   const date = data?.date ? new Date(data.date) : new Date();
   const breaks: AttendanceBreaks[] = data?.breaks;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -131,7 +134,13 @@ export function ViewAttendanceDialog({
 
         <div className="w-full border-t-2 pt-4">
           <span className="pb-4">Breaks:</span>
-          <BreaksTable data={breaks} />
+          {breaks?.length > 0 ? (
+            <BreaksTable data={breaks} />
+          ) : (
+            <div className="text-center text-sm text-gray-600">
+              No breaks data found!
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
