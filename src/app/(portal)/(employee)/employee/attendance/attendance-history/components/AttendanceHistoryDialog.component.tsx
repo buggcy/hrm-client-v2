@@ -33,7 +33,9 @@ const AttendanceHistoryDialog = ({
   onOpenChange,
 }: AttendanceHistoryDialogProps) => {
   const startTime = formatUTCToLocalTime(data?.Start_Date);
-  const endTime = formatUTCToLocalTime(data?.End_Date || '');
+  const endTime = data?.End_Date
+    ? formatUTCToLocalTime(data?.End_Date || '')
+    : '00:00';
   const totalTimeStr = data?.Total_Time;
   let totalTimeInMinutes = 0;
   if (typeof totalTimeStr === 'string') {
@@ -101,7 +103,13 @@ const AttendanceHistoryDialog = ({
 
         <div className="w-full border-t-2 pt-4">
           <span className="pb-4">Breaks:</span>
-          <BreaksTable data={breaks} />
+          {breaks?.length > 0 ? (
+            <BreaksTable data={breaks} />
+          ) : (
+            <div className="text-center text-sm text-gray-600 dark:text-gray-300">
+              No breaks found!
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

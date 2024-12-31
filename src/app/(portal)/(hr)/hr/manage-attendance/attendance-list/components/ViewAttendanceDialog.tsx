@@ -137,7 +137,7 @@ export function ViewAttendanceDialog({
           {breaks?.length > 0 ? (
             <BreaksTable data={breaks} />
           ) : (
-            <div className="text-center text-sm text-gray-600">
+            <div className="text-center text-sm text-gray-600 dark:text-gray-300">
               No breaks data found!
             </div>
           )}
