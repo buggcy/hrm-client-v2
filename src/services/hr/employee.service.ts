@@ -205,11 +205,9 @@ export const resendEmployeeInvitation = async (
   return { message };
 };
 
-export const exportEmployeeCSVData = async (
-  ids: Array<string>,
-): Promise<string> => {
+export const exportEmployeeCSVData = async (ids: Array<string>) => {
   const res = await baseAPI.post(`/user/export-csv`, { ids });
-  return res.data;
+  return res;
 };
 
 export const deleteEmployeeRecord = async (
