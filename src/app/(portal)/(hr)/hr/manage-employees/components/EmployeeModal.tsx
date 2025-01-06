@@ -49,7 +49,9 @@ const addEmployeeSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
   companyEmail: z.string().email('Invalid company email address'),
-  contactNo: z.string().regex(/^03\d{9}$/, 'Invalid contact number'),
+  contactNo: z
+    .string()
+    .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
   basicSalary: z
     .string()
     .min(1, 'Salary is required')

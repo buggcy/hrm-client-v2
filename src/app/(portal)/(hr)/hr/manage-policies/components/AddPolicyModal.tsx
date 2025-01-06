@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -87,6 +87,12 @@ export function PolicyDialog({
       userId: user?.id,
     },
   });
+
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: mutateAsync,

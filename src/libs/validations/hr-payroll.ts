@@ -25,7 +25,7 @@ const payrollIncrementSchema = z.object({
 
 const HRPayrollSchema = z.object({
   _id: z.string(),
-  Emp_ID: empIdSchema,
+  Emp_ID: empIdSchema.nullable(),
   User_ID: z.string().optional(),
   Employee_Name: z.string().optional(),
   Date: z.string().optional(),
