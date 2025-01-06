@@ -35,14 +35,14 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
             >
               <TabsList className="flex w-full justify-between bg-transparent p-0 md:flex-col md:space-y-4">
                 <TabsTrigger
-                  className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
+                  className="flex-1 p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
                   value="profile"
                 >
                   <Pencil className="mr-2 size-4" />
                   <span className="capitalize">Profile Edit</span>
                 </TabsTrigger>
                 <TabsTrigger
-                  className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
+                  className="flex-1 p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
                   value="account"
                 >
                   <KeyRound className="mr-2 size-4" />
@@ -50,7 +50,7 @@ const EditProfileComponent: React.FC<UserProps> = ({ user }) => {
                 </TabsTrigger>
                 {user?.roleId === 2 && (
                   <TabsTrigger
-                    className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
+                    className="flex-1 p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
                     value="resignation"
                   >
                     <UserMinus className="mr-2 size-4" />

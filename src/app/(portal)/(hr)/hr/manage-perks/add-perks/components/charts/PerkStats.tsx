@@ -48,19 +48,19 @@ export function PerkStats({
 }: PerkRecordProps) {
   const MiddleCardsData = [
     {
-      icon: <Plus color="#6c757d" />,
+      icon: <Plus color="#4779e5" />,
       title: 'Total Perks',
       value: totalPerks?.toString() || '0',
       color: '',
     },
     {
-      icon: <UserCheck color="#007bff" />,
+      icon: <UserCheck color="#4779e5" />,
       title: 'Total Assigned',
       value: assignedPerks?.toString() || '0',
       color: '',
     },
     {
-      icon: <CheckCircle2 color="#28a745" />,
+      icon: <CheckCircle2 color="#FF0000" />,
       title: 'Total Approved',
       value: approvedPerks?.toString() || '0',
       color: '',

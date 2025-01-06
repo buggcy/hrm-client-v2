@@ -70,7 +70,7 @@ export const hrFeedbackColumns: ColumnDef<FeedbackType>[] = [
   {
     accessorKey: 'questions',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Feedback Questions" />
+      <DataTableColumnHeader column={column} title="Questions" />
     ),
     cell: ({ row }) => {
       const questions = row.getValue('questions');

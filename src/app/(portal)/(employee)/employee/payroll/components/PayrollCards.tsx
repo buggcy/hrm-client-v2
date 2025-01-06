@@ -80,7 +80,7 @@ const PayrollCards: FunctionComponent = () => {
       <div className="mb-5 grid w-full grid-cols-2 gap-4 md:grid-cols-4">
         <Card className="flex h-24 w-full flex-col items-start justify-center rounded-lg border border-[#e2e8f0] dark:border-[#3c3c44] max-sm:p-0">
           <CardHeader className="h-8">
-            <CardTitle className="text-sm font-semibold text-gray-600">
+            <CardTitle className="text-sm font-semibold text-muted-foreground">
               Basic Salary
             </CardTitle>
           </CardHeader>
@@ -91,7 +91,7 @@ const PayrollCards: FunctionComponent = () => {
 
         <Card className="flex h-24 w-full flex-col items-start justify-center rounded-lg border border-[#e2e8f0] dark:border-[#3c3c44]">
           <CardHeader className="h-8">
-            <CardTitle className="text-sm font-semibold text-gray-600">
+            <CardTitle className="text-sm font-semibold text-muted-foreground">
               Net Salary
             </CardTitle>
           </CardHeader>
@@ -102,12 +102,12 @@ const PayrollCards: FunctionComponent = () => {
 
         <Card className="flex h-24 w-full flex-col items-start justify-center rounded-lg border border-[#e2e8f0] dark:border-[#3c3c44]">
           <CardHeader className="h-8">
-            <CardTitle className="text-sm font-semibold text-gray-600">
+            <CardTitle className="text-sm font-semibold text-muted-foreground">
               Pay Status
             </CardTitle>
           </CardHeader>
           <CardContent
-            className={`text-sm font-bold sm:text-lg ${Pay_Status === 'Paid' ? 'text-green-600' : 'text-red-600'} pr-2`}
+            className={`text-sm font-bold sm:text-lg ${Pay_Status === 'Paid' ? 'text-muted-foreground' : 'text-red-600'} pr-2`}
           >
             {Pay_Status}
           </CardContent>
@@ -115,7 +115,7 @@ const PayrollCards: FunctionComponent = () => {
 
         <Card className="flex h-24 w-full flex-col items-start justify-center rounded-lg border border-[#e2e8f0] dark:border-[#3c3c44]">
           <CardHeader className="h-8">
-            <CardTitle className="text-sm font-semibold text-gray-600">
+            <CardTitle className="text-sm font-semibold text-muted-foreground">
               Paid Amount
             </CardTitle>
           </CardHeader>

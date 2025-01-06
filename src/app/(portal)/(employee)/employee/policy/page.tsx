@@ -65,7 +65,7 @@ const Policypage: FunctionComponent<EmployeePolicyProps> = () => {
                     <TabsTrigger
                       key={category}
                       value={category}
-                      className="flex-1 p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
+                      className="flex-1 p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 sm:w-full sm:justify-start"
                     >
                       <span>{category}</span>
                     </TabsTrigger>
