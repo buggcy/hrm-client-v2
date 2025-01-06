@@ -1,22 +1,15 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
-import { AxiosError } from 'axios';
 import { X } from 'lucide-react';
 
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 
 import { useFetchAllCategories } from '@/hooks/usepolicyQuery';
 import DataTableType from '@/libs/validations/data-table-type';
-import { exportEmployeeCSVData } from '@/services/hr/employee.service';
-import { downloadFile } from '@/utils/downloadFile.utils';
-
-import { MessageErrorResponseWithError } from '@/types';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -52,23 +45,6 @@ export function HrPolicyToolbar<TData extends DataTableType>({
       };
     },
   );
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { mutate, isPending } = useMutation({
-    mutationFn: exportEmployeeCSVData,
-    onError: (err: AxiosError<MessageErrorResponseWithError>) => {
-      toast({
-        title: 'Error',
-        description:
-          err?.response?.data?.error || 'Error on exporting employees!',
-        variant: 'error',
-      });
-    },
-    onSuccess: (response: string) => {
-      const file = new Blob([response]);
-      downloadFile(file, 'Employees.csv');
-    },
-  });
 
   return (
     <div className="flex items-center justify-between">
