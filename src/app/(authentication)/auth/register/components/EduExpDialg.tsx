@@ -173,6 +173,7 @@ export function EduEpxDialog({
                   setValue('Start_Date', date);
                 }
               }}
+              disabled={date => date > new Date()}
               className="h-auto"
             />
             {errors.Start_Date && (
@@ -193,6 +194,7 @@ export function EduEpxDialog({
                   setValue('End_Date', date);
                 }
               }}
+              disabled={date => date > new Date()}
               className="h-auto"
             />
             {errors.End_Date && (

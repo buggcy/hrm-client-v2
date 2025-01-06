@@ -74,53 +74,56 @@ const AdditionalDocumentsTable = ({
   };
   const { setRefetchEditEmployeeData } = editEmployeeStore;
 
-  const { mutate: addAdditionalDocumentData } = useMutation({
-    mutationFn: addAdditionalDocument,
-    onError: (err: AxiosError<MessageErrorResponse>) => {
-      toast({
-        title: 'Error',
-        description: err?.response?.data?.message || 'Error on adding data!',
-        variant: 'error',
-      });
-    },
-    onSuccess: response => {
-      toast({
-        title: 'Success',
-        description: response?.message || 'Data added successfully!',
-        variant: 'success',
-      });
-      setRefetchEditEmployeeData(true);
-      handleDialogClose();
-    },
-  });
+  const { mutate: addAdditionalDocumentData, isPending: isAdding } =
+    useMutation({
+      mutationFn: addAdditionalDocument,
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description: err?.response?.data?.message || 'Error on adding data!',
+          variant: 'error',
+        });
+      },
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description: response?.message || 'Data added successfully!',
+          variant: 'success',
+        });
+        setRefetchEditEmployeeData(true);
+        handleDialogClose();
+      },
+    });
 
   useEffect(() => {
     setTableData(additionalDocumentsData);
   }, [additionalDocumentsData]);
 
-  const { mutate: deleteAdditionalDocumentData } = useMutation({
-    mutationFn: deleteAdditionalDocument,
-    onError: (err: AxiosError<MessageErrorResponse>) => {
-      toast({
-        title: 'Error',
-        description: err?.response?.data?.message || 'Error on deleting data!',
-        variant: 'error',
-      });
-    },
-    onSuccess: response => {
-      toast({
-        title: 'Success',
-        description: response?.message || 'Data deleted successfully!',
-        variant: 'success',
-      });
-      setDeletedItems([]);
-      setRefetchEditEmployeeData(true);
-    },
-  });
+  const { mutate: deleteAdditionalDocumentData, isPending: isDeleting } =
+    useMutation({
+      mutationFn: deleteAdditionalDocument,
+      onError: (err: AxiosError<MessageErrorResponse>) => {
+        toast({
+          title: 'Error',
+          description:
+            err?.response?.data?.message || 'Error on deleting data!',
+          variant: 'error',
+        });
+      },
+      onSuccess: response => {
+        toast({
+          title: 'Success',
+          description: response?.message || 'Data deleted successfully!',
+          variant: 'success',
+        });
+        setDeletedItems([]);
+        setRefetchEditEmployeeData(true);
+      },
+    });
 
   const onSubmit = (data: additionalDocumentFormData) => {
     const formData = new FormData();
-    formData.append('documents', data.document as File);
+    formData.append('documents', data.document);
     addAdditionalDocumentData({
       id: empId || '',
       body: formData,
@@ -143,6 +146,7 @@ const AdditionalDocumentsTable = ({
         open={dialogOpen}
         onOpenChange={handleDialogClose}
         onSubmit={onSubmit}
+        loading={isAdding || isDeleting}
       />
       <div className="max-h-[600px] w-full overflow-y-auto">
         <Table>
@@ -216,7 +220,12 @@ const AdditionalDocumentsTable = ({
 
                     <TableCell className="text-center">
                       <Link href={fileURL}>
-                        <Button variant="outline">View</Button>
+                        <Button
+                          variant="outline"
+                          disabled={isAdding || isDeleting}
+                        >
+                          View
+                        </Button>
                       </Link>
                     </TableCell>
                     <TableCell className="p-0 text-center">
@@ -238,6 +247,7 @@ const AdditionalDocumentsTable = ({
                               setDeletedItems([fileURL]);
                             }}
                             className="text-red-600"
+                            disabled={isAdding || isDeleting}
                           >
                             <Trash2 className="mr-2 size-4" />
                             Delete

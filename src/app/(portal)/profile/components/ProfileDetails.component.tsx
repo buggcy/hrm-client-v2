@@ -135,9 +135,9 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
                 {user?.Address?.city || '-'}
               </dd>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-4">
               <dt className="font-medium">Street</dt>
-              <dd className="leading-relaxed text-gray-600 dark:text-gray-300">
+              <dd className="text-right leading-relaxed text-gray-600 dark:text-gray-300">
                 {user?.Address?.street || '-'}
               </dd>
             </div>
@@ -153,9 +153,9 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
                 {user?.Address?.zip || '-'}
               </dd>
             </div>
-            <div className="flex justify-between">
-              <dt className="font-medium">Full Address</dt>
-              <dd className="w-30 truncate leading-relaxed text-gray-600 dark:text-gray-300">
+            <div className="flex justify-between gap-4">
+              <dt className="text-nowrap font-medium">Full Address</dt>
+              <dd className="truncate text-right leading-relaxed text-gray-600 dark:text-gray-300">
                 {user?.Address?.full || '-'}
               </dd>
             </div>
