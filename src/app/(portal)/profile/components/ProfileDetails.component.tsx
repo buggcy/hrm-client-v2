@@ -20,6 +20,7 @@ interface ProfileDetailsProps {
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
   const searchParams = useSearchParams();
   const userIdFromParams = searchParams.get('userId');
+
   return (
     <>
       <Card>
@@ -137,7 +138,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
             </div>
             <div className="flex justify-between">
               <dt className="font-medium">Street</dt>
-              <dd className="leading-relaxed text-gray-600 dark:text-gray-300">
+              <dd className="truncate leading-relaxed text-gray-600 dark:text-gray-300">
                 {user?.Address?.street || '-'}
               </dd>
             </div>
