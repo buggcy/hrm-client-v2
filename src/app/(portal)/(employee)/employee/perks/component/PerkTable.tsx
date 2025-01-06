@@ -2,16 +2,12 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { useMutation } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-
 import { employeePerkListColumns } from '@/components/data-table/columns/employee-perk-list.columns';
 import { EmployeePerkDataTable } from '@/components/data-table/data-table-employee-perk';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import {
@@ -19,13 +15,11 @@ import {
   usePerkRecordQuery,
 } from '@/hooks/employee/usePerkList.hook';
 import { PerkListArrayType } from '@/libs/validations/perk';
-import { searchPerkList } from '@/services/employee/perk.service';
 import { PerkStoreType } from '@/stores/employee/perks';
 import { formatedDate } from '@/utils';
 
 import PerkCards from './PerksCards';
 
-import { MessageErrorResponse } from '@/types';
 import { User } from '@/types/user.types';
 
 interface PerkTableProps {
@@ -61,6 +55,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
     status,
+    query: debouncedSearchTerm,
   });
 
   const { data: perkRecords, refetch: refetchRecord } = usePerkRecordQuery(
@@ -70,24 +65,6 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
       to: formatedDate(selectedDate?.to),
     },
   );
-
-  const {
-    mutate,
-    isPending,
-    data: searchPerkData,
-  } = useMutation({
-    mutationFn: searchPerkList,
-    onError: (err: unknown) => {
-      const axiosError = err as AxiosError<MessageErrorResponse>;
-      toast({
-        title: 'Error',
-        description:
-          axiosError?.response?.data?.message ||
-          'Error on fetching search data!',
-        variant: 'error',
-      });
-    },
-  });
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -101,13 +78,11 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
-    } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit, status]);
+  }, [debouncedSearchTerm, refetch, page, limit, status]);
 
   useEffect(() => {}, [perkPostList, selectedDate]);
   useEffect(() => {}, [perkRecords, selectedDate]);
@@ -140,13 +115,9 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
       </div>
     );
 
-  const tableData: PerkListArrayType = debouncedSearchTerm
-    ? searchPerkData?.data || []
-    : perkPostList?.data || [];
+  const tableData: PerkListArrayType = perkPostList?.data || [];
 
-  const tablePageCount: number = debouncedSearchTerm
-    ? searchPerkData?.pagination?.totalPages || 0
-    : perkPostList?.pagination?.totalPages || 0;
+  const tablePageCount: number = perkPostList?.pagination?.totalPages || 0;
 
   const transformData = (perks: PerkListArrayType) => {
     return perks.flatMap(
@@ -187,7 +158,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (
         <EmployeePerkDataTable
-          searchLoading={isPending}
+          searchLoading={isLoading || isFetching}
           data={flatPerkApplications || []}
           columns={employeePerkListColumns}
           pagination={{

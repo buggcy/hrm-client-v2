@@ -35,19 +35,28 @@ const months = [
 
 const years = Array.from({ length: 2199 - 1965 + 1 }, (_, i) => 1965 + i);
 
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
 interface TestProps {
   initialDate?: Date;
   onDateChange: (date: Date | undefined) => void;
   loading?: boolean;
   type?: string;
+  className?: string;
+  disable?: boolean;
 }
+
+type CustomDayPickerProps = TestProps & CalendarProps;
 
 export default function CustomDayPicker({
   initialDate,
   onDateChange,
   loading,
   type,
-}: TestProps) {
+  className,
+  disable,
+  disabled,
+}: CustomDayPickerProps) {
   const [date, setDate] = React.useState<Date | undefined>(
     initialDate || undefined,
   );
@@ -92,7 +101,8 @@ export default function CustomDayPicker({
       <PopoverTrigger asChild>
         <Button
           variant={'outline'}
-          className={`relative h-[32px] justify-start text-left font-normal ${loading ? 'pr-10' : ''}`}
+          className={`relative h-[32px] justify-start text-left font-normal ${loading ? 'pr-10' : ''} ${className}`}
+          disabled={disable}
         >
           <CalendarIcon className="mr-2 size-4" />
           {type === 'search' ? (
@@ -179,6 +189,7 @@ export default function CustomDayPicker({
             month={new Date(selectedYear, selectedMonth)}
             showOutsideDays={true}
             onMonthChange={handleMonthNavigation}
+            disabled={disabled}
           />
         </div>
       </PopoverContent>

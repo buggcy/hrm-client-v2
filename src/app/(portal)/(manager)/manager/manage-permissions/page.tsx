@@ -28,6 +28,7 @@ import {
 import { changeRolePermission } from '@/services/manager/manage-permissions.service';
 
 import { AddPermissionDialog } from './components/AddPermissionDialog.components';
+import { AddRoleDialog } from './components/AddRoleDialog.components';
 import PagePermissionsTab from './components/PagePermissionsTab.component';
 import RolePermissionsTab from './components/RolePermissionsTab.component';
 import UserPermissionsTab from './components/UserPermissionsTab.component';
@@ -73,6 +74,7 @@ function categorizeRolePermissions(
 
 const Page = () => {
   const [addModelOpen, setAddModelOpen] = useState(false);
+  const [addRoleOpen, setAddRoleOpen] = useState(false);
   const [dialogData, setDialogData] = useState<
     { roleId: number; roleName: string }[] | undefined
   >();
@@ -83,6 +85,8 @@ const Page = () => {
 
   const handleAddModelOpen = () => setAddModelOpen(true);
   const handleAddModelClose = () => setAddModelOpen(false);
+  const handleAddRoleOpen = () => setAddRoleOpen(true);
+  const handleAddRoleClose = () => setAddRoleOpen(false);
   const { data, isPending, refetch } = usePermissionsQuery();
   const {
     data: pagePermissionsData,
@@ -152,6 +156,9 @@ const Page = () => {
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
         <Header subheading="Guiding our team with clarity and respect.">
+          <Button variant="default" onClick={handleAddRoleOpen}>
+            Add Role
+          </Button>
           <Button variant="default" onClick={handleAddModelOpen}>
             Add Permission
           </Button>
@@ -198,6 +205,12 @@ const Page = () => {
           void refetch();
           void refetchPagePermissions();
         }}
+      />
+      <AddRoleDialog
+        open={addRoleOpen}
+        onOpenChange={handleAddRoleClose}
+        onCloseChange={handleAddRoleClose}
+        refetch={refetch}
       />
     </Layout>
   );

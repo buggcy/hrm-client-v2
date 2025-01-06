@@ -11,7 +11,7 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 
-import HrDashboardCharts from '@/app/(portal)/(hr)/hr/dashboard/components/HrDashboardCharts';
+import ManagerDashboardCharts from './components/Charts.component';
 
 interface ManagerDashboardProps {}
 
@@ -26,7 +26,7 @@ const ManagerDashboard: FunctionComponent<ManagerDashboardProps> = () => {
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8">
         <Header subheading="Manage your employees, attendance, and more."></Header>
-        <HrDashboardCharts />
+        <ManagerDashboardCharts />
       </LayoutWrapper>
     </Layout>
   );

@@ -138,10 +138,10 @@ const AdditionalDocumentsTable = ({
 
   return (
     <div className="flex flex-col items-end justify-between gap-4">
-      <Button onClick={() => setDialogOpen(true)}>Add More</Button>
+      <Button onClick={handleDialogOpen}>Add More</Button>
       <AdditionalDocumentDialog
         open={dialogOpen}
-        onOpenChange={handleDialogOpen}
+        onOpenChange={handleDialogClose}
         onSubmit={onSubmit}
       />
       <div className="max-h-[600px] w-full overflow-y-auto">

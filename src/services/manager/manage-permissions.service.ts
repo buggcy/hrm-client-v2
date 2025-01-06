@@ -25,6 +25,11 @@ export const getPagePermissions =
 export const getUserPermissions =
   async (): Promise<ManagerUserPermissionsApiResponse> => {
     const res = await baseAPI.get(`/getPermissions/users`);
+    // console.log('res', res);
+    const parsedData = schemaParse(managerUserPermissionsApiResponseSchema)(
+      res,
+    );
+    console.log('parsedData', parsedData);
     return schemaParse(managerUserPermissionsApiResponseSchema)(res);
   };
 
@@ -81,5 +86,19 @@ export const addPermission = async ({
       roleIds,
     },
   );
+  return { message };
+};
+
+export const addRoles = async ({
+  roleId,
+  roleName = '',
+}: {
+  roleId: number;
+  roleName: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(`/addRoles`, {
+    roleId,
+    roleName,
+  });
   return { message };
 };

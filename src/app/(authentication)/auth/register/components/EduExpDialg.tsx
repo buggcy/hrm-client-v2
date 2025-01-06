@@ -3,12 +3,11 @@
 import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
-import { CalendarIcon, Eye } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
   Dialog,
   DialogContent,
@@ -19,11 +18,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -33,7 +27,6 @@ import {
 } from '@/components/ui/select';
 
 import { useTypesQuery } from '@/hooks/types.hook';
-import { cn } from '@/utils';
 
 import {
   educationExperienceSchema,
@@ -111,7 +104,13 @@ export function EduEpxDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        reset();
+        onOpenChange();
+      }}
+    >
       <DialogContent className="min-w-max">
         <DialogHeader>
           <DialogTitle>
@@ -167,32 +166,15 @@ export function EduEpxDialog({
             <Label htmlFor="Start_Date" className="mb-2 text-left">
               Start Date <span className="text-red-600">*</span>
             </Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={'outline'}
-                  className={cn(
-                    'justify-start text-left font-normal',
-                    !start && 'text-muted-foreground',
-                  )}
-                >
-                  <CalendarIcon className="mr-2 size-4" />
-                  {start ? format(start, 'PPP') : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={start}
-                  onSelect={date => {
-                    if (date) {
-                      setValue('Start_Date', date);
-                    }
-                  }}
-                  className="z-50 mt-6 rounded-md border bg-white dark:bg-gray-800"
-                />
-              </PopoverContent>
-            </Popover>
+            <CustomDayPicker
+              initialDate={start}
+              onDateChange={date => {
+                if (date) {
+                  setValue('Start_Date', date);
+                }
+              }}
+              className="h-auto"
+            />
             {errors.Start_Date && (
               <span className="text-xs text-red-500">
                 {errors.Start_Date.message}
@@ -204,32 +186,15 @@ export function EduEpxDialog({
             <Label htmlFor="End_Date" className="mb-2 text-left">
               End Date <span className="text-red-600">*</span>
             </Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={'outline'}
-                  className={cn(
-                    'justify-start text-left font-normal',
-                    !end && 'text-muted-foreground',
-                  )}
-                >
-                  <CalendarIcon className="mr-2 size-4" />
-                  {end ? format(end, 'PPP') : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={end}
-                  onSelect={date => {
-                    if (date) {
-                      setValue('End_Date', date);
-                    }
-                  }}
-                  className="z-50 mt-6 rounded-md border bg-white dark:bg-gray-800"
-                />
-              </PopoverContent>
-            </Popover>
+            <CustomDayPicker
+              initialDate={end}
+              onDateChange={date => {
+                if (date) {
+                  setValue('End_Date', date);
+                }
+              }}
+              className="h-auto"
+            />
             {errors.End_Date && (
               <span className="text-xs text-red-500">
                 {errors.End_Date?.message}

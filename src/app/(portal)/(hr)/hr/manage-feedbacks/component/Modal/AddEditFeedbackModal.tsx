@@ -4,13 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { format } from 'date-fns';
-import { CalendarIcon, ChevronDown, Plus, X } from 'lucide-react';
+import { ChevronDown, Plus, X } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
@@ -21,11 +20,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
@@ -45,7 +39,6 @@ import {
   updateFeedback,
 } from '@/services/hr/hr-feedback.service';
 import { useAuthStore } from '@/stores/auth';
-import { cn } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -341,32 +334,12 @@ export function AddEditFeedbackModal({
                 name="startDate"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={date => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                    disabled={date => date < new Date()}
+                  />
                 )}
               />
               {errors.startDate && (
@@ -383,33 +356,13 @@ export function AddEditFeedbackModal({
                 name="endDate"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                        disabled={isContinue}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={date => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                    disabled={date => date < new Date()}
+                    disable={isContinue}
+                  />
                 )}
               />
               {errors?.endDate && (
