@@ -2,7 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { FileDown, X } from 'lucide-react';
 
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
@@ -52,14 +52,15 @@ export function EmployeeListToolbar<TData extends DataTableType>({
         variant: 'error',
       });
     },
-    onSuccess: (response: string) => {
-      const file = new Blob([response]);
+    onSuccess: (response: AxiosResponse) => {
+      const fileContent = response as unknown as string;
+      const file = new Blob([fileContent], { type: 'text/csv' });
       downloadFile(file, 'Employees.csv');
     },
   });
 
   const handleExport = () => {
-    if (selectedRowIds.length > 0) {
+    if (selectedRowIds?.length > 0) {
       mutate(selectedRowIds);
     }
   };

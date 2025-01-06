@@ -138,7 +138,7 @@ export function AttendanceDialog({
           : '',
       outTime:
         type === 'edit' && data?.Start_Date
-          ? formatUTCToLocalTime(data.End_Date)
+          ? formatUTCToLocalTime(data.End_Date ?? '')
           : '',
       totalTime:
         type === 'edit' && data?.Total_Time ? parseInt(data.Total_Time, 10) : 0,
@@ -267,7 +267,7 @@ export function AttendanceDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="md:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Add Employee</DialogTitle>
+          <DialogTitle> {type === 'add' ? 'Add' : 'Edit'} Employee</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 py-4">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -455,7 +455,7 @@ export function AttendanceDialog({
 
           <DialogFooter>
             <Button type="submit" disabled={isPending || isLoading}>
-              Add Attendance
+              {type === 'add' ? 'Add' : 'Edit'} Attendance
             </Button>
           </DialogFooter>
         </form>

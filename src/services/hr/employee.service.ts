@@ -205,11 +205,9 @@ export const resendEmployeeInvitation = async (
   return { message };
 };
 
-export const exportEmployeeCSVData = async (
-  ids: Array<string>,
-): Promise<string> => {
+export const exportEmployeeCSVData = async (ids: Array<string>) => {
   const res = await baseAPI.post(`/user/export-csv`, { ids });
-  return res.data;
+  return res;
 };
 
 export const deleteEmployeeRecord = async (
@@ -303,7 +301,7 @@ export interface DobData {
   firstName: string;
   lastName: string;
   DOB: Date;
-  Joining_Date: Date;
+  Joining_Date?: Date | null;
   remainingDays: number;
 }
 export const getAddEmployeeCharts = async (): Promise<CardData> => {

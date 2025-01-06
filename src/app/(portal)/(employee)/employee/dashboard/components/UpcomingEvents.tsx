@@ -102,7 +102,7 @@ const EventsAndBirthdays = () => {
   };
 
   return (
-    <Card className="h-full dark:bg-zinc-900">
+    <Card className="h-[428px] dark:bg-zinc-900">
       <CardHeader>
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold dark:text-white">

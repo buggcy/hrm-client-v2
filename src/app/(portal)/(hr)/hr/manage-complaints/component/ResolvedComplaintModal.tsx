@@ -136,15 +136,6 @@ export default function ResolvedComplaintDialog({
               <Button type="submit" disabled={isPending} size={'sm'}>
                 {'Resolved'}
               </Button>
-              <Button
-                variant="ghostSecondary"
-                type="button"
-                onClick={() => {
-                  onCloseChange(false);
-                }}
-              >
-                Close
-              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

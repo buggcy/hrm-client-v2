@@ -19,7 +19,7 @@ const userIdSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   companyEmail: z.string(),
-  Avatar: z.string(),
+  Avatar: z.string().optional(),
   Designation: z.string().optional(),
   contactNo: z.string().optional(),
 });
@@ -28,7 +28,7 @@ const approvedIdSchema = z.object({
   _id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  Avatar: z.string(),
+  Avatar: z.string().optional(),
 });
 
 const leaveListSchema = z.object({

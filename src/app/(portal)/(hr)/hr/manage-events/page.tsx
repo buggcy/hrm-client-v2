@@ -12,14 +12,12 @@ import {
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 
-import { getWritePermissions } from '@/utils/permissions.utils';
-
 import { HrEventsDialogDemo } from './components/AddHrEventsDialog';
 import HrEventsCalender from './components/HrEventsCalender';
 import HrEventsTable from './components/HrEventsTable';
 
 export default function ManageEventsPage() {
-  const writePermission = getWritePermissions('canWriteEvents');
+  // const writePermission = getWritePermissions('canWriteEvents');
   const [dialogOpen, setDialogOpen] = useState(false);
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
@@ -50,7 +48,7 @@ export default function ManageEventsPage() {
           <Button
             variant="default"
             onClick={handleDialogOpen}
-            disabled={!writePermission}
+            // disabled={!writePermission}
           >
             Add Event
           </Button>

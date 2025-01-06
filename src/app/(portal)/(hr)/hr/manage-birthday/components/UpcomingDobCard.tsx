@@ -8,7 +8,7 @@ import { useEmployeeDobChartQuery } from '@/hooks/EmployeeDobTable/useEmpDob.hoo
 
 interface Employee {
   DOB: Date;
-  Joining_Date: Date;
+  Joining_Date?: Date | null;
   firstName: string;
   lastName: string;
   Avatar?: string;
@@ -24,11 +24,11 @@ const UpcomingDobCard: React.FC = () => {
   const upcomingDobs: Employee[] =
     myData?.map((employee: Employee) => ({
       DOB: employee.DOB,
-      Joining_Date: employee.Joining_Date,
+      Joining_Date: employee?.Joining_Date,
       firstName: employee.firstName,
       lastName: employee.lastName,
       remainingDays: employee.remainingDays,
-      Avatar: employee.Avatar || '',
+      Avatar: employee?.Avatar || '',
       _id: employee._id,
     })) || [];
 
