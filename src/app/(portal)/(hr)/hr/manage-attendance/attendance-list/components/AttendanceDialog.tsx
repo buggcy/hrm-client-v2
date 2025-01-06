@@ -215,7 +215,6 @@ export function AttendanceDialog({
   }, [date, employee, setValue]);
 
   const { data: users, isLoading } = useAttendanceUsersQuery();
-  console.log('users', users);
 
   const { mutate, isPending } = useMutation({
     mutationFn: addAttendaceData,

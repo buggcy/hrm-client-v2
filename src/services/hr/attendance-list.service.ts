@@ -59,7 +59,6 @@ export const addAttendaceData = async ({
 
 export const getEmployeeList = async (): Promise<AttendanceUseApiResponse> => {
   const res = await baseAPI.get(`/attendance-users`);
-  console.log('res', res);
   return schemaParse(attendanceUsersApiResponseSchema)(res);
 };
 
