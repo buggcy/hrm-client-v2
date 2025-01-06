@@ -1,7 +1,10 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 
-import { PerkRecordApiResponse } from '@/libs/validations/perk';
+import {
+  PerkApiResponse,
+  PerkRecordApiResponse,
+} from '@/libs/validations/perk';
 import {
   getPerkRecords,
   PerkList,
@@ -11,7 +14,6 @@ import {
 } from '@/services/employee/perk.service';
 
 import { UseQueryConfig } from '@/types';
-import { PerkApiResponse } from '@/types/perk.types';
 
 export const useAllPerkQuery = (id: string, config: UseQueryConfig = {}) =>
   useQuery({

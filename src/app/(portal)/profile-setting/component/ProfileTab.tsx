@@ -9,6 +9,7 @@ import { Pencil } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -71,7 +72,11 @@ const FormSchema = z.object({
   Family_Occupation: z.string(),
   Family_PhoneNo: z.string(),
   Emergency_Phone: z.string(),
+  Nationality: z.string(),
+  DOB: z.date(),
   Marital_Status: z.string(),
+  Blood_Group: z.string(),
+  Gender: z.string(),
 });
 
 export type EditPasswordFormData = z.infer<typeof FormSchema>;
@@ -115,7 +120,11 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
       Family_Occupation: '',
       Family_PhoneNo: '',
       Emergency_Phone: '',
+      Nationality: '',
+      DOB: new Date(),
       Marital_Status: '',
+      Blood_Group: '',
+      Gender: '',
     },
   });
 
@@ -154,7 +163,13 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
         Family_Occupation: data.output.employee?.Family_Occupation || '',
         Family_PhoneNo: data.output.employee?.Family_PhoneNo,
         Emergency_Phone: data.output.employee?.Emergency_Phone,
+        Nationality: data.output.employee?.Nationality,
+        DOB: data.output.employee?.DOB
+          ? new Date(data.output.employee.DOB)
+          : new Date(),
         Marital_Status: data.output.employee?.Marital_Status,
+        Blood_Group: data.output.employee?.Blood_Group,
+        Gender: data.output.employee?.Gender,
       });
     }
   }, [data, reset, previousAvatar]);
@@ -165,7 +180,6 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
     onSuccess: response => {
       const token = response?.token;
       if (token) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setUser(token);
       }
       toast({
@@ -226,6 +240,10 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
     formData.append('Family_PhoneNo', data.Family_PhoneNo);
     formData.append('Marital_Status', data.Marital_Status || '');
     formData.append('Emergency_Phone', data.Emergency_Phone || '');
+    formData.append('Nationality', data.Nationality || '');
+    formData.append('DOB', data.DOB.toISOString());
+    formData.append('Blood_Group', data.Blood_Group || '');
+    formData.append('Gender', data.Gender || '');
 
     if (file) {
       formData.append('Avatar', file);
@@ -718,6 +736,74 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
               )}
             </div>
           </div>
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Nationality"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
+            >
+              Nationality
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Nationality"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="Nationality"
+                    placeholder="Nationality"
+                    type="tel"
+                    value={
+                      field.value || data?.output?.employee?.Nationality || ''
+                    }
+                  />
+                )}
+              />
+              {errors?.Nationality && (
+                <span className="text-red-500">
+                  {errors?.Nationality.message}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="DOB"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
+            >
+              Date of Birth
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="DOB"
+                control={control}
+                render={({ field }) => (
+                  <CustomDayPicker
+                    initialDate={
+                      field.value ? new Date(field.value) : undefined
+                    }
+                    onDateChange={field.onChange}
+                    className="h-auto w-full"
+                    disabled={date => {
+                      const today = new Date();
+                      const eigtheenYearsAgo = new Date(
+                        today.getFullYear() - 18,
+                        today.getMonth(),
+                        today.getDate(),
+                      );
+                      return date > eigtheenYearsAgo;
+                    }}
+                  />
+                )}
+              />
+              {errors.DOB && (
+                <span className="text-sm text-red-500">
+                  {errors.DOB.message}
+                </span>
+              )}
+            </div>
+          </div>
 
           <div className="mb-4 grid grid-cols-12 gap-4">
             <Label
@@ -745,6 +831,86 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
                       <SelectGroup className="text-sm">
                         <SelectItem value="married">Married</SelectItem>
                         <SelectItem value="unmarried">Unmarried</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors?.Marital_Status && (
+                <span className="text-red-500">
+                  {errors?.Marital_Status.message}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Blood_Group"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
+            >
+              Blood Group
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Blood_Group"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value || data?.output?.employee?.Blood_Group}
+                  >
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select Blood Group" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="A+">A+</SelectItem>
+                        <SelectItem value="A-">A-</SelectItem>
+                        <SelectItem value="B+">B+</SelectItem>
+                        <SelectItem value="B-">B-</SelectItem>
+                        <SelectItem value="AB+">AB+</SelectItem>
+                        <SelectItem value="AB-">AB-</SelectItem>
+                        <SelectItem value="O+">O+</SelectItem>
+                        <SelectItem value="O-">O-</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors?.Blood_Group && (
+                <span className="text-red-500">
+                  {errors?.Blood_Group.message}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-4 grid grid-cols-12 gap-4">
+            <Label
+              htmlFor="Gender"
+              className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
+            >
+              Gender
+            </Label>
+            <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
+              <Controller
+                name="Gender"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value || data?.output?.employee?.Gender}
+                  >
+                    <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                      <SelectValue placeholder="Select Gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup className="text-sm">
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

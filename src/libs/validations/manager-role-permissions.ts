@@ -42,13 +42,15 @@ export type CategorizedPermissionsRole = z.infer<
   typeof categorizedManagerRolePermissionsApiResponseSchema
 >;
 
-const userSchema = z.object({
-  _id: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
-  companyEmail: z.string(),
-  Avatar: z.string().optional(),
-});
+const userSchema = z
+  .object({
+    _id: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    companyEmail: z.string(),
+    Avatar: z.string().optional(),
+  })
+  .nullable();
 
 const userPermissionSchema = z.object({
   _id: z.string(),
