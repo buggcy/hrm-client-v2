@@ -3,6 +3,7 @@ import {
   AttendanceDistributionStatsApiResponseSchema,
   attendanceListApiResponseSchema,
   AttendanceListStatsApiResponseSchema,
+  AttendanceUseApiResponse,
   attendanceUsersApiResponseSchema,
   userDateAttendanceSchema,
 } from '@/libs/validations/attendance-list';
@@ -12,7 +13,6 @@ import {
   AttendanceDistributionApiResponse,
   AttendanceListApiResponse,
   AttendanceListStatsApiResponse,
-  AttendanceUsers,
   UserDateAttendance,
 } from '@/types/attendance-list.types';
 
@@ -57,7 +57,7 @@ export const addAttendaceData = async ({
   return { message };
 };
 
-export const getEmployeeList = async (): Promise<AttendanceUsers> => {
+export const getEmployeeList = async (): Promise<AttendanceUseApiResponse> => {
   const res = await baseAPI.get(`/attendance-users`);
   return schemaParse(attendanceUsersApiResponseSchema)(res);
 };

@@ -223,15 +223,13 @@ const EducationExperienceTable = ({
       updateEducationExperienceData({ id: empId || '', body: tableData });
       setIsUpdated(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateEducationExperienceData, isUpdated]);
+  }, [updateEducationExperienceData, isUpdated, empId, tableData]);
 
   useEffect(() => {
     if (deletedItems.length > 0) {
       deleteEducationExperienceData({ id: empId || '', body: deletedItems });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteEducationExperienceData, deletedItems]);
+  }, [deleteEducationExperienceData, deletedItems, empId]);
 
   return (
     <div className="flex flex-col items-end justify-between gap-4">
