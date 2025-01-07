@@ -72,7 +72,7 @@ export function LeavesTrendChart({ chartData }: LeaveTrendChartProps) {
             />
             <Area
               dataKey="rejected"
-              type="natural"
+              type="monotone"
               fill="var(--color-rejected)"
               fillOpacity={0.4}
               stroke="var(--color-rejected)"
@@ -80,7 +80,7 @@ export function LeavesTrendChart({ chartData }: LeaveTrendChartProps) {
             />
             <Area
               dataKey="cancelled"
-              type="natural"
+              type="monotone"
               fill="var(--color-cancelled)"
               fillOpacity={0.4}
               stroke="var(--color-cancelled)"
@@ -88,7 +88,7 @@ export function LeavesTrendChart({ chartData }: LeaveTrendChartProps) {
             />
             <Area
               dataKey="approved"
-              type="natural"
+              type="monotone"
               fill="var(--color-approved)"
               fillOpacity={0.4}
               stroke="var(--color-approved)"
