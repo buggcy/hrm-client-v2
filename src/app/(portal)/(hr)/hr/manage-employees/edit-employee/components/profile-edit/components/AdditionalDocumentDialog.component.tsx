@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -80,7 +81,10 @@ const AdditionalDocumentDialog = ({
               </span>
             )}
           </div>
-          <Button type="submit">Add</Button>
+
+          <DialogFooter className="col-span-1 md:col-span-2 lg:col-span-3">
+            <Button type="submit">Add</Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -164,17 +164,15 @@ const ManageLeaves = ({ empId }: ManageLeavesProps) => {
 
   return (
     <>
-      <div className="flex flex-col-reverse justify-between gap-4 sm:flex-row">
+      <div className="flex flex-row justify-end gap-4 sm:flex-row">
         <div>
           {' '}
           {selectedEmployeeId && (
             <>
               {leaveData && (
-                <div className="mt-4 flex justify-end">
-                  <Button size={'sm'} onClick={handleAdd}>
-                    Add Extra Leave
-                  </Button>
-                </div>
+                <Button size={'sm'} onClick={handleAdd}>
+                  Add Extra Leave
+                </Button>
               )}
             </>
           )}
