@@ -121,6 +121,7 @@ interface dayType {
 }
 
 export interface Card2Data {
+  [key: string]: dayType;
   Monday: dayType;
   Tuesday: dayType;
   Wednesday: dayType;

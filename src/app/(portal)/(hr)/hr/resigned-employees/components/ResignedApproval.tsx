@@ -8,6 +8,7 @@ import { DateRange } from 'react-day-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
+import EmptyCard from '@/app/(authentication)/auth/register/components/emptyCard';
 import {
   usePendingResignedRequestQuery,
   useResignedEmployeeQuery,
@@ -90,10 +91,8 @@ const ResignedApproval: FunctionComponent<ResignedRequestProps> = ({
             />
           ))
         ) : (
-          <div className="flex size-full items-center justify-center">
-            <span className="text-xs">
-              No Pending Resignation Request Available!
-            </span>
+          <div className="col-span-full flex items-center justify-center">
+            <EmptyCard message="Resignation Requests available" />
           </div>
         )}
       </div>
