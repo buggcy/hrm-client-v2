@@ -19,12 +19,12 @@ interface AdditionalDocumentDialogProps {
   open: boolean;
   onOpenChange: () => void;
   onSubmit: (data: additionalDocumentFormData) => void;
+  loading: boolean;
 }
 
 const additionalDocumentSchema = z.object({
   document: z
-    .instanceof(File)
-    .nullable()
+    .instanceof(File, { message: 'Invalid file type' })
     .refine(file => file === null || file.size <= 5 * 1024 * 1024, {
       message: 'File size should be less than 5MB',
     }),
@@ -38,6 +38,7 @@ const AdditionalDocumentDialog = ({
   open,
   onOpenChange,
   onSubmit,
+  loading,
 }: AdditionalDocumentDialogProps) => {
   const {
     control,
@@ -46,7 +47,7 @@ const AdditionalDocumentDialog = ({
   } = useForm<additionalDocumentFormData>({
     resolver: zodResolver(additionalDocumentSchema),
     defaultValues: {
-      document: null,
+      document: undefined,
     },
   });
   return (
@@ -83,7 +84,9 @@ const AdditionalDocumentDialog = ({
           </div>
 
           <DialogFooter className="col-span-1 md:col-span-2 lg:col-span-3">
-            <Button type="submit">Add</Button>
+            <Button type="submit" disabled={loading}>
+              Add
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

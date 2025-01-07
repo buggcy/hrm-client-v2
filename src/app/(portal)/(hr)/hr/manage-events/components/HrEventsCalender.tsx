@@ -480,6 +480,7 @@ export default function HrEventsCalendar() {
     if (event.Event_Type !== 'birthday' && event.Event_Type !== 'anniversary') {
       setSelectedEvent(event);
       setIsDialogOpen(true);
+      setTooltip({ visible: false, event: undefined, x: 0, y: 0 });
     }
   };
 

@@ -73,7 +73,7 @@ export function ComplaintTrendChart({ chartData }: ChartProps) {
 
             <Area
               dataKey="canceled"
-              type="natural"
+              type="monotone"
               fill="var(--color-canceled)"
               fillOpacity={0.4}
               stroke="var(--color-canceled)"
@@ -81,7 +81,7 @@ export function ComplaintTrendChart({ chartData }: ChartProps) {
             />
             <Area
               dataKey="pending"
-              type="natural"
+              type="monotone"
               fill="var(--color-pending)"
               fillOpacity={0.4}
               stroke="var(--color-pending)"
@@ -89,7 +89,7 @@ export function ComplaintTrendChart({ chartData }: ChartProps) {
             />
             <Area
               dataKey="resolved"
-              type="natural"
+              type="monotone"
               fill="var(--color-resolved)"
               fillOpacity={0.4}
               stroke="var(--color-resolved)"

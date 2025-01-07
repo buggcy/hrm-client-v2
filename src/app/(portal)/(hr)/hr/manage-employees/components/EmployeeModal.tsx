@@ -94,6 +94,8 @@ export function AddEmployeeDialog({
     reset,
     setValue,
     watch,
+    setError,
+    clearErrors,
   } = useForm<AddEmployeeFormData>({
     resolver: zodResolver(addEmployeeSchema),
     defaultValues: {
@@ -121,7 +123,9 @@ export function AddEmployeeDialog({
         companyEmail: editData.companyEmail,
         contactNo: editData.contactNo,
         basicSalary: editData.basicSalary.toString(),
-        Joining_Date: new Date(editData?.Joining_Date || ''),
+        Joining_Date: editData?.Joining_Date
+          ? new Date(editData?.Joining_Date)
+          : undefined,
         Designation: editData.Designation,
       });
     }
@@ -257,6 +261,20 @@ export function AddEmployeeDialog({
                     id="contactNo"
                     placeholder="03XXXXXXXXX"
                     type="tel"
+                    onBlur={() => {
+                      const phone = watch('contactNo');
+                      const strippedVal = phone.replace(/^(03|\+923)/, '');
+                      const isDigit = /^\d+$/.test(strippedVal);
+                      if (phone && (strippedVal.length !== 9 || !isDigit)) {
+                        setError('contactNo', {
+                          type: 'manual',
+                          message:
+                            'Phone number must have exactly 9 digits after 03 or +923',
+                        });
+                      } else {
+                        clearErrors('contactNo');
+                      }
+                    }}
                   />
                 )}
               />

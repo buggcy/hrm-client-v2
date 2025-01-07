@@ -129,14 +129,14 @@ export function LeavesDistributionChart({ data }: LeaveListRecordChartProps) {
                         <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) - 16}
+                            y={(viewBox.cy || 0) - 6}
                             className="fill-foreground text-2xl font-bold"
                           >
                             {totalVisitors.toLocaleString()}
                           </tspan>
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 4}
+                            y={(viewBox.cy || 0) + 14}
                             className="fill-muted-foreground"
                           >
                             Requests
