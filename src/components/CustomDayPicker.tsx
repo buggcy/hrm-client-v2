@@ -124,12 +124,12 @@ export default function CustomDayPicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <div className="flex items-center justify-between p-2">
+        <div className="flex items-center justify-between gap-2 p-2">
           <Select
             value={selectedMonth.toString()}
             onValueChange={value => handleMonthChange(parseInt(value))}
           >
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select month" />
             </SelectTrigger>
             <SelectContent>
@@ -144,7 +144,7 @@ export default function CustomDayPicker({
             value={selectedYear.toString()}
             onValueChange={value => handleYearChange(parseInt(value))}
           >
-            <SelectTrigger className="w-[100px]">
+            <SelectTrigger className="max-w-[100px]">
               <SelectValue placeholder="Select year" />
             </SelectTrigger>
             <SelectContent>
@@ -157,7 +157,7 @@ export default function CustomDayPicker({
           </Select>
         </div>
 
-        <div className="h-[330px] w-[270px] overflow-auto pl-2">
+        <div className="h-auto w-[270px] overflow-auto pb-2 pl-2">
           <DayPicker
             mode="single"
             selected={date}

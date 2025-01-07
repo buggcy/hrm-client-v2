@@ -131,8 +131,8 @@ const UserPermissionsTab = () => {
                 <div className="flex items-center gap-1 sm:gap-4">
                   <Avatar className="size-8">
                     <AvatarImage
-                      src={selectedEmployeeData?.userId.Avatar || ''}
-                      alt={`${selectedEmployeeData?.userId.Avatar}`}
+                      src={selectedEmployeeData?.userId?.Avatar || ''}
+                      alt={`${selectedEmployeeData?.userId?.Avatar}`}
                     />
                     <AvatarFallback className="uppercase">
                       {selectedEmployeeData?.userId?.firstName.charAt(0)}
@@ -147,7 +147,7 @@ const UserPermissionsTab = () => {
                       </p>
                     </SelectValue>
                     <p className="text-xs text-muted-foreground">
-                      {selectedEmployeeData?.userId.companyEmail}
+                      {selectedEmployeeData?.userId?.companyEmail}
                     </p>
                   </div>
                 </div>
@@ -166,20 +166,20 @@ const UserPermissionsTab = () => {
                   <div className="flex items-center gap-1 sm:gap-4">
                     <Avatar className="size-8">
                       <AvatarImage
-                        src={employee?.userId.Avatar || ''}
-                        alt={`${employee?.userId.Avatar}`}
+                        src={employee?.userId?.Avatar || ''}
+                        alt={`${employee?.userId?.Avatar}`}
                       />
                       <AvatarFallback className="uppercase">
-                        {employee.userId.firstName.charAt(0)}
-                        {employee.userId.lastName.charAt(0)}
+                        {employee.userId?.firstName.charAt(0)}
+                        {employee.userId?.lastName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col justify-start">
                       <p className="text-sm">
-                        {employee.userId.firstName} {employee.userId.lastName}
+                        {employee.userId?.firstName} {employee.userId?.lastName}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {employee?.userId.companyEmail}
+                        {employee?.userId?.companyEmail}
                       </p>
                     </div>
                   </div>
@@ -212,7 +212,7 @@ const UserPermissionsTab = () => {
                             checked={permission.allowed}
                             onCheckedChange={checked => {
                               handleCheckChange(
-                                selectedEmployeeData.userId._id,
+                                selectedEmployeeData.userId?._id || '',
                                 permission.name,
                                 checked,
                               );
@@ -247,7 +247,7 @@ const UserPermissionsTab = () => {
                             checked={permission.allowed}
                             onCheckedChange={checked => {
                               handleCheckChange(
-                                selectedEmployeeData.userId._id,
+                                selectedEmployeeData.userId?._id || '',
                                 permission.name,
                                 checked,
                               );

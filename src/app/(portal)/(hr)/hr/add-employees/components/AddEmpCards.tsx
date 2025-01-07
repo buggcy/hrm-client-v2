@@ -17,7 +17,7 @@ function AddEmpCards() {
     <div className="flex w-full justify-between gap-4 max-lg:flex-col max-lg:items-center">
       <AddAreaChart />
       <div className="flex w-full flex-row gap-5 lg:w-1/5 lg:flex-col">
-        <Card className="flex h-full flex-col justify-center bg-white p-1 shadow-md dark:bg-[#18181b] max-lg:w-full">
+        <Card className="flex h-full flex-col justify-center bg-white p-1 shadow-sm dark:bg-[#18181b] max-lg:w-full">
           <CardHeader className="flex gap-2 p-3">
             <ThumbsDown className="size-5 text-green-900" />
           </CardHeader>
@@ -36,7 +36,7 @@ function AddEmpCards() {
           </CardContent>
         </Card>
 
-        <Card className="flex h-[125px] flex-col justify-center bg-white p-1 shadow-md dark:bg-[#18181b] max-lg:w-full lg:h-full">
+        <Card className="flex h-[125px] flex-col justify-center bg-white p-1 shadow-sm dark:bg-[#18181b] max-lg:w-full lg:h-full">
           <CardHeader className="flex gap-2 p-3">
             <ClipboardList className="size-5 text-green-900" />
           </CardHeader>
