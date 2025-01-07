@@ -107,7 +107,7 @@ const employeeListSchema = z.object({
 
 const employeePayrollSchema = z.object({
   _id: z.string(),
-  Emp_ID: emp_Id_Schema.optional(),
+  Emp_ID: emp_Id_Schema.nullable(),
   User_ID: z.string().optional(),
   Employee_Name: z.string().optional(),
   Date: z.string().optional(),
@@ -181,7 +181,10 @@ const employeeDobDataSchema = z.array(
     lastName: z.string(),
     Avatar: z.string().optional(),
     DOB: z.preprocess(val => new Date(val as string), z.date()),
-    Joining_Date: z.preprocess(val => new Date(val as string), z.date()),
+    Joining_Date: z
+      .preprocess(val => new Date(val as string), z.date())
+      .nullable()
+      .optional(),
     remainingDays: z.number(),
   }),
 );
@@ -191,7 +194,10 @@ const employeeDobTableSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   DOB: z.preprocess(val => new Date(val as string), z.date()),
-  Joining_Date: z.preprocess(val => new Date(val as string), z.date()),
+  Joining_Date: z
+    .preprocess(val => new Date(val as string), z.date())
+    .nullable()
+    .optional(),
   remainingDays: z.number(),
 });
 

@@ -10,7 +10,7 @@ export interface EmployeeDobTable {
   firstName: string;
   lastName: string;
   DOB: Date;
-  Joining_Date: Date;
+  Joining_Date?: Date | null;
   remainingDays: number;
 }
 

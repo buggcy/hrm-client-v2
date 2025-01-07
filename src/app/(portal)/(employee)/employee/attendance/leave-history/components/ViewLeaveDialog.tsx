@@ -34,7 +34,7 @@ export function ViewLeaveHistoryDialog({
   const status = data.Status;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-fit p-8">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Leave Request Details</DialogTitle>
         </DialogHeader>

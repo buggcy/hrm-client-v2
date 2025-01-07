@@ -44,7 +44,7 @@ export const signInWithEmailAndPassword = async ({
     password,
   });
 
-  return { token, userPermission };
+  return { token, userPermission: userPermission || { permissions: [] } };
 };
 
 export const sendPasswordResetEmail = async ({

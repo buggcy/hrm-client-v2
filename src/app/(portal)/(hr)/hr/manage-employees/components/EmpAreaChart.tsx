@@ -73,7 +73,7 @@ export function EmpAreaChart({ chartData }: EmployeeChartProps) {
             />
             <Area
               dataKey="added"
-              type="natural"
+              type="monotone"
               fill="var(--color-added)"
               fillOpacity={0.4}
               stroke="var(--color-added)"
@@ -81,7 +81,7 @@ export function EmpAreaChart({ chartData }: EmployeeChartProps) {
             />
             <Area
               dataKey="resigned"
-              type="natural"
+              type="monotone"
               fill="var(--color-resigned)"
               fillOpacity={0.4}
               stroke="var(--color-resigned)"
@@ -89,7 +89,7 @@ export function EmpAreaChart({ chartData }: EmployeeChartProps) {
             />
             <Area
               dataKey="fired"
-              type="natural"
+              type="monotone"
               fill="var(--color-fired)"
               fillOpacity={0.4}
               stroke="var(--color-fired)"

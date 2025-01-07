@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -64,6 +64,9 @@ const KYC = ({ data, empId }: KYCProps) => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setError,
+    clearErrors,
   } = useForm<KYCFormData>({
     resolver: zodResolver(kycSchema),
     defaultValues: {
@@ -112,6 +115,21 @@ const KYC = ({ data, empId }: KYCProps) => {
       body: formData,
     });
   };
+
+  const cnicNumber = watch('cnic');
+
+  useEffect(() => {
+    if (cnicNumber && cnicNumber.length === 15) {
+      if (!/^\d{5}-\d{7}-\d{1}$/.test(cnicNumber)) {
+        setError('cnic', {
+          type: 'manual',
+          message: 'Invalid CNIC number',
+        });
+      } else {
+        clearErrors('cnic');
+      }
+    }
+  }, [clearErrors, cnicNumber, setError]);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
       <div className="mb-4 flex flex-col gap-8">

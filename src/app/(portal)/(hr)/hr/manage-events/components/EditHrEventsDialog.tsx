@@ -6,21 +6,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { format } from 'date-fns';
-import { CalendarIcon, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import { Dialog, DialogContent, DialogFooter } from '@/components/ui/dialog';
 import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -35,7 +30,6 @@ import { useStores } from '@/providers/Store.Provider';
 import { HrEventsListType } from '@/libs/validations/employee';
 import { editHrEventsData } from '@/services/hr/hrEvents.service';
 import { HrEventsStoreType } from '@/stores/hr/hrEvents';
-import { cn } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -142,40 +136,18 @@ export function EditHrEventsDialogDemo({
                 name="Start_Date"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(new Date(field.value), 'MMM dd, yyyy')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        onSelect={date =>
-                          field.onChange(
-                            date ? format(date, 'MMM dd, yyyy') : '',
-                          )
-                        }
-                        disabled={date =>
-                          date < today || date < new Date('1900-01-01')
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={
+                      field.value ? new Date(field.value) : undefined
+                    }
+                    onDateChange={date =>
+                      field.onChange(date ? format(date, 'MMM dd, yyyy') : '')
+                    }
+                    className="h-auto"
+                    disabled={date =>
+                      date < today || date < new Date('1900-01-01')
+                    }
+                  />
                 )}
               />
               {errors.Start_Date && (
@@ -192,40 +164,18 @@ export function EditHrEventsDialogDemo({
                 name="End_Date"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(new Date(field.value), 'MMM dd, yyyy')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        onSelect={date =>
-                          field.onChange(
-                            date ? format(date, 'MMM dd, yyyy') : '',
-                          )
-                        }
-                        disabled={date =>
-                          date < today || date < new Date('1900-01-01')
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={
+                      field.value ? new Date(field.value) : undefined
+                    }
+                    onDateChange={date =>
+                      field.onChange(date ? format(date, 'MMM dd, yyyy') : '')
+                    }
+                    className="h-auto"
+                    disabled={date =>
+                      date < today || date < new Date('1900-01-01')
+                    }
+                  />
                 )}
               />
               {errors.End_Date && (

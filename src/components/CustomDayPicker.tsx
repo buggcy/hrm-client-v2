@@ -35,19 +35,28 @@ const months = [
 
 const years = Array.from({ length: 2199 - 1965 + 1 }, (_, i) => 1965 + i);
 
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
 interface TestProps {
   initialDate?: Date;
   onDateChange: (date: Date | undefined) => void;
   loading?: boolean;
   type?: string;
+  className?: string;
+  disable?: boolean;
 }
+
+type CustomDayPickerProps = TestProps & CalendarProps;
 
 export default function CustomDayPicker({
   initialDate,
   onDateChange,
   loading,
   type,
-}: TestProps) {
+  className,
+  disable,
+  disabled,
+}: CustomDayPickerProps) {
   const [date, setDate] = React.useState<Date | undefined>(
     initialDate || undefined,
   );
@@ -92,7 +101,8 @@ export default function CustomDayPicker({
       <PopoverTrigger asChild>
         <Button
           variant={'outline'}
-          className={`relative h-[32px] justify-start text-left font-normal ${loading ? 'pr-10' : ''}`}
+          className={`relative h-[32px] justify-start text-left font-normal ${loading ? 'pr-10' : ''} ${className}`}
+          disabled={disable}
         >
           <CalendarIcon className="mr-2 size-4" />
           {type === 'search' ? (
@@ -114,12 +124,12 @@ export default function CustomDayPicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <div className="flex items-center justify-between p-2">
+        <div className="flex items-center justify-between gap-2 p-2">
           <Select
             value={selectedMonth.toString()}
             onValueChange={value => handleMonthChange(parseInt(value))}
           >
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select month" />
             </SelectTrigger>
             <SelectContent>
@@ -134,7 +144,7 @@ export default function CustomDayPicker({
             value={selectedYear.toString()}
             onValueChange={value => handleYearChange(parseInt(value))}
           >
-            <SelectTrigger className="w-[100px]">
+            <SelectTrigger className="max-w-[100px]">
               <SelectValue placeholder="Select year" />
             </SelectTrigger>
             <SelectContent>
@@ -147,7 +157,7 @@ export default function CustomDayPicker({
           </Select>
         </div>
 
-        <div className="h-[330px] w-[270px] overflow-auto pl-2">
+        <div className="h-auto w-[270px] overflow-auto pb-2 pl-2">
           <DayPicker
             mode="single"
             selected={date}
@@ -179,6 +189,7 @@ export default function CustomDayPicker({
             month={new Date(selectedYear, selectedMonth)}
             showOutsideDays={true}
             onMonthChange={handleMonthNavigation}
+            disabled={disabled}
           />
         </div>
       </PopoverContent>

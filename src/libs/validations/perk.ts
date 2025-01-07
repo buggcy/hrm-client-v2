@@ -76,21 +76,16 @@ const transformedPerkDataSchema = z.object({
 export type TransformedPerkData = z.infer<typeof transformedPerkDataSchema>;
 
 const perkListSchema = z.object({
-  _id: z.string(),
-  description: z.string(),
+  id: z.string(),
   name: z.string(),
-  decrementAmount: z.number(),
-  incrementApplications: z.array(employeePerkApplicationSchema).optional(),
+  incrementAmount: employeePerkApplicationSchema.shape.appliedAmount,
+  dateApplied: employeePerkApplicationSchema.shape.dateApplied,
+  decisionDate: employeePerkApplicationSchema.shape.decisionDate,
+  hrApproval: employeePerkApplicationSchema.shape.hrApproval,
   userId: z.string(),
-  assignedDecrementAmount: z.number(),
+  requestId: employeePerkApplicationSchema.shape._id,
   assignedIncrementAmount: z.number(),
-  __v: z.number(),
-  isAvailable: z.boolean(),
-  isAvailed: z.boolean(),
-  salaryDecrement: z.boolean(),
-  salaryIncrement: z.boolean(),
-  createdAt: z.string().optional(),
-  updatedAt: z.string().optional(),
+  description: z.string(),
 });
 
 const perkApiResponseSchema = z.object({

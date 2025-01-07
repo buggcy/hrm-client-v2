@@ -62,7 +62,7 @@ const ComplaintResolved: FunctionComponent<Props> = () => {
 
   return (
     <>
-      <Header subheading="Review and Approve Employee Leave Requests">
+      <Header subheading="Empowering Fairness: Review and Resolve Employee Complaints">
         <DateRangePicker
           timeRange={timeRange}
           selectedDate={selectedDate}

@@ -1,4 +1,4 @@
-# 🌋 HRM Portal 🌋 
+# 🌋 HRM Portal 🌋
 
 ## Getting Started
 
@@ -14,12 +14,12 @@ Make sure you have Node.js installed on your system. We use [`nvm` (Node Version
    nvm install 20 && nvm use 20
    ```
 
-   This command installs and switches to the Node.js version specified in the `.nvmrc` file located in the project's root directory.
+   This command installs and switches to the Node.js version specified in the `.nvmrc` file located in the project's root directory
 
 2. **Install project dependencies:**
 
    ```bash
-   npm ci 
+   npm ci
    ```
 
    Using `npm ci` helps ensure that your package versions match those in `package-lock.json`, providing a more consistent installation process.
@@ -48,7 +48,7 @@ UI components are general interface elements used throughout the application. Th
 
 ### Usage and Creation
 
-When creating new UI components or utilizing existing ones, it's important to follow the guidelines and component structures provided in the Shadcn UI library
+When creating new UI components or utilizing existing ones, it's important to follow the guidelines and component structures provided in the Shadcn UI library.
 
 For detailed documentation on how to use or create these UI components, refer to the Shadcn UI documentation available at [Shadcn UI Components](https://ui.shadcn.com/docs/components).
 All general UI components are stored under: _`src/components/ui`_

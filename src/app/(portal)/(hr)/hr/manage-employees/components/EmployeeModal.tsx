@@ -5,13 +5,12 @@ import React, { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { format } from 'date-fns';
-import { CalendarIcon, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
   Dialog,
   DialogContent,
@@ -22,11 +21,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import MultiSelect from '@/components/ui/multiple-select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -46,7 +40,6 @@ import {
   updateTBAEmployeeData,
 } from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
-import { cn } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -56,7 +49,9 @@ const addEmployeeSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
   companyEmail: z.string().email('Invalid company email address'),
-  contactNo: z.string().regex(/^03\d{9}$/, 'Invalid contact number'),
+  contactNo: z
+    .string()
+    .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
   basicSalary: z
     .string()
     .min(1, 'Salary is required')
@@ -99,6 +94,8 @@ export function AddEmployeeDialog({
     reset,
     setValue,
     watch,
+    setError,
+    clearErrors,
   } = useForm<AddEmployeeFormData>({
     resolver: zodResolver(addEmployeeSchema),
     defaultValues: {
@@ -126,7 +123,9 @@ export function AddEmployeeDialog({
         companyEmail: editData.companyEmail,
         contactNo: editData.contactNo,
         basicSalary: editData.basicSalary.toString(),
-        Joining_Date: new Date(editData?.Joining_Date || ''),
+        Joining_Date: editData?.Joining_Date
+          ? new Date(editData?.Joining_Date)
+          : undefined,
         Designation: editData.Designation,
       });
     }
@@ -262,6 +261,20 @@ export function AddEmployeeDialog({
                     id="contactNo"
                     placeholder="03XXXXXXXXX"
                     type="tel"
+                    onBlur={() => {
+                      const phone = watch('contactNo');
+                      const strippedVal = phone.replace(/^(03|\+923)/, '');
+                      const isDigit = /^\d+$/.test(strippedVal);
+                      if (phone && (strippedVal.length !== 9 || !isDigit)) {
+                        setError('contactNo', {
+                          type: 'manual',
+                          message:
+                            'Phone number must have exactly 9 digits after 03 or +923',
+                        });
+                      } else {
+                        clearErrors('contactNo');
+                      }
+                    }}
                   />
                 )}
               />
@@ -304,34 +317,11 @@ export function AddEmployeeDialog({
                 name="Joining_Date"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={date =>
-                          date > new Date() || date < new Date('1900-01-01')
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                  />
                 )}
               />
               {errors.Joining_Date && (

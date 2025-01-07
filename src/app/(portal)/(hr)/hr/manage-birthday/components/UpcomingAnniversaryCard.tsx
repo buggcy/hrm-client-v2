@@ -9,7 +9,7 @@ import { useEmployeeDobChartQuery } from '@/hooks/EmployeeDobTable/useEmpDob.hoo
 interface Employee {
   remainingDays: number;
   DOB: Date;
-  Joining_Date: Date;
+  Joining_Date?: Date | null;
   firstName: string;
   lastName: string;
   Avatar?: string;
@@ -39,10 +39,12 @@ const UpcomingAnniversaryCard: React.FC = () => {
 
   const upcomingDobs: Employee[] =
     myData?.map((employee: Employee) => {
-      const remainingDays = getRemainingDays(new Date(employee.Joining_Date));
+      const remainingDays = getRemainingDays(
+        new Date(employee?.Joining_Date ?? ''),
+      );
       return {
         DOB: employee.DOB,
-        Joining_Date: employee.Joining_Date,
+        Joining_Date: employee?.Joining_Date,
         firstName: employee.firstName,
         lastName: employee.lastName,
         _id: employee._id,
@@ -111,14 +113,13 @@ const UpcomingAnniversaryCard: React.FC = () => {
                       {employee.firstName} {employee.lastName}
                     </p>
                     <p className="text-[12px] text-gray-500">
-                      {new Date(employee.Joining_Date).toLocaleDateString(
-                        'en-US',
-                        {
-                          year: 'numeric',
-                          month: 'short',
-                          day: '2-digit',
-                        },
-                      )}{' '}
+                      {new Date(
+                        employee?.Joining_Date ?? '',
+                      ).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                      })}{' '}
                       -
                       {isToday
                         ? ' Today'

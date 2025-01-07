@@ -16,6 +16,7 @@ export interface PerkListParams {
   from?: string;
   to?: string;
   status?: string[];
+  query?: string;
 }
 
 export interface PerkRecordParams {
@@ -33,6 +34,7 @@ export const postPerkList = async (
     from: '',
     to: '',
     status: [],
+    query: '',
   };
 
   const mergedParams = { ...defaultParams, ...params };

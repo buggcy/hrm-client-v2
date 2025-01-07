@@ -48,7 +48,7 @@ type EmployeeDob = {
   firstName: string;
   lastName: string;
   DOB: Date;
-  Joining_Date: Date;
+  Joining_Date?: Date | null;
 };
 
 const localizer = dateFnsLocalizer({
@@ -425,7 +425,7 @@ export default function HrEventsCalendar() {
 
   const formattedDobEvents: MyEvent[] | undefined = empDobDate?.flatMap(
     (dobEvent: EmployeeDob) => {
-      const dob = new Date(dobEvent.DOB);
+      const dob = new Date(dobEvent?.DOB ?? '');
       const currentYear = new Date().getFullYear();
 
       const yearRange = 5;
@@ -450,7 +450,7 @@ export default function HrEventsCalendar() {
 
   const formattedAnniversaryEvents: MyEvent[] | undefined = empDobDate?.flatMap(
     (dobEvent: EmployeeDob) => {
-      const joiningDate = new Date(dobEvent.Joining_Date);
+      const joiningDate = new Date(dobEvent?.Joining_Date ?? '');
       const currentYear = new Date().getFullYear();
 
       const yearRange = 5;
@@ -489,6 +489,7 @@ export default function HrEventsCalendar() {
     if (event.Event_Type !== 'birthday' && event.Event_Type !== 'anniversary') {
       setSelectedEvent(event);
       setIsDialogOpen(true);
+      setTooltip({ visible: false, event: undefined, x: 0, y: 0 });
     }
   };
 

@@ -8,11 +8,9 @@ import {
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -26,17 +24,18 @@ interface AttendanceHistoryDialogProps {
   data: AttendanceHistoryListType;
   open: boolean;
   onOpenChange: () => void;
-  onCloseChange: () => void;
+  onCloseChange?: () => void;
 }
 
 const AttendanceHistoryDialog = ({
   data,
   open,
   onOpenChange,
-  onCloseChange,
 }: AttendanceHistoryDialogProps) => {
   const startTime = formatUTCToLocalTime(data?.Start_Date);
-  const endTime = formatUTCToLocalTime(data?.End_Date);
+  const endTime = data?.End_Date
+    ? formatUTCToLocalTime(data?.End_Date || '')
+    : '00:00';
   const totalTimeStr = data?.Total_Time;
   let totalTimeInMinutes = 0;
   if (typeof totalTimeStr === 'string') {
@@ -50,12 +49,12 @@ const AttendanceHistoryDialog = ({
   const formattedMinutes = minutes.toString().padStart(2, '0');
   const totalTime = `${formattedHours}:${formattedMinutes}`;
   const status = data?.Status;
-  const date = data?.date ? new Date(data.date) : new Date();
+  const date = data?.date ? new Date(data?.date) : new Date();
   const breaks: AttendanceBreaks[] = data?.breaks;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-fit p-8">
-        <DialogHeader className="flex flex-row items-center justify-between">
+      <DialogContent>
+        <DialogHeader className="mt-2 flex flex-row items-center justify-between">
           <DialogTitle>Attendance Details</DialogTitle>
           <Badge
             className="ml-2 px-2 py-1"
@@ -104,13 +103,14 @@ const AttendanceHistoryDialog = ({
 
         <div className="w-full border-t-2 pt-4">
           <span className="pb-4">Breaks:</span>
-          <BreaksTable data={breaks} />
+          {breaks?.length > 0 ? (
+            <BreaksTable data={breaks} />
+          ) : (
+            <div className="text-center text-sm text-gray-600 dark:text-gray-300">
+              No breaks found!
+            </div>
+          )}
         </div>
-        <DialogFooter>
-          <Button onClick={onCloseChange} size="sm">
-            Close
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

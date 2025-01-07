@@ -112,7 +112,7 @@ export const attendanceHistoryListColumns: ColumnDef<AttendanceHistoryListType>[
       ),
       cell: ({ row }) => {
         const date = new Date(Date.parse(row.getValue('End_Date')));
-
+        const endDate = row.getValue('End_Date');
         const time = date.toLocaleTimeString('en-PK', {
           hour: 'numeric',
           minute: 'numeric',
@@ -121,7 +121,9 @@ export const attendanceHistoryListColumns: ColumnDef<AttendanceHistoryListType>[
         });
         return (
           <div className="flex space-x-2">
-            <span className="max-w-[500px] truncate font-medium">{time}</span>
+            <span className="max-w-[500px] truncate font-medium">
+              {!endDate ? 'N/A' : time}
+            </span>
           </div>
         );
       },

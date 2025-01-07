@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
@@ -23,11 +21,6 @@ import MultiSelectEmployee from '@/components/ui/employee-select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import MultiSelect from '@/components/ui/multiple-select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { RadioInput } from '@/components/ui/radio';
 import {
   Select,
@@ -46,7 +39,6 @@ import {
   addProject,
   editProject,
 } from '@/services/hr/project-department.service';
-import { cn } from '@/utils';
 import techStack from '@/utils/tectStack.utils';
 
 import { MessageErrorResponse } from '@/types';
@@ -471,32 +463,12 @@ const AddEditProjectModal = ({
                 name="startDate"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={date => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                    disabled={date => date < new Date()}
+                  />
                 )}
               />
               {errors.startDate && (
@@ -513,33 +485,13 @@ const AddEditProjectModal = ({
                 name="endDate"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                        disabled={isContinue}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={date => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                    disabled={date => date < new Date()}
+                    disable={isContinue}
+                  />
                 )}
               />
               {errors.endDate && (
@@ -568,32 +520,12 @@ const AddEditProjectModal = ({
                 name="deadline"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={date => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                    disabled={date => date < new Date()}
+                  />
                 )}
               />
               {errors.deadline && (

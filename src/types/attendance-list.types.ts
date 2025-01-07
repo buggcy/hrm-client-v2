@@ -17,7 +17,7 @@ export interface AttendanceList {
   _id: string;
   User_ID: string;
   Start_Date: string;
-  End_Date: string;
+  End_Date: string | null;
   Total_Time: string;
   Status: string;
   isDeleted: boolean;
@@ -42,7 +42,7 @@ export interface AttendanceListApiResponse {
 
 export interface UserDateAttendance {
   Start_Date?: string;
-  End_Date?: string;
+  End_Date?: string | null;
   Total_Time?: string;
   Status?: string;
   message?: string;

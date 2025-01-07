@@ -19,7 +19,7 @@ export interface LeaveList {
     firstName: string;
     lastName: string;
     companyEmail: string;
-    Avatar: string;
+    Avatar?: string;
     Designation?: string;
     contactNo?: string;
   };
@@ -27,7 +27,7 @@ export interface LeaveList {
     _id: string;
     firstName: string;
     lastName: string;
-    Avatar: string;
+    Avatar?: string;
   };
   Status: 'Approved' | 'Rejected' | 'Pending' | 'Canceled';
   Tahometer_ID?: string;

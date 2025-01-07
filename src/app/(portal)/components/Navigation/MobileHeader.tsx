@@ -112,33 +112,38 @@ export const MobileHeader = () => {
                     </button>
                   )}
                 </div>
-
-                {filteredMenuItems.map(item =>
-                  item.children ? (
-                    <NavSection title={item.title} key={item.title}>
-                      {item.children.map(child => (
-                        <li className="flex" key={child.href}>
-                          <MobileNavigationItem
-                            title={child.title}
-                            icon={child.icon}
-                            href={child.href!}
-                            active={pathname === child.href}
-                            onClick={onClose}
-                          />
-                        </li>
-                      ))}
-                    </NavSection>
-                  ) : (
-                    <li className="flex" key={item.href}>
-                      <MobileNavigationItem
-                        title={item.title}
-                        icon={item.icon}
-                        href={item.href!}
-                        active={pathname === item.href}
-                        onClick={onClose}
-                      />
-                    </li>
-                  ),
+                {filteredMenuItems?.length === 0 ? (
+                  <div className="mt-4 text-center text-sm text-muted-foreground">
+                    No results found
+                  </div>
+                ) : (
+                  filteredMenuItems.map(item =>
+                    item.children ? (
+                      <NavSection title={item.title} key={item.title}>
+                        {item.children.map(child => (
+                          <li className="flex" key={child.href}>
+                            <MobileNavigationItem
+                              title={child.title}
+                              icon={child.icon}
+                              href={child.href!}
+                              active={pathname === child.href}
+                              onClick={onClose}
+                            />
+                          </li>
+                        ))}
+                      </NavSection>
+                    ) : (
+                      <li className="flex" key={item.href}>
+                        <MobileNavigationItem
+                          title={item.title}
+                          icon={item.icon}
+                          href={item.href!}
+                          active={pathname === item.href}
+                          onClick={onClose}
+                        />
+                      </li>
+                    ),
+                  )
                 )}
               </nav>
               <ul className="mt-auto flex flex-col gap-3">

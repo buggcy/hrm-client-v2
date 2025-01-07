@@ -207,8 +207,8 @@ const EducationExperienceTable = ({
           type: data.type,
           documentType: data.documentType,
           referenceNumber: data.referenceNumber,
-          Start_Date: data.Start_Date.toISOString().split('T')[0],
-          End_Date: data.End_Date.toISOString().split('T')[0],
+          Start_Date: data.Start_Date.toLocaleDateString('en-CA'),
+          End_Date: data.End_Date.toLocaleDateString('en-CA'),
           Institute: data.Institute,
           Position: data.Position,
         },
@@ -223,15 +223,13 @@ const EducationExperienceTable = ({
       updateEducationExperienceData({ id: empId || '', body: tableData });
       setIsUpdated(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateEducationExperienceData, isUpdated]);
+  }, [updateEducationExperienceData, isUpdated, empId, tableData]);
 
   useEffect(() => {
     if (deletedItems.length > 0) {
       deleteEducationExperienceData({ id: empId || '', body: deletedItems });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteEducationExperienceData, deletedItems]);
+  }, [deleteEducationExperienceData, deletedItems, empId]);
 
   return (
     <div className="flex flex-col items-end justify-between gap-4">

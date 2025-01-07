@@ -115,8 +115,9 @@ export const deleteEmployeeSalaryIncrementData = async (
 ): Promise<SuccessMessageResponse> => {
   try {
     const { message }: SuccessMessageResponse = await baseAPI.delete(
-      `/delete-salary-increment?incrementId=${id}`,
+      `/delete-salary-increment-v2?incrementId=${id}`,
     );
+
     return { message };
   } catch (error) {
     console.error('Error deleting Salary Increment Data', error);

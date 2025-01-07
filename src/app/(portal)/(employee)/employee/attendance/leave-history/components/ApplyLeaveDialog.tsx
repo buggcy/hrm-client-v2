@@ -4,13 +4,12 @@ import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { CalendarIcon, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
   Dialog,
   DialogContent,
@@ -20,11 +19,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -44,7 +38,6 @@ import {
 } from '@/services/employee/leave-history.service';
 import { AuthStoreType } from '@/stores/auth';
 import { LeaveHistoryStoreType } from '@/stores/employee/leave-history';
-import { cn } from '@/utils';
 
 import { EmployeeLeavesDataApiResponse } from '@/types/leave-history.types';
 
@@ -375,7 +368,7 @@ export function ApplyLeaveDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[905px]">
         <DialogHeader>
-          <DialogTitle>Apply For Leave</DialogTitle>
+          <DialogTitle> {data ? 'Edit' : 'Apply For'} Leave</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 py-4">
           <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-center gap-4">
@@ -387,32 +380,12 @@ export function ApplyLeaveDialog({
                 name="Start_Date"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={date => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                    disabled={date => date < new Date()}
+                  />
                 )}
               />
               {errors.Start_Date && (
@@ -429,32 +402,12 @@ export function ApplyLeaveDialog({
                 name="End_Date"
                 control={control}
                 render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !field.value && 'text-muted-foreground',
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 size-4" />
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={date => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                    disabled={date => date < new Date()}
+                  />
                 )}
               />
               {errors.End_Date && (
@@ -570,7 +523,7 @@ export function ApplyLeaveDialog({
 
           <DialogFooter>
             <Button type="submit" disabled={isApplying || isUpdating}>
-              {data ? 'Update' : 'Apply For'} Leave
+              {data ? 'Edit' : 'Apply For'} Leave
             </Button>
           </DialogFooter>
         </form>
