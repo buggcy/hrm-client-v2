@@ -116,7 +116,7 @@ const FeedbackCard: React.FC = () => {
                     key={feedback._id}
                     className="flex w-full max-w-[600px] flex-col items-center p-6 shadow-md hover:shadow-lg"
                   >
-                    <h3 className="mb-4 text-center text-xl font-semibold text-gray-600 dark:text-gray-300">
+                    <h3 className="mb-4 text-center text-xl font-semibold dark:text-gray-300">
                       {feedback.feedbackCategory}
                     </h3>
                     <div className="mb-2 p-1">

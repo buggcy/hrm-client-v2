@@ -45,12 +45,8 @@ export function MonthlyPayrollGraph({ payrollData }: MonthlyPayrollGraphProps) {
   return (
     <Card className="h-full">
       <CardHeader className="pr-0">
-        <CardTitle className="text-[16px] lg:text-[20px] xl:text-[28px]">
-          Monthly Payroll
-        </CardTitle>
-        <p className="text-[12px] text-gray-500 lg:text-[13px] xl:text-[16px]">
-          Payroll overview for all months
-        </p>
+        <CardTitle className="text-lg">Monthly Payroll</CardTitle>
+        <p className="text-sm text-gray-500">Payroll overview for all months</p>
       </CardHeader>
       <CardContent className="w-full pr-0">
         <ChartContainer

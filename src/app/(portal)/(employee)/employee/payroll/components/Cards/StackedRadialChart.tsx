@@ -74,12 +74,10 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
   return (
     <Card className="flex h-full flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle className="text-[16px] lg:text-[20px] xl:text-[28px]">
+        <CardTitle className="text-[16px] lg:text-[20px] xl:text-lg">
           Salary Distribution
         </CardTitle>
-        <CardDescription className="text-[12px] lg:text-[13px] xl:text-[16px]">
-          {monthName}
-        </CardDescription>
+        <CardDescription className="text-sm">{monthName}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 items-center pb-0">
         <ChartContainer
@@ -112,7 +110,7 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 18}
-                          className="fill-muted-foreground"
+                          className="fill-muted-foreground text-sm"
                         >
                           Net Salary
                         </tspan>
