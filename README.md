@@ -22,7 +22,7 @@ Make sure you have Node.js installed on your system. We use [`nvm` (Node Version
    npm ci
    ```
 
-   Using `npm ci` helps ensure that your package versions match those in `package-lock.json`, providing a more consistent installation process.
+   Using `npm ci` helps ensure that your package versions match those in `package-lock.json`, providing a more consistent installation process
 
 3. **Start the application in development mode:**
 
