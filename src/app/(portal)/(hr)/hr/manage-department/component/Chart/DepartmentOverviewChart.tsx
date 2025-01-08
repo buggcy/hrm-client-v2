@@ -85,12 +85,14 @@ export function DepartmentOverviewChat({ chartData }: ChartProps) {
                 dataKey="deleteProjects"
                 stackId="a"
                 fill="var(--color-deleteProjects)"
+                radius={[0, 0, 0, 0]}
                 barSize={40}
               />
               <Bar
                 dataKey="deletedEmployees"
                 stackId="a"
                 fill="var(--color-deletedEmployees)"
+                radius={[4, 4, 0, 0]}
                 barSize={40}
               />
             </BarChart>

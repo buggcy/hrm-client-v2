@@ -200,7 +200,7 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
         return (
           <div className="flex space-x-2">
             <span className="max-w-[500px] truncate font-medium">
-              {formatCurrency(netSalary)}
+              {formatCurrency(netSalary && netSalary >= 0 ? netSalary : 0)}
             </span>
           </div>
         );

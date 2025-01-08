@@ -574,7 +574,7 @@ const AddEditProjectModal = ({
                             </div>
                           </div>
                         ) : (
-                          <SelectValue placeholder="Select Employee" />
+                          <SelectValue placeholder="Select Team Lead" />
                         )}
                       </SelectTrigger>
                     </div>

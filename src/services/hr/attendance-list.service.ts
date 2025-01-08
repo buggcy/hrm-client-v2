@@ -42,7 +42,7 @@ export const addAttendaceData = async ({
   Status,
   date,
 }: AddAttendanceFormData): Promise<SuccessMessageResponse> => {
-  const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const formattedDate = date.toLocaleDateString('en-CA');
   const { message }: SuccessMessageResponse = await baseAPI.post(
     `/attendence-v2`,
     {
