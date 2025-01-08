@@ -45,7 +45,7 @@ const MonthlyStats: FunctionComponent<MothlyStatsProps> = ({ data }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Monthly Stats</CardTitle>
+        <CardTitle className="text-lg">Monthly Stats</CardTitle>
       </CardHeader>
       <CardContent className="h-full grow">
         <ChartContainer
