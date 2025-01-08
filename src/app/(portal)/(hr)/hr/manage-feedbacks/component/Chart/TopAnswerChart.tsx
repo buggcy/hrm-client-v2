@@ -44,8 +44,8 @@ export function TopFeedbackAnswer({ chartData }: ChartProps) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle className="text-sm">Top Feedback Answers </CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle>Top Feedback Answers </CardTitle>
+        <CardDescription className="text-sm">
           Feedback ratings represented as percentages relative to the highest
           count
         </CardDescription>

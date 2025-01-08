@@ -51,7 +51,7 @@ export function ProjectPieChart({
   return (
     <Card className="flex w-full flex-col">
       <CardHeader>
-        <CardTitle className="pb-4 text-sm">Project Overview</CardTitle>
+        <CardTitle className="pb-4">Project Overview</CardTitle>
       </CardHeader>
       <CardContent className="w-full p-0">
         <ChartContainer

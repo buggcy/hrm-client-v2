@@ -40,8 +40,8 @@ export function PerkRequests({ chartData }: PerkRecordChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm">Perk Assigned & Availed</CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle>Perk Assigned & Availed</CardTitle>
+        <CardDescription className="text-sm">
           Showing total assigned & availed for this year
         </CardDescription>
       </CardHeader>

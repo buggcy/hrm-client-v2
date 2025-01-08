@@ -499,7 +499,7 @@ const AddEditProjectModal = ({
                   {errors.endDate.message}
                 </span>
               )}
-              <div className="m-1 flex flex-row gap-2">
+              <div className="mt-2 flex flex-row gap-2">
                 <Checkbox
                   checked={isContinue}
                   aria-label="Continue"
@@ -538,7 +538,7 @@ const AddEditProjectModal = ({
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="lead" className="mb-2 text-left">
+              <Label htmlFor="lead" className="mb-3 text-left">
                 Project Lead <span className="text-red-600">*</span>
               </Label>
               <Controller

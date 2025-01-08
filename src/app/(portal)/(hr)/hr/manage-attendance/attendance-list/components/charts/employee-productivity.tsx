@@ -52,8 +52,8 @@ export function EmployeeProductivityChart({
   const currentYear = new Date().getFullYear();
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Employee Productivity</CardTitle>
+      <CardHeader className="items-center">
+        <CardTitle>Employee Productivity</CardTitle>
         <CardDescription className="text-xs">{currentYear}</CardDescription>
       </CardHeader>
       <CardContent className="md:size-full md:max-h-[310px]">

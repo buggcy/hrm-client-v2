@@ -45,11 +45,11 @@ export function TopDepartmentChart({ chartData, type }: ChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className={`${type === 'dashboard' ? '' : 'text-sm'}`}>
+        <CardTitle className={`${type === 'dashboard' ? '' : 'text-2xl'}`}>
           Top Departments
         </CardTitle>
-        <CardDescription className={`${type === 'dashboard' ? '' : 'text-xs'}`}>
-          No. of Employees in Each Department
+        <CardDescription className={`${type === 'dashboard' ? '' : 'text-sm'}`}>
+          No of Employees in Each Department
         </CardDescription>
       </CardHeader>
       <CardContent>

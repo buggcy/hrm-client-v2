@@ -44,8 +44,8 @@ export function TopPerks({ chartData }: PerkRecordChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm">Top Availed Perks</CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle>Top Availed Perks</CardTitle>
+        <CardDescription className="text-sm">
           Showing top availed perks for this year
         </CardDescription>
       </CardHeader>
