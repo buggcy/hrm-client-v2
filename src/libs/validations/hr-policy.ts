@@ -23,6 +23,7 @@ const policySchema = z.object({
   isDeleted: z.boolean(),
   updatedAt: z.string(),
   userId: userIdSchema,
+  __v: z.number(),
   type: z.literal('hrPolicy').optional(),
 });
 
@@ -32,6 +33,8 @@ const policyApiResponseSchema = z.object({
 });
 
 export type PolicyApiResponse = z.infer<typeof policyApiResponseSchema>;
+export type PolicyListArrayType = z.infer<typeof policySchema>[] | [];
+export type PolicyListType = z.infer<typeof policySchema>;
 export type PolicyType = z.infer<typeof policySchema>;
 export type PolicyInputType = Omit<
   PolicyType,

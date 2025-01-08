@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -23,9 +24,9 @@ interface AdditionalDocumentDialogProps {
 
 const additionalDocumentSchema = z.object({
   document: z
-    .instanceof(File, { message: 'Invalid file type' })
-    .refine(file => file === null || file.size <= 5 * 1024 * 1024, {
-      message: 'File size should be less than 5MB',
+    .instanceof(File, { message: 'File is required!' })
+    .refine(file => file === null || file.size <= 200 * 1024, {
+      message: 'File size should be less than 200KB',
     }),
 });
 
@@ -42,6 +43,7 @@ const AdditionalDocumentDialog = ({
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<additionalDocumentFormData>({
     resolver: zodResolver(additionalDocumentSchema),
@@ -49,6 +51,11 @@ const AdditionalDocumentDialog = ({
       document: undefined,
     },
   });
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -81,9 +88,12 @@ const AdditionalDocumentDialog = ({
               </span>
             )}
           </div>
-          <Button type="submit" disabled={loading}>
-            Add
-          </Button>
+
+          <DialogFooter className="col-span-1 md:col-span-2 lg:col-span-3">
+            <Button type="submit" disabled={loading}>
+              Add
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

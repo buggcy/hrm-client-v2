@@ -100,7 +100,11 @@ export function AddExtraLeaveModal({
       });
     },
   });
-
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
   useEffect(() => {
     if (type === 'edit' && leaveToEdit) {
       reset({
@@ -243,16 +247,6 @@ export function AddExtraLeaveModal({
                 size={'sm'}
               >
                 {type === 'add' ? 'Add' : 'Update'}
-              </Button>
-              <Button
-                variant="ghostSecondary"
-                type="button"
-                onClick={() => {
-                  reset();
-                  onCloseChange(false);
-                }}
-              >
-                Close
               </Button>
             </DialogFooter>
           </form>

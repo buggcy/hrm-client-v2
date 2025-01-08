@@ -20,6 +20,7 @@ interface ProfileDetailsProps {
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
   const searchParams = useSearchParams();
   const userIdFromParams = searchParams.get('userId');
+
   return (
     <>
       <Card>

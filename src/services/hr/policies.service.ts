@@ -1,14 +1,18 @@
-import { baseAPI } from '@/utils';
+import { baseAPI, schemaParse } from '@/utils';
 
+import { SuccessMessageResponse } from './employee.service';
 import {
   PolicyApiResponse,
   policyApiResponseSchema,
   PolicyQueryParamsType,
 } from '../../libs/validations/hr-policy';
 
-type SuccessMessageResponse = {
-  message: string;
-};
+export interface PolicyParams {
+  page?: number;
+  limit?: number;
+  category?: string;
+}
+
 export const policyService = {
   fetchPolicies: async (type: string): Promise<PolicyApiResponse> => {
     const response = await baseAPI.get<PolicyApiResponse>(
@@ -40,19 +44,73 @@ export const policyService = {
     const response = await baseAPI.get(`/policy/category`);
     return response;
   },
+};
 
-  deletePolicy: async (id: string): Promise<{ message: string }> => {
-    const response = await baseAPI.delete<{ message: string }>(
-      `/delete/policy/${id}`,
-    );
-    return response.data;
-  },
+export const getAllPolicies = async (
+  params: PolicyParams = {},
+): Promise<PolicyApiResponse> => {
+  const defaultParams: PolicyParams = {
+    page: 1,
+    limit: 5,
+    category: '',
+  };
 
-  addPolicy: async (formData: FormData): Promise<SuccessMessageResponse> => {
-    const { message }: SuccessMessageResponse = await baseAPI.post(
-      `/add/policy`,
-      formData,
-    );
-    return { message };
-  },
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(`/policy-v2?${queryParams.toString()}`);
+    return schemaParse(policyApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching policy list!', error);
+    throw error;
+  }
+};
+
+export const searchPolicy = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<PolicyApiResponse> => {
+  const { data, pagination }: PolicyApiResponse = await baseAPI.get(
+    `/search/policy?page=${page}&limit=${limit}&query=${query}`,
+  );
+
+  return { data, pagination };
+};
+
+export const deletePolicy = async (payload: {
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { id } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/delete/policy/${id}`,
+  );
+  return { message };
+};
+
+export const addPolicy = async (payload: {
+  formData: FormData;
+}): Promise<SuccessMessageResponse> => {
+  const { formData } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/add/policy`,
+    formData,
+  );
+  return { message };
 };

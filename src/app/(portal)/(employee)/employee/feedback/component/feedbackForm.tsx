@@ -119,16 +119,18 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         <h2 className="text-center text-2xl font-bold dark:text-white">
           Feedback Form
         </h2>
-        <Table>
+        <Table className="w-full table-fixed">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-20">Q. No.</TableHead>
-              <TableHead className="w-[640px]">Questions</TableHead>
-              <TableHead>Excellent</TableHead>
-              <TableHead>Very Good</TableHead>
-              <TableHead>Good</TableHead>
-              <TableHead>Average</TableHead>
-              <TableHead>Below Average</TableHead>
+              <TableHead className="w-20 text-center">Q. No.</TableHead>
+              <TableHead className="w-[400px] md:w-[640px]">
+                Questions
+              </TableHead>
+              <TableHead className="w-20 text-center">Excellent</TableHead>
+              <TableHead className="w-20 text-center">Very Good</TableHead>
+              <TableHead className="w-20 text-center">Good</TableHead>
+              <TableHead className="w-20 text-center">Average</TableHead>
+              <TableHead className="w-20 text-center">Below Average</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -137,7 +139,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 <TableCell className="border px-4 py-2 text-center">
                   {index + 1}
                 </TableCell>
-                <TableCell className="border px-4 py-2">
+                <TableCell className="whitespace-normal break-words border px-4 py-2">
                   {question.questionText}
                 </TableCell>
                 {[
