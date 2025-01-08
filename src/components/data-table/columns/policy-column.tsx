@@ -1,40 +1,19 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { File, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 
-import { PolicyType } from '@/libs/validations/hr-policy';
+import { PolicyListType } from '@/libs/validations/hr-policy';
 
 import { PolicyListRowActions } from '../actions/policy-table.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
 import { UserId } from '@/types/hr-policies.types';
 
-export const policyColumn: ColumnDef<PolicyType>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={value => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+export const policyColumn: ColumnDef<PolicyListType>[] = [
   {
     accessorKey: 'file',
     header: ({ column }) => (
@@ -42,48 +21,29 @@ export const policyColumn: ColumnDef<PolicyType>[] = [
     ),
     cell: ({ row }) => {
       const fileUrl: string = row.getValue('file');
-      const segments = fileUrl.split('/');
-      const fileNameWithExtension = segments.pop();
-      const [fileName = 'unknown', fileExtension = ''] =
-        fileNameWithExtension?.split('.') || [];
-
-      const isImageFile = (extension: string) => {
-        return ['jpg', 'png', 'gif', 'jpeg'].includes(extension.toLowerCase());
-      };
-
-      const fileIcon = (extension: string) => {
-        switch (extension.toLowerCase()) {
-          case 'pdf':
-          case 'docx':
-            return <FileText className="size-4 font-normal text-gray-400" />;
-          default:
-            return <File className="size-4 font-normal text-gray-400" />;
-        }
-      };
 
       return (
         <div className="flex items-center space-x-2">
-          <Avatar className="size-8 overflow-hidden rounded-full border border-gray-300 p-1">
-            {isImageFile(fileExtension) ? (
-              <AvatarImage
-                src={fileUrl}
-                alt={`${fileName}`}
-                className="size-full object-cover"
-              />
+          <div className="flex items-center">
+            {fileUrl?.split('.')?.pop() === 'pdf' ? (
+              <FileText className="mr-3 text-red-500" size={35} />
             ) : (
-              <AvatarFallback className="text-xl uppercase">
-                {fileIcon(fileExtension)}
-              </AvatarFallback>
+              <img
+                src={fileUrl}
+                alt="Document_Img"
+                className="mr-3 size-8 rounded-full border border-gray-600 object-cover dark:border-gray-300"
+              />
             )}
-          </Avatar>
-
-          <div className="flex flex-col">
-            <span className="max-w-[500px] truncate font-medium capitalize">
-              {fileName}
-            </span>
-            <span className="self-start text-sm text-gray-500">
-              {fileExtension.toUpperCase()}
-            </span>
+            <div>
+              <div className="font-semibold text-gray-600 dark:text-white">
+                {decodeURIComponent(
+                  String(fileUrl)?.split('/').pop()?.split('.')[0] || '',
+                )}
+              </div>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                {fileUrl?.split('.')?.pop()}
+              </span>
+            </div>
           </div>
         </div>
       );
@@ -129,15 +89,21 @@ export const policyColumn: ColumnDef<PolicyType>[] = [
       );
     },
   },
-
   {
     accessorKey: 'createdAt',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
+      <DataTableColumnHeader column={column} title="Updated At" />
     ),
     cell: ({ row }) => {
-      const createdAt = new Date(row.getValue('createdAt')).toDateString();
-      return <div>{createdAt}</div>;
+      const field = new Date(Date.parse(row.getValue('createdAt')));
+      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = field.toDateString().slice(4);
+      return (
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline">{day}</Badge>
+          <span className="max-w-[500px] truncate">{date}</span>
+        </div>
+      );
     },
   },
   {
