@@ -38,7 +38,7 @@ const EmployeeCard = () => {
       <Card className="rounded-lg p-0 dark:bg-zinc-900">
         <CardHeader>
           <div className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-bold dark:text-white">
+            <CardTitle className="text-lg dark:text-white">
               Today&apos;s Attendance
             </CardTitle>
             <Link

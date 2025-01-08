@@ -170,7 +170,7 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
   {
     accessorKey: 'Total_SalaryDeducton',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Total Deduction" />
+      <DataTableColumnHeader column={column} title="Deduction" />
     ),
     cell: ({ row }) => {
       const totalDeduction = row.getValue('Total_SalaryDeducton');
@@ -228,7 +228,7 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
   {
     accessorKey: 'Pay_Status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pay Status" />
+      <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
       return (

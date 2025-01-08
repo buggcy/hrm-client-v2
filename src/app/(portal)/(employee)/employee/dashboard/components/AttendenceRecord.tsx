@@ -73,7 +73,7 @@ export function EmployeeAttendenceCard({
     <Card className="rounded-lg p-0 dark:bg-zinc-900">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold dark:text-white">
+          <CardTitle className="text-lg dark:text-white">
             Attendance Records
           </CardTitle>
           <Link
@@ -88,27 +88,33 @@ export function EmployeeAttendenceCard({
       <CardContent>
         <hr className="mb-1 mt-0 border-gray-200 dark:border-gray-700" />
         <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-2 text-sm">
+          <div className="mb-2 flex flex-col gap-5 text-sm">
             <div className="flex flex-row items-center gap-1">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
-              <p>
-                <span className="font-bold">{noOfPresents || 0}</span> Total
-                Presents
+              <p className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                <span className="font-bold text-black dark:text-gray-300">
+                  {noOfPresents || 0}
+                </span>{' '}
+                Total Presents
               </p>
             </div>
             <div className="flex flex-row items-center gap-1">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
-              <p>
-                <span className="font-bold">{noOfAbsents || 0}</span> Total
-                Absents
+              <p className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                <span className="font-bold text-black dark:text-gray-300">
+                  {noOfAbsents || 0}
+                </span>{' '}
+                Total Absents
               </p>
             </div>
 
             <div className="flex flex-row items-center gap-1">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
-              <p>
-                <span className="font-bold">{noOfLeaves || 0}</span> Total
-                Leaves
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
+              <p className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                <span className="font-bold text-black dark:text-gray-300">
+                  {noOfLeaves || 0}
+                </span>{' '}
+                Total Leaves
               </p>
             </div>
           </div>
@@ -140,7 +146,7 @@ export function EmployeeAttendenceCard({
                         >
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) - 4}
+                            y={(viewBox.cy || 0) - 1}
                             className="fill-foreground text-3xl font-bold"
                           >
                             {totalEmployees.toLocaleString()}

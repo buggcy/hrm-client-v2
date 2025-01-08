@@ -106,7 +106,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ data }) => {
       <Card className="w-full lg:max-w-[33%]">
         <CardHeader className="pb-0">
           <div className="flex justify-between border-b-2 pb-1.5">
-            <CardTitle className="mt-2.5 text-sm font-semibold">
+            <CardTitle className="pb-2.5 text-lg font-semibold">
               {`${activeTab} Perks`}
             </CardTitle>
             <Tabs value={activeTab} onValueChange={handleTabChange}>
@@ -303,7 +303,7 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ data }) => {
       <Card className="w-full lg:max-w-[33%]">
         <CardHeader className="pb-0">
           <div className="flex items-center justify-between border-b-2 pb-6">
-            <CardTitle className="text-sm">Perks Statistics</CardTitle>
+            <CardTitle className="text-lg">Perks Statistics</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex items-center justify-between pt-6 sm:gap-2">

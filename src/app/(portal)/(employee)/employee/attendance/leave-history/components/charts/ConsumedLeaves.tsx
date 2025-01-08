@@ -25,7 +25,7 @@ const ConsumedLeaves: FunctionComponent<ConsumedLeavesProps> = ({ data }) => {
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <div>
-          <CardTitle className="text-base">Consumed Leave Types</CardTitle>
+          <CardTitle className="text-lg">Consumed Leave Types</CardTitle>
           <div className="mt-6">
             <ul className="flex max-w-64 flex-wrap gap-2 text-[10px]">
               <li>

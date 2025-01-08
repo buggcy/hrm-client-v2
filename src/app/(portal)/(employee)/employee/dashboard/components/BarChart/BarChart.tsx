@@ -61,7 +61,7 @@ export function BChart() {
     <Card className="lg:h-[570px]">
       <CardHeader className="flex justify-between">
         <div className="flex w-full items-center">
-          <CardDescription className="mr-4 grow text-lg font-bold text-black dark:text-white">
+          <CardDescription className="mr-4 grow text-lg font-semibold text-black dark:text-white">
             Attendance Record of {currentMonthName}
           </CardDescription>
           <div className="ml-4 flex items-center">

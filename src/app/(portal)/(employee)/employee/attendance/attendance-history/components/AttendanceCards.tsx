@@ -87,16 +87,16 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
       color: '',
     },
     {
-      icon: <Clock4 color="#2ba476" />,
+      icon: <Clock4 color="#FF0000" />,
       title: 'On Time Arrivals',
       value: card2Data?.onTimeArrivals?.toString() || '0',
-      color: '#2ba476',
+      color: '',
     },
     {
-      icon: <LogOut color="#e5684f" />,
+      icon: <LogOut color="#FF0000" />,
       title: 'Average Check-out',
       value: card2Data?.averageCheckOutTime || '07:00 PM',
-      color: '#e5684f',
+      color: '',
     },
   ];
 
@@ -105,7 +105,9 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
       <Card className="w-full lg:max-w-[33%]">
         <CardHeader className="pb-0">
           <div className="flex justify-between border-b-2 pb-6">
-            <CardTitle className="text-sm">Today</CardTitle>
+            <CardTitle className="text-lg font-semibold dark:text-white">
+              Today
+            </CardTitle>
             <Badge
               variant={
                 card1Data?.status === 'Present'
@@ -164,7 +166,9 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
       <Card className="w-full lg:max-w-[33%]">
         <CardHeader className="pb-0">
           <div className="flex items-center justify-between border-b-2 pb-6">
-            <CardTitle className="text-sm">My Attendance</CardTitle>
+            <CardTitle className="text-lg font-semibold dark:text-white">
+              My Attendance
+            </CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex items-center justify-between pt-6 sm:gap-2">
@@ -179,14 +183,14 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
               <p className="font-semibold">
                 {card3Data?.lateCheckIns}{' '}
                 <span className="text-sm font-medium text-slate-400">late</span>
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
               <p className="font-semibold">
                 {card3Data?.leaves}{' '}
                 <span className="text-sm font-medium text-slate-400">
@@ -195,7 +199,7 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
               <p className="font-semibold">
                 {card3Data?.absents}{' '}
                 <span className="text-sm font-medium text-slate-400">

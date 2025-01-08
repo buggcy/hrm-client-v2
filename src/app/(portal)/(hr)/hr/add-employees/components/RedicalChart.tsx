@@ -24,7 +24,7 @@ export const description = 'A radial chart with stacked sections';
 const chartConfig = {
   pending: {
     label: 'Pending',
-    color: 'hsl(var(--chart-4))',
+    color: 'hsl(var(--chart-2))',
   },
   rejected: {
     label: 'Rejected',
@@ -32,7 +32,7 @@ const chartConfig = {
   },
   tba: {
     label: 'TBA',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;
 
@@ -137,7 +137,7 @@ export function RedicalChart({ data }: Card2Data) {
         <CardFooter className="flex-col gap-2 p-0 pl-6 text-sm">
           <div className="flex flex-col gap-3 leading-none text-muted-foreground">
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
               <p className="text-[12px]">Pending: {data?.pending || 0}</p>
             </div>
             <div className="flex items-center gap-2">
@@ -145,7 +145,7 @@ export function RedicalChart({ data }: Card2Data) {
               <p className="text-[12px]">Rejected: {data?.rejected || 0}</p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
               <p className="text-[12px]">TBA: {data?.tba || 0}</p>
             </div>
           </div>

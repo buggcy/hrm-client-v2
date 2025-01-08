@@ -370,7 +370,7 @@ export function AddEditFeedbackModal({
                   {errors?.endDate?.message}
                 </span>
               )}
-              <div className="m-1 flex flex-row gap-2">
+              <div className="mt-4 flex flex-row gap-2">
                 <Checkbox
                   checked={isContinue}
                   aria-label="Continue"
@@ -380,7 +380,7 @@ export function AddEditFeedbackModal({
                     handleCheckboxChange(isChecked);
                   }}
                 />
-                <Label className="mt-1 text-xs">Continue</Label>
+                <Label className="mt-1">Continue</Label>
               </div>
             </div>
           </div>

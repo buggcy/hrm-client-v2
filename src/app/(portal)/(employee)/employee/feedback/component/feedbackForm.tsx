@@ -151,37 +151,34 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 ].map(option => (
                   <TableCell
                     key={option}
-                    className="cursor-pointer border px-4 py-2 text-center"
+                    className="relative cursor-pointer border px-4 py-2 text-center"
                     onClick={() => handleOptionChange(question._id, option)}
                   >
-                    {answers.find(
-                      answer =>
-                        answer.questionId === question._id &&
-                        answer.answerText === option,
-                    ) ? (
-                      <div className="flex justify-center align-middle">
-                        <CheckCircle2 />
-                      </div>
-                    ) : (
-                      <div className="relative flex justify-center align-middle">
-                        <RadioInput
-                          id={`question-${question._id}-${option}`}
-                          name={`question-${question._id}`}
-                          value={option}
-                          checked={
-                            answers.find(
-                              answer => answer.questionId === question._id,
-                            )?.answerText === option
-                          }
-                          onChange={() =>
-                            handleOptionChange(question._id, option)
-                          }
-                          className="hidden"
-                          label={''}
-                        />
-                        <Circle />
-                      </div>
-                    )}
+                    <div className="relative flex items-center justify-center">
+                      <Circle className="absolute text-gray-400" />
+
+                      {answers.find(
+                        answer =>
+                          answer.questionId === question._id &&
+                          answer.answerText === option,
+                      ) && <CheckCircle2 className="absolute text-green-500" />}
+
+                      <RadioInput
+                        id={`question-${question._id}-${option}`}
+                        name={`question-${question._id}`}
+                        value={option}
+                        checked={
+                          answers.find(
+                            answer => answer.questionId === question._id,
+                          )?.answerText === option
+                        }
+                        onChange={() =>
+                          handleOptionChange(question._id, option)
+                        }
+                        className="hidden"
+                        label=""
+                      />
+                    </div>
                   </TableCell>
                 ))}
               </TableRow>
