@@ -49,7 +49,7 @@ export const useProjectListQuery = (config: UseQueryConfig = {}) =>
   useQuery({
     queryKey: ['projectList'],
     queryFn: () => getProjectList(),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,

@@ -20,9 +20,10 @@ interface ModelProps {
 }
 
 const ViewDepartment = ({ open, onCloseChange, data }: ModelProps) => {
-  const firstName = data?.updatedBy?.firstName;
-  const lastName = data?.updatedBy?.lastName;
-  const avatar = data?.updatedBy?.Avatar;
+  const departmentHead = data?.departmentHead?.find(head => head.isCurrent);
+  const firstName = departmentHead?.user?.firstName;
+  const lastName = departmentHead?.user?.lastName;
+  const avatar = departmentHead?.user?.Avatar;
   const initials = `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
   const [activeTab, setActiveTab] = useState<string>('employee');
   const handleTabChange = (value: string) => {

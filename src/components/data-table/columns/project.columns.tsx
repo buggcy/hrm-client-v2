@@ -118,7 +118,7 @@ export const ProjectColumns: ColumnDef<ProjectListType>[] = [
   {
     accessorKey: 'isActive',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="isActive" />
+      <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
       const isActive = row.getValue('isActive');

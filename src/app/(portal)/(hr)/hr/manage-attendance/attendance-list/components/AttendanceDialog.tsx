@@ -50,7 +50,7 @@ const addAttendanceSchema = z
     date: z.date(),
     inTime: z.string().min(8, 'Start Time is required'),
     outTime: z.string().min(8, 'End Time is required'),
-    totalTime: z.number().min(1, 'Total Time is required'),
+    totalTime: z.coerce.number().min(1, 'Total Time is required'),
     Status: z.string().min(1, 'Status is required'),
   })
   .refine(data => timeFormatRegex.test(data.inTime), {
@@ -240,12 +240,14 @@ export function AttendanceDialog({
 
   const onSubmit = (data: AddAttendanceFormData) => {
     const date = data.date;
-    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    const formattedDate = date.toLocaleDateString('en-CA');
+
     const startTime24 = convertTo24Hour(data.inTime);
-    const startDate = `${formattedDate}T${startTime24}`;
+    const startDate = `${formattedDate}T${startTime24}+05:00`;
 
     const endTime24 = convertTo24Hour(data.outTime);
-    const endDate = `${formattedDate}T${endTime24}`;
+    const endDate = `${formattedDate}T${endTime24}+05:00`;
+
     mutate({
       employee: data.employee,
       inTime: startDate,
