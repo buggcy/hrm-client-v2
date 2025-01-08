@@ -43,31 +43,31 @@ const EditEmployee = () => {
       <TabsList className="flex h-full flex-col justify-start bg-transparent p-4 lg:w-fit lg:min-w-[205px] xl:min-w-[280px]">
         <TabsTrigger
           value="edit-profile"
-          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 lg:justify-start"
+          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 lg:justify-start"
         >
           Edit Profile
         </TabsTrigger>
         <TabsTrigger
           value="edit-salary"
-          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 lg:justify-start"
+          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 lg:justify-start"
         >
           Salary Increments
         </TabsTrigger>
         <TabsTrigger
           value="edit-designation"
-          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 lg:justify-start"
+          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 lg:justify-start"
         >
           Edit Designation
         </TabsTrigger>
         <TabsTrigger
           value="edit-perks"
-          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 lg:justify-start"
+          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 lg:justify-start"
         >
           Assign Perks
         </TabsTrigger>
         <TabsTrigger
           value="edit-leaves"
-          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-300 data-[state=active]:text-gray-500 lg:justify-start"
+          className="flex w-full justify-center p-3 data-[state=active]:bg-gray-200 data-[state=active]:text-gray-500 lg:justify-start"
         >
           Manage Leaves
         </TabsTrigger>

@@ -87,16 +87,16 @@ const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({ data }) => {
       color: '',
     },
     {
-      icon: <Clock4 color="#2ba476" />,
+      icon: <Clock4 color="#FF0000" />,
       title: 'On Time Arrivals',
       value: card2Data?.onTimeArrivals?.toString() || '0',
-      color: '#2ba476',
+      color: '',
     },
     {
-      icon: <LogOut color="#e5684f" />,
+      icon: <LogOut color="#FF0000" />,
       title: 'Average Check-out',
       value: card2Data?.averageCheckOutTime || '07:00 PM',
-      color: '#e5684f',
+      color: '',
     },
   ];
 
