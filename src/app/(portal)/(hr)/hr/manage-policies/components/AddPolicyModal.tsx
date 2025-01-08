@@ -29,8 +29,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useTypesQuery } from '@/hooks/types.hook';
-import { useAddPolicy } from '@/hooks/usepolicyQuery';
+import { addPolicy } from '@/services/hr/policies.service';
 import { AuthStoreType } from '@/stores/auth';
 
 import { MessageErrorResponse } from '@/types';
@@ -38,7 +37,7 @@ import { MessageErrorResponse } from '@/types';
 const addPolicySchema = z.object({
   category: z.string().min(1, 'Please select a category'),
   file: z
-    .instanceof(File)
+    .instanceof(File, { message: 'File is required' })
     .refine(file => file.size <= 200 * 1024, 'File size should be under 200KB')
     .refine(
       file =>
@@ -62,15 +61,15 @@ export interface DialogDemoProps {
   open: boolean;
   onOpenChange: () => void;
   onCloseChange: () => void;
+  setRefetchPolicyList: (refetch: boolean) => void;
 }
 
 export function PolicyDialog({
   open,
   onOpenChange,
   onCloseChange,
+  setRefetchPolicyList,
 }: DialogDemoProps) {
-  const { mutateAsync } = useAddPolicy();
-  const { isLoading } = useTypesQuery();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
@@ -95,21 +94,22 @@ export function PolicyDialog({
   }, [open, reset]);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: mutateAsync,
+    mutationFn: addPolicy,
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
-        description: err?.response?.data?.message || 'Error adding policy!',
+        description: err.message || 'Error on adding the policy!',
         variant: 'error',
       });
     },
     onSuccess: response => {
       toast({
         title: 'Success',
-        description: response?.message,
+        description: response?.message || 'Policy Added Successfully!',
         variant: 'success',
       });
       reset();
+      setRefetchPolicyList(true);
       onCloseChange();
     },
   });
@@ -123,8 +123,8 @@ export function PolicyDialog({
     formData.append('userId', userId);
     formData.append('category', categeory);
     formData.append('file', file);
-    console.log('on submit data', formData);
-    mutate(formData);
+
+    mutate({ formData });
   };
 
   return (
@@ -153,6 +153,9 @@ export function PolicyDialog({
                     <SelectGroup>
                       <SelectItem value="Company Policy">
                         Company Policy
+                      </SelectItem>
+                      <SelectItem value="General Policy">
+                        General Policy
                       </SelectItem>
                       <SelectItem value="Attendence Policy">
                         Attendance Policy
@@ -219,8 +222,8 @@ export function PolicyDialog({
           </div>
 
           <DialogFooter>
-            <Button type="submit" disabled={isLoading || isPending}>
-              Add Policy
+            <Button type="submit" disabled={isPending}>
+              Add
             </Button>
           </DialogFooter>
         </form>

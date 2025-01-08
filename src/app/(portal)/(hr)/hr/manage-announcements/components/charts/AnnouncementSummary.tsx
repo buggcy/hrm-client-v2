@@ -16,15 +16,15 @@ export const description = 'A simple area chart';
 
 const chartConfig = {
   high: {
-    label: 'high',
+    label: 'High',
     color: 'hsl(var(--chart-3))',
   },
   medium: {
-    label: 'medium',
+    label: 'Medium',
     color: 'hsl(var(--chart-2))',
   },
   low: {
-    label: 'low',
+    label: 'Low',
     color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;

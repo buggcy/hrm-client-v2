@@ -1,7 +1,5 @@
 'use client';
-import React, { Suspense, useState } from 'react';
-
-import { Bell } from 'lucide-react';
+import React, { Suspense } from 'react';
 
 import {
   Layout,
@@ -9,45 +7,23 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { Button } from '@/components/ui/button';
+import { Notification } from '@/components/NotificationIcon';
 
-import { PolicyDialog } from './components/AddPolicyModal';
 import PolicyTable from './components/PolicyTable.components';
 
 export default function ManagePoliciesPage() {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const category: string = '';
-
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
   return (
     <Layout>
       <LayoutHeader title="Manage Policies">
         <LayoutHeaderButtonsBlock>
-          <Button variant="outline" size="icon" className="rounded-full">
-            <Bell className="size-5" />
-          </Button>
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-10">
         <Suspense fallback={<div>Loading...</div>}>
-          <PolicyTable
-            category={category}
-            handleDialogOpen={handleDialogOpen}
-          />
+          <PolicyTable />
         </Suspense>
       </LayoutWrapper>
-      <PolicyDialog
-        open={dialogOpen}
-        onOpenChange={handleDialogClose}
-        onCloseChange={handleDialogClose}
-      />
     </Layout>
   );
 }

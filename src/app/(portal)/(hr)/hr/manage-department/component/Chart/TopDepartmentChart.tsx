@@ -86,6 +86,7 @@ export function TopDepartmentChart({ chartData, type }: ChartProps) {
                 layout="vertical"
                 fill="var(--color-employees)"
                 radius={4}
+                barSize={30}
               >
                 <LabelList
                   dataKey="department"

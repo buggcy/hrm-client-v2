@@ -118,13 +118,16 @@ export function HrComplaintRowActions({ row }: DataTableRowActionsProps) {
               </DropdownMenuItem>
             </>
           ) : null}
-          <DropdownMenuItem
-            className="text-red-600"
-            onSelect={() => setShowDeleteDialog(true)}
-          >
-            <Trash2 className="mr-2 size-4" />
-            Delete Complaint
-          </DropdownMenuItem>
+          {row?.getValue('status') === 'Resolved' ||
+          row?.getValue('status') === 'Canceled' ? (
+            <DropdownMenuItem
+              className="text-red-600"
+              onSelect={() => setShowDeleteDialog(true)}
+            >
+              <Trash2 className="mr-2 size-4" />
+              Delete Complaint
+            </DropdownMenuItem>
+          ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}

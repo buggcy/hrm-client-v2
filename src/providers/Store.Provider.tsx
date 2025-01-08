@@ -22,6 +22,7 @@ import { usePerkListStore } from '@/stores/hr/perk-list';
 
 import { useAuthStore } from '../stores/auth';
 import { useFeedbackStore } from '../stores/hr/hr-feedback';
+import { usePoliciesStore } from '../stores/hr/policy';
 import { useProjectStore } from '../stores/hr/project-department';
 import { usePolicyStore } from '../stores/hr-policies.Store';
 import { useNotificationStore } from '../stores/useNotificationStore';
@@ -49,6 +50,7 @@ interface StoreContextType {
   feedbackStore: ReturnType<typeof useFeedbackStore>;
   complaintStore: ReturnType<typeof useComplaintStore>;
   projectStore: ReturnType<typeof useProjectStore>;
+  policiesStore: ReturnType<typeof usePoliciesStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -76,6 +78,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const feedbackStore = useFeedbackStore();
   const complaintStore = useComplaintStore();
   const projectStore = useProjectStore();
+  const policiesStore = usePoliciesStore();
 
   return (
     <StoreContext.Provider
@@ -102,6 +105,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         feedbackStore,
         complaintStore,
         projectStore,
+        policiesStore,
       }}
     >
       {children}

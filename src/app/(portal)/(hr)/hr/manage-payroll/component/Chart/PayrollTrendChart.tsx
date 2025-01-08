@@ -45,7 +45,7 @@ export function MonthlyPayrollTrendChart({
   chartData,
 }: PayrollTrendChartProps) {
   return (
-    <Card>
+    <Card className="size-full">
       <CardHeader>
         <CardTitle className="font-semibold">
           Monthly Payroll Statistics
@@ -55,7 +55,10 @@ export function MonthlyPayrollTrendChart({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer
+          config={chartConfig}
+          className="max-h-[270px] w-full lg:max-h-full lg:min-h-[270px]"
+        >
           <AreaChart
             accessibilityLayer
             data={chartData}

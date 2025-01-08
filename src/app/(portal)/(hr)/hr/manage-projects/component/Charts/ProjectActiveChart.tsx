@@ -88,70 +88,70 @@ export function ProjectActiveRecordChart({
       <hr className="mx-auto w-10/12 border-gray-300 dark:border-gray-600" />{' '}
       <CardContent className="flex size-full flex-col">
         <div className="flex size-full items-center justify-between">
-          <div className="flex flex-col gap-4 text-nowrap">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-4 text-nowrap lg:hidden xl:flex">
+            <div className="flex items-center gap-2 text-xs">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
-              <p className="font-semibold">
-                {completedCount}
-                <span className="ml-1 text-sm font-medium text-slate-400">
-                  Completed
+              <p>
+                <span className="mr-1 font-bold text-slate-400">
+                  {completedCount}
                 </span>
+                Completed
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-xs">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
-              <p className="font-semibold">
-                {pendingCount}
-                <span className="ml-1 text-sm font-medium text-slate-400">
-                  Pending
+              <p>
+                <span className="mr-1 font-bold text-slate-400">
+                  {pendingCount}
                 </span>
+                Pending
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-xs">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
-              <p className="font-semibold">
-                {cancelledCount}
-                <span className="ml-1 text-sm font-medium text-slate-400">
-                  cancelled
+              <p>
+                <span className="mr-1 font-bold text-slate-400">
+                  {cancelledCount}
                 </span>
+                Cancelled
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-xs">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
-              <p className="font-semibold">
-                {notStartedCount}
-                <span className="ml-1 text-sm font-medium text-slate-400">
-                  Not Started
+              <p>
+                <span className="mr-1 font-bold text-slate-400">
+                  {notStartedCount}
                 </span>
+                Not Started
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-xs">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
-              <p className="font-semibold">
-                {inProgressCount}
-                <span className="ml-1 text-sm font-medium text-slate-400">
-                  In Progress
+              <p>
+                <span className="mr-1 font-bold text-slate-400">
+                  {inProgressCount}
                 </span>
+                In Progress
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-xs">
               <div className="size-2 rounded-full bg-[hsl(0,70%,50%)]"></div>
-              <p className="font-semibold">
-                {overdueCount}
-                <span className="ml-1 text-sm font-medium text-slate-400">
-                  overdue
+              <p>
+                <span className="mr-1 font-bold text-slate-400">
+                  {overdueCount}
                 </span>
+                Overdue
               </p>
             </div>
           </div>
           <ChartContainer
             config={chartConfig}
-            className="ml-auto aspect-square w-full max-w-[250px]"
+            className="mx-auto aspect-square w-full max-w-[200px]"
           >
             <RadialBarChart
               data={chartData}

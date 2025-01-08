@@ -2,10 +2,12 @@
 
 import * as React from 'react';
 
+import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
+import { AxiosError } from 'axios';
 import { Eye, MoreHorizontal, Trash2 } from 'lucide-react';
 
-import DeleteDialog from '@/components/modals/delete-modal';
+import ConfirmDialog from '@/components/modals/cancel-modal';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import {
@@ -16,47 +18,50 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
+import { useStores } from '@/providers/Store.Provider';
 
-import { useDeletePolicy } from '@/hooks/usepolicyQuery';
-import { PolicyType } from '@/libs/validations/hr-policy';
+import { PolicyListType } from '@/libs/validations/hr-policy';
+import { deletePolicy } from '@/services/hr/policies.service';
+import { PolicyStoreType } from '@/stores/hr/policy';
+
+import { MessageErrorResponse } from '@/types';
 
 interface DataTableRowActionsProps {
-  row: Row<PolicyType>;
+  row: Row<PolicyListType>;
 }
 
 export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
-  const { mutateAsync } = useDeletePolicy();
-
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
+  const data = row.original;
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
-  const data = row.original;
-  const setRefetch = (value: boolean) => {
-    return value;
-  };
+  const { policiesStore } = useStores() as { policiesStore: PolicyStoreType };
+  const { setRefetchPolicyList } = policiesStore;
 
-  const handleViewDetails = () => {
-    const fileUrl = data.file;
-    if (fileUrl) {
-      window.open(fileUrl, '_blank');
-    } else {
-      console.error('File URL is not available');
-    }
-  };
-
-  const handleDelete = (id: string): Promise<{ message: string }> => {
-    return new Promise((resolve, reject) => {
-      void mutateAsync(id, {
-        onSuccess: data => {
-          resolve(data);
-        },
-        onError: error => {
-          reject(error);
-        },
+  const { mutate, isPending } = useMutation({
+    mutationFn: deletePolicy,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on deleting policy!',
+        variant: 'error',
       });
-    });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      setRefetchPolicyList(true);
+      setShowDeleteDialog(false);
+    },
+  });
+  const handleDelete = () => {
+    mutate({ id: data?._id });
   };
-
   return (
     <Dialog>
       <DropdownMenu>
@@ -72,8 +77,11 @@ export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DialogTrigger asChild onClick={() => {}}>
-            <DropdownMenuItem onClick={handleViewDetails}>
+          <DialogTrigger
+            asChild
+            onClick={() => window.open(String(data?.file), '_blank')}
+          >
+            <DropdownMenuItem>
               <Eye className="mr-2 size-4" />
               View Policy
             </DropdownMenuItem>
@@ -83,17 +91,18 @@ export function PolicyListRowActions({ row }: DataTableRowActionsProps) {
             className="text-red-600"
           >
             <Trash2 className="mr-2 size-4" />
-            Delete Details
+            Delete Policy
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
-      <DeleteDialog
-        id={data._id}
+      <ConfirmDialog
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
-        mutationFunc={handleDelete}
-        setRefetch={setRefetch}
+        title={'Confirm Delete'}
+        isPending={isPending}
+        description={'Are your sure you want to delete this policy?'}
+        handleDelete={handleDelete}
       />
     </Dialog>
   );

@@ -20,16 +20,16 @@ const chartConfig = {
   employee: {
     label: 'Employee',
   },
-  high: {
-    label: 'high',
+  High: {
+    label: 'High',
     color: 'hsl(var(--chart-3))',
   },
-  medium: {
-    label: 'medium',
+  Medium: {
+    label: 'Medium',
     color: 'hsl(var(--chart-2))',
   },
-  low: {
-    label: 'low',
+  Low: {
+    label: 'Low',
     color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;
@@ -41,19 +41,19 @@ interface PriorityDistributionProps {
 export function PriorityDistribution({ data }: PriorityDistributionProps) {
   const chartData = [
     {
-      priority: 'low',
+      priority: 'Low',
       status: data?.low || 0,
-      fill: 'var(--color-low)',
+      fill: 'var(--color-Low)',
     },
     {
-      priority: 'medium',
+      priority: 'Medium',
       status: data?.medium || 0,
-      fill: 'var(--color-medium)',
+      fill: 'var(--color-Medium)',
     },
     {
-      priority: 'high',
+      priority: 'High',
       status: data?.high || 0,
-      fill: 'var(--color-high)',
+      fill: 'var(--color-High)',
     },
   ];
   return (

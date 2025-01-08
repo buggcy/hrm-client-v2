@@ -108,7 +108,7 @@ export const LeaveRequestCard = ({
     startDate && endDate
       ? Math.ceil(
           (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
-        )
+        ) + 1
       : 'N/A';
 
   const handleAccept = () => {
@@ -256,19 +256,19 @@ export const LeaveRequestCard = ({
           </div>
 
           <div className="mt-2 flex justify-between">
-            <p className="text-sm font-semibold">{'Leave Title'}</p>
+            <p className="text-sm font-semibold">Leave Title</p>
             <span className="truncate text-sm font-medium text-muted-foreground">
               {person?.Title}
             </span>
           </div>
           <div className="flex justify-between">
-            <p className="text-sm font-semibold">{'Leave Type'}</p>
+            <p className="text-sm font-semibold">Leave Type</p>
             <span className="text-sm font-medium text-muted-foreground">
               {person?.Leave_Type}
             </span>
           </div>
           <div className="flex justify-between">
-            <p className="text-sm font-semibold">{'Start Date'}</p>
+            <p className="text-sm font-semibold">Start Date</p>
             <span className="text-sm font-medium text-muted-foreground">
               {person?.Start_Date
                 ? new Date(person?.Start_Date).toDateString()
@@ -276,7 +276,7 @@ export const LeaveRequestCard = ({
             </span>
           </div>
           <div className="flex justify-between">
-            <p className="text-sm font-semibold">{'End Date'}</p>
+            <p className="text-sm font-semibold">End Date</p>
             <span className="text-sm font-medium text-muted-foreground">
               {person?.End_Date
                 ? new Date(person?.End_Date).toDateString()

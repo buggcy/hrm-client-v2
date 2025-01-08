@@ -24,7 +24,7 @@ export default function EditEmployeesPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex w-full flex-col gap-4">
-        <Header subheading="Edit Employee"></Header>
+        <Header subheading="Every Detail Counts – Make It Right"></Header>
         <Suspense fallback={<div>Loading...</div>}>
           <EditEmployee />
         </Suspense>

@@ -45,7 +45,7 @@ interface ChartProps {
 
 export function ProjectBarChat({ chartData }: ChartProps) {
   return (
-    <Card className="col-span-2 h-fit max-h-[368px]">
+    <Card className="col-span-1 h-full md:col-span-2">
       <CardHeader>
         <CardTitle className="">Project Members Statistics</CardTitle>
         <CardDescription className="text-sm">
@@ -55,7 +55,7 @@ export function ProjectBarChat({ chartData }: ChartProps) {
       <CardContent>
         <ChartContainer
           config={chartConfig}
-          className="mx-auto size-full max-h-[270px] min-h-[200px]"
+          className="mx-auto size-full max-h-[230px] min-h-[200px]"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
@@ -81,7 +81,7 @@ export function ProjectBarChat({ chartData }: ChartProps) {
                 dataKey="deletedMembers"
                 stackId="a"
                 fill="var(--color-deletedMembers)"
-                radius={[0, 0, 4, 4]}
+                radius={[4, 4, 0, 0]}
                 barSize={40}
               />
             </BarChart>

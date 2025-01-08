@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
@@ -56,11 +58,12 @@ export function ProjectPieChart({
       <CardContent className="w-full p-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[280px] pb-2 [&_.recharts-pie-label-text]:fill-foreground"
+          className="mx-auto aspect-square max-h-[275px] pb-2 [&_.recharts-pie-label-text]:fill-foreground"
         >
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
             <Pie data={chartData} dataKey="status" label nameKey="priority" />
+            <ChartLegend content={<ChartLegendContent nameKey="priority" />} />
           </PieChart>
         </ChartContainer>
       </CardContent>

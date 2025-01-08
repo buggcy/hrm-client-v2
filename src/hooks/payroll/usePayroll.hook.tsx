@@ -16,7 +16,7 @@ export const usePayrollQuery = (
     queryKey: ['employeePayroll', params],
     queryFn: () => postPayout(params),
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<EmployeePayrollApiResponse, Error>;

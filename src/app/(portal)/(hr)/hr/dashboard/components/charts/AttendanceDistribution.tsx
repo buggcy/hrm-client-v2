@@ -77,7 +77,7 @@ export function AttendanceDistribution({ data }: AttendanceDistributionProps) {
           className="mx-auto size-full max-h-[280px] min-h-[200px]"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data?.reverse() ?? chartData}>
+            <BarChart data={data?.reverse() ?? chartData} barSize={30}>
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="date"

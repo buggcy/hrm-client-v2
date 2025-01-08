@@ -21,6 +21,8 @@ export interface PolicyType {
   isDeleted: boolean;
   updatedAt: string;
   userId: UserId;
+  __v: number;
+  type?: 'hrPolicy';
 }
 
 export interface PolicyApiResponse {
