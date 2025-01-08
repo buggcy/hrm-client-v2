@@ -139,7 +139,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 <TableCell className="border px-4 py-2 text-center">
                   {index + 1}
                 </TableCell>
-                <TableCell className="border px-4 py-2">
+                <TableCell className="whitespace-normal break-words border px-4 py-2">
                   {question.questionText}
                 </TableCell>
                 {[
