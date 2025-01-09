@@ -51,9 +51,9 @@ export function ProjectPieChart({
     },
   ];
   return (
-    <Card className="col-span-1 w-full">
-      <CardHeader className="pb-0">
-        <CardTitle className="pb-4 text-sm">Project Overview</CardTitle>
+    <Card className="flex w-full flex-col">
+      <CardHeader>
+        <CardTitle className="pb-4">Project Overview</CardTitle>
       </CardHeader>
       <CardContent className="w-full p-0">
         <ChartContainer

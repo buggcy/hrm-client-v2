@@ -388,7 +388,7 @@ export function AddEditTypeDialog({
         <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-wrap">
             <div className="flex flex-1 flex-col">
-              <Label htmlFor="type" className="mb-2 text-left">
+              <Label htmlFor="type" className="mb-4 text-left">
                 {moduleType} Type <span className="text-red-600">*</span>
               </Label>
               <Controller
@@ -404,8 +404,8 @@ export function AddEditTypeDialog({
                 )}
               />
               {moduleType === 'Designation' && type === 'add' && (
-                <div className="mt-2 flex flex-row gap-3">
-                  <div className="m-1 flex flex-row gap-2">
+                <div className="mt-4 flex flex-row gap-3">
+                  <div className="flex flex-row gap-2">
                     <Checkbox
                       checked={isIntern}
                       aria-label="Immediate Termination"
@@ -417,7 +417,7 @@ export function AddEditTypeDialog({
                     />
                     <Label className="mt-1 text-xs">Intern</Label>
                   </div>
-                  <div className="m-1 flex flex-row gap-2">
+                  <div className="flex flex-row gap-2">
                     <Checkbox
                       checked={isProbational}
                       aria-label="Immediate Termination"

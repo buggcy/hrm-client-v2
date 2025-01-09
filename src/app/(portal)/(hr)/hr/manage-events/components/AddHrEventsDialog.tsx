@@ -138,13 +138,13 @@ export function HrEventsDialogDemo({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-full max-h-[550px] max-sm:min-h-[700px] sm:max-w-[600px]">
+      <DialogContent className="h-full max-h-[595px] max-sm:min-h-[700px] sm:max-w-[600px]">
         <DialogTitle className="text-center sm:text-left">
           Add Event
         </DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 pt-4">
           <div className="flex w-full flex-row gap-8 max-sm:flex-col max-sm:gap-2">
-            <div className="flex w-full flex-1 flex-col">
+            <div className="my-2 flex w-full flex-1 flex-col">
               <Label htmlFor="Start_Date" className="mb-2 text-left">
                 Start Date
               </Label>
@@ -168,7 +168,7 @@ export function HrEventsDialogDemo({
                 </span>
               )}
             </div>
-            <div className="flex w-full flex-1 flex-col">
+            <div className="my-2 flex w-full flex-1 flex-col">
               <Label htmlFor="End_Date" className="mb-2 text-left">
                 End Date
               </Label>
@@ -195,9 +195,9 @@ export function HrEventsDialogDemo({
           </div>
 
           <div className="flex flex-wrap gap-8">
-            <div className="flex flex-1 flex-col">
+            <div className="my-2 flex flex-1 flex-col">
               <Label htmlFor="EventTitle" className="mb-2 text-left">
-                Event title
+                Event Title
               </Label>
               <Controller
                 name="EventTitle"
@@ -219,7 +219,7 @@ export function HrEventsDialogDemo({
             </div>
           </div>
           <div className="flex w-full flex-row gap-8 max-sm:flex-col max-sm:gap-2">
-            <div className="flex flex-1 flex-col">
+            <div className="my-2 flex flex-1 flex-col">
               <Label htmlFor="EventType" className="mb-2 text-left">
                 Event Type
               </Label>
@@ -253,7 +253,7 @@ export function HrEventsDialogDemo({
                 </span>
               )}
             </div>
-            <div className="flex flex-1 flex-col">
+            <div className="my-2 flex flex-1 flex-col">
               <Label htmlFor="status" className="mb-2 text-left">
                 Status
               </Label>
@@ -289,7 +289,7 @@ export function HrEventsDialogDemo({
             </div>
           </div>
           <div className="flex flex-col gap-4 max-sm:gap-2">
-            <div className="flex flex-1 flex-col">
+            <div className="my-2 flex flex-1 flex-col">
               <Label htmlFor="Description" className="mb-2 text-left">
                 Description
               </Label>

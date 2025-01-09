@@ -55,10 +55,8 @@ const MonthlyPayrollGraph: FunctionComponent<ChartDataProps> = ({
   return (
     <Card>
       <CardHeader className="pr-0">
-        <CardTitle className="text-base font-semibold">
-          Monthly Payroll
-        </CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle className="font-semibold">Monthly Payroll</CardTitle>
+        <CardDescription className="text-sm">
           Payroll overview for all months
         </CardDescription>
       </CardHeader>

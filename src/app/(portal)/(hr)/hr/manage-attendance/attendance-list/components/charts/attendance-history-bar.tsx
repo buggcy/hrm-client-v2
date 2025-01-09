@@ -79,8 +79,8 @@ export function AttendanceHistoryBarChart({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Attendance Trend</CardTitle>
+      <CardHeader className="items-center">
+        <CardTitle>Attendance Trend</CardTitle>
         <CardDescription className="text-xs">
           {formattedDateRange}
         </CardDescription>

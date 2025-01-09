@@ -31,15 +31,15 @@ export const description = 'A stacked bar chart with a legend';
 const chartConfig = {
   projects: {
     label: 'Projects',
-    color: 'hsl(var(--chart-5))',
+    color: 'hsl(var(--chart-1))',
   },
   deletedEmployees: {
     label: 'Removed Employees',
-    color: 'hsl(var(--chart-4))',
+    color: 'hsl(var(--chart-3))',
   },
   deleteProjects: {
     label: 'Removed Projects',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--chart-5))',
   },
 } satisfies ChartConfig;
 
@@ -51,8 +51,8 @@ export function DepartmentOverviewChat({ chartData }: ChartProps) {
   return (
     <Card className="col-span-2 h-fit max-h-[385px]">
       <CardHeader>
-        <CardTitle className="text-sm">Department Statistics</CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle>Department Statistics</CardTitle>
+        <CardDescription className="text-sm">
           Showing removed employees and projects, and total projects for each
           department.
         </CardDescription>

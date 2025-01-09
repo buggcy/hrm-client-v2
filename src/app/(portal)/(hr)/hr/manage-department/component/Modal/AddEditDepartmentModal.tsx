@@ -399,7 +399,7 @@ const AddEditDepartmentModal = ({
 
           <div className="flex flex-wrap">
             <div className="flex flex-1 flex-col">
-              <div className="mb-1 flex justify-between">
+              <div className="flex justify-between">
                 <Label htmlFor="projects" className="mb-2 text-left">
                   Select Project<span className="text-red-600">*</span>{' '}
                 </Label>
@@ -445,7 +445,7 @@ const AddEditDepartmentModal = ({
 
           <div className="flex flex-wrap">
             <div className="flex flex-1 flex-col">
-              <div className="mb-1 flex justify-between">
+              <div className="flex justify-between">
                 <Label htmlFor="employees" className="mb-2 text-left">
                   Add Employee <span className="text-red-600">*</span>
                 </Label>
