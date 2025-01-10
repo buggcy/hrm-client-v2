@@ -8,7 +8,7 @@ import {
   CardDescription,
   CardHeader,
 } from '@/components/ui/card';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer } from '@/components/ui/chart';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { useAttendanceData } from '@/hooks/employee/useAttendenceData.hook';
@@ -106,8 +106,22 @@ export function BChart() {
               label={{ value: 'Hours', angle: -90, position: 'insideLeft' }}
             />
             <Tooltip
-              content={<ChartTooltipContent />}
-              formatter={(value: number) => `${value} Hours`}
+              content={({ active, payload }) => {
+                if (active && payload && payload.length) {
+                  const { date, Hours } = payload[0].payload;
+                  return (
+                    <div className="grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+                      <p>
+                        <strong>Date:</strong> {date}
+                      </p>
+                      <p>
+                        <strong>Hours:</strong> {Hours}
+                      </p>
+                    </div>
+                  );
+                }
+                return null;
+              }}
             />
             <Bar dataKey="Hours" fill="#30BBF2" barSize={20} />
           </BarChart>

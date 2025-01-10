@@ -82,7 +82,7 @@ const FeedbackCard: React.FC = () => {
       {isLoading || isFetching ? (
         <Skeleton className="h-8 w-full" />
       ) : (
-        <div className="flex justify-center">
+        <div>
           {showForm && selectedFeedback ? (
             <FeedbackForm
               id={selectedFeedback._id}
@@ -100,7 +100,7 @@ const FeedbackCard: React.FC = () => {
               )) ? (
             <FeedbackInfoCard />
           ) : (
-            <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+            <div className="grid w-full max-w-7xl grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-3">
               {data?.data?.map(feedback => {
                 const isUserAttempted = feedback?.userToAttempted?.includes(
                   userId || '',
@@ -114,7 +114,7 @@ const FeedbackCard: React.FC = () => {
                 return (
                   <Card
                     key={feedback._id}
-                    className="flex w-full max-w-[600px] flex-col items-center p-6 shadow-md hover:shadow-lg"
+                    className="flex w-full max-w-[450px] flex-col items-center p-6"
                   >
                     <h3 className="mb-4 text-center text-xl font-semibold dark:text-gray-300">
                       {feedback.feedbackCategory}
