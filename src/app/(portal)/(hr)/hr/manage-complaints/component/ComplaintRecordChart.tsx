@@ -45,7 +45,7 @@ export function ComplaintDistributionChart({ data }: RecordChartProps) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="pb-0">
-        <CardTitle className="text-sm">Complaint Statistics</CardTitle>
+        <CardTitle>Complaint Statistics</CardTitle>
       </CardHeader>
       <CardContent className="flex size-full flex-col">
         <div className="flex size-full items-center justify-between">
@@ -103,14 +103,14 @@ export function ComplaintDistributionChart({ data }: RecordChartProps) {
                         <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) - 16}
+                            y={(viewBox.cy || 0) - 6}
                             className="fill-foreground text-2xl font-bold"
                           >
                             {totalVisitors.toLocaleString()}
                           </tspan>
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 4}
+                            y={(viewBox.cy || 0) + 14}
                             className="fill-muted-foreground"
                           >
                             Complaints

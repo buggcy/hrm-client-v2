@@ -47,8 +47,8 @@ export function ProjectBarChat({ chartData }: ChartProps) {
   return (
     <Card className="col-span-1 h-full md:col-span-2">
       <CardHeader>
-        <CardTitle className="text-sm">Project Members Statistics</CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle className="">Project Members Statistics</CardTitle>
+        <CardDescription className="text-sm">
           Showing team and remove members for each projects.
         </CardDescription>
       </CardHeader>

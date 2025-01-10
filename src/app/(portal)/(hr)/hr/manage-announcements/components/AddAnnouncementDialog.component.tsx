@@ -179,9 +179,9 @@ export function AnnouncementDialog({
         <DialogHeader>
           <DialogTitle>{data ? 'Edit' : 'Add'} Announcement</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-0">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="flex flex-col">
+            <div className="my-2 flex flex-col">
               <Label htmlFor="StartDate" className="mb-2 text-left">
                 Start Date
               </Label>
@@ -205,7 +205,7 @@ export function AnnouncementDialog({
                 </span>
               )}
             </div>
-            <div className="flex flex-col">
+            <div className="my-2 flex flex-col">
               <Label htmlFor="EndDate" className="mb-2 text-left">
                 End Date
               </Label>
@@ -231,7 +231,7 @@ export function AnnouncementDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="my-2 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="flex flex-col">
               <Label htmlFor="Priority" className="mb-2 text-left">
                 Priority
@@ -303,7 +303,7 @@ export function AnnouncementDialog({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-8">
+          <div className="my-2 flex flex-wrap gap-8">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="title" className="mb-2 text-left">
                 Title
@@ -328,7 +328,7 @@ export function AnnouncementDialog({
             </div>
           </div>
 
-          <div className="flex flex-col gap-12">
+          <div className="my-2 flex flex-col gap-12">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="Description" className="mb-2 text-left">
                 Description

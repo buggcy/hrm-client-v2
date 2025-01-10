@@ -39,8 +39,8 @@ const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
           </div>
 
           <div className="size-full lg:w-1/3">
-            <RecentAnnouncements />
             <UpcomingEvents />
+            <RecentAnnouncements />
           </div>
         </div>
       </LayoutWrapper>

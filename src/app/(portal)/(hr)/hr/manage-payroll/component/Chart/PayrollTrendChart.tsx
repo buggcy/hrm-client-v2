@@ -47,10 +47,10 @@ export function MonthlyPayrollTrendChart({
   return (
     <Card className="size-full">
       <CardHeader>
-        <CardTitle className="text-base font-semibold">
+        <CardTitle className="font-semibold">
           Monthly Payroll Statistics
         </CardTitle>
-        <CardDescription className="text-xs">
+        <CardDescription className="text-sm">
           Showing total for this year
         </CardDescription>
       </CardHeader>

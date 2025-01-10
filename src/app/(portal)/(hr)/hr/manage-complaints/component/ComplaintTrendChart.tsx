@@ -44,8 +44,8 @@ export function ComplaintTrendChart({ chartData }: ChartProps) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle className="text-sm">Complaints Over Time</CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle>Complaints Over Time</CardTitle>
+        <CardDescription className="text-sm">
           Showing total complaints for this year
         </CardDescription>
       </CardHeader>

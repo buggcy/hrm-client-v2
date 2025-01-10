@@ -183,8 +183,8 @@ export function FeedbackDistributionChart({
   ];
   return (
     <Card className="flex w-full flex-col">
-      <CardHeader className="items-center">
-        <CardTitle className="pb-4 text-base">Feedback Overview</CardTitle>
+      <CardHeader>
+        <CardTitle>Feedback Overview</CardTitle>
       </CardHeader>
       <CardContent className="w-full p-0">
         <ChartContainer

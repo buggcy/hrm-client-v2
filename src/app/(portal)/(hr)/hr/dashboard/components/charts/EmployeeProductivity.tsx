@@ -81,7 +81,7 @@ export function EmployeeProductivity({ data }: EmployeeProductivityProps) {
   ];
   return (
     <Card className="col-span-1 flex flex-col">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="pb-0">
         <CardTitle>Employee Productivity</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

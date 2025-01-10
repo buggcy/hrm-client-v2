@@ -78,11 +78,11 @@ export function ProjectActiveRecordChart({
   const totalVisitors = totalCount || 0;
 
   return (
-    <Card className="col-span-1 flex h-full flex-col gap-3">
-      <CardHeader className={cn('items-left pb-0')}>
-        <CardTitle className="text-sm">Project Status </CardTitle>
-        <CardDescription className="text-xs">
-          showing the distribution between project statuses.
+    <Card className="flex h-[368px] flex-col gap-3">
+      <CardHeader className={cn('items-left')}>
+        <CardTitle>Project Status </CardTitle>
+        <CardDescription className="text-sm">
+          Project status Distribution
         </CardDescription>
       </CardHeader>
       <hr className="mx-auto w-10/12 border-gray-300 dark:border-gray-600" />{' '}

@@ -65,6 +65,7 @@ interface AttendanceDistributionProps {
 }
 
 export function AttendanceDistribution({ data }: AttendanceDistributionProps) {
+  const attendanceData = data ? [...data].reverse() : chartData;
   return (
     <Card className="col-span-2 h-fit max-h-[385px]">
       <CardHeader>
@@ -77,7 +78,7 @@ export function AttendanceDistribution({ data }: AttendanceDistributionProps) {
           className="mx-auto size-full max-h-[280px] min-h-[200px]"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data?.reverse() ?? chartData} barSize={30}>
+            <BarChart data={attendanceData ?? chartData} barSize={30}>
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="date"

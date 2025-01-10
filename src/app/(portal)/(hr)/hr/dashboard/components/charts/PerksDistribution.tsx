@@ -56,7 +56,7 @@ export function PerksDistribution({ data }: PerksDistributionProps) {
   }));
   return (
     <Card className="col-span-1">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="pb-0">
         <CardTitle>Perk Requests</CardTitle>
         <CardDescription>
           Showing total requests for the last 6 months

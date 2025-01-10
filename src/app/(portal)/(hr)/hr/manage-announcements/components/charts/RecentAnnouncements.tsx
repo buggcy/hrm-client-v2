@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { CircleArrowDown, CircleArrowRight, CircleArrowUp } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { AnnouncementType } from '@/libs/validations/hr-announcements';
 
@@ -58,11 +58,9 @@ const RecentAnnouncements = ({
 
   return (
     <Card className="mb-2 size-full dark:bg-zinc-900">
-      <CardHeader className="pb-0">
+      <CardHeader className="items-center pb-0">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-semibold dark:text-white">
-            Upcoming Announcements
-          </h2>
+          <CardTitle>Upcoming</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
@@ -72,7 +70,7 @@ const RecentAnnouncements = ({
               Loading Announcements
             </div>
           ) : announcementArray?.length <= 0 ? (
-            <div className="text-sm text-gray-500 dark:text-gray-300">
+            <div className="mt-24 items-center justify-center text-center text-sm text-gray-500 dark:text-gray-300">
               No Announcements
             </div>
           ) : (

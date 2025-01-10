@@ -58,8 +58,8 @@ export function PriorityDistribution({ data }: PriorityDistributionProps) {
   ];
   return (
     <Card className="flex w-full flex-col">
-      <CardHeader>
-        <CardTitle className="pb-4 text-base">Announcements Overview</CardTitle>
+      <CardHeader className="items-center">
+        <CardTitle className="pb-4">Overview</CardTitle>
       </CardHeader>
       <CardContent className="w-full p-0">
         <ChartContainer

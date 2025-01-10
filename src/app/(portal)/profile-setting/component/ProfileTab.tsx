@@ -258,7 +258,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
 
   return (
     <>
-      <h2 className="mt-6 pl-3 text-lg font-semibold">Profile Edit</h2>
+      <h2 className="mt-6 pl-3 text-2xl font-semibold">Profile Edit</h2>
       <div className="mb-2 mt-6 flex flex-col items-center justify-between text-base font-normal dark:text-white lg:flex-row">
         <div className="mb-4 flex items-center justify-center lg:mb-0 lg:justify-start">
           <div className="relative inline-block transition-opacity hover:opacity-75">
