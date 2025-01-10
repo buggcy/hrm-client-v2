@@ -102,12 +102,10 @@ const EventsAndBirthdays = () => {
   };
 
   return (
-    <Card className="h-[428px] dark:bg-zinc-900">
+    <Card className="mb-3 h-[428px] dark:bg-zinc-900">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold dark:text-white">
-            Birthdays & Events
-          </h2>
+          <h2 className="text-lg font-semibold dark:text-white">Events</h2>
           <Badge variant="outline">
             {combinedData?.length || '0'} Upcoming
           </Badge>
@@ -117,7 +115,7 @@ const EventsAndBirthdays = () => {
         <div className="h-[307px] space-y-4">
           <ScrollArea className="h-[300px] w-full">
             {combinedData?.length === 0 ? (
-              <div className="text-gray-500 dark:text-gray-300">
+              <div className="mt-32 text-center text-sm text-gray-500 dark:text-gray-300">
                 No upcoming birthdays or events.
               </div>
             ) : (

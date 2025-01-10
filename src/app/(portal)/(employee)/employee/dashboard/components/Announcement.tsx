@@ -65,7 +65,7 @@ const RecentAnnouncements = () => {
   };
 
   return (
-    <Card className="mb-4 min-h-[400px] w-full dark:bg-zinc-900">
+    <Card className="min-h-[400px] w-full dark:bg-zinc-900">
       <CardHeader className="pb-0">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold dark:text-white">This Week</h2>
@@ -79,12 +79,12 @@ const RecentAnnouncements = () => {
         <div className="max-h-[300px] space-y-4">
           <ScrollArea className="h-[280px] w-full">
             {isLoading || isFetching ? (
-              <div className="text-center text-sm text-gray-500 dark:text-gray-300">
+              <div className="mt-32 text-center text-sm text-gray-500 dark:text-gray-300">
                 Loading...
               </div>
             ) : announcementArray?.length <= 0 ? (
-              <div className="text-sm text-gray-500 dark:text-gray-300">
-                No Announcements
+              <div className="mt-32 text-center text-sm text-gray-500 dark:text-gray-300">
+                No Announcements at the moment
               </div>
             ) : (
               announcementArray.map(
