@@ -9,6 +9,7 @@ import { useStores } from '@/providers/Store.Provider';
 import { getAnnouncementStats } from '@/services/hr/manage-announcements.service';
 import { AuthStoreType } from '@/stores/auth';
 import { AnnouncementsStoreType } from '@/stores/hr/announcements';
+import { formatedDate } from '@/utils';
 
 import { AnnouncementSummaryChart } from './charts/AnnouncementSummary';
 import { PriorityDistribution } from './charts/PriorityDistribution';
@@ -51,8 +52,8 @@ const ManageAnnouncementsCharts: FunctionComponent<AttendanceCardsProps> = ({
   useEffect(() => {
     if (refetchAnnouncements) {
       mutate({
-        from: dates?.from?.toISOString(),
-        to: dates?.to?.toISOString(),
+        from: formatedDate(dates?.from),
+        to: formatedDate(dates?.to),
       });
       setRefetchAnnouncements(false);
     }
@@ -61,8 +62,8 @@ const ManageAnnouncementsCharts: FunctionComponent<AttendanceCardsProps> = ({
   useEffect(() => {
     if (user) {
       mutate({
-        from: dates?.from?.toISOString(),
-        to: dates?.to?.toISOString(),
+        from: formatedDate(dates?.from),
+        to: formatedDate(dates?.to),
       });
     }
   }, [dates, user, mutate]);
