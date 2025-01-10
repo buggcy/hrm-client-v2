@@ -17,6 +17,7 @@ export interface AttendanceHistoryListParams {
   from?: string;
   to?: string;
   status?: string[];
+  query?: string;
 }
 
 export const getAttendanceHistoryList = async (
@@ -29,6 +30,7 @@ export const getAttendanceHistoryList = async (
     from: '',
     to: '',
     status: [],
+    query: '',
   };
 
   const mergedParams = { ...defaultParams, ...params };

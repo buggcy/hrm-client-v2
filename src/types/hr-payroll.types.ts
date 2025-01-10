@@ -2,7 +2,7 @@ export interface PayrollRecords {
   totalPaid: number;
   totalUnpaid: number;
   totalPaidAmount: number;
-  totalIncrementAmount: number;
+  totalPerkAmount: number;
   totalAmountTobePaid: number;
   totalSalaryDeduction: number;
 }

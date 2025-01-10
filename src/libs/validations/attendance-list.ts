@@ -112,6 +112,7 @@ const employeeListSchema = z.object({
   lastName: z.string(),
   Tahometer_ID: z.string().optional(),
   Avatar: z.string().optional(),
+  companyEmail: z.string(),
 });
 
 const attendanceUsersApiResponseSchema = z.object({

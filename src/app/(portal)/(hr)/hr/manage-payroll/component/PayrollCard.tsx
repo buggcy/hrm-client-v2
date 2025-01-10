@@ -24,7 +24,7 @@ const PayrollCard: FunctionComponent<PayrollCardProps> = ({ dates }) => {
         totalPaid={payrollStats?.records?.totalPaid}
         totalUnpaid={payrollStats?.records?.totalUnpaid}
         totalPaidAmount={payrollStats?.records?.totalPaidAmount}
-        totalPerkAmount={payrollStats?.records?.totalIncrementAmount}
+        totalPerkAmount={payrollStats?.records?.totalPerkAmount}
         totalUnpaidAmount={payrollStats?.records?.totalAmountTobePaid}
         totalDeduction={payrollStats?.records?.totalSalaryDeduction}
       />
