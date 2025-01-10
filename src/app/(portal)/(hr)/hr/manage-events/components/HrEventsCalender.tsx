@@ -4,7 +4,13 @@ import { useEffect, useState } from 'react';
 
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { Cake, ChevronLeft, ChevronRight, Gift } from 'lucide-react';
+import {
+  Cake,
+  CalendarCog,
+  ChevronLeft,
+  ChevronRight,
+  Gift,
+} from 'lucide-react';
 import {
   Calendar,
   dateFnsLocalizer,
@@ -199,6 +205,11 @@ export default function HrEventsCalendar() {
     y,
   }) => {
     const [isVisible, setIsVisible] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    }, []);
 
     useEffect(() => {
       if (event) {
@@ -212,20 +223,16 @@ export default function HrEventsCalendar() {
 
     const tooltipStyles = {
       birthday: {
-        backgroundColor: '#f9c74f',
-        color: '#fff',
+        backgroundColor: isDarkMode ? '#f9c74f' : '#fdf0c1',
       },
       holiday: {
-        backgroundColor: '#d4edda',
-        color: 'hsl(var(--success))',
+        backgroundColor: isDarkMode ? 'hsl(var(--success))' : '#b8e6c1',
       },
       nonHoliday: {
-        backgroundColor: '#e7f7fd',
-        color: 'hsl(var(--primary))',
+        backgroundColor: isDarkMode ? 'hsl(var(--primary))' : '#a8dff5',
       },
       anniversary: {
-        backgroundColor: '#F1F4FFFF',
-        color: '#0F172A',
+        backgroundColor: isDarkMode ? '#0F172A' : '#8caabf',
       },
     };
 
@@ -244,28 +251,51 @@ export default function HrEventsCalendar() {
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
+          width: '200px',
           left: x,
           top: y,
           backgroundColor: currentStyle.backgroundColor,
-          color: currentStyle.color,
           transform: isVisible ? 'translateY(0)' : 'translateY(-10px)',
         }}
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <h3 className="mr-2 font-bold">
-              {event.title}{' '}
-              {event.Event_Type
-                ? event.Event_Type.charAt(0).toUpperCase() +
-                  event.Event_Type.slice(1).toLowerCase()
-                : ''}
-            </h3>
+          <div className="flex w-full flex-col">
+            <div className="mb-2 flex w-full justify-center align-middle">
+              {event.Event_Type === 'birthday' ? (
+                <Cake
+                  size={24}
+                  className="text-[#f9c74f] dark:text-[#fdf0c1]"
+                />
+              ) : event.Event_Type === 'anniversary' ? (
+                <Gift
+                  size={24}
+                  className="text-[#0F172A] dark:text-[#8caabf]"
+                />
+              ) : (
+                <CalendarCog
+                  size={24}
+                  className={`${
+                    event?.Event_Type === 'holiday'
+                      ? 'text-success dark:text-[#b8e6c1]'
+                      : 'text-primary dark:text-[#a8dff5]'
+                  }`}
+                />
+              )}
+            </div>
+            <div className="flex items-center gap-2 p-1">
+              <div className={`size-2 rounded-full bg-gray-600`}></div>
+              <h3 className="mr-2 text-gray-600">
+                {event?.Event_Type
+                  ? event?.Event_Type?.charAt(0)?.toUpperCase() +
+                    event?.Event_Type?.slice(1)?.toLowerCase()
+                  : ''}
+              </h3>
+            </div>
+            <div className="flex items-center gap-2 p-1">
+              <div className="size-2 rounded-full bg-gray-600"></div>
+              <h3 className="mr-2 text-gray-600">{`${event?.title}`} </h3>
+            </div>
           </div>
-          {event.Event_Type === 'birthday' ? (
-            <Cake className="inline-block size-4" />
-          ) : event.Event_Type === 'anniversary' ? (
-            <Gift className="inline-block size-4" />
-          ) : null}
         </div>
       </div>
     );

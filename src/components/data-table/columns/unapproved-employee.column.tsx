@@ -128,8 +128,11 @@ export const unapprovedEmployeeColumns: ColumnDef<EmployeeListType>[] = [
 
       return (
         <div className="flex space-x-2">
-          <Badge variant="outline">{`${ageYears}Y ${ageMonths}M`}</Badge>
-          <span className="max-w-[500px] truncate font-medium">
+          <Badge
+            variant="outline"
+            className="whitespace-nowrap"
+          >{`${ageYears}Y ${ageMonths}M`}</Badge>
+          <span className="max-w-[500px] whitespace-nowrap font-medium">
             {joinDate.toDateString()}
           </span>
         </div>

@@ -4,6 +4,7 @@ import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
+
 interface PayrollItem {
   Date: string;
   Net_Salary: number;
@@ -29,6 +30,13 @@ export function MonthlyPayrollGraph({ payrollData }: MonthlyPayrollGraphProps) {
     { month: 'December', Net_Salary: 0 },
   ];
 
+  const currentMonthIndex = new Date().getMonth();
+
+  const rotatedMonths = [
+    ...allMonths.slice(currentMonthIndex + 1),
+    ...allMonths.slice(0, currentMonthIndex + 1),
+  ];
+
   const chartConfig = {
     Net_Salary: {
       label: 'Net Salary',
@@ -36,10 +44,10 @@ export function MonthlyPayrollGraph({ payrollData }: MonthlyPayrollGraphProps) {
     },
   } satisfies ChartConfig;
 
-  // Populate the data based on payroll data
   payrollData.forEach((item: PayrollItem) => {
-    const monthIndex = new Date(item.Date).getMonth();
-    allMonths[monthIndex].Net_Salary += item.Net_Salary || 0;
+    const itemMonthIndex = new Date(item.Date).getMonth();
+    const rotatedIndex = (itemMonthIndex - (currentMonthIndex + 1) + 12) % 12;
+    rotatedMonths[rotatedIndex].Net_Salary += item.Net_Salary || 0;
   });
 
   return (
@@ -53,7 +61,7 @@ export function MonthlyPayrollGraph({ payrollData }: MonthlyPayrollGraphProps) {
           config={chartConfig}
           className="max-h-[275px] min-h-[100px] w-full"
         >
-          <BarChart data={allMonths} margin={{ left: 0, right: 20 }}>
+          <BarChart data={rotatedMonths} margin={{ left: 0, right: 20 }}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="month"

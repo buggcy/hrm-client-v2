@@ -3,6 +3,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 
 import { attendanceListColumns } from '@/components/data-table/columns/attendance-list-columns';
@@ -48,8 +49,9 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
   } = useAttendanceListQuery({
     page,
     limit,
-    from: dates?.from?.toISOString(),
-    to: dates?.to?.toISOString(),
+
+    from: dates?.from ? format(new Date(dates?.from), 'yyyy-MM-dd') : '',
+    to: dates?.to ? format(new Date(dates?.to), 'yyyy-MM-dd') : '',
     Status: statusFilter,
   });
 
@@ -73,8 +75,8 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
         query,
         page,
         limit,
-        from: dates?.from,
-        to: dates?.to,
+        from: dates?.from ? format(new Date(dates?.from), 'yyyy-MM-dd') : '',
+        to: dates?.to ? format(new Date(dates?.to), 'yyyy-MM-dd') : '',
         Status,
       }),
     onError: err => {

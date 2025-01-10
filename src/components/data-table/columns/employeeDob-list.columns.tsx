@@ -3,6 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 
 import { EmployeeDobTableListType } from '@/libs/validations/employee';
 
@@ -42,16 +43,14 @@ export const employeeDobListColumns: ColumnDef<EmployeeDobTableListType>[] = [
       <DataTableColumnHeader column={column} title="Date of Birth" />
     ),
     cell: ({ row }) => {
-      const dobString: string = row.getValue('DOB');
-      const dob = new Date(Date.parse(dobString));
-
-      dob.setDate(dob.getDate());
+      const field = new Date(Date.parse(row.getValue('DOB')));
+      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = field.toDateString().slice(4);
 
       return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {dob.toDateString()}
-          </span>
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline">{day}</Badge>
+          <span className="max-w-[500px] truncate">{date}</span>
         </div>
       );
     },

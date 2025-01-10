@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { format, subDays } from 'date-fns';
+import { endOfMonth, format, startOfMonth, subDays, subMonths } from 'date-fns';
 import { CalendarDays, ChevronsUpDown } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 
@@ -29,6 +29,7 @@ export type TimeRange =
   | 'Current Month'
   | 'Last Month'
   | 'Last 3 Months'
+  | 'Last 30 days'
   | 'Last 6 Months'
   | 'Custom';
 export const useTimeRange = () => {
@@ -73,6 +74,15 @@ export const DateRangePicker = ({
         to: new Date(now.getFullYear(), now.getMonth() + 1, 0),
       });
     } else if (timeRange === 'Last Month') {
+      const lastMonth = subMonths(now, 1);
+      const from = startOfMonth(lastMonth);
+      const to = endOfMonth(lastMonth);
+
+      setDate({
+        from,
+        to,
+      });
+    } else if (timeRange === 'Last 30 days') {
       setDate({
         from: subDays(new Date(), 30),
         to: new Date(),
@@ -107,8 +117,11 @@ export const DateRangePicker = ({
         <DropdownMenuItem onSelect={() => setTimeRange('Last Month')}>
           Last month
         </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => setTimeRange('Last 30 days')}>
+          Last 30 days
+        </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => setTimeRange('Last 3 Months')}>
-          Last 3 months
+          Last 90 days
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => setTimeRange('Last 6 Months')}>
           Last 6 months

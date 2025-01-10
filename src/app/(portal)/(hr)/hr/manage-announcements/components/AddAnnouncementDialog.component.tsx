@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { ChevronDown } from 'lucide-react';
+import moment from 'moment';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -146,14 +147,28 @@ export function AnnouncementDialog({
   });
 
   const onSubmit = (formData: AddAnnouncementFormData) => {
+    const adjustedStartDate = moment(formData.StartDate)
+      .startOf('day')
+      .format('YYYY-MM-DD');
+    const adjustedEndDate = moment(formData.EndDate)
+      .endOf('day')
+      .format('YYYY-MM-DD');
+
     if (data) {
-      editAnnouncementData({ id: data._id, data: formData });
+      const updatedFormData = {
+        ...formData,
+        StartDate: adjustedStartDate,
+        EndDate: adjustedEndDate,
+        hrId: user ? user?.id : '',
+      };
+      editAnnouncementData({ id: data._id, data: updatedFormData });
     } else {
       const payload = {
         ...formData,
-        hrId: user ? user.id : '',
+        StartDate: adjustedStartDate,
+        EndDate: adjustedEndDate,
+        hrId: user ? user?.id : '',
       };
-
       addAnnouncementData(payload);
     }
   };

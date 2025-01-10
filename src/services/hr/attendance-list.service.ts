@@ -79,19 +79,19 @@ export const searchAttedanceList = async ({
   page,
   limit,
   query,
-  from = new Date(),
-  to = new Date(),
+  from,
+  to,
   Status = [],
 }: {
   page: number;
   limit: number;
   query: string;
-  from?: Date;
-  to?: Date;
+  from?: string;
+  to?: string;
   Status: string[];
 }): Promise<AttendanceListApiResponse> => {
   const res = await baseAPI.get(
-    `/attendence-v2?page=${page}&limit=${limit}&fullname=${query}&from=${from?.toISOString()}&to=${to?.toISOString()}&Status=${Status.join(',')}`,
+    `/attendence-v2?page=${page}&limit=${limit}&fullname=${query}&from=${from}&to=${to}&Status=${Status.join(',')}`,
   );
   return schemaParse(attendanceListApiResponseSchema)(res);
 };
