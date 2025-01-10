@@ -8,7 +8,7 @@ export interface AttendanceUser {
   _id: string;
   firstName: string;
   lastName: string;
-  companyEmail: string;
+  companyEmail?: string;
   Avatar?: string;
   Tahometer_ID?: string;
 }
@@ -74,7 +74,7 @@ interface Employee {
   contactNo: string;
   uniqueCode?: string;
   roleId: number;
-  companyEmail: string;
+  companyEmail?: string;
   Ed_Exp_ID?: string[];
   dep_ID?: string[];
   isDeleted?: boolean;
