@@ -79,12 +79,12 @@ const RecentAnnouncements = () => {
         <div className="max-h-[300px] space-y-4">
           <ScrollArea className="h-[280px] w-full">
             {isLoading || isFetching ? (
-              <div className="text-center text-sm text-gray-500 dark:text-gray-300">
+              <div className="mt-32 text-center text-sm text-gray-500 dark:text-gray-300">
                 Loading...
               </div>
             ) : announcementArray?.length <= 0 ? (
-              <div className="text-sm text-gray-500 dark:text-gray-300">
-                No Announcements
+              <div className="mt-32 text-center text-sm text-gray-500 dark:text-gray-300">
+                No Announcements at the moment
               </div>
             ) : (
               announcementArray.map(
