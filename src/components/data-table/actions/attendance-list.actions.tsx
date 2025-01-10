@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 
+import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
-import { Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { AxiosError } from 'axios';
+import { Eye, MoreHorizontal, Pencil, RefreshCw, Trash2 } from 'lucide-react';
 
 import DeleteDialog from '@/components/modals/delete-modal';
 import { Button } from '@/components/ui/button';
@@ -16,13 +18,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { AttendanceDialog } from '@/app/(portal)/(hr)/hr/manage-attendance/attendance-list/components/AttendanceDialog';
 import { ViewAttendanceDialog } from '@/app/(portal)/(hr)/hr/manage-attendance/attendance-list/components/ViewAttendanceDialog';
 import { AttendanceListType } from '@/libs/validations/attendance-list';
-import { deleteAttendance } from '@/services/hr/attendance-list.service';
+import {
+  deleteAttendance,
+  refreshAttendance,
+} from '@/services/hr/attendance-list.service';
 import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
+
+import { MessageErrorResponse } from '@/types';
 
 interface DataTableRowActionsProps {
   row: Row<AttendanceListType>;
@@ -39,6 +47,26 @@ export function AttendanceRowActions({ row }: DataTableRowActionsProps) {
   const data = row.original;
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
+  const { mutate } = useMutation({
+    mutationFn: refreshAttendance,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on adding attendance!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      setRefetchAttendanceList(true);
+    },
+  });
+
   const handleEditDialogOpen = () => {
     setEditDialogOpen(true);
   };
@@ -53,6 +81,16 @@ export function AttendanceRowActions({ row }: DataTableRowActionsProps) {
 
   const handleViewDialogClose = () => {
     setShowViewDialog(false);
+  };
+
+  const handleRefreshAttendance = () => {
+    const userIds = [row.original.User_ID];
+    const date = row.original.date.split('T')[0];
+    mutate({
+      userIds,
+      from: date,
+      to: date,
+    });
   };
 
   return (
@@ -82,6 +120,10 @@ export function AttendanceRowActions({ row }: DataTableRowActionsProps) {
               View
             </DropdownMenuItem>
           </DialogTrigger>
+          <DropdownMenuItem onClick={handleRefreshAttendance}>
+            <RefreshCw className="mr-2 size-4" />
+            Refresh
+          </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => setShowDeleteDialog(true)}
             className="text-red-600"

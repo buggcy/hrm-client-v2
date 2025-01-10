@@ -65,7 +65,7 @@ const RecentAnnouncements = () => {
   };
 
   return (
-    <Card className="mb-4 min-h-[400px] w-full dark:bg-zinc-900">
+    <Card className="min-h-[400px] w-full dark:bg-zinc-900">
       <CardHeader className="pb-0">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold dark:text-white">This Week</h2>

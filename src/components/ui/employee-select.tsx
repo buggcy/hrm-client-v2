@@ -9,6 +9,7 @@ interface Employee {
   name: string;
   email: string;
   avatar: string;
+  Tahometer_ID?: string;
 }
 
 interface MultiSelectEmployeeProps {
@@ -16,12 +17,14 @@ interface MultiSelectEmployeeProps {
   options: Employee[];
   selectedValues: string[];
   onChange: (selectedValues: string[]) => void;
+  disabled?: boolean;
 }
 
 const MultiSelectEmployee: React.FC<MultiSelectEmployeeProps> = ({
   options,
   selectedValues,
   onChange,
+  disabled,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -34,7 +37,9 @@ const MultiSelectEmployee: React.FC<MultiSelectEmployeeProps> = ({
   };
 
   return (
-    <div className="relative">
+    <div
+      className={`relative ${disabled ? 'pointer-events-none opacity-50' : ''}`}
+    >
       <div className="relative">
         <div
           className="flex h-[50px] w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm"
