@@ -2,19 +2,16 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 
 import { attendanceListColumns } from '@/components/data-table/columns/attendance-list-columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
-import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useAttendanceListQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
 import { AttendanceListType } from '@/libs/validations/attendance-list';
-import { searchAttedanceList } from '@/services/hr/attendance-list.service';
 import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
 
 interface AttendanceHistoryTableProps {
@@ -49,43 +46,10 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
   } = useAttendanceListQuery({
     page,
     limit,
-
     from: dates?.from ? format(new Date(dates?.from), 'yyyy-MM-dd') : '',
     to: dates?.to ? format(new Date(dates?.to), 'yyyy-MM-dd') : '',
     Status: statusFilter,
-  });
-
-  const {
-    mutate,
-    isPending,
-    data: searchAttendanceListData,
-  } = useMutation({
-    mutationFn: ({
-      query,
-      page,
-      limit,
-      Status,
-    }: {
-      query: string;
-      page: number;
-      limit: number;
-      Status: string[];
-    }) =>
-      searchAttedanceList({
-        query,
-        page,
-        limit,
-        from: dates?.from ? format(new Date(dates?.from), 'yyyy-MM-dd') : '',
-        to: dates?.to ? format(new Date(dates?.to), 'yyyy-MM-dd') : '',
-        Status,
-      }),
-    onError: err => {
-      toast({
-        title: 'Error',
-        description: err?.message || 'Error on fetching search data!',
-        variant: 'error',
-      });
-    },
+    fullname: debouncedSearchTerm,
   });
 
   useEffect(() => {
@@ -97,16 +61,6 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
       clearTimeout(handler);
     };
   }, [searchTerm]);
-
-  useEffect(() => {
-    if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit, Status: statusFilter });
-    } else {
-      void (async () => {
-        await refetch();
-      })();
-    }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate, statusFilter]);
 
   useEffect(() => {
     if (refetchAttendanceList) {
@@ -136,13 +90,11 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
       </div>
     );
 
-  const tableData: AttendanceListType[] = debouncedSearchTerm
-    ? ((searchAttendanceListData?.data || []) as AttendanceListType[])
-    : ((attendanceList?.data || []) as AttendanceListType[]);
+  const tableData: AttendanceListType[] = (attendanceList?.data ||
+    []) as AttendanceListType[];
 
-  const tablePageCount: number | undefined = debouncedSearchTerm
-    ? searchAttendanceListData?.pagination.totalPages
-    : attendanceList?.pagination.totalPages;
+  const tablePageCount: number | undefined =
+    attendanceList?.pagination.totalPages;
 
   return (
     <>
@@ -150,7 +102,7 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
         <DataTableLoading columnCount={7} rowCount={limit} />
       ) : (
         <DataTable
-          searchLoading={isPending}
+          searchLoading={isLoading || isFetching}
           data={tableData || []}
           columns={attendanceListColumns}
           pagination={{

@@ -185,3 +185,20 @@ export const deleteAttendance = async (
   );
   return { message };
 };
+
+export const refreshAttendance = async ({
+  userIds,
+  from,
+  to,
+}: {
+  userIds: string[];
+  from: string;
+  to: string;
+}): Promise<SuccessMessageResponse> => {
+  const body = from === to ? { userIds, date: from } : { userIds, from, to };
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/manual-attendence`,
+    body,
+  );
+  return { message };
+};

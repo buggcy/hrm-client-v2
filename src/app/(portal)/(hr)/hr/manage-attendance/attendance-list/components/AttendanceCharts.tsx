@@ -8,6 +8,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { getAttendanceListStats } from '@/services/hr/attendance-list.service';
 import { AuthStoreType } from '@/stores/auth';
+import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
 
 import { AttendanceDistribution } from './charts/attendance-distribution';
 import { AttendanceHistoryBarChart } from './charts/attendance-history-bar';
@@ -22,6 +23,11 @@ const AttendanceCharts: FunctionComponent<AttendanceCardsProps> = ({
 }) => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
+  const { attendanceListStore } = useStores() as {
+    attendanceListStore: AttendanceListStoreType;
+  };
+  const { setRefetchAttendanceList, refetchAttendanceList } =
+    attendanceListStore;
 
   const { mutate, data: attendanceListStats } = useMutation({
     mutationFn: ({ from, to }: { from?: string; to?: string }) =>
@@ -46,6 +52,18 @@ const AttendanceCharts: FunctionComponent<AttendanceCardsProps> = ({
       });
     }
   }, [dates, user, mutate]);
+
+  useEffect(() => {
+    if (refetchAttendanceList) {
+      if (user) {
+        mutate({
+          from: dates?.from?.toISOString(),
+          to: dates?.to?.toISOString(),
+        });
+      }
+    }
+    setRefetchAttendanceList(false);
+  }, [refetchAttendanceList, dates, mutate, user, setRefetchAttendanceList]);
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <AttendanceDistribution />

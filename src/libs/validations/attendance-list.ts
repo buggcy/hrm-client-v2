@@ -60,7 +60,7 @@ const userSchema = z.object({
   _id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  companyEmail: z.string(),
+  companyEmail: z.string().optional(),
   Avatar: z.string().optional(),
   Tahometer_ID: z.string().optional(),
 });
@@ -112,6 +112,7 @@ const employeeListSchema = z.object({
   lastName: z.string(),
   Tahometer_ID: z.string().optional(),
   Avatar: z.string().optional(),
+  companyEmail: z.string().optional(),
 });
 
 const attendanceUsersApiResponseSchema = z.object({

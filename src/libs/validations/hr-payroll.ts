@@ -62,7 +62,7 @@ const recordSchema = z.object({
   totalPaid: z.number(),
   totalUnpaid: z.number(),
   totalPaidAmount: z.number(),
-  totalIncrementAmount: z.number(),
+  totalPerkAmount: z.number(),
   totalAmountTobePaid: z.number(),
   totalSalaryDeduction: z.number(),
 });
