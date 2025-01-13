@@ -53,6 +53,7 @@ export const employeePayrollColumns: ColumnDef<EmployeePayrollListType>[] = [
       if (typeof dateValue === 'string') {
         const formattedDate = new Date(dateValue).toLocaleString('en-US', {
           month: 'long',
+          year: 'numeric',
         });
 
         return (

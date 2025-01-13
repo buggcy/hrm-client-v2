@@ -79,9 +79,9 @@ const UpcomingAnniversaryCard: React.FC = () => {
 
   return (
     <Card className="h-[340px] w-1/5 overflow-y-auto rounded-md bg-white p-4 shadow dark:bg-zinc-900 dark:text-white max-lg:w-full">
-      <h2 className="mb-4 text-lg font-bold">Upcoming Anniversarys</h2>
+      <h2 className="mb-4 text-sm font-bold">Upcoming Anniversarys</h2>
       {displayDobs.length === 0 ? (
-        <p className="text-sm text-gray-600">
+        <p className="text-xs text-gray-600">
           No upcoming anniversaries this month.
         </p>
       ) : (

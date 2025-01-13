@@ -1,4 +1,3 @@
-import { AddAnnouncementFormData } from '@/app/(portal)/(hr)/hr/manage-announcements/components/AddAnnouncementDialog.component';
 import {
   ManageAnnouncementsApiResponse,
   ManageAnnouncementsApiResponseSchema,
@@ -122,7 +121,15 @@ export const addAnnouncement = async ({
   title,
   Description,
   hrId,
-}: AddAnnouncementFormData): Promise<SuccessMessageResponse> => {
+}: {
+  StartDate: string;
+  EndDate: string;
+  Priority: string;
+  isEnabled: boolean;
+  title: string;
+  Description: string;
+  hrId: string;
+}): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.post(
     `/announcements`,
     {
@@ -138,13 +145,21 @@ export const addAnnouncement = async ({
   );
   return { message };
 };
-
+interface EditBody {
+  StartDate: string;
+  EndDate: string;
+  Priority: string;
+  isEnabled: boolean;
+  title: string;
+  Description: string;
+  hrId?: string;
+}
 export const updateAnnouncement = async ({
   id,
   data,
 }: {
   id: string;
-  data: AddAnnouncementFormData;
+  data: EditBody;
 }): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.put(
     `/announcements/${id}`,

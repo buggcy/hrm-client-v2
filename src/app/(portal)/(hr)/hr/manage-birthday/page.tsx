@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 
+import Header from '@/components/Header/Header';
 import {
   Layout,
   LayoutHeader,
@@ -20,6 +21,7 @@ function ManageBirthday() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1" className="space-y-5">
+        <Header subheading="Cheers to Our Team: Celebrating Birthdays and Anniversaries All Year Long!"></Header>
         <BirthdayChartPage />
         <Suspense fallback={<div>Loading...</div>}>
           <TabPages />

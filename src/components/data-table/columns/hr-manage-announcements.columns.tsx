@@ -61,9 +61,16 @@ export const hrManageAnnouncementColumns: ColumnDef<AnnouncementType>[] = [
     ),
     cell: ({ row }) => {
       const field = new Date(Date.parse(row.getValue('StartDate')));
-
-      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
-      const date = field.toDateString().slice(4);
+      const day = field.toLocaleDateString('en-US', {
+        weekday: 'short',
+        timeZone: 'UTC',
+      });
+      const date = field.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'UTC',
+      });
 
       return (
         <div className="flex items-center space-x-2">
@@ -82,9 +89,16 @@ export const hrManageAnnouncementColumns: ColumnDef<AnnouncementType>[] = [
     cell: ({ row }) => {
       const field = new Date(Date.parse(row.getValue('EndDate')));
 
-      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
-      const date = field.toDateString().slice(4);
-
+      const day = field.toLocaleDateString('en-US', {
+        weekday: 'short',
+        timeZone: 'UTC',
+      });
+      const date = field.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'UTC',
+      });
       return (
         <div className="flex items-center space-x-2">
           <Badge variant="outline">{day}</Badge>

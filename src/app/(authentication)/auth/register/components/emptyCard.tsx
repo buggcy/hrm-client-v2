@@ -3,7 +3,7 @@ interface EmptyCardProps {
   message: string;
 }
 const EmptyCard: React.FC<EmptyCardProps> = ({ message }) => (
-  <div className="mt-40 flex h-full items-center justify-center p-8">
+  <div className="flex h-full items-center justify-center p-8">
     <div className="flex flex-col items-center justify-center gap-4 text-center">
       <h1 className="text-xl">
         <span className="font-bold">No Results Found</span>

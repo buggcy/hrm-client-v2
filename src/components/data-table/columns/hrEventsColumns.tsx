@@ -61,50 +61,36 @@ export const hrEventsColumns: ColumnDef<HrEventsListType>[] = [
       <DataTableColumnHeader column={column} title="Start Date" />
     ),
     cell: ({ row }) => {
-      const dateValue = row.getValue('Event_Start');
-
-      if (typeof dateValue === 'string') {
-        const formattedDate = new Date(dateValue).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        });
-
-        return (
-          <div className="flex space-x-2">
-            <span className="max-w-[500px] truncate font-medium">
-              {formattedDate}
-            </span>
-          </div>
-        );
-      }
+      const field = new Date(Date.parse(row.getValue('Event_Start')));
+      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = field.toDateString().slice(4);
+      return (
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline">{day}</Badge>
+          <span className="max-w-[500px] truncate">{date}</span>
+        </div>
+      );
     },
   },
+
   {
     accessorKey: 'Event_End',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="End Date" />
     ),
     cell: ({ row }) => {
-      const dateValue = row.getValue('Event_End');
-
-      if (typeof dateValue === 'string') {
-        const formattedDate = new Date(dateValue).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        });
-
-        return (
-          <div className="flex space-x-2">
-            <span className="max-w-[500px] truncate font-medium">
-              {formattedDate}
-            </span>
-          </div>
-        );
-      }
+      const field = new Date(Date.parse(row.getValue('Event_End')));
+      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = field.toDateString().slice(4);
+      return (
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline">{day}</Badge>
+          <span className="max-w-[500px] truncate">{date}</span>
+        </div>
+      );
     },
   },
+
   {
     accessorKey: 'Event_Type',
     header: ({ column }) => (

@@ -49,13 +49,15 @@ const ManageAnnouncements: FunctionComponent<ManageAnnouncementProps> = () => {
             setTimeRange={setTimeRange}
             setDate={handleSetDate}
           />
-          <Button
-            variant="default"
-            onClick={handleDialogOpen}
-            disabled={!writePermission}
-          >
-            Add Announcement
-          </Button>
+          {writePermission && (
+            <Button
+              variant="default"
+              onClick={handleDialogOpen}
+              disabled={!writePermission}
+            >
+              Add Announcement
+            </Button>
+          )}
         </Header>
         <ManageAnnouncementsCharts dates={selectedDate} />
         <Suspense fallback={<div>Loading...</div>}>

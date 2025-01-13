@@ -3,6 +3,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 
 import { hrManageAnnouncementColumns } from '@/components/data-table/columns/hr-manage-announcements.columns';
@@ -48,8 +49,8 @@ const ManageAnnouncementTable: FunctionComponent<
   } = useManageAnnouncementQuery({
     page,
     limit,
-    from: dates?.from?.toISOString(),
-    to: dates?.to?.toISOString(),
+    from: dates?.from ? format(new Date(dates?.from), 'yyyy-MM-dd') : '',
+    to: dates?.to ? format(new Date(dates?.to), 'yyyy-MM-dd') : '',
     Priority: priorityFilter,
   });
 

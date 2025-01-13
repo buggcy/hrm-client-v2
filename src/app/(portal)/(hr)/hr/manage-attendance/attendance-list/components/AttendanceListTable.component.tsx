@@ -2,6 +2,7 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import { format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 
 import { attendanceListColumns } from '@/components/data-table/columns/attendance-list-columns';
@@ -45,8 +46,8 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
   } = useAttendanceListQuery({
     page,
     limit,
-    from: dates?.from?.toISOString(),
-    to: dates?.to?.toISOString(),
+    from: dates?.from ? format(new Date(dates?.from), 'yyyy-MM-dd') : '',
+    to: dates?.to ? format(new Date(dates?.to), 'yyyy-MM-dd') : '',
     Status: statusFilter,
     fullname: debouncedSearchTerm,
   });
