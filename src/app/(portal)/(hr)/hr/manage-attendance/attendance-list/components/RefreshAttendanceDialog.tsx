@@ -103,7 +103,7 @@ export function RefreshAttendanceDialog({
   interface Employee {
     id: string;
     name: string;
-    email: string;
+    email?: string;
     avatar: string;
     Tahometer_ID?: string;
   }
