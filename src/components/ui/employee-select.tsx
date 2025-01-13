@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 interface Employee {
   id: string;
   name: string;
-  email: string;
+  email?: string;
   avatar: string;
   Tahometer_ID?: string;
 }
