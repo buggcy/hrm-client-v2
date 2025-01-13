@@ -16,6 +16,7 @@ import { useHrEventsQuery } from '@/hooks/hrEvents/useHrEventsQuery';
 import { HrEventsListType } from '@/libs/validations/employee';
 import { searchHrEventsList } from '@/services/hr/hrEvents.service';
 import { HrEventsStoreType } from '@/stores/hr/hrEvents';
+import { formatedDate } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -48,8 +49,8 @@ const HrEventsTable: FunctionComponent<HrEventsTableProps> = ({ dates }) => {
   } = useHrEventsQuery({
     page,
     limit,
-    from: dates?.from?.toISOString(),
-    to: dates?.to?.toISOString(),
+    from: formatedDate(dates?.from),
+    to: formatedDate(dates?.to),
     hrStatus: hrStatusFilter,
   });
 
@@ -88,8 +89,8 @@ const HrEventsTable: FunctionComponent<HrEventsTableProps> = ({ dates }) => {
         page,
         limit,
         hrStatus: hrStatusFilter,
-        from: dates?.from?.toISOString(),
-        to: dates?.to?.toISOString(),
+        from: formatedDate(dates?.from),
+        to: formatedDate(dates?.to),
       });
     } else {
       void (async () => {

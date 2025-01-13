@@ -18,6 +18,9 @@ import { getCurrentMonthName } from '@/utils';
 export interface ChartData {
   date: string | number | Date;
   Hours: number;
+  status?: string;
+  startTime?: string | number | Date;
+  endTime?: string | number | Date;
 }
 
 export function BChart() {
@@ -29,20 +32,30 @@ export function BChart() {
   const placeholderData: ChartData[] = Array.from({ length: 7 }, (_, i) => ({
     date: (i + 1).toString(),
     Hours: 0,
+    status: '',
+    startTime: '',
+    endTime: '',
   }));
 
   const getCurrentWeekData = (data: ChartData[] | undefined): ChartData[] => {
     if (!Array.isArray(data)) {
       return [];
     }
+
     const currentDate = new Date();
     const currentDay = currentDate.getDay();
     const startOfWeek = new Date(currentDate);
 
-    startOfWeek.setDate(currentDate.getDate() - currentDay + 1);
+    startOfWeek.setDate(
+      currentDate.getDate() - currentDay + (currentDay === 0 ? -6 : 1),
+    );
+
+    startOfWeek.setHours(0, 0, 0, 0);
 
     return data.filter(item => {
       const itemDate = new Date(item.date);
+      itemDate.setHours(0, 0, 0, 0);
+
       return itemDate >= startOfWeek && itemDate <= currentDate;
     });
   };
@@ -108,14 +121,31 @@ export function BChart() {
             <Tooltip
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
-                  const { date, Hours } = payload[0].payload;
+                  const { date, Hours, status, startTime, endTime } =
+                    payload[0].payload;
                   return (
                     <div className="grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
                       <p>
-                        <strong>Date:</strong> {date}
+                        <strong>Date:</strong>{' '}
+                        {typeof date === 'string' ||
+                        typeof date === 'number' ||
+                        date instanceof Date
+                          ? new Date(date).toLocaleDateString('en-US', {
+                              weekday: 'short',
+                              month: 'short',
+                              day: '2-digit',
+                              year: 'numeric',
+                            })
+                          : 'Invalid date'}
                       </p>
                       <p>
                         <strong>Hours:</strong> {Hours}
+                      </p>
+                      <p>
+                        <strong>Status:</strong> {status}
+                      </p>
+                      <p>
+                        <strong>Time:</strong> {startTime} - {endTime}
                       </p>
                     </div>
                   );

@@ -24,6 +24,9 @@ export const fetchMonthlyAttendanceChartData = async (
       name: (index + 1).toString(),
       Hours: hours,
       date: item.date,
+      status: item.status,
+      startTime: item.startTime,
+      endTime: item.endTime,
     };
   });
 

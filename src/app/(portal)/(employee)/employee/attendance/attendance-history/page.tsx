@@ -21,6 +21,7 @@ import { useStores } from '@/providers/Store.Provider';
 import { useTodayAttendence } from '@/hooks/attendanceHistory/useAttendanceHistoryList.hook';
 import { getAttendanceHistoryStats } from '@/services/employee/attendance-history.service';
 import { AuthStoreType } from '@/stores/auth';
+import { formatedDate } from '@/utils';
 
 import AttendanceCards from './components/AttendanceCards';
 import AttendanceHistoryTable from './components/AttendanceHistoryTable.component';
@@ -71,8 +72,8 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     if (user) {
       mutate({
         id: user?.Tahometer_ID ? user.Tahometer_ID : '',
-        from: selectedDate?.from?.toISOString(),
-        to: selectedDate?.to?.toISOString(),
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
       });
     }
   }, [selectedDate, user, mutate]);
