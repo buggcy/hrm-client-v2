@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -20,12 +20,17 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   type,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDropdown = () => {
     setIsOpen(prev => !prev);
   };
 
-  const handleSelect = (value: string) => {
+  const closeDropdown = () => {
+    setIsOpen(false);
+  };
+
+  const handleSelect = (value: string): void => {
     const updatedValues = selectedValues.includes(value)
       ? selectedValues.filter(item => item !== value)
       : [...selectedValues, value];
@@ -47,6 +52,22 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
           : '')
       : `Choose ${type}`;
 
+  React.useEffect(() => {
+    if (isOpen) {
+      const handleOutsideClick = (event: MouseEvent) => {
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target as Node)
+        ) {
+          closeDropdown();
+        }
+      };
+      document.body.addEventListener('click', handleOutsideClick);
+      return () =>
+        document.body.removeEventListener('click', handleOutsideClick);
+    }
+  }, [isOpen]);
+
   return (
     <div className="relative">
       <div
@@ -62,7 +83,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 max-h-96 w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md">
+        <div
+          ref={dropdownRef}
+          className="absolute z-50 mt-1 max-h-96 w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md"
+        >
           <ScrollArea className={`h-40`}>
             <div className="p-1">
               {options.map(option => (

@@ -81,7 +81,7 @@ export function MonthlyPayrollTrendChart({
             />
             <Area
               dataKey="Total_Remaining_Minutes"
-              type="natural"
+              type="monotone"
               fill="var(--color-Total_Remaining_Minutes)"
               fillOpacity={0.4}
               stroke="var(--color-Total_Remaining_Minutes)"
@@ -89,7 +89,7 @@ export function MonthlyPayrollTrendChart({
             />
             <Area
               dataKey="Total_Working_Minutes"
-              type="natural"
+              type="monotone"
               fill="var(--color-Total_Working_Minutes)"
               fillOpacity={0.4}
               stroke="var(--color-Total_Working_Minutes)"
@@ -97,7 +97,7 @@ export function MonthlyPayrollTrendChart({
             />
             <Area
               dataKey="Total_Absent_Deduction"
-              type="natural"
+              type="monotone"
               fill="var(--color-Total_Absent_Deduction)"
               fillOpacity={0.4}
               stroke="var(--color-Total_Absent_Deduction)"
