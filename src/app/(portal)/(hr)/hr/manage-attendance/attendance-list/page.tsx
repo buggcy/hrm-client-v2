@@ -56,7 +56,7 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
         <Header subheading="Track and Manage Attendance Seamlessly for Every User!">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 md:flex-nowrap">
             <DateRangePicker
               timeRange={timeRange}
               selectedDate={selectedDate}
@@ -67,13 +67,15 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
               className="flex items-center gap-1"
               onClick={handleDialogOpen}
             >
-              <Plus size={16} /> Add Attendance
+              <Plus size={16} />
+              <span className="hidden sm:block">Add Attendance</span>
             </Button>
             <Button
               className="flex items-center gap-1"
               onClick={handleRefreshDialogOpen}
             >
               <RefreshCw size={16} />
+              <span className="hidden lg:block">Refresh Attendance</span>
             </Button>
           </div>
         </Header>
