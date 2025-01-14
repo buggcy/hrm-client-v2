@@ -59,7 +59,7 @@ export function PerksDistribution({ data }: PerksDistributionProps) {
       <CardHeader className="pb-0">
         <CardTitle>Perk Requests</CardTitle>
         <CardDescription>
-          Showing total requests for the last 6 months
+          Showing total requests for the months of {data && data[0]?.month}
         </CardDescription>
       </CardHeader>
       <CardContent className="h-full lg:pb-0">

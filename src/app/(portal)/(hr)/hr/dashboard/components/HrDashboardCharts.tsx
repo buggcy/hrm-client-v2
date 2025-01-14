@@ -13,9 +13,18 @@ import { PerksDistribution } from './charts/PerksDistribution';
 import { ProjectProgress } from './charts/ProjectProgress';
 import { RequestDistribution } from './charts/RequestDistribution';
 import { TopDepartmentChart } from '../../manage-department/component/Chart/TopDepartmentChart';
-
-const HrDashboardCharts = () => {
-  const { data } = useHrDashboardStatsQuery();
+interface HrDashboardmeProps {
+  month: string;
+  year: string;
+}
+const HrDashboardCharts = ({ month, year }: HrDashboardmeProps) => {
+  const isEnabled = !!month && !!year;
+  const { data } = useHrDashboardStatsQuery(
+    { month, year },
+    {
+      enabled: isEnabled,
+    },
+  );
   const { data: departmentRecord } = useDepartmentRecordQuery();
   return (
     <div className="flex size-full flex-col gap-4">

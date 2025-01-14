@@ -8,6 +8,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { getLeaveHistoryStats } from '@/services/employee/leave-history.service';
 import { AuthStoreType } from '@/stores/auth';
+import { formatedDate } from '@/utils';
 
 import ConsumedLeaves from './charts/ConsumedLeaves';
 import LeavePattern from './charts/LeavePattern';
@@ -41,8 +42,8 @@ const LeaveCards: FunctionComponent<LeaveCardsProps> = ({ date }) => {
     if (user) {
       mutate({
         id: user?.id ? user.id : '',
-        from: date?.from?.toISOString() || '',
-        to: date?.to?.toISOString() || '',
+        from: formatedDate(date?.from) || '',
+        to: formatedDate(date?.to) || '',
       });
     }
   }, [date, user, mutate]);

@@ -13,19 +13,21 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { useAttendanceData } from '@/hooks/employee/useAttendenceData.hook';
 import { useUserId } from '@/hooks/employee/useUserId';
-import { getCurrentMonthName } from '@/utils';
 
 export interface ChartData {
   date: string | number | Date;
   Hours: number;
 }
 
-export function BChart() {
+export function BChart({ date }: { date: string }) {
   const userId = useUserId();
   const [isMonthlyView, setIsMonthlyView] = useState(true);
-  const currentMonthName = getCurrentMonthName();
+  const dateObject = new Date(date);
+
+  const monthName = dateObject.toLocaleString('default', { month: 'long' });
 
   const { data: chartData, isLoading, isFetching } = useAttendanceData(userId);
+
   const placeholderData: ChartData[] = Array.from({ length: 7 }, (_, i) => ({
     date: (i + 1).toString(),
     Hours: 0,
@@ -57,12 +59,18 @@ export function BChart() {
     },
   };
 
+  const inputDate = new Date(date);
+  const inputMonth = inputDate.getMonth();
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const isCurrentMonth = inputMonth === currentMonth;
   return (
     <Card className="lg:h-[570px]">
       <CardHeader className="flex justify-between">
         <div className="flex w-full items-center">
           <CardDescription className="mr-4 grow text-lg font-semibold text-black dark:text-white">
-            Attendance Record of {currentMonthName}
+            Attendance Record of {monthName}
           </CardDescription>
           <div className="ml-4 flex items-center">
             <Tabs
@@ -73,9 +81,11 @@ export function BChart() {
                 <TabsTrigger className="py-1 text-xs" value="monthly">
                   Monthly
                 </TabsTrigger>
-                <TabsTrigger className="py-1 text-xs" value="weekly">
-                  Weekly
-                </TabsTrigger>
+                {isCurrentMonth && (
+                  <TabsTrigger className="py-1 text-xs" value="weekly">
+                    Weekly
+                  </TabsTrigger>
+                )}
               </TabsList>
             </Tabs>
           </div>
