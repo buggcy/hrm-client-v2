@@ -69,7 +69,7 @@ export function PerkRequests({ chartData }: PerkRecordChartProps) {
             />
             <Area
               dataKey="availed"
-              type="natural"
+              type="monotone"
               fill="var(--color-availed)"
               fillOpacity={0.4}
               stroke="var(--color-availed)"
@@ -77,7 +77,7 @@ export function PerkRequests({ chartData }: PerkRecordChartProps) {
             />
             <Area
               dataKey="assigned"
-              type="natural"
+              type="monotone"
               fill="var(--color-assigned)"
               fillOpacity={0.4}
               stroke="var(--color-assigned)"

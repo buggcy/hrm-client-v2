@@ -40,15 +40,15 @@ const MonthlyPayrollGraph: FunctionComponent<ChartDataProps> = ({
   const chartConfig = {
     Basic_Salary: {
       label: 'Basic Salary',
-      color: '#82ca9d',
+      color: 'hsl(var(--chart-2))',
     },
     Net_Salary: {
       label: 'Net Salary',
-      color: 'hsl(var(--primary))',
+      color: 'hsl(var(--chart-1))',
     },
     Tax_Amount: {
       label: 'Tax Amount',
-      color: '#e74c3c',
+      color: 'hsl(var(--chart-3))',
     },
   } satisfies ChartConfig;
 

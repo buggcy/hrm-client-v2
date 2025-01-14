@@ -16,6 +16,7 @@ import { useHRPayrollListQuery } from '@/hooks/payroll/useHRPayroll.hook';
 import { HRPayrollListType } from '@/libs/validations/hr-payroll';
 import { searchHRPayrollList } from '@/services/hr/payroll.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
+import { formatedDate } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -47,8 +48,8 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
   } = useHRPayrollListQuery({
     page,
     limit,
-    from: dates?.from?.toISOString(),
-    to: dates?.to?.toISOString(),
+    from: formatedDate(dates?.from),
+    to: formatedDate(dates?.to),
     payStatus: statusFilter,
   });
 
@@ -86,8 +87,8 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
         query: debouncedSearchTerm,
         page,
         limit,
-        from: dates?.from?.toISOString() || new Date().toISOString(),
-        to: dates?.to?.toISOString() || new Date().toISOString(),
+        from: formatedDate(dates?.from),
+        to: formatedDate(dates?.to),
         payStatus: statusFilter,
       });
     } else {

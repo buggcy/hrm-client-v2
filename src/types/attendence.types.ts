@@ -12,6 +12,9 @@ export interface AttendanceReport {
 export interface Attendence {
   totalHours: string;
   date: string;
+  status?: string;
+  startTime: string;
+  endTime: string;
 }
 
 export interface ChartData {

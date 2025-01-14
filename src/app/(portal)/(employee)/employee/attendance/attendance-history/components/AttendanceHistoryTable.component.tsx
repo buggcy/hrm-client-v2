@@ -13,6 +13,7 @@ import { useAttendanceHistoryListQuery } from '@/hooks/attendanceHistory/useAtte
 import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
 import { AuthStoreType } from '@/stores/auth';
 import { AttendanceHistoryStoreType } from '@/stores/employee/attendance-history';
+import { formatedDate } from '@/utils';
 
 interface AttendanceHistoryTableProps {
   dates?: DateRange;
@@ -50,8 +51,8 @@ const AttendanceHistoryTable: FunctionComponent<
     page,
     limit,
     id: user?.Tahometer_ID,
-    from: dates?.from?.toISOString(),
-    to: dates?.to?.toISOString(),
+    from: formatedDate(dates?.from),
+    to: formatedDate(dates?.to),
     status: statusFilter,
     query: debouncedSearchTerm,
   });
