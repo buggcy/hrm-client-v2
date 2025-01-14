@@ -133,7 +133,14 @@ export function ViewAttendanceDialog({
         </div>
 
         <div className="w-full border-t-2 pt-4">
-          <span className="pb-4">Breaks:</span>
+          <div className="flex flex-row justify-between">
+            <span className="pb-4">Breaks:</span>
+            {breaks?.length > 0 && (
+              <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                {breaks?.length || 0}
+              </span>
+            )}
+          </div>
           {breaks?.length > 0 ? (
             <BreaksTable data={breaks} />
           ) : (

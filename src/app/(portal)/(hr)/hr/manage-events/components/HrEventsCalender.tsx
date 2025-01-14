@@ -247,56 +247,63 @@ export default function HrEventsCalendar() {
 
     return (
       <div
-        className={`absolute z-50 rounded border border-gray-300 p-2 shadow transition-opacity duration-300 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`absolute z-50 rounded-lg shadow-lg transition-all duration-500 ease-in-out${
+          isVisible
+            ? 'translate-y-0 scale-100 opacity-100'
+            : '-translate-y-4 scale-95 opacity-0'
+        } bg-white dark:bg-muted-foreground`}
         style={{
           width: '200px',
-          left: x,
-          top: y,
-          backgroundColor: currentStyle.backgroundColor,
-          transform: isVisible ? 'translateY(0)' : 'translateY(-10px)',
+          left: x - 10,
+          top: y - 18,
+          padding: '10px',
         }}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex w-full flex-col">
-            <div className="mb-2 flex w-full justify-center align-middle">
-              {event.Event_Type === 'birthday' ? (
-                <Cake
-                  size={24}
-                  className="text-[#f9c74f] dark:text-[#fdf0c1]"
-                />
-              ) : event.Event_Type === 'anniversary' ? (
-                <Gift
-                  size={24}
-                  className="text-[#0F172A] dark:text-[#8caabf]"
-                />
-              ) : (
-                <CalendarCog
-                  size={24}
-                  className={`${
-                    event?.Event_Type === 'holiday'
-                      ? 'text-success dark:text-[#b8e6c1]'
-                      : 'text-primary dark:text-[#a8dff5]'
-                  }`}
-                />
-              )}
-            </div>
-            <div className="flex items-center gap-2 p-1">
-              <div className={`size-2 rounded-full bg-gray-600`}></div>
-              <h3 className="mr-2 text-gray-600">
-                {event?.Event_Type
-                  ? event?.Event_Type?.charAt(0)?.toUpperCase() +
-                    event?.Event_Type?.slice(1)?.toLowerCase()
-                  : ''}
-              </h3>
-            </div>
-            <div className="flex items-center gap-2 p-1">
-              <div className="size-2 rounded-full bg-gray-600"></div>
-              <h3 className="mr-2 text-gray-600">{`${event?.title}`} </h3>
-            </div>
-          </div>
+        <div
+          className="mb-1 flex flex-row justify-center gap-1 rounded-lg border p-1"
+          style={{
+            backgroundColor: currentStyle.backgroundColor,
+            border: 'none',
+          }}
+        >
+          {event.Event_Type === 'birthday' ? (
+            <Cake
+              size={18}
+              className="font-extrabold text-[#f9c74f] dark:text-[#fdf0c1]"
+            />
+          ) : event.Event_Type === 'anniversary' ? (
+            <Gift
+              size={18}
+              className="font-extrabold text-[#0F172A] dark:text-[#8caabf]"
+            />
+          ) : (
+            <CalendarCog
+              size={18}
+              className={`font-extrabold ${
+                event?.Event_Type === 'holiday'
+                  ? 'text-success dark:text-[#b8e6c1]'
+                  : 'text-primary dark:text-[#a8dff5]'
+              }`}
+            />
+          )}
+          <h3 className="text-center text-sm font-bold text-gray-900 dark:text-white">
+            {event?.Event_Type
+              ? event?.Event_Type?.charAt(0)?.toUpperCase() +
+                event?.Event_Type?.slice(1)?.toLowerCase()
+              : ''}
+          </h3>
         </div>
+
+        <div className="m-1 text-center text-sm text-gray-600 dark:text-gray-300">{`${event?.title}`}</div>
+
+        <div
+          className="absolute size-3 rotate-45"
+          style={{
+            bottom: '-6px',
+            left: 'calc(50% - 6px)',
+            backgroundColor: currentStyle.backgroundColor,
+          }}
+        ></div>
       </div>
     );
   };
