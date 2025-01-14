@@ -136,7 +136,7 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
   {
     accessorKey: 'Tax_Amount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tax Amount" />
+      <DataTableColumnHeader column={column} title="Tax" />
     ),
     cell: ({ row }) => {
       const taxAmount = row.getValue('Tax_Amount');
@@ -155,7 +155,7 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
   {
     accessorKey: 'Working_Days',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Working Days" />
+      <DataTableColumnHeader column={column} title="Days" />
     ),
     cell: ({ row }) => {
       return (
@@ -210,7 +210,7 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
   {
     accessorKey: 'Paid_Amount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Paid Amount" />
+      <DataTableColumnHeader column={column} title="Paid" />
     ),
     cell: ({ row }) => {
       const paidAmount = row.getValue('Paid_Amount');
