@@ -1,8 +1,9 @@
 'use client';
 
-import { FunctionComponent, Suspense, useEffect } from 'react';
+import { FunctionComponent, Suspense, useEffect, useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
+import { RefreshCw } from 'lucide-react';
 import moment from 'moment';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
@@ -15,15 +16,18 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
+import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useTodayAttendence } from '@/hooks/attendanceHistory/useAttendanceHistoryList.hook';
 import { getAttendanceHistoryStats } from '@/services/employee/attendance-history.service';
 import { AuthStoreType } from '@/stores/auth';
+import { AttendanceHistoryStoreType } from '@/stores/employee/attendance-history';
 
 import AttendanceCards from './components/AttendanceCards';
 import AttendanceHistoryTable from './components/AttendanceHistoryTable.component';
+import { RefreshAttendanceDialog } from './components/RefreshAttendanceDialog';
 
 interface EmployeeDashboardProps {}
 
@@ -32,6 +36,11 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     useTimeRange();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
+  const { attendanceHistoryStore } = useStores() as {
+    attendanceHistoryStore: AttendanceHistoryStoreType;
+  };
+  const { setRefetchAttendanceHistoryList, refetchAttendanceHistoryList } =
+    attendanceHistoryStore;
   const todayDate = moment().format('YYYY-MM-DD');
 
   const { data } = useTodayAttendence(
@@ -77,6 +86,33 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     }
   }, [selectedDate, user, mutate]);
 
+  useEffect(() => {
+    if (refetchAttendanceHistoryList) {
+      mutate({
+        id: user?.Tahometer_ID ? user.Tahometer_ID : '',
+        from: selectedDate?.from?.toISOString(),
+        to: selectedDate?.to?.toISOString(),
+      });
+      setRefetchAttendanceHistoryList(false);
+    }
+  }, [
+    refetchAttendanceHistoryList,
+    selectedDate,
+    user,
+    mutate,
+    setRefetchAttendanceHistoryList,
+  ]);
+
+  const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
+
+  const handleRefreshDialogOpen = () => {
+    setRefreshDialogOpen(true);
+  };
+
+  const handleRefreshDialogClose = () => {
+    setRefreshDialogOpen(false);
+  };
+
   return (
     <Layout>
       <HighTrafficBanner />
@@ -102,18 +138,32 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
               : "Your today's attendance not recorded yet."
           }
         >
-          <DateRangePicker
-            timeRange={timeRange}
-            selectedDate={selectedDate}
-            setTimeRange={setTimeRange}
-            setDate={handleSetDate}
-          />
+          <div className="flex items-center gap-2">
+            <DateRangePicker
+              timeRange={timeRange}
+              selectedDate={selectedDate}
+              setTimeRange={setTimeRange}
+              setDate={handleSetDate}
+            />
+            <Button
+              className="flex items-center gap-1"
+              onClick={handleRefreshDialogOpen}
+            >
+              <RefreshCw size={16} />
+              <span className="hidden lg:block">Refresh Attendance</span>
+            </Button>
+          </div>
         </Header>
         <AttendanceCards data={attendanceHistoryStats} isPending={isPending} />
         <Suspense fallback={<div>Loading...</div>}>
           <AttendanceHistoryTable dates={selectedDate} />
         </Suspense>
       </LayoutWrapper>
+      <RefreshAttendanceDialog
+        open={RefreshDialogOpen}
+        onOpenChange={handleRefreshDialogClose}
+        onCloseChange={handleRefreshDialogClose}
+      />
     </Layout>
   );
 };
