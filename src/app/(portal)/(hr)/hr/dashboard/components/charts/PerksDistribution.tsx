@@ -44,9 +44,23 @@ const chartConfig = {
 
 interface PerksDistributionProps {
   data?: HrStatsPerkDistributionData[];
+  from: string;
+  to?: string;
 }
 
-export function PerksDistribution({ data }: PerksDistributionProps) {
+export function PerksDistribution({ data, from, to }: PerksDistributionProps) {
+  const dateObject = from && new Date(from);
+  const toObject = to && new Date(to);
+  const monthName = dateObject.toLocaleString('default', {
+    month: 'long',
+    year: 'numeric',
+  });
+  const toMonth =
+    toObject &&
+    toObject.toLocaleString('default', {
+      month: 'long',
+      year: 'numeric',
+    });
   const transformedData = data?.map(item => ({
     ...item,
     approved: item.approved || 0.1, // minimum threshold for display
@@ -59,7 +73,8 @@ export function PerksDistribution({ data }: PerksDistributionProps) {
       <CardHeader className="pb-0">
         <CardTitle>Perk Requests</CardTitle>
         <CardDescription>
-          Showing total requests for the months of {data && data[0]?.month}
+          Showing total requests for the months of{' '}
+          {monthName === toMonth ? monthName : `${monthName} to ${toMonth}`}
         </CardDescription>
       </CardHeader>
       <CardContent className="h-full lg:pb-0">

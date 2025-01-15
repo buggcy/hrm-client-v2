@@ -1,6 +1,9 @@
 'use client';
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent } from 'react';
 
+import moment from 'moment';
+
+import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -9,7 +12,6 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { MonthPickerComponent } from '@/components/MonthPicker';
 import { Notification } from '@/components/NotificationIcon';
 
 import HrDashboardCharts from './components/HrDashboardCharts';
@@ -17,14 +19,10 @@ import HrDashboardCharts from './components/HrDashboardCharts';
 interface HrDashboardmeProps {}
 
 const HrDashboardme: FunctionComponent<HrDashboardmeProps> = () => {
-  const [date, setDate] = useState(new Date());
-  const initialDate = date;
-  const setDateValue = (date: Date | null) => {
-    setDate(date || new Date());
-  };
-  const minAllowedDate = new Date(2000, 0, 1);
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear().toString();
+  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
+    useTimeRange();
+  const from = moment(selectedDate?.from).format('YYYY-MM-DD');
+  const to = moment(selectedDate?.to).format('YYYY-MM-DD');
   return (
     <Layout>
       <HighTrafficBanner />
@@ -36,16 +34,15 @@ const HrDashboardme: FunctionComponent<HrDashboardmeProps> = () => {
       <LayoutWrapper className="flex flex-col gap-8">
         <Header subheading="Manage your employees, attendance, and more.">
           <div className="flex flex-wrap">
-            <div className="flex flex-1 flex-col">
-              <MonthPickerComponent
-                setDateValue={setDateValue}
-                initialDate={initialDate}
-                minDate={minAllowedDate}
-              />
-            </div>
+            <DateRangePicker
+              timeRange={timeRange}
+              selectedDate={selectedDate}
+              setTimeRange={setTimeRange}
+              setDate={handleSetDate}
+            />
           </div>
         </Header>
-        <HrDashboardCharts month={month} year={year} />
+        <HrDashboardCharts from={from} to={to} />
       </LayoutWrapper>
     </Layout>
   );

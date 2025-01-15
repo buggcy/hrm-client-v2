@@ -11,14 +11,14 @@ import { useUserId } from '@/hooks/employee/useUserId';
 import { EmployeeAttendenceCard } from './AttendenceRecord';
 import Typography from '../components/Typography';
 
-const EmployeeCard = ({ monthYear }: { monthYear: string }) => {
+const EmployeeCard = ({ from, to }: { from: string; to?: string }) => {
   const userId = useUserId();
   const {
     data: empdata,
     isLoading,
     isFetching,
   } = useEmployeeAttendance(userId);
-  const { data: attendanceReport } = useAttendanceReport(userId, monthYear);
+  const { data: attendanceReport } = useAttendanceReport(userId, { from, to });
   useEffect(() => {}, [userId, empdata]);
   const totalHoursOfWeek =
     isLoading || isFetching ? '0' : empdata?.totalHoursOfWeek || '0';

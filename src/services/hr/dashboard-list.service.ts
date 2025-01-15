@@ -3,17 +3,15 @@ import {
   hrDashboardStatsApiResponseSchema,
 } from '@/libs/validations/hr-dashboard';
 import { baseAPI, schemaParse } from '@/utils';
-export interface dashboardParams {
-  month?: string;
-  year?: string;
-}
+
+import { EmployeeDashboardParams } from '../employee/dashboard.service';
 
 export const getDashboardStats = async (
-  params: dashboardParams = {},
+  params: EmployeeDashboardParams = {},
 ): Promise<HrDashboardStatsApiResponse> => {
-  const defaultParams: dashboardParams = {
-    month: '',
-    year: '',
+  const defaultParams: EmployeeDashboardParams = {
+    from: '',
+    to: '',
   };
 
   const mergedParams = { ...defaultParams, ...params };

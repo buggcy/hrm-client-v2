@@ -14,13 +14,13 @@ import { ProjectProgress } from './charts/ProjectProgress';
 import { RequestDistribution } from './charts/RequestDistribution';
 import { TopDepartmentChart } from '../../manage-department/component/Chart/TopDepartmentChart';
 interface HrDashboardmeProps {
-  month: string;
-  year: string;
+  from: string;
+  to?: string;
 }
-const HrDashboardCharts = ({ month, year }: HrDashboardmeProps) => {
-  const isEnabled = !!month && !!year;
+const HrDashboardCharts = ({ from, to }: HrDashboardmeProps) => {
+  const isEnabled = !!from;
   const { data } = useHrDashboardStatsQuery(
-    { month, year },
+    { from, to },
     {
       enabled: isEnabled,
     },
@@ -34,7 +34,7 @@ const HrDashboardCharts = ({ month, year }: HrDashboardmeProps) => {
         <PayrollDistribution data={data?.payrollCount} />
       </div>
       <div className="grid w-full grid-cols-1 gap-x-0 gap-y-4 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-0">
-        <PerksDistribution data={data?.perkData} />
+        <PerksDistribution data={data?.perkData} from={from} to={to} />
         <AttendanceDistribution data={data?.attendanceData} />
       </div>
       <div className="grid w-full grid-cols-1 gap-x-0 gap-y-4 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-0">

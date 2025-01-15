@@ -1,15 +1,13 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { HrDashboardStatsApiResponse } from '@/libs/validations/hr-dashboard';
-import {
-  dashboardParams,
-  getDashboardStats,
-} from '@/services/hr/dashboard-list.service';
+import { EmployeeDashboardParams } from '@/services/employee/dashboard.service';
+import { getDashboardStats } from '@/services/hr/dashboard-list.service';
 
 import { UseQueryConfig } from '@/types';
 
 export const useHrDashboardStatsQuery = (
-  params: dashboardParams,
+  params: EmployeeDashboardParams,
   config: UseQueryConfig = {},
 ) =>
   useQuery({
