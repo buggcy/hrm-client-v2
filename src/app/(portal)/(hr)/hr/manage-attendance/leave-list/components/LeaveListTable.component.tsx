@@ -115,6 +115,7 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
         limit,
         from: formatedDate(selectedDate?.from),
         to: formatedDate(selectedDate?.to),
+        user: '',
       });
     } else {
       void (async () => {
@@ -190,28 +191,35 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
   return (
     <>
       <Header subheading="Easily Track and Approve Employee Leave Requests!">
-        <DateRangePicker
-          timeRange={timeRange}
-          selectedDate={selectedDate}
-          setTimeRange={setTimeRange}
-          setDate={handleSetDate}
-        />
-        <Button variant="outline" asChild>
-          <Link
-            href={`/${user?.roleId === 3 ? 'manager' : user?.roleId === 1 ? 'hr' : ''}/manage-attendance/leave-requests`}
-            className="flex items-center"
-          >
-            View Leave Requests
-            <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
-              {leaveListRecords?.pendingCount || 0}
-            </span>
-          </Link>
-        </Button>
-        <Button asChild>
-          <Link href="/hr/manage-leave" className="flex items-center">
-            Assign Leaves
-          </Link>
-        </Button>
+        <div className="flex flex-col md:flex-row">
+          <div className="mr-0 flex flex-row gap-2 md:mr-2">
+            <DateRangePicker
+              timeRange={timeRange}
+              selectedDate={selectedDate}
+              setTimeRange={setTimeRange}
+              setDate={handleSetDate}
+            />
+
+            <Button variant="outline" asChild>
+              <Link
+                href={`/${user?.roleId === 3 ? 'manager' : user?.roleId === 1 ? 'hr' : ''}/manage-attendance/leave-requests`}
+                className="flex items-center"
+              >
+                View Leave Requests
+                <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                  {leaveListRecords?.pendingCount || 0}
+                </span>
+              </Link>
+            </Button>
+          </div>
+          <div className="mt-2 flex flex-row justify-end md:mt-0">
+            <Button asChild>
+              <Link href="/hr/manage-leave" className="flex items-center">
+                Assign Leaves
+              </Link>
+            </Button>
+          </div>
+        </div>
       </Header>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <LeavesTrendChart chartData={getLeaveChartData?.data ?? []} />

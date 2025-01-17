@@ -3,36 +3,14 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { leave_history_status_options } from '@/components/filters';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import { LeaveListType } from '@/libs/validations/hr-leave-list';
 
 import { LeaveHistoryRowActions } from '../actions/employee-leave-history.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
-export const leaveHistoryListColumns: ColumnDef<LeaveHistoryListType>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={value => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-
+export const leaveHistoryListColumns: ColumnDef<LeaveListType>[] = [
   {
     accessorKey: 'Title',
     header: ({ column }) => (
@@ -64,7 +42,6 @@ export const leaveHistoryListColumns: ColumnDef<LeaveHistoryListType>[] = [
       );
     },
   },
-
   {
     accessorKey: 'Start_Date',
     header: ({ column }) => (
@@ -72,17 +49,17 @@ export const leaveHistoryListColumns: ColumnDef<LeaveHistoryListType>[] = [
     ),
     cell: ({ row }) => {
       const field = new Date(Date.parse(row.getValue('Start_Date')));
+      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = field.toDateString().slice(4);
 
       return (
         <div className="flex items-center space-x-2">
-          <span className="max-w-[500px] truncate font-medium capitalize">
-            {field?.toDateString()}
-          </span>
+          <Badge variant="outline">{day}</Badge>
+          <span className="max-w-[500px] truncate">{date}</span>
         </div>
       );
     },
   },
-
   {
     accessorKey: 'End_Date',
     header: ({ column }) => (
@@ -90,12 +67,13 @@ export const leaveHistoryListColumns: ColumnDef<LeaveHistoryListType>[] = [
     ),
     cell: ({ row }) => {
       const field = new Date(Date.parse(row.getValue('End_Date')));
+      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = field.toDateString().slice(4);
 
       return (
         <div className="flex items-center space-x-2">
-          <span className="max-w-[500px] truncate font-medium capitalize">
-            {field?.toDateString()}
-          </span>
+          <Badge variant="outline">{day}</Badge>
+          <span className="max-w-[500px] truncate">{date}</span>
         </div>
       );
     },

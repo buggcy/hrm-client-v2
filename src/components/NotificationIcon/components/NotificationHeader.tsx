@@ -40,7 +40,7 @@ export const NotificationHeader: React.FC<NotificationHeaderProps> = ({
           </div>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="flex w-full items-center p-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-blue-500"
+            className="flex w-full cursor-pointer items-center p-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-blue-500"
             onClick={handleMarkAllAsRead}
           >
             <CheckCircle className="mr-2 size-4" />

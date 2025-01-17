@@ -30,20 +30,6 @@ export function ViewAnnouncement({
   open,
   user,
 }: ViewAnnouncementDialogProps) {
-  const formatDate = (dateString?: string): string => {
-    if (!dateString) return 'Invalid date';
-
-    const date = new Date(dateString);
-
-    if (isNaN(date.getTime())) return 'Invalid date';
-
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   const variant = announcement?.isEnabled ? 'success' : 'destructive';
 
   return (
@@ -78,12 +64,36 @@ export function ViewAnnouncement({
               <div className="flex space-x-3">
                 <Calendar className="size-4 text-blue-500" />
                 <span className="text-sm font-medium">Start Date:</span>
-                <p className="text-sm">{formatDate(announcement?.StartDate)}</p>
+                <p className="text-sm">
+                  {announcement?.StartDate
+                    ? new Date(announcement?.StartDate).toLocaleDateString(
+                        'en-US',
+                        {
+                          weekday: 'short',
+                          month: 'short',
+                          day: '2-digit',
+                          year: 'numeric',
+                        },
+                      )
+                    : 'N/A'}
+                </p>
               </div>
               <div className="flex space-x-3">
                 <Calendar className="size-4 text-blue-500" />
                 <span className="text-sm font-medium">End Date:</span>
-                <p className="text-sm">{formatDate(announcement?.EndDate)}</p>
+                <p className="text-sm">
+                  {announcement?.EndDate
+                    ? new Date(announcement?.EndDate).toLocaleDateString(
+                        'en-US',
+                        {
+                          weekday: 'short',
+                          month: 'short',
+                          day: '2-digit',
+                          year: 'numeric',
+                        },
+                      )
+                    : 'N/A'}
+                </p>
               </div>
             </div>
 

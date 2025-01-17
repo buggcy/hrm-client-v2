@@ -18,7 +18,7 @@ const userIdSchema = z.object({
   _id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  companyEmail: z.string(),
+  companyEmail: z.string().optional(),
   Avatar: z.string().optional(),
   Designation: z.string().optional(),
   contactNo: z.string().optional(),

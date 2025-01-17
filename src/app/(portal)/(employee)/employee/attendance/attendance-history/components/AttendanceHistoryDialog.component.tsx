@@ -74,7 +74,10 @@ const AttendanceHistoryDialog = ({
           <div className="flex items-center">
             <Calendar className="mr-2" size={16} />
             <span>Date:</span>
-            <span className="ml-4">{date.toLocaleDateString()}</span>
+            <span className="ml-4">
+              {' '}
+              {date ? new Date(date).toDateString() : 'N/A'}
+            </span>
           </div>
           <div className="flex items-center py-2">
             <Clock size={16} className="mr-2" />

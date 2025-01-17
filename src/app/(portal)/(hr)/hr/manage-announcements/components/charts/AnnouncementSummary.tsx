@@ -38,8 +38,8 @@ export function AnnouncementSummaryChart({
 }: EmployeeProductivityChartProps) {
   return (
     <Card className="col-span-1">
-      <CardHeader className="items-center">
-        <CardTitle>Summary</CardTitle>
+      <CardHeader>
+        <CardTitle>Announcement Summary</CardTitle>
       </CardHeader>
       <CardContent className="md:size-full md:max-h-[310px]">
         <ChartContainer

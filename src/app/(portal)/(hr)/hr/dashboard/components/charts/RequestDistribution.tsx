@@ -1,6 +1,8 @@
 'use client';
 
-import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
+import * as React from 'react';
+
+import { Label, Pie, PieChart } from 'recharts';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -12,9 +14,12 @@ import {
 
 import { HrStatsPendingRequests } from '@/libs/validations/hr-dashboard';
 
-export const description = 'A radial chart with stacked sections';
+export const description = 'A donut chart with text';
 
 const chartConfig = {
+  count: {
+    label: 'Count',
+  },
   employee: {
     label: 'Employee',
     color: 'hsl(var(--chart-1))',
@@ -38,61 +43,64 @@ interface RequestDistributionProps {
 }
 
 export function RequestDistribution({ data }: RequestDistributionProps) {
-  const chartData = [
-    {
-      month: 'january',
-      employee: data?.employee || 0,
-      leave: data?.leave || 0,
-      perk: data?.perk || 0,
-      resignation: data?.resignation || 0,
-    },
-  ];
-  const totalRequests =
-    chartData[0].employee +
-    chartData[0].leave +
-    chartData[0].perk +
-    chartData[0].resignation;
+  const chartData = React.useMemo(
+    () => [
+      {
+        employee: 'employee',
+        count: data?.employee || 0,
+        fill: 'var(--color-employee)',
+      },
+      {
+        employee: 'leave',
+        count: data?.leave || 0,
+        fill: 'var(--color-leave)',
+      },
+      {
+        employee: 'perk',
+        count: data?.perk || 0,
+        fill: 'var(--color-perk)',
+      },
+      {
+        employee: 'resignation',
+        count: data?.resignation || 0,
+        fill: 'var(--color-resignation)',
+      },
+    ],
+    [data],
+  );
+  const totalEmployees = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.count, 0);
+  }, [chartData]);
 
   return (
     <Card className="col-span-1 flex min-h-[250px] flex-col">
       <CardHeader className="items-center pb-2">
         <CardTitle>Pending Requests</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-1 items-center justify-between pb-0">
+      <CardContent className="flex flex-1 flex-row items-center justify-between pb-0">
         <div className="flex flex-col gap-2 text-sm">
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
             <p>
-              <span className="font-bold">
-                {data?.employee.toLocaleString() || 0}
-              </span>{' '}
-              Employee
+              <span className="font-bold">{data?.employee || 0}</span> Employee
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
             <p>
-              <span className="font-bold">
-                {data?.leave.toLocaleString() || 0}
-              </span>{' '}
-              Leave
+              <span className="font-bold">{data?.leave || 0}</span> Leave
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
             <p>
-              <span className="font-bold">
-                {data?.perk.toLocaleString() || 0}
-              </span>{' '}
-              Perk
+              <span className="font-bold">{data?.perk || 0}</span> Perk
             </p>
           </div>
           <div className="flex flex-row items-center gap-1">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
             <p>
-              <span className="font-bold">
-                {data?.resignation.toLocaleString() || 0}
-              </span>{' '}
+              <span className="font-bold">{data?.resignation || 0}</span>{' '}
               Resignation
             </p>
           </div>
@@ -101,29 +109,35 @@ export function RequestDistribution({ data }: RequestDistributionProps) {
           config={chartConfig}
           className="aspect-square w-full max-w-[200px]"
         >
-          <RadialBarChart
-            data={chartData}
-            startAngle={0}
-            endAngle={360}
-            innerRadius={60}
-            outerRadius={100}
-          >
+          <PieChart>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+            <Pie
+              data={chartData}
+              dataKey="count"
+              nameKey="employee"
+              innerRadius={57}
+              outerRadius={70}
+              strokeWidth={5}
+            >
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
                     return (
-                      <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
                         <tspan
                           x={viewBox.cx}
-                          y={viewBox.cy || 0}
-                          className="fill-foreground text-2xl font-bold"
+                          y={(viewBox.cy || 0) - 4}
+                          className="fill-foreground text-3xl font-bold"
                         >
-                          {totalRequests.toLocaleString()}
+                          {totalEmployees.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -137,32 +151,8 @@ export function RequestDistribution({ data }: RequestDistributionProps) {
                   }
                 }}
               />
-            </PolarRadiusAxis>
-            <RadialBar
-              dataKey="employee"
-              stackId="a"
-              fill="var(--color-employee)"
-              className="stroke-transparent stroke-2"
-            />
-            <RadialBar
-              dataKey="leave"
-              fill="var(--color-leave)"
-              stackId="a"
-              className="stroke-transparent stroke-2"
-            />
-            <RadialBar
-              dataKey="perk"
-              fill="var(--color-perk)"
-              stackId="a"
-              className="stroke-transparent stroke-2"
-            />
-            <RadialBar
-              dataKey="resignation"
-              fill="var(--color-resignation)"
-              stackId="a"
-              className="stroke-transparent stroke-2"
-            />
-          </RadialBarChart>
+            </Pie>
+          </PieChart>
         </ChartContainer>
       </CardContent>
     </Card>

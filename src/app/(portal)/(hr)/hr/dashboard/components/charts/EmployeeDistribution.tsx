@@ -103,7 +103,7 @@ export function EmployeeDistribution({ data }: EmployeeDistributionProps) {
               data={chartData}
               dataKey="count"
               nameKey="employee"
-              innerRadius={50}
+              innerRadius={57}
               outerRadius={70}
               strokeWidth={5}
             >

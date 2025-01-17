@@ -79,11 +79,11 @@ const RecentAnnouncements = () => {
         <div className="max-h-[300px] space-y-4">
           <ScrollArea className="h-[280px] w-full">
             {isLoading || isFetching ? (
-              <div className="mt-32 text-center text-sm text-gray-500 dark:text-gray-300">
+              <div className="mt-32 text-center text-xs text-gray-500 dark:text-gray-300">
                 Loading...
               </div>
             ) : announcementArray?.length <= 0 ? (
-              <div className="mt-32 text-center text-sm text-gray-500 dark:text-gray-300">
+              <div className="mt-32 text-center text-xs text-gray-500 dark:text-gray-300">
                 No Announcements at the moment
               </div>
             ) : (
@@ -92,18 +92,7 @@ const RecentAnnouncements = () => {
                   const { icon } = getIconAndColor(
                     announcement?.Priority || 'normal',
                   );
-                  const formatOptions: Intl.DateTimeFormatOptions = {
-                    month: 'short',
-                    day: 'numeric',
-                  };
-                  const startDate = new Intl.DateTimeFormat(
-                    'en-US',
-                    formatOptions,
-                  ).format(new Date(announcement.StartDate));
-                  const endDate = new Intl.DateTimeFormat(
-                    'en-US',
-                    formatOptions,
-                  ).format(new Date(announcement.EndDate));
+
                   return (
                     <Button
                       variant="outline"
@@ -117,8 +106,15 @@ const RecentAnnouncements = () => {
                           {announcement.title || 'No Title'}
                         </h3>
                         <p className="text-left text-xs text-muted-foreground">
-                          {startDate}{' '}
-                          {startDate !== endDate ? ` - ${endDate}` : ''}
+                          {new Date(announcement.StartDate).toLocaleDateString(
+                            'en-US',
+                            {
+                              weekday: 'short',
+                              month: 'short',
+                              day: '2-digit',
+                              year: 'numeric',
+                            },
+                          )}
                         </p>
                       </div>
                     </Button>

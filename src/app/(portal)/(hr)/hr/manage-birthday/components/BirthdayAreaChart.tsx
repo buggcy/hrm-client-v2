@@ -68,10 +68,8 @@ export function BirthdayAreaChart() {
   return (
     <Card className="h-[340px] max-lg:w-full lg:w-3/5">
       <CardHeader>
-        <CardTitle className="text-sm">
-          Birthdays and Anniversarys per month
-        </CardTitle>
-        <CardDescription className="text-xs">
+        <CardTitle>Birthdays and Anniversarys per month</CardTitle>
+        <CardDescription>
           Showing the count of recent DOBs and Anniversary for each month
         </CardDescription>
       </CardHeader>

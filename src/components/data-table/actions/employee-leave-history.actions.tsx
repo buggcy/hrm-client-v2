@@ -20,12 +20,12 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { ApplyLeaveDialog } from '@/app/(portal)/(employee)/employee/attendance/leave-history/components/ApplyLeaveDialog';
 import { ViewLeaveHistoryDialog } from '@/app/(portal)/(employee)/employee/attendance/leave-history/components/ViewLeaveDialog';
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import { LeaveListType } from '@/libs/validations/hr-leave-list';
 import { cancelLeaveRequest } from '@/services/employee/leave-history.service';
 import { LeaveHistoryStoreType } from '@/stores/employee/leave-history';
 
 interface DataTableRowActionsProps {
-  row: Row<LeaveHistoryListType>;
+  row: Row<LeaveListType>;
 }
 
 export function LeaveHistoryRowActions({ row }: DataTableRowActionsProps) {
@@ -74,14 +74,14 @@ export function LeaveHistoryRowActions({ row }: DataTableRowActionsProps) {
             <DialogTrigger asChild onClick={handleEditDialogOpen}>
               <DropdownMenuItem>
                 <Pencil className="mr-2 size-4" />
-                Edit
+                Edit Leave
               </DropdownMenuItem>
             </DialogTrigger>
           )}
           <DialogTrigger asChild onClick={handleViewDialogOpen}>
             <DropdownMenuItem>
               <Eye className="mr-2 size-4" />
-              View
+              View Leave
             </DropdownMenuItem>
           </DialogTrigger>
           {row.original.Status === 'Pending' && (
@@ -90,7 +90,7 @@ export function LeaveHistoryRowActions({ row }: DataTableRowActionsProps) {
               className="text-red-600"
             >
               <Trash2 className="mr-2 size-4" />
-              Cancel
+              Cancel Leave
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
