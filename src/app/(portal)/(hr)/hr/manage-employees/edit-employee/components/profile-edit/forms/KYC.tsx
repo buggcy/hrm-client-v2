@@ -13,6 +13,12 @@ import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -157,14 +163,22 @@ const KYC = ({ data, empId }: KYCProps) => {
               className="mb-2 flex flex-row items-center gap-2 text-left"
             >
               Choose Document
-              <a
-                href={data?.cnic.frontPicture}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary/80 hover:text-primary"
-              >
-                <Eye className="size-4" />
-              </a>
+              {data?.cnic.frontPicture && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Eye
+                        className="ml-2 inline size-4 cursor-pointer text-primary/80 hover:text-primary"
+                        onClick={() =>
+                          data?.cnic.frontPicture &&
+                          window.open(String(data?.cnic.frontPicture), '_blank')
+                        }
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>Click to Preview Image</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </Label>
             <Controller
               name="frontPicture"
@@ -193,14 +207,22 @@ const KYC = ({ data, empId }: KYCProps) => {
               className="mb-2 flex flex-row items-center gap-2 text-left"
             >
               Choose Document
-              <a
-                href={data?.cnic.backPicture}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary/80 hover:text-primary"
-              >
-                <Eye className="size-4" />
-              </a>
+              {data?.cnic.backPicture && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Eye
+                        className="ml-2 inline size-4 cursor-pointer text-primary/80 hover:text-primary"
+                        onClick={() =>
+                          data?.cnic.backPicture &&
+                          window.open(String(data?.cnic.backPicture), '_blank')
+                        }
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>Click to Preview Image</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </Label>
             <Controller
               name="backPicture"
