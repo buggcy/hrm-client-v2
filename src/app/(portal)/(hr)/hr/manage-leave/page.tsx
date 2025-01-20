@@ -1,15 +1,13 @@
 'use client';
 import React, { Suspense } from 'react';
 
-import { Bell } from 'lucide-react';
-
 import {
   Layout,
   LayoutHeader,
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
-import { Button } from '@/components/ui/button';
+import { Notification } from '@/components/NotificationIcon';
 
 import EmployeeList from './component/EmployeeList';
 
@@ -18,9 +16,7 @@ export default function ManageLeavePage() {
     <Layout>
       <LayoutHeader title="Manage Leave">
         <LayoutHeaderButtonsBlock>
-          <Button variant="outline" size="icon" className="rounded-full">
-            <Bell className="size-5" />
-          </Button>
+          <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">

@@ -211,7 +211,7 @@ const AdditionalDocumentsTable = ({
 
                           <div className="flex flex-col">
                             <span className="max-w-[500px] truncate font-medium capitalize">
-                              {fileName}
+                              {decodeURIComponent(fileName)}
                             </span>
                             <span className="self-start text-sm text-gray-500">
                               {fileExtension.toUpperCase()}

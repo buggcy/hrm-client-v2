@@ -33,7 +33,7 @@ export const NotificationHeader: React.FC<NotificationHeaderProps> = ({
           <div className="mr-1 flex items-center justify-between">
             <DropdownMenuLabel>Activity Feed</DropdownMenuLabel>
             <span className="text-sm text-gray-500">
-              <span className="ml-2 flex size-7 items-center justify-center rounded-full bg-muted">
+              <span className="ml-2 flex size-7 items-center justify-center rounded-full bg-muted dark:text-white">
                 {unreadCount}
               </span>
             </span>
