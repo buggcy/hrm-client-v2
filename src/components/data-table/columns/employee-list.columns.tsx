@@ -96,7 +96,7 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
   {
     accessorKey: 'DOB',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date of Birth" />
+      <DataTableColumnHeader column={column} title="DOB" />
     ),
     cell: ({ row }) => {
       const dob = new Date(Date.parse(row.getValue('DOB')));
