@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 
 import { Eye, Mail, Phone } from 'lucide-react';
 
@@ -15,6 +14,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { HrPerkRequests } from '@/types/hr-perks-list.types';
 
@@ -95,16 +100,26 @@ const PerkRequestCard = ({
             <p className="flex items-center gap-4">
               <strong>Proof Document: </strong>
             </p>
-            <Link
-              href={perkRequest.Proof_Document}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <Eye
-                size={16}
-                className="transition-colors duration-200 hover:text-blue-500"
-              />
-            </Link>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <Eye
+                      className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                      onClick={() =>
+                        perkRequest.Proof_Document &&
+                        window.open(
+                          String(perkRequest.Proof_Document),
+                          '_blank',
+                        )
+                      }
+                      size={18}
+                    />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Click to Preview Document</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </CardContent>
