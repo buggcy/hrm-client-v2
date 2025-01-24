@@ -117,7 +117,7 @@ export function AttendanceHistoryBarChart({
               dataKey="leave"
               stackId="a"
               fill="var(--color-leave)"
-              radius={[4, 4, 0, 0]}
+              radius={[0, 0, 0, 0]}
             />
           </BarChart>
         </ChartContainer>

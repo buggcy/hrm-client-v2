@@ -56,7 +56,7 @@ const chartConfig = {
   },
   leave: {
     label: 'Leave',
-    color: 'hsl(var(--chart-4))',
+    color: 'hsl(var(--chart-5))',
   },
 } satisfies ChartConfig;
 

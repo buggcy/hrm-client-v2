@@ -1,8 +1,6 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { Loader } from 'lucide-react';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,10 +35,8 @@ export const Notification: React.FC = () => {
   const { setNotifications } = useNotificationStore();
   const { handleMarkAsRead, handleAllMarkAsRead } = useNotificationActions();
 
-  const { data: hrNotifications, isLoading: isLoadingHR } =
-    useNotificationsHR();
-  const { data: empNotifications, isLoading: isLoadingEmp } =
-    useNotificationsEmp(user?.id || '');
+  const { data: hrNotifications } = useNotificationsHR();
+  const { data: empNotifications } = useNotificationsEmp(user?.id || '');
 
   useEffect(() => {
     if (user?.roleId === 1 && hrNotifications) {
@@ -81,17 +77,6 @@ export const Notification: React.FC = () => {
   const toggleDropdown = () => {
     setIsOpen(prev => !prev);
   };
-
-  if (user?.roleId === null || user?.id === null) {
-    return <Loader size={24} className="animate-spin" />;
-  }
-
-  if (
-    (user?.roleId === 1 && isLoadingHR) ||
-    (user?.roleId === 2 && isLoadingEmp)
-  ) {
-    return <Loader size={24} className="animate-spin" />;
-  }
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
