@@ -1,3 +1,4 @@
+'use client';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -13,6 +14,7 @@ import { useLeaveHistoryListQuery } from '@/hooks/leaveHistory/useLeaveHistoryLi
 import { searchLeaveHistoryList } from '@/services/employee/leave-history.service';
 import { AuthStoreType } from '@/stores/auth';
 import { LeaveHistoryStoreType } from '@/stores/employee/leave-history';
+import { formatedDate } from '@/utils';
 
 import { ApplyLeaveDialog } from './components/ApplyLeaveDialog';
 import LeaveCards from './components/LeaveCards';
@@ -59,8 +61,8 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
     page,
     limit,
     id: user?.id,
-    from: selectedDate?.from?.toISOString(),
-    to: selectedDate?.to?.toISOString(),
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
   });
 
   const {
@@ -82,8 +84,8 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
         page,
         limit,
         id: user?.id ? user.id : '',
-        from: selectedDate?.from?.toISOString(),
-        to: selectedDate?.to?.toISOString(),
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
       }),
     onError: err => {
       toast({
@@ -142,7 +144,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   };
   return (
     <div className="flex flex-col gap-12">
-      <Header subheading="You have 2 leave requests pending">
+      <Header subheading="Manage your leave requests and track their status with ease.">
         <DateRangePicker
           timeRange={timeRange}
           selectedDate={selectedDate}

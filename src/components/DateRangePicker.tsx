@@ -29,7 +29,7 @@ export type TimeRange =
   | 'Current Month'
   | 'Last Month'
   | 'Last 3 Months'
-  | 'Last 30 days'
+  | 'Last 12 Months'
   | 'Last 6 Months'
   | 'Custom';
 export const useTimeRange = () => {
@@ -82,20 +82,31 @@ export const DateRangePicker = ({
         from,
         to,
       });
-    } else if (timeRange === 'Last 30 days') {
-      setDate({
-        from: subDays(new Date(), 30),
-        to: new Date(),
-      });
     } else if (timeRange === 'Last 3 Months') {
+      const lastMonth = subMonths(now, 1);
+      const from = subMonths(startOfMonth(lastMonth), 2);
+      const to = endOfMonth(lastMonth);
       setDate({
-        from: subDays(new Date(), 90),
-        to: new Date(),
+        from,
+        to,
       });
     } else if (timeRange === 'Last 6 Months') {
+      const lastMonth = subMonths(now, 1);
+      const from = subMonths(startOfMonth(lastMonth), 5);
+      const to = endOfMonth(lastMonth);
+
       setDate({
-        from: subDays(new Date(), 180),
-        to: new Date(),
+        from,
+        to,
+      });
+    } else if (timeRange === 'Last 12 Months') {
+      const lastMonth = subMonths(now, 1);
+      const from = subMonths(startOfMonth(lastMonth), 11);
+      const to = endOfMonth(lastMonth);
+
+      setDate({
+        from,
+        to,
       });
     }
   }, [timeRange, setDate]);
@@ -112,19 +123,20 @@ export const DateRangePicker = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-40">
         <DropdownMenuItem onSelect={() => setTimeRange('Current Month')}>
-          Current month
+          Current Month
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => setTimeRange('Last Month')}>
-          Last month
+          Last Month
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => setTimeRange('Last 30 days')}>
-          Last 30 days
-        </DropdownMenuItem>
+
         <DropdownMenuItem onSelect={() => setTimeRange('Last 3 Months')}>
-          Last 90 days
+          Last 3 Months
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => setTimeRange('Last 6 Months')}>
           Last 6 months
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => setTimeRange('Last 12 Months')}>
+          Last 12 months
         </DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
