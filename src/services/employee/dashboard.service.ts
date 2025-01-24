@@ -11,11 +11,34 @@ import {
 } from '@/types/attendence.types';
 import { BirthdayResponse } from '@/types/Birthday.types';
 import { EventData, RawEventData } from '@/types/events.types';
-
+export interface EmployeeDashboardParams {
+  from?: string;
+  to?: string;
+}
 export const fetchMonthlyAttendanceChartData = async (
   taho_id: string,
+  params: EmployeeDashboardParams = {},
 ): Promise<ChartData[]> => {
-  const response = await baseAPI.get(`/attendence-monthly/${taho_id}`);
+  const defaultParams: EmployeeDashboardParams = {
+    from: '',
+    to: ',',
+  };
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+  const response = await baseAPI.get(
+    `/attendence-monthly/${taho_id}?${queryParams.toString()}`,
+  );
   const data: Attendence[] = response?.data;
 
   const formattedData: ChartData[] = data.map((item, index) => {
@@ -75,14 +98,28 @@ export const fetchWeeklyEvents = async (): Promise<EventData[]> => {
 
 export const fetchAttendanceReport = async (
   tahometerId: string,
-  monthYear: string,
+  params: EmployeeDashboardParams = {},
 ): Promise<AttendanceReport | null> => {
-  if (!monthYear) return null;
+  const defaultParams: EmployeeDashboardParams = {
+    from: '',
+    to: ',',
+  };
 
-  const [year, month] = monthYear.split('-');
+  const mergedParams = { ...defaultParams, ...params };
 
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
   const res: AttendanceReport = await baseAPI.get(
-    `/attendance-report?tahometerId=${tahometerId}&year=${year}&month=${month}`,
+    `/attendance-report?tahometerId=${tahometerId}&${queryParams.toString()}`,
   );
 
   return res;

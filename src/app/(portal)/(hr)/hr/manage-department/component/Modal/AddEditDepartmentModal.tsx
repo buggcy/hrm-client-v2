@@ -404,7 +404,7 @@ const AddEditDepartmentModal = ({
                   Select Project<span className="text-red-600">*</span>{' '}
                 </Label>
                 {showProjects.length > 0 && (
-                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                  <span className="mb-3 ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
                     {showProjects.length || 0}
                   </span>
                 )}
@@ -450,7 +450,7 @@ const AddEditDepartmentModal = ({
                   Add Employee <span className="text-red-600">*</span>
                 </Label>
                 {showEmployees.length > 0 && (
-                  <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                  <span className="mb-3 ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
                     {showEmployees.length || 0}
                   </span>
                 )}

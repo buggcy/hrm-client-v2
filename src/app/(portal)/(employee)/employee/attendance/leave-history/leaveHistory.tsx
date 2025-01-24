@@ -1,3 +1,4 @@
+'use client';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -173,7 +174,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
     : leavePostList?.pagination.totalPages;
   return (
     <div className="flex flex-col gap-12">
-      <Header subheading="You have 2 leave requests pending">
+      <Header subheading="Manage your leave requests and track their status with ease.">
         <DateRangePicker
           timeRange={timeRange}
           selectedDate={selectedDate}

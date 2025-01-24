@@ -13,7 +13,6 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { useAttendanceData } from '@/hooks/employee/useAttendenceData.hook';
 import { useUserId } from '@/hooks/employee/useUserId';
-import { getCurrentMonthName } from '@/utils';
 
 export interface ChartData {
   date: string | number | Date;
@@ -23,12 +22,31 @@ export interface ChartData {
   endTime?: string | number | Date;
 }
 
-export function BChart() {
+export function BChart({ from, to }: { from: string; to: string }) {
   const userId = useUserId();
   const [isMonthlyView, setIsMonthlyView] = useState(true);
-  const currentMonthName = getCurrentMonthName();
+  const dateObject = new Date(from);
+  const toObject = new Date(to);
+  const monthName = dateObject.toLocaleString('default', {
+    month: 'long',
+    year: 'numeric',
+  });
+  const toMonth = toObject.toLocaleString('default', {
+    month: 'long',
+    year: 'numeric',
+  });
+  const {
+    data: chartData,
+    isLoading,
+    isFetching,
+  } = useAttendanceData(
+    userId,
+    { from, to },
+    {
+      enabled: !!from && !!userId,
+    },
+  );
 
-  const { data: chartData, isLoading, isFetching } = useAttendanceData(userId);
   const placeholderData: ChartData[] = Array.from({ length: 7 }, (_, i) => ({
     date: (i + 1).toString(),
     Hours: 0,
@@ -60,8 +78,13 @@ export function BChart() {
     });
   };
 
-  const currentWeekData = getCurrentWeekData(chartData);
-  const dataToShow = isMonthlyView ? chartData || [] : currentWeekData;
+  const currentWeekData =
+    chartData && Array.isArray(chartData) ? getCurrentWeekData(chartData) : [];
+  const dataToShow = isMonthlyView
+    ? Array.isArray(chartData)
+      ? chartData
+      : []
+    : currentWeekData;
 
   const chartConfig = {
     Hours: {
@@ -70,12 +93,20 @@ export function BChart() {
     },
   };
 
+  const inputDate = new Date(from);
+  const inputMonth = inputDate.getMonth();
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const isCurrentMonth = inputMonth === currentMonth;
+
   return (
     <Card className="lg:h-[570px]">
       <CardHeader className="flex justify-between">
         <div className="flex w-full items-center">
           <CardDescription className="mr-4 grow text-lg font-semibold text-black dark:text-white">
-            Attendance Record of {currentMonthName}
+            Attendance Record of{' '}
+            {monthName === toMonth ? monthName : `${monthName} to ${toMonth}`}
           </CardDescription>
           <div className="ml-4 flex items-center">
             <Tabs
@@ -83,12 +114,18 @@ export function BChart() {
               onValueChange={value => setIsMonthlyView(value === 'monthly')}
             >
               <TabsList className="h-auto rounded-lg shadow-sm transition">
-                <TabsTrigger className="py-1 text-xs" value="monthly">
+                <TabsTrigger
+                  className="py-1 text-xs"
+                  value="monthly"
+                  disabled={!isCurrentMonth}
+                >
                   Monthly
                 </TabsTrigger>
-                <TabsTrigger className="py-1 text-xs" value="weekly">
-                  Weekly
-                </TabsTrigger>
+                {isCurrentMonth && (
+                  <TabsTrigger className="py-1 text-xs" value="weekly">
+                    Weekly
+                  </TabsTrigger>
+                )}
               </TabsList>
             </Tabs>
           </div>
