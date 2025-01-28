@@ -87,6 +87,7 @@ export {
   leaveListApiResponseSchema,
   userIdSchema,
   paginationSchema,
+  approvedIdSchema,
   leaveListRecordSchema,
   leaveTrendChartSchema,
   leaveTrendChartApiResponseSchema,

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { approvedIdSchema, userIdSchema } from './hr-leave-list';
+
 export const leave_history_status = [
   'Approved',
   'Pending',
@@ -16,13 +18,21 @@ const paginationSchema = z.object({
 
 const leaveHistoryListSchema = z.object({
   _id: z.string(),
-  Title: z.string(),
-  Leave_Type: z.string(),
-  Start_Date: z.string(),
-  End_Date: z.string(),
+  __v: z.number(),
+  User_ID: userIdSchema,
+  ApprovedBy_ID: approvedIdSchema.optional(),
   Status: z.enum(leave_history_status),
-  Proof_Document: z.string(),
-  Description: z.string(),
+  Leave_Type: z.string().optional(),
+  Start_Date: z.string(),
+  End_Date: z.string().optional(),
+  Title: z.string(),
+  Description: z.string().optional(),
+  Proof_Document: z.string().optional(),
+  isDeleted: z.boolean(),
+  Tahometer_ID: z.string().optional(),
+  rejectedReason: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 const leaveHistoryApiResponseSchema = z.object({
