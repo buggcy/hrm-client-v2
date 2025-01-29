@@ -16,6 +16,11 @@ import {
   UserDateAttendance,
 } from '@/types/attendance-list.types';
 
+export interface AttendanceRequestParams {
+  from?: string;
+  to?: string;
+}
+
 export interface AttendanceListParams {
   page?: number;
   limit?: number;

@@ -70,6 +70,29 @@ export type AttendanceHistoryListType = z.infer<
   typeof attendanceHistoryListSchema
 >;
 
+const attendanceRequestSchema = z.object({
+  _id: z.string(),
+  userId: z.object({
+    _id: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    Tahometer_ID: z.string().optional(),
+    Avatar: z.string().optional(),
+    companyEmail: z.string().optional(),
+  }),
+  date: z.string(),
+  Start_Date: z.string(),
+  End_Date: z.string(),
+  Total_Time: z.string(),
+  reason: z.string().optional(),
+  Status: z.string(),
+  Document: z.string().optional().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export type AttendanceRequestType = z.infer<typeof attendanceRequestSchema>;
+
 export {
   attendanceHistoryApiResponseSchema,
   attendanceHistoryListSchema,

@@ -3,7 +3,7 @@
 import { FunctionComponent, Suspense, useEffect, useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
-import { RefreshCw } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 import moment from 'moment';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
@@ -29,6 +29,7 @@ import { formatedDate } from '@/utils';
 import AttendanceCards from './components/AttendanceCards';
 import AttendanceHistoryTable from './components/AttendanceHistoryTable.component';
 import { RefreshAttendanceDialog } from './components/RefreshAttendanceDialog';
+import { RequestAttendanceDialog } from './components/RequestAttendanceDialog.component';
 
 interface EmployeeDashboardProps {}
 
@@ -114,6 +115,15 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     setRefreshDialogOpen(false);
   };
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   return (
     <Layout>
       <HighTrafficBanner />
@@ -148,6 +158,13 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
             />
             <Button
               className="flex items-center gap-1"
+              onClick={handleDialogOpen}
+            >
+              <Plus size={16} />
+              <span className="hidden sm:block">Request Attendance</span>
+            </Button>
+            <Button
+              className="flex items-center gap-1"
               onClick={handleRefreshDialogOpen}
             >
               <RefreshCw size={16} />
@@ -164,6 +181,12 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
         open={RefreshDialogOpen}
         onOpenChange={handleRefreshDialogClose}
         onCloseChange={handleRefreshDialogClose}
+      />
+      <RequestAttendanceDialog
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        onCloseChange={handleDialogClose}
+        type="add"
       />
     </Layout>
   );

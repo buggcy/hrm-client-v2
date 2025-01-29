@@ -2,6 +2,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import {
   AttendanceListParams,
+  AttendanceRequestParams,
   getAttendanceList,
 } from '@/services/hr/attendance-list.service';
 
@@ -16,6 +17,19 @@ export const useAttendanceListQuery = (
     queryKey: ['attendanceHistoryList', params],
     queryFn: () => getAttendanceList(params),
     refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<AttendanceListApiResponse, Error>;
+
+export const useAttendanceRequestsQuery = (
+  params: AttendanceRequestParams,
+  config: UseQueryConfig = {},
+) =>
+  useQuery({
+    queryKey: ['attendanceHistoryList', params],
+    queryFn: () => getAttendanceList(params),
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
