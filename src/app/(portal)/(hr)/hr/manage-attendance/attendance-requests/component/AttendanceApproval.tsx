@@ -1,7 +1,6 @@
 'use client';
 
 import React, { FunctionComponent, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
@@ -9,17 +8,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
 import EmptyCard from '@/app/(authentication)/auth/register/components/emptyCard';
-import { usePendingLeaveRequestQuery } from '@/hooks/hr/useLeaveList.hook';
+import { useAttendanceRequestsQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
 import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
 import { formatedDate } from '@/utils';
 
-import { LeaveRequest } from './ViewLeaveRequest';
+import { AttendanceRequest } from './ViewAttendanceRequest';
 
 interface HrAttendanceRequestsProps {}
 
 const AttendanceApproval: FunctionComponent<HrAttendanceRequestsProps> = () => {
-  const searchParams = useSearchParams();
-
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
   const { attendanceListStore } = useStores() as {
@@ -27,17 +24,13 @@ const AttendanceApproval: FunctionComponent<HrAttendanceRequestsProps> = () => {
   };
   const { setRefetchAttendanceList, refetchAttendanceList } =
     attendanceListStore;
-  const page = Number(searchParams.get('page')) || 1;
-  const limit = Number(searchParams.get('limit')) || 20;
   const {
     data: pendingAttendanceRequests,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = usePendingLeaveRequestQuery({
-    page,
-    limit,
+  } = useAttendanceRequestsQuery({
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
   });
@@ -50,7 +43,7 @@ const AttendanceApproval: FunctionComponent<HrAttendanceRequestsProps> = () => {
 
       setRefetchAttendanceList(false);
     }
-  }, [refetchAttendanceList, setRefetchAttendanceList, refetch, page, limit]);
+  }, [refetchAttendanceList, setRefetchAttendanceList, refetch]);
 
   if (error)
     return (
@@ -72,14 +65,9 @@ const AttendanceApproval: FunctionComponent<HrAttendanceRequestsProps> = () => {
       <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-4 lg:gap-6">
         {isLoading || isFetching ? (
           <Skeleton className="h-6 w-full" />
-        ) : pendingAttendanceRequests?.pagination?.totalCount &&
-          pendingAttendanceRequests?.pagination?.totalCount > 0 ? (
-          pendingAttendanceRequests?.data?.map(leave => (
-            <LeaveRequest
-              key={leave?._id}
-              data={leave}
-              selectedDate={selectedDate}
-            />
+        ) : pendingAttendanceRequests?.requests.length ? (
+          pendingAttendanceRequests?.requests?.map(request => (
+            <AttendanceRequest key={request?._id} data={request} />
           ))
         ) : (
           <div className="col-span-full flex items-center justify-center">

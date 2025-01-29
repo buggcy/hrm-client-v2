@@ -19,7 +19,7 @@ const HrLeaveRequests: FunctionComponent<HrLeaveRequestsProps> = () => {
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="Manage Leave Requests">
+      <LayoutHeader title="Manage Attendance Requests">
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>
