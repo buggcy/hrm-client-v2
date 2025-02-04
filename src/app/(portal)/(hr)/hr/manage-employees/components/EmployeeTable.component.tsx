@@ -14,7 +14,10 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { useEmployeeApprovalStatsQuery } from '@/hooks/employee/useApprovalEmployee.hook';
 import { useEmployeeListQuery } from '@/hooks/employee/useEmployeeList.hook';
-import { useHrDashboardStatsQuery } from '@/hooks/hr/useDasdhboard.hook';
+import {
+  defaultParams,
+  useHrDashboardStatsQuery,
+} from '@/hooks/hr/useDasdhboard.hook';
 import { EmployeeListArrayType } from '@/libs/validations/employee';
 import { searchEmployeeList } from '@/services/hr/employee.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
@@ -29,7 +32,7 @@ const EmployeeTable: FunctionComponent = () => {
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList, refetchEmployeeList } = employeeStore;
   const { data: hrDashboardStats, refetch: RefetchDashboard } =
-    useHrDashboardStatsQuery({ from: '', to: '' });
+    useHrDashboardStatsQuery(defaultParams);
   const { data: hrEmployeeApprovalStats, refetch: RefetchEmployee } =
     useEmployeeApprovalStatsQuery();
   const page = Number(searchParams.get('page')) || 1;
