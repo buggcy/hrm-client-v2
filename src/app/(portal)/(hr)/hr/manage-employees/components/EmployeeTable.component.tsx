@@ -29,7 +29,7 @@ const EmployeeTable: FunctionComponent = () => {
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList, refetchEmployeeList } = employeeStore;
   const { data: hrDashboardStats, refetch: RefetchDashboard } =
-    useHrDashboardStatsQuery();
+    useHrDashboardStatsQuery({ from: '', to: '' });
   const { data: hrEmployeeApprovalStats, refetch: RefetchEmployee } =
     useEmployeeApprovalStatsQuery();
   const page = Number(searchParams.get('page')) || 1;
