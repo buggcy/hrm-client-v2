@@ -14,7 +14,7 @@ Make sure you have Node.js installed on your system. We use [`nvm` (Node Version
    nvm install 20 && nvm use 20
    ```
 
-   This command installs and switches to the Node.js version specified in the `.nvmrc` file located in the project's root directory
+   This command installs and switches to the Node.js version specified in the `.nvmrc` file located in the project's root directory.
 
 2. **Install project dependencies:**
 
