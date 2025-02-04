@@ -46,8 +46,6 @@ const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
     to: selectedDate?.to ? formatDate(selectedDate.to) : '',
   });
 
-  console.log(selectedDate);
-
   const { mutate: approvePerk, isPending: isApproving } = useMutation({
     mutationFn: approvePerkRequest,
     onError: (err: AxiosError<MessageErrorResponse>) => {

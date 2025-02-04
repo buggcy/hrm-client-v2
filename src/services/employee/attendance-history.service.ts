@@ -110,3 +110,17 @@ export const getTodayAttendence = async (
   const res = await baseAPI.get(`/v2/todays-attendence/${userId}/${date}`);
   return res;
 };
+
+export type SuccessMessageResponse = {
+  message: string;
+};
+
+export const requestAttendance = async (
+  formData: FormData,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/addAttendanceRequest`,
+    formData,
+  );
+  return { message };
+};

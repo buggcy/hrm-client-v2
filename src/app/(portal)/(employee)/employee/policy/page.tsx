@@ -27,7 +27,6 @@ const Policypage: FunctionComponent<EmployeePolicyProps> = () => {
     const fetchCategories = async () => {
       try {
         const fetchedCategories = await getCategoryList();
-        console.log(fetchedCategories);
         setCategories(fetchedCategories?.categories);
         if (fetchedCategories?.categories) {
           if (fetchedCategories?.categories.length > 0) {

@@ -140,6 +140,32 @@ export type AttendanceUser = z.infer<typeof userSchema>;
 
 export type AttendanceBreaks = z.infer<typeof breakSchema>;
 
+const attendanceRequestSchema = z.object({
+  _id: z.string(),
+  userId: employeeListSchema.extend({
+    contactNo: z.string().optional(),
+    Designation: z.string().optional(),
+  }),
+  date: z.string(),
+  Start_Date: z.string(),
+  End_Date: z.string(),
+  Total_Time: z.string(),
+  reason: z.string(),
+  Document: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+const attendanceRequestAPIResponseSchema = z.object({
+  requests: z.array(attendanceRequestSchema),
+});
+
+export type AttendanceRequestType = z.infer<typeof attendanceRequestSchema>;
+
+export type AttendanceRequestApiResponse = z.infer<
+  typeof attendanceRequestAPIResponseSchema
+>;
+
 export {
   AttendanceListStatsApiResponseSchema,
   attendanceListApiResponseSchema,
@@ -147,4 +173,5 @@ export {
   attendanceUsersApiResponseSchema,
   userDateAttendanceSchema,
   AttendanceDistributionStatsApiResponseSchema,
+  attendanceRequestAPIResponseSchema,
 };
