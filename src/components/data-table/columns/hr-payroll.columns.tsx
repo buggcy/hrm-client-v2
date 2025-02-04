@@ -97,7 +97,7 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
       if (typeof dateValue === 'string') {
         const formattedDate = new Date(dateValue).toLocaleString('en-US', {
           month: 'long',
-          year: '2-digit',
+          year: 'numeric',
         });
 
         return (

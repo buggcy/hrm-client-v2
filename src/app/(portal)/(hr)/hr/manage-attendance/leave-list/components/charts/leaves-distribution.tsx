@@ -63,7 +63,7 @@ export function LeavesDistributionChart({ data }: LeaveListRecordChartProps) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="pb-0">
-        <CardTitle className="text-sm">Leave Requests</CardTitle>
+        <CardTitle>Leave Requests</CardTitle>
       </CardHeader>
       <CardContent className="flex size-full flex-col">
         <div className="flex size-full items-center justify-between">

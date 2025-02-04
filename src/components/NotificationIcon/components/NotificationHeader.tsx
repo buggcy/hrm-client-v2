@@ -33,14 +33,14 @@ export const NotificationHeader: React.FC<NotificationHeaderProps> = ({
           <div className="mr-1 flex items-center justify-between">
             <DropdownMenuLabel>Activity Feed</DropdownMenuLabel>
             <span className="text-sm text-gray-500">
-              <span className="ml-2 flex size-7 items-center justify-center rounded-full bg-muted">
+              <span className="ml-2 flex size-7 items-center justify-center rounded-full bg-muted dark:text-white">
                 {unreadCount}
               </span>
             </span>
           </div>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="flex w-full items-center p-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-blue-500"
+            className="flex w-full cursor-pointer items-center p-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-blue-500"
             onClick={handleMarkAllAsRead}
           >
             <CheckCircle className="mr-2 size-4" />

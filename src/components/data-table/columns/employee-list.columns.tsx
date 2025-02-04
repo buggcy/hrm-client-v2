@@ -100,7 +100,11 @@ export const employeeListColumns: ColumnDef<EmployeeListType>[] = [
     ),
     cell: ({ row }) => {
       const dob = new Date(Date.parse(row.getValue('DOB')));
+      const dateOfBith = row.getValue('DOB');
 
+      if (!dateOfBith) {
+        return <span className="italic text-gray-500">No Date Available</span>;
+      }
       const currentDate = new Date();
       let ageYears = currentDate.getFullYear() - dob.getFullYear();
       let ageMonths = currentDate.getMonth() - dob.getMonth();

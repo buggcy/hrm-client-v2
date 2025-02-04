@@ -15,6 +15,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -112,14 +118,22 @@ const Profile = ({ empId, data }: PersonalProps) => {
                 className="mb-2 flex flex-row items-center gap-2 text-left"
               >
                 Choose Avatar{' '}
-                <a
-                  href={data?.Avatar || ''}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary/80 hover:text-primary"
-                >
-                  <Eye className="size-4" />
-                </a>
+                {data?.Avatar && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Eye
+                          className="ml-2 inline size-4 cursor-pointer text-primary/80 hover:text-primary"
+                          onClick={() =>
+                            data?.Avatar &&
+                            window.open(String(data?.Avatar), '_blank')
+                          }
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Click to Preview Avatar</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </Label>
               <Controller
                 name="Avatar"

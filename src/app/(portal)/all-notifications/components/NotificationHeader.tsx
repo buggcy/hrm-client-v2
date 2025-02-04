@@ -26,10 +26,13 @@ export const NotificationHeader: React.FC<NotificationHeaderProps> = ({
       <DropdownMenuTrigger className="flex items-center justify-center">
         <MoreHorizontal className="size-5" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="absolute -left-0 min-w-[150px] -translate-x-full">
+      <DropdownMenuContent className="absolute -left-0 min-w-[180px] -translate-x-full">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleAllReadClick}>
+        <DropdownMenuItem
+          onClick={handleAllReadClick}
+          className="cursor-pointer"
+        >
           <CheckCircle className="mr-2 size-4" />
           Mark all as read
         </DropdownMenuItem>

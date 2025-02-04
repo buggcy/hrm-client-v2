@@ -80,7 +80,7 @@ export function PayrollDistribution({ data }: PayrollDistributionProps) {
               data={chartData}
               dataKey="count"
               nameKey="type"
-              innerRadius={50}
+              innerRadius={57}
               outerRadius={70}
               strokeWidth={5}
             >

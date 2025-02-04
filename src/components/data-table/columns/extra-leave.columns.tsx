@@ -67,21 +67,9 @@ export const hrManageLeaveColumns: ColumnDef<ExtraLeaveType>[] = [
       const formattedMonth = date.toLocaleString('en-US', { month: 'long' });
       return (
         <div className="flex items-center space-x-2">
-          <span className="max-w-[500px] truncate">{formattedMonth}</span>
-        </div>
-      );
-    },
-  },
-
-  {
-    accessorKey: 'year',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Leave For Month" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center space-x-2">
-          <span className="max-w-[500px] truncate">{row.getValue('year')}</span>
+          <span className="max-w-[500px] truncate">
+            {formattedMonth} {row?.original?.year}
+          </span>
         </div>
       );
     },

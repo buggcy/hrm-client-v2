@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Eye } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -27,10 +27,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { LeaveHistoryListType } from '@/libs/validations/leave-history';
+import { LeaveListType } from '@/libs/validations/hr-leave-list';
 import {
   applyLeaveData,
   getLeaveData,
@@ -222,7 +228,7 @@ interface DialogDemoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCloseChange: (open: boolean) => void;
-  data?: LeaveHistoryListType;
+  data?: LeaveListType;
   id?: string;
 }
 
@@ -249,8 +255,8 @@ export function ApplyLeaveDialog({
     resolver: zodResolver(applyLeaveSchema),
     defaultValues: {
       User_ID: user?.id || '',
-      Start_Date: data?.Start_Date ? new Date(data.Start_Date) : undefined,
-      End_Date: data?.End_Date ? new Date(data.End_Date) : undefined,
+      Start_Date: data?.Start_Date ? new Date(data.Start_Date) : new Date(),
+      End_Date: data?.End_Date ? new Date(data.End_Date) : new Date(),
       Status: 'Pending',
       Title: data?.Title || '',
       Leave_Type: data?.Leave_Type || '',
@@ -258,7 +264,11 @@ export function ApplyLeaveDialog({
       proofDocument: null,
     },
   });
-
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
   const { mutate: applyLeave, isPending: isApplying } = useMutation({
     mutationFn: applyLeaveData,
     onError: err => {
@@ -496,7 +506,29 @@ export function ApplyLeaveDialog({
             </div>
             <div className="flex flex-col">
               <Label htmlFor="proofDocument" className="mb-2 text-left">
-                Choose Document
+                Choose Document{' '}
+                {data && data?.Proof_Document && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Eye
+                            className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                            onClick={() =>
+                              data?.Proof_Document &&
+                              window.open(
+                                String(data?.Proof_Document),
+                                '_blank',
+                              )
+                            }
+                            size={18}
+                          />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>Click to Preview Document</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </Label>
               <Controller
                 name="proofDocument"

@@ -3,22 +3,28 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
+import { leaveHistoryListColumns } from '@/components/data-table/columns/leave-history-list.columns';
+import { LeaveListDataTable } from '@/components/data-table/data-table-hr-leave-list';
+import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useLeaveHistoryListQuery } from '@/hooks/leaveHistory/useLeaveHistoryList.hook';
-import { searchLeaveHistoryList } from '@/services/employee/leave-history.service';
+import { useLeaveListPostQuery } from '@/hooks/hr/useLeaveList.hook';
+import { LeaveListArrayType } from '@/libs/validations/hr-leave-list';
+import { searchLeaveList } from '@/services/hr/leave-list.service';
 import { AuthStoreType } from '@/stores/auth';
 import { LeaveHistoryStoreType } from '@/stores/employee/leave-history';
 import { formatedDate } from '@/utils';
 
 import { ApplyLeaveDialog } from './components/ApplyLeaveDialog';
 import LeaveCards from './components/LeaveCards';
-import LeaveHistoryTable from './components/LeaveHistoryTable.component';
+
+import { MessageErrorResponse } from '@/types';
 
 interface LeaveHistoryPageProps {}
 
@@ -50,47 +56,40 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
-
+  const [status, setStatus] = useState<string[]>([]);
   const {
-    data: leaveHistoryList,
+    data: leavePostList,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = useLeaveHistoryListQuery({
-    page,
-    limit,
-    id: user?.id,
-    from: formatedDate(selectedDate?.from),
-    to: formatedDate(selectedDate?.to),
-  });
+  } = useLeaveListPostQuery(
+    {
+      page,
+      limit,
+      from: formatedDate(selectedDate?.from),
+      to: formatedDate(selectedDate?.to),
+      status,
+      userId: user?.id,
+    },
+    {
+      enabled: !!user?.id,
+    },
+  );
 
   const {
     mutate,
     isPending,
-    data: searchLeaveHistoryData,
+    data: searchLeaveListData,
   } = useMutation({
-    mutationFn: ({
-      query,
-      page,
-      limit,
-    }: {
-      query: string;
-      page: number;
-      limit: number;
-    }) =>
-      searchLeaveHistoryList({
-        query,
-        page,
-        limit,
-        id: user?.id ? user.id : '',
-        from: formatedDate(selectedDate?.from),
-        to: formatedDate(selectedDate?.to),
-      }),
-    onError: err => {
+    mutationFn: searchLeaveList,
+    onError: (err: unknown) => {
+      const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({
         title: 'Error',
-        description: err?.message || 'Error on fetching search data!',
+        description:
+          axiosError?.response?.data?.message ||
+          'Error on fetching search data!',
         variant: 'error',
       });
     },
@@ -108,13 +107,30 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      mutate({ query: debouncedSearchTerm, page, limit });
+      mutate({
+        query: debouncedSearchTerm,
+        page,
+        limit,
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
+        user: user?.id || '',
+      });
     } else {
       void (async () => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, page, limit, refetch, mutate]);
+  }, [
+    debouncedSearchTerm,
+    refetch,
+    mutate,
+    page,
+    limit,
+    status,
+    selectedDate?.from,
+    selectedDate?.to,
+    user?.id,
+  ]);
 
   useEffect(() => {
     if (refetchLeaveHistoryList) {
@@ -131,7 +147,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
     setRefetchLeaveHistoryList,
     refetch,
   ]);
-
+  useEffect(() => {}, [leavePostList, selectedDate]);
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
@@ -142,6 +158,20 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
     params.set('limit', newLimit.toString());
     router.push(`?${params.toString()}`);
   };
+  if (error)
+    return (
+      <div className="py-4 text-center text-red-500">
+        Error: {error.message}
+      </div>
+    );
+
+  const tableData: LeaveListArrayType = debouncedSearchTerm
+    ? searchLeaveListData?.data || []
+    : leavePostList?.data || [];
+
+  const tablePageCount: number | undefined = debouncedSearchTerm
+    ? searchLeaveListData?.pagination.totalPages
+    : leavePostList?.pagination.totalPages;
   return (
     <div className="flex flex-col gap-12">
       <Header subheading="Manage your leave requests and track their status with ease.">
@@ -157,20 +187,27 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
       </Header>
 
       <LeaveCards date={selectedDate} />
-      <LeaveHistoryTable
-        leaveHistoryList={leaveHistoryList}
-        isLoading={isLoading}
-        isFetching={isFetching}
-        error={error}
-        isPending={isPending}
-        searchLeaveHistoryData={searchLeaveHistoryData}
-        handleSearchChange={handleSearchChange}
-        handlePaginationChange={handlePaginationChange}
-        page={page}
-        limit={limit}
-        searchTerm={searchTerm}
-        debouncedSearchTerm={debouncedSearchTerm}
-      />
+
+      {isLoading || isFetching ? (
+        <DataTableLoading columnCount={7} rowCount={limit} />
+      ) : (
+        <LeaveListDataTable
+          searchLoading={isPending}
+          data={tableData || []}
+          columns={leaveHistoryListColumns}
+          pagination={{
+            pageCount: tablePageCount || 1,
+            page: page,
+            limit: limit,
+            onPaginationChange: handlePaginationChange,
+          }}
+          onSearch={handleSearchChange}
+          searchTerm={searchTerm}
+          toolbarType={'leavePostList'}
+          setFilterValue={setStatus}
+          filterValue={status}
+        />
+      )}
       <ApplyLeaveDialog
         open={dialogOpen}
         onOpenChange={handleDialogClose}

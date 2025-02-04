@@ -248,6 +248,24 @@ export const employee_status = [
   },
 ];
 
+export const unapproved_status = [
+  {
+    value: 'tba',
+    label: 'To Be Added',
+    icon: CircleFadingPlus,
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Rejected',
+    label: 'Rejected',
+    icon: XCircle,
+  },
+];
+
 export const attendance_list_status_options = [
   {
     value: 'Present',

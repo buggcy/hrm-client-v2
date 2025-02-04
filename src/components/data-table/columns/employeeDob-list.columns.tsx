@@ -9,9 +9,6 @@ import { EmployeeDobTableListType } from '@/libs/validations/employee';
 
 import { DataTableColumnHeader } from '../data-table-column-header';
 
-const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
-
 export const employeeDobListColumns: ColumnDef<EmployeeDobTableListType>[] = [
   {
     accessorKey: 'firstName',
@@ -63,12 +60,21 @@ export const employeeDobListColumns: ColumnDef<EmployeeDobTableListType>[] = [
     ),
     cell: ({ row }) => {
       const dobString: string = row.getValue('DOB');
-      const dob = new Date(Date.parse(dobString));
+      const dob = new Date(dobString);
+      const currentDate = new Date();
 
-      dob.setFullYear(currentYear);
+      dob.setFullYear(currentDate.getFullYear());
 
-      const diffTime = dob.getTime() - currentDate.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      let diffDays = Math.ceil(
+        (dob.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24),
+      );
+
+      if (diffDays < 0) {
+        dob.setFullYear(currentDate.getFullYear() + 1);
+        diffDays = Math.ceil(
+          (dob.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24),
+        );
+      }
 
       let displayText = '';
       if (diffDays === 0) {
@@ -77,19 +83,10 @@ export const employeeDobListColumns: ColumnDef<EmployeeDobTableListType>[] = [
         displayText = 'Tomorrow';
       } else if (diffDays === -1) {
         displayText = 'Yesterday';
-      } else if (diffDays > 1 && diffDays < 30) {
-        displayText = `${diffDays} days left`;
       } else {
-        const nextYearDOB = new Date(dob);
-        nextYearDOB.setFullYear(currentYear + 1);
-        const remainingDays = Math.ceil(
-          (nextYearDOB.getTime() - currentDate.getTime()) /
-            (1000 * 60 * 60 * 24),
-        );
-
-        const months = Math.floor(remainingDays / 30);
-        const weeks = Math.floor((remainingDays % 30) / 7);
-        const days = remainingDays % 7;
+        const months = Math.floor(diffDays / 30);
+        const weeks = Math.floor((diffDays % 30) / 7);
+        const days = diffDays % 7;
 
         const parts = [];
         if (months > 0) parts.push(`${months} month${months > 1 ? 's' : ''}`);
@@ -98,7 +95,6 @@ export const employeeDobListColumns: ColumnDef<EmployeeDobTableListType>[] = [
 
         displayText = `${parts.join(', ')} left`;
       }
-
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">

@@ -83,19 +83,6 @@ const EventsAndBirthdays = () => {
         );
     }
   };
-  const formatDate = (dateInput?: string | Date): string => {
-    if (!dateInput) return 'Invalid date';
-
-    const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
-
-    if (isNaN(date.getTime())) return 'Invalid date';
-
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
 
   const handleEventClick = (event: EventData) => {
     setSelectedEvent(event);
@@ -166,8 +153,10 @@ const EventsAndBirthdays = () => {
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-300">
                           {new Date(item.start).toLocaleDateString('en-US', {
-                            day: 'numeric',
-                            month: 'long',
+                            weekday: 'short',
+                            month: 'short',
+                            day: '2-digit',
+                            year: 'numeric',
                           })}
                         </p>
                         <Dialog>
@@ -236,7 +225,16 @@ const EventsAndBirthdays = () => {
                                             </span>
                                           </div>
                                           <p className="text-sm">
-                                            {formatDate(item?.start)}
+                                            {item?.start
+                                              ? new Date(
+                                                  item?.start,
+                                                ).toLocaleDateString('en-US', {
+                                                  weekday: 'short',
+                                                  month: 'short',
+                                                  day: '2-digit',
+                                                  year: 'numeric',
+                                                })
+                                              : 'N/A'}
                                           </p>
                                         </div>
                                         <div className="flex space-x-3 max-sm:justify-between">
@@ -247,7 +245,16 @@ const EventsAndBirthdays = () => {
                                             </span>
                                           </div>
                                           <p className="text-sm">
-                                            {formatDate(item?.end)}
+                                            {item?.end
+                                              ? new Date(
+                                                  item?.end,
+                                                ).toLocaleDateString('en-US', {
+                                                  weekday: 'short',
+                                                  month: 'short',
+                                                  day: '2-digit',
+                                                  year: 'numeric',
+                                                })
+                                              : 'N/A'}
                                           </p>
                                         </div>
                                       </div>
