@@ -16,17 +16,7 @@ import { ParentReactNode } from '@/types';
 
 export const AuthProvider = ({ children }: ParentReactNode) => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
-  const {
-    user,
-    setUser,
-    resetSession,
-    // setAccessPermissions,
-    // setReadPermissions,
-    // setWritePermissions,
-    // accessPermissions,
-    // readPermissions,
-    // writePermissions,
-  } = authStore;
+  const { user, setUser, resetSession } = authStore;
 
   const pathname = usePathname();
   const router = useRouter();
@@ -35,52 +25,6 @@ export const AuthProvider = ({ children }: ParentReactNode) => {
     () => ['/profile', '/all-notifications', '/profile-setting'],
     [],
   );
-
-  // const { mutate, data: userData } = useMutation({
-  //   mutationFn: ({ id }: { id: string }) => getPermissions(id),
-  //   onError: err => {
-  //     toast({
-  //       title: 'Error',
-  //       description: err?.message || 'Error on fetching stats data!',
-  //       variant: 'error',
-  //     });
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   if (
-  //     user &&
-  //     user.id &&
-  //     (!accessPermissions.length ||
-  //       !readPermissions.length ||
-  //       !writePermissions.length)
-  //   ) {
-  //     mutate({ id: user.id });
-  //   }
-  // }, [
-  //   user,
-  //   mutate,
-  //   accessPermissions.length,
-  //   readPermissions.length,
-  //   writePermissions.length,
-  // ]);
-
-  // useEffect(() => {
-  //   if (userData && userData.permissions && userData.permissions.length > 0) {
-  //     const accessPermissions = userData.permissions.filter(permission =>
-  //       permission.name.startsWith('access'),
-  //     );
-  //     const readPermissions = userData.permissions.filter(permission =>
-  //       permission.name.startsWith('canRead'),
-  //     );
-  //     const writePermissions = userData.permissions.filter(permission =>
-  //       permission.name.startsWith('canWrite'),
-  //     );
-  //     setAccessPermissions(accessPermissions);
-  //     setReadPermissions(readPermissions);
-  //     setWritePermissions(writePermissions);
-  //   }
-  // }, [setAccessPermissions, setReadPermissions, setWritePermissions, userData]);
 
   useEffect(() => {
     const cookieToken = Cookies.get('hrmsToken');

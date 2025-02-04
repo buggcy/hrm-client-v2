@@ -25,11 +25,6 @@ export const getPagePermissions =
 export const getUserPermissions =
   async (): Promise<ManagerUserPermissionsApiResponse> => {
     const res = await baseAPI.get(`/getPermissions/users`);
-    // console.log('res', res);
-    const parsedData = schemaParse(managerUserPermissionsApiResponseSchema)(
-      res,
-    );
-    console.log('parsedData', parsedData);
     return schemaParse(managerUserPermissionsApiResponseSchema)(res);
   };
 

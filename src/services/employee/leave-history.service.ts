@@ -135,7 +135,6 @@ export const updateLeaveRequest = async ({
   id: string;
   body: FormData;
 }): Promise<SuccessMessageResponse> => {
-  console.log(id);
   const { message }: SuccessMessageResponse = await baseAPI.put(
     `/leave/pending/${id}?status=Pending`,
     body,
