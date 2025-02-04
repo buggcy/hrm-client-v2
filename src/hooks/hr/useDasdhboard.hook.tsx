@@ -5,6 +5,10 @@ import { EmployeeDashboardParams } from '@/services/employee/dashboard.service';
 import { getDashboardStats } from '@/services/hr/dashboard-list.service';
 
 import { UseQueryConfig } from '@/types';
+export const defaultParams: EmployeeDashboardParams = {
+  from: '',
+  to: '',
+};
 
 export const useHrDashboardStatsQuery = (
   params: EmployeeDashboardParams,
