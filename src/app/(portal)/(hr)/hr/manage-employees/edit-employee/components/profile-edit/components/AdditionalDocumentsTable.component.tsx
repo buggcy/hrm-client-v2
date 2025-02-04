@@ -153,7 +153,9 @@ const AdditionalDocumentsTable = ({
       />
 
       <div className="max-h-[600px] w-full overflow-y-auto">
-        {tableData && tableData?.length > 0 ? (
+        {tableData &&
+        tableData.length &&
+        tableData.some(item => item?.Document && item?.Document?.length > 0) ? (
           <ScrollArea className="w-full whitespace-nowrap rounded-md border">
             <Table>
               <TableHeader>
@@ -212,14 +214,15 @@ const AdditionalDocumentsTable = ({
                                 </AvatarFallback>
                               )}
                             </Avatar>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="max-w-[500px] truncate font-medium capitalize">
-                              {decodeURIComponent(fileName)}
-                            </span>
-                            <span className="self-start text-sm text-gray-500">
-                              {fileExtension.toUpperCase()}
-                            </span>
+
+                            <div className="flex flex-col">
+                              <span className="max-w-[500px] truncate font-medium capitalize">
+                                {decodeURIComponent(fileName)}
+                              </span>
+                              <span className="self-start text-sm text-gray-500">
+                                {fileExtension.toUpperCase()}
+                              </span>
+                            </div>
                           </div>
                         </TableCell>
 
