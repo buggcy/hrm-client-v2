@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -28,6 +28,7 @@ export const Sidebar = () => {
   const pathname = usePathname();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user, accessPermissions } = authStore;
+
   const menuItems: MenuItem[] =
     user?.roleId === 1
       ? hrMenu(accessPermissions)
@@ -36,6 +37,7 @@ export const Sidebar = () => {
         : employeeMenu(accessPermissions);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const filteredMenuItems = menuItems.filter(item => {
     const matchesTitle = item.title
@@ -54,8 +56,18 @@ export const Sidebar = () => {
     setSearchQuery('');
   };
 
+  const handleSidebarMouseLeave = () => {
+    if (searchInputRef.current) {
+      searchInputRef.current.blur();
+    }
+    setSearchQuery('');
+  };
+
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r bg-background sm:flex">
+    <aside
+      className="fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r bg-background sm:flex"
+      onMouseLeave={handleSidebarMouseLeave}
+    >
       <div className="group relative flex size-full w-w-sidebar flex-col gap-2 px-4 pb-8 pt-6 transition-all duration-300 hover:w-w-sidebar-open">
         <nav className="flex size-full flex-col gap-2">
           <Button
@@ -81,8 +93,9 @@ export const Sidebar = () => {
           >
             <ScrollBar className="mr-[-17px]" />
             <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 overflow-hidden text-muted-foreground" />{' '}
+              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 overflow-hidden text-muted-foreground" />
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search pages..."
                 className="w-full rounded-md bg-muted py-2 pl-10 pr-4 text-sm text-foreground outline-none group-hover:border"
@@ -106,19 +119,23 @@ export const Sidebar = () => {
             ) : (
               filteredMenuItems.map(item =>
                 item.children ? (
-                  <NavSection title={item.title} key={item.title}>
-                    {item.children.map(child => (
-                      <li className="flex" key={child.href}>
-                        <NavigationItem
-                          key={child.href}
-                          title={child.title}
-                          icon={child.icon}
-                          href={child.href!}
-                          active={pathname === child.href}
-                        />
-                      </li>
-                    ))}
-                  </NavSection>
+                  !item.disabled && (
+                    <NavSection title={item.title} key={item.title}>
+                      {item.children.map(child => {
+                        if (child.disabled === false) {
+                          return (
+                            <NavigationItem
+                              key={child.href}
+                              title={child.title}
+                              icon={child.icon}
+                              href={child.href!}
+                              active={pathname === child.href}
+                            />
+                          );
+                        }
+                      })}
+                    </NavSection>
+                  )
                 ) : (
                   <li className="flex" key={item.href}>
                     <NavigationItem

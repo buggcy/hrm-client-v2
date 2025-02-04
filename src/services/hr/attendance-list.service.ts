@@ -3,6 +3,8 @@ import {
   AttendanceDistributionStatsApiResponseSchema,
   attendanceListApiResponseSchema,
   AttendanceListStatsApiResponseSchema,
+  AttendanceRequestApiResponse,
+  attendanceRequestAPIResponseSchema,
   AttendanceUseApiResponse,
   attendanceUsersApiResponseSchema,
   userDateAttendanceSchema,
@@ -15,6 +17,11 @@ import {
   AttendanceListStatsApiResponse,
   UserDateAttendance,
 } from '@/types/attendance-list.types';
+
+export interface AttendanceRequestParams {
+  from?: string;
+  to?: string;
+}
 
 export interface AttendanceListParams {
   page?: number;
@@ -139,6 +146,60 @@ export const getAttendanceList = async (
     console.error('Error fetching employee list:', error);
     throw error;
   }
+};
+
+export const getAttendanceRequestList = async (
+  params: AttendanceRequestParams = {},
+): Promise<AttendanceRequestApiResponse> => {
+  const defaultParams: AttendanceRequestParams = {
+    from: '',
+    to: '',
+  };
+
+  const mergedParams = {
+    ...defaultParams,
+    ...params,
+  };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(
+      `/getAttendanceRequestsForHr?${queryParams.toString()}`,
+    );
+    return schemaParse(attendanceRequestAPIResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching attendance requests:', error);
+    throw error;
+  }
+};
+
+export const acceptAttendanceRequest = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/approveAttendanceRequest/${id}`,
+  );
+  return { message };
+};
+
+export const rejectAttendanceRequest = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/rejectAttendanceRequest/${id}`,
+  );
+  return { message };
 };
 
 export const getAttendanceListStats = async ({

@@ -3,8 +3,11 @@
 import { useEffect, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
+// import { useMutation } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 
+// import { toast } from '@/components/ui/use-toast';
+// import { getPermissions } from '@/services/auth.service';
 import { AuthStoreType } from '@/stores/auth';
 
 import { useStores } from './Store.Provider';

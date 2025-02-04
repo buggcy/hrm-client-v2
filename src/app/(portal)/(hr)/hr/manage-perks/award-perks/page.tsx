@@ -90,10 +90,6 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
     }
   }, [employeePerks]);
 
-  useEffect(() => {
-    console.log(perkData);
-  }, [perkData]);
-
   const handlePerkDataIncrementChange = (id: string, value: number) => {
     setPerkData(prevState => {
       if (!prevState || !prevState.data) return prevState;

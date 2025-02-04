@@ -27,8 +27,9 @@ const SalaryIncrement = ({ employeeId }: SalaryIncrementProps) => {
       <div className="flex w-full justify-end">
         <Button
           variant="default"
-          className="mb-2 h-9 rounded-md px-3 sm:h-10 sm:px-4"
+          className="mb-2"
           onClick={handleAddDialogOpen}
+          size={'sm'}
         >
           Add Salary Increment
         </Button>

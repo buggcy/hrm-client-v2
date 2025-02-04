@@ -25,6 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { useTypesQuery } from '@/hooks/types.hook';
 
@@ -315,14 +321,22 @@ export function EduEpxDialog({
                 Document <span className="text-red-600">*</span>
               </Label>
               {doc && (
-                <a
-                  href={getPreviewUrl(doc)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary/80 hover:text-primary"
-                >
-                  <Eye className="size-4" />
-                </a>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Eye
+                          className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                          onClick={() =>
+                            doc && window.open(getPreviewUrl(doc), '_blank')
+                          }
+                          size={18}
+                        />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>Click to Preview Document</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
             <Input

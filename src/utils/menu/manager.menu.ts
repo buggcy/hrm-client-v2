@@ -1,16 +1,21 @@
 import {
+  AlertTriangle,
   BadgeCheck,
   Banknote,
+  Building,
   CalendarCog,
   CalendarDays,
   ClipboardList,
   Gift,
   Home,
+  Layers2Icon,
   Megaphone,
   Settings,
   ShieldCheck,
+  ThumbsUp,
   UserCog,
   UserCog2,
+  UserMinus,
   UserPlus,
 } from 'lucide-react';
 
@@ -36,6 +41,10 @@ export const managerMenu = (accessPermissions: Permission[]): MenuItem[] => {
         accessPermissions.some(
           permission =>
             permission.name === 'accessAddEmployee' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessResigned' && permission.allowed,
         )
       ),
       children: [
@@ -55,6 +64,49 @@ export const managerMenu = (accessPermissions: Permission[]): MenuItem[] => {
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessAddEmployee' && permission.allowed,
+          ),
+        },
+        {
+          title: 'Resigned/Fired',
+          icon: UserMinus,
+          href: '/manager/resigned-fired',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessResigned' && permission.allowed,
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Manage Departments & Projects',
+      icon: UserCog2,
+      disabled: !(
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessProjects' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessDepartments' && permission.allowed,
+        )
+      ),
+      children: [
+        {
+          title: 'Projects',
+          icon: Layers2Icon,
+          href: '/manager/manage-projects',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessProjects' && permission.allowed,
+          ),
+        },
+        {
+          title: 'Departments',
+          icon: Building,
+          href: '/manager/manage-department',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessDepartments' && permission.allowed,
           ),
         },
       ],
@@ -216,7 +268,40 @@ export const managerMenu = (accessPermissions: Permission[]): MenuItem[] => {
         },
       ],
     },
-
+    {
+      title: 'Manage Complaint & Feedback',
+      icon: UserCog2,
+      disabled: !(
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessComplaints' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessFeedbacks' && permission.allowed,
+        )
+      ),
+      children: [
+        {
+          title: 'Complaints',
+          icon: AlertTriangle,
+          href: '/manager/manage-complaints',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessComplaints' && permission.allowed,
+          ),
+        },
+        {
+          title: 'Feedbacks',
+          icon: ThumbsUp,
+          href: '/manager/manage-feedbacks',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessFeedbacks' && permission.allowed,
+          ),
+        },
+      ],
+    },
     {
       title: 'Manage Permissions',
       icon: ShieldCheck,

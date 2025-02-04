@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
 import {
   Table,
@@ -55,43 +56,41 @@ const PagePermissionsTab = ({
         </TabsList>
         <div className="w-full">
           {pagePermissions?.data?.map(role => (
-            <TabsContent
-              key={role._id}
-              value={role._id}
-              className="size-full max-h-[500px] overflow-y-auto"
-            >
-              <Table className="max-h-[500px] w-full overflow-y-auto">
-                <TableHead className="w-full">
-                  <TableRow className="flex flex-row justify-between">
-                    <TableHeader className="w-1/2">Permission</TableHeader>
-                    <TableHeader className="-mr-20 w-1/2 text-right">
-                      Allowed
-                    </TableHeader>
-                  </TableRow>
-                </TableHead>
-                <TableBody className="max-h-[500px] overflow-y-auto">
-                  {role.permissions.map(permission => (
-                    <TableRow key={permission._id}>
-                      <TableCell>
-                        {formatCamelCase(permission.name).slice(7)}
-                      </TableCell>
-                      <TableCell>
-                        <Switch
-                          checked={permission.allowed}
-                          onCheckedChange={checked => {
-                            handleCheckChange(
-                              role.roleId,
-                              permission.name,
-                              checked,
-                            );
-                          }}
-                          disabled={loading}
-                        />
-                      </TableCell>
+            <TabsContent key={role._id} value={role._id}>
+              <ScrollArea className="h-[500px] w-full">
+                <Table className="w-full">
+                  <TableHead className="w-full">
+                    <TableRow className="flex flex-row justify-between">
+                      <TableHeader className="w-1/2">Permission</TableHeader>
+                      <TableHeader className="-mr-20 w-1/2 text-right">
+                        Allowed
+                      </TableHeader>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody className="max-h-[500px] overflow-y-auto">
+                    {role.permissions.map(permission => (
+                      <TableRow key={permission._id}>
+                        <TableCell>
+                          {formatCamelCase(permission.name).slice(7)}
+                        </TableCell>
+                        <TableCell>
+                          <Switch
+                            checked={permission.allowed}
+                            onCheckedChange={checked => {
+                              handleCheckChange(
+                                role.roleId,
+                                permission.name,
+                                checked,
+                              );
+                            }}
+                            disabled={loading}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
             </TabsContent>
           ))}
         </div>

@@ -119,19 +119,26 @@ export const MobileHeader = () => {
                 ) : (
                   filteredMenuItems.map(item =>
                     item.children ? (
-                      <NavSection title={item.title} key={item.title}>
-                        {item.children.map(child => (
-                          <li className="flex" key={child.href}>
-                            <MobileNavigationItem
-                              title={child.title}
-                              icon={child.icon}
-                              href={child.href!}
-                              active={pathname === child.href}
-                              onClick={onClose}
-                            />
-                          </li>
-                        ))}
-                      </NavSection>
+                      !item.disabled && (
+                        <NavSection title={item.title} key={item.title}>
+                          {item.children.map(child => {
+                            if (!child.disabled) {
+                              return (
+                                <li className="flex" key={child.href}>
+                                  <MobileNavigationItem
+                                    title={child.title}
+                                    icon={child.icon}
+                                    href={child.href!}
+                                    active={pathname === child.href}
+                                    onClick={onClose}
+                                  />
+                                </li>
+                              );
+                            }
+                            return null;
+                          })}
+                        </NavSection>
+                      )
                     ) : (
                       <li className="flex" key={item.href}>
                         <MobileNavigationItem

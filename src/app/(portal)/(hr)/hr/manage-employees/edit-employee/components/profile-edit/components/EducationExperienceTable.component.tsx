@@ -17,6 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -232,24 +233,27 @@ const EducationExperienceTable = ({
   }, [deleteEducationExperienceData, deletedItems, empId]);
 
   return (
-    <div className="flex flex-col items-end justify-between gap-4">
-      <Button
-        className="w-fit"
-        onClick={handleDialogOpen}
-        disabled={isAdding || isDeleting || isUpdating}
-      >
-        Add More
-      </Button>
-      <div className="max-h-[600px] w-full overflow-y-auto">
-        {tableData && tableData?.length > 0 ? (
+    <>
+      <div className="flex flex-col items-end justify-between gap-4">
+        <Button
+          className="w-fit"
+          size={'sm'}
+          onClick={handleDialogOpen}
+          disabled={isAdding || isDeleting || isUpdating}
+        >
+          Add More
+        </Button>
+      </div>
+      {tableData && tableData?.length > 0 ? (
+        <ScrollArea className="mt-2 w-full whitespace-nowrap rounded-md border md:w-[1070px]">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Type</TableHead>
                 <TableHead className="text-center">Start Date</TableHead>
                 <TableHead className="text-center">End Date</TableHead>
-                <TableHead className="text-center">Company</TableHead>
-                <TableHead className="text-center">Position</TableHead>
+                <TableHead className="text-center">Company/Institute</TableHead>
+                <TableHead className="text-center">Position/Degree</TableHead>
                 <TableHead className="text-center">Reference Number</TableHead>
                 <TableHead className="text-center">Document Type</TableHead>
                 <TableHead className="text-center">Document</TableHead>
@@ -358,13 +362,14 @@ const EducationExperienceTable = ({
               userId={empId || ''}
             />
           </Table>
-        ) : (
-          <p className="text-center text-gray-500 dark:text-gray-300">
-            No Education & Experience Provided!
-          </p>
-        )}
-      </div>
-    </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      ) : (
+        <p className="text-center text-gray-500 dark:text-gray-300">
+          No Education & Experience Provided!
+        </p>
+      )}
+    </>
   );
 };
 
