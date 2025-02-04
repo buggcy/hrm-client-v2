@@ -22,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -141,7 +142,9 @@ const AdditionalDocumentsTable = ({
 
   return (
     <div className="flex flex-col items-end justify-between gap-4">
-      <Button onClick={handleDialogOpen}>Add More</Button>
+      <Button onClick={handleDialogOpen} size={'sm'}>
+        Add More
+      </Button>
       <AdditionalDocumentDialog
         open={dialogOpen}
         onOpenChange={handleDialogClose}
@@ -151,64 +154,65 @@ const AdditionalDocumentsTable = ({
 
       <div className="max-h-[600px] w-full overflow-y-auto">
         {tableData && tableData?.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">#</TableHead>
-                <TableHead className="text-center">Document</TableHead>
-                <TableHead className="text-center">View</TableHead>
-                <TableHead className="text-center">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tableData?.map(item =>
-                item.Document.map((fileURL, i) => {
-                  const segments = fileURL.split('/');
-                  const fileNameWithExtension = segments.pop();
-                  const [fileName = 'unknown', fileExtension = ''] =
-                    fileNameWithExtension?.split('.') || [];
+          <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center">#</TableHead>
+                  <TableHead className="text-center">Document</TableHead>
+                  <TableHead className="text-center">View</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tableData?.map(item =>
+                  item.Document.map((fileURL, i) => {
+                    const segments = fileURL.split('/');
+                    const fileNameWithExtension = segments.pop();
+                    const [fileName = 'unknown', fileExtension = ''] =
+                      fileNameWithExtension?.split('.') || [];
 
-                  const isImageFile = (extension: string) => {
-                    return ['jpg', 'png', 'gif', 'jpeg'].includes(
-                      extension.toLowerCase(),
-                    );
-                  };
+                    const isImageFile = (extension: string) => {
+                      return ['jpg', 'png', 'gif', 'jpeg'].includes(
+                        extension.toLowerCase(),
+                      );
+                    };
 
-                  const fileIcon = (extension: string) => {
-                    switch (extension.toLowerCase()) {
-                      case 'pdf':
-                      case 'docx':
-                        return (
-                          <FileText className="size-6 font-normal text-gray-400" />
-                        );
-                      default:
-                        return (
-                          <FileIcon className="size-6 font-normal text-gray-400" />
-                        );
-                    }
-                  };
+                    const fileIcon = (extension: string) => {
+                      switch (extension.toLowerCase()) {
+                        case 'pdf':
+                        case 'docx':
+                          return (
+                            <FileText className="size-6 font-normal text-gray-400" />
+                          );
+                        default:
+                          return (
+                            <FileIcon className="size-6 font-normal text-gray-400" />
+                          );
+                      }
+                    };
 
-                  return (
-                    <TableRow key={`${item._id}-${i}`}>
-                      <TableCell className="text-center font-medium capitalize">
-                        {i + 1}
-                      </TableCell>
-                      <TableCell className="text-center font-medium capitalize">
-                        <div className="flex items-center space-x-2">
-                          <Avatar className="size-12 overflow-hidden rounded-full border border-gray-300 p-1">
-                            {isImageFile(fileExtension) ? (
-                              <AvatarImage
-                                src={fileURL}
-                                alt={`${fileName}`}
-                                className="size-full rounded-full object-cover"
-                              />
-                            ) : (
-                              <AvatarFallback className="text-xl uppercase">
-                                {fileIcon(fileExtension)}
-                              </AvatarFallback>
-                            )}
-                          </Avatar>
-
+                    return (
+                      <TableRow key={`${item._id}-${i}`}>
+                        <TableCell className="text-center font-medium capitalize">
+                          {i + 1}
+                        </TableCell>
+                        <TableCell className="text-center font-medium capitalize">
+                          <div className="flex items-center space-x-2">
+                            <Avatar className="size-12 overflow-hidden rounded-full border border-gray-300 p-1">
+                              {isImageFile(fileExtension) ? (
+                                <AvatarImage
+                                  src={fileURL}
+                                  alt={`${fileName}`}
+                                  className="size-full rounded-full object-cover"
+                                />
+                              ) : (
+                                <AvatarFallback className="text-xl uppercase">
+                                  {fileIcon(fileExtension)}
+                                </AvatarFallback>
+                              )}
+                            </Avatar>
+                          </div>
                           <div className="flex flex-col">
                             <span className="max-w-[500px] truncate font-medium capitalize">
                               {decodeURIComponent(fileName)}
@@ -217,55 +221,56 @@ const AdditionalDocumentsTable = ({
                               {fileExtension.toUpperCase()}
                             </span>
                           </div>
-                        </div>
-                      </TableCell>
+                        </TableCell>
 
-                      <TableCell className="text-center">
-                        <Link href={fileURL}>
-                          <Button
-                            variant="outline"
-                            disabled={isAdding || isDeleting}
-                          >
-                            View
-                          </Button>
-                        </Link>
-                      </TableCell>
-                      <TableCell className="p-0 text-center">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild className="mx-auto">
+                        <TableCell className="text-center">
+                          <Link href={fileURL}>
                             <Button
-                              variant="ghost"
-                              className="flex size-8 p-0 data-[state=open]:bg-muted"
-                            >
-                              <MoreHorizontal className="size-4" />
-                              <span className="sr-only">Open menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="w-[150px]"
-                          >
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onSelect={() => {
-                                setDeletedItems([fileURL]);
-                              }}
-                              className="text-red-600"
+                              variant="outline"
                               disabled={isAdding || isDeleting}
                             >
-                              <Trash2 className="mr-2 size-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  );
-                }),
-              )}
-            </TableBody>
-          </Table>
+                              View
+                            </Button>
+                          </Link>
+                        </TableCell>
+                        <TableCell className="p-0 text-center">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild className="mx-auto">
+                              <Button
+                                variant="ghost"
+                                className="flex size-8 p-0 data-[state=open]:bg-muted"
+                              >
+                                <MoreHorizontal className="size-4" />
+                                <span className="sr-only">Open menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-[150px]"
+                            >
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onSelect={() => {
+                                  setDeletedItems([fileURL]);
+                                }}
+                                className="text-red-600"
+                                disabled={isAdding || isDeleting}
+                              >
+                                <Trash2 className="mr-2 size-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }),
+                )}
+              </TableBody>
+            </Table>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         ) : (
           <p className="text-center text-gray-500 dark:text-gray-300">
             No Additional Documents Provided!

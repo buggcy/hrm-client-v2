@@ -114,7 +114,6 @@ export function AddPerksDialog({
 
   const onSubmit = (data: AddPerkFormData) => {
     if (type === 'edit') {
-      console.log('editData');
       const id: string = editData?._id || '';
       updatePerkData({
         id: id,
@@ -124,7 +123,6 @@ export function AddPerksDialog({
         salaryDecrement: data.salaryDecrement,
       });
     } else {
-      console.log('addData');
       addPerkData(data);
     }
   };

@@ -18,7 +18,6 @@ export const policyService = {
     const response = await baseAPI.get<PolicyApiResponse>(
       `/policy?category=${type}`,
     );
-    console.log('fetchPolicies', response);
     return policyApiResponseSchema.parse(response.data);
   },
 

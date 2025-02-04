@@ -113,7 +113,6 @@ const Address = ({ data, empId }: EmployeeAddressProps) => {
         full: data.full || '',
       },
     });
-    console.log(data);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">

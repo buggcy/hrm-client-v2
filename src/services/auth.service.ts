@@ -2,7 +2,8 @@ import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 
 import { queryClient } from '@/libs';
-import { baseAPI } from '@/utils';
+import { roleSchema, UserPermissions } from '@/libs/validations/auth';
+import { baseAPI, schemaParse } from '@/utils';
 
 import { VerifyCodeResponseType } from '@/types/auth.types';
 import { UserPermission } from '@/types/user-permissions.types';
@@ -121,3 +122,8 @@ export function logout(): Promise<void> {
     resolve();
   });
 }
+
+export const getPermissions = async (id: string): Promise<UserPermissions> => {
+  const res = await baseAPI.get(`/getPermissions/${id}`);
+  return schemaParse(roleSchema)(res.data);
+};
