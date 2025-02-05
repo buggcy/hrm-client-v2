@@ -8,12 +8,20 @@ const paginationSchema = z.object({
   totalCount: z.number(),
   totalPages: z.number(),
 });
+const depIdSchema = z.array(
+  z.object({
+    _id: z.string(),
+    departmentName: z.string(),
+  }),
+);
 
 const empIdSchema = z.object({
   _id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
   Avatar: z.string().optional(),
+  Designation: z.string().optional(),
+  dep_ID: depIdSchema.optional(),
 });
 
 const payrollIncrementSchema = z.object({

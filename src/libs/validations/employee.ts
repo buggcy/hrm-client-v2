@@ -48,7 +48,15 @@ const positionSchema = z.object({
   _id: z.string(),
   timestamp: z.string(),
 });
+const depIdSchema = z.array(
+  z.object({
+    _id: z.string(),
+    departmentName: z.string(),
+  }),
+);
 const emp_Id_Schema = z.object({
+  Designation: z.string().optional(),
+  dep_ID: depIdSchema.optional(),
   Avatar: z.string().optional(),
   firstName: z.string(),
   lastName: z.string(),

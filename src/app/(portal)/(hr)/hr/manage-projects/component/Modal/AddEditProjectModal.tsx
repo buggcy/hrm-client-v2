@@ -39,6 +39,7 @@ import {
   addProject,
   editProject,
 } from '@/services/hr/project-department.service';
+import { formatedDate } from '@/utils';
 import techStack from '@/utils/tectStack.utils';
 
 import { MessageErrorResponse } from '@/types';
@@ -310,17 +311,13 @@ const AddEditProjectModal = ({
         name: data?.name,
         title: data?.title,
         description: data?.description,
-        startDate: data?.startDate
-          ? new Date(data.startDate).toISOString().split('T')[0]
-          : '',
+        startDate: data?.startDate ? formatedDate(data?.startDate) : '',
         endDate: isContinue
           ? undefined
           : data?.endDate
-            ? new Date(data.endDate).toISOString().split('T')[0]
+            ? formatedDate(data?.endDate)
             : '',
-        deadline: data?.deadline
-          ? new Date(data.deadline).toISOString().split('T')[0]
-          : '',
+        deadline: data?.deadline ? formatedDate(data?.deadline) : '',
         isContinue,
         techStack: data?.techStack,
         teamMembers: data?.teamMembers,
@@ -339,15 +336,9 @@ const AddEditProjectModal = ({
         name: data?.name,
         title: data?.title,
         description: data?.description,
-        startDate: data?.startDate
-          ? new Date(data.startDate).toISOString().split('T')[0]
-          : '',
-        endDate: data?.endDate
-          ? new Date(data.endDate).toISOString().split('T')[0]
-          : '',
-        deadline: data?.deadline
-          ? new Date(data.deadline).toISOString().split('T')[0]
-          : '',
+        startDate: data?.startDate ? formatedDate(data?.startDate) : '',
+        endDate: data?.endDate ? formatedDate(data?.endDate) : '',
+        deadline: data?.deadline ? formatedDate(data?.deadline) : '',
         ...(data?.newLead ? { teamLead: data?.newLead } : {}),
         ...(data?.status ? { status: data?.status } : {}),
         ...(data?.newTech && data?.newTech?.length > 0

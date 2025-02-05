@@ -101,11 +101,11 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
     day: '2-digit',
   });
 
-  const { authStore, employeeStore } = useStores() as {
+  const { employeeStore } = useStores() as {
     authStore: AuthStoreType;
     employeeStore: EmployeeStoreType;
   };
-  const { user } = authStore;
+
   const { setRefetchEmployeeList } = employeeStore;
 
   const handleViewPayslip = () => {
@@ -128,14 +128,19 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
     const rootElement = newWindow.document.getElementById('payslip-root');
     if (rootElement) {
       const root = createRoot(rootElement);
+      const departmentNames =
+        data?.Emp_ID?.dep_ID &&
+        data?.Emp_ID?.dep_ID
+          .map(dept => dept.departmentName.replace(' Department', ''))
+          .join(', ');
 
       root.render(
         <Payslip
           payslipDate={data.Date ? formatDate(data.Date) : 'N/A'}
           date={today || ''}
           employeeName={data.Employee_Name || 'N/A'}
-          employeeDesignation={user?.Designation || 'N/A'}
-          employeeDepartment={'N/A'}
+          employeeDesignation={data?.Emp_ID?.Designation || 'N/A'}
+          employeeDepartment={departmentNames || 'N/A'}
           basicSalary={data.Basic_Salary || 0}
           absentDeduction={data.Absent_Deduction || 0}
           incentivePay={0}
