@@ -47,7 +47,11 @@ export function PerkRecordChart({ data }: PerkRecordChartProps) {
     },
   ];
 
-  const totalVisitors = data?.totalRecords || 0;
+  const totalVisitors =
+    (data?.totalApprovedPerks ?? 0) +
+      (data?.totalPendingPerks ?? 0) +
+      (data?.totalRejectedPerks ?? 0) +
+      (data?.totalAvailablePerks ?? 0) || 0;
 
   return (
     <ChartContainer
@@ -76,18 +80,14 @@ export function PerkRecordChart({ data }: PerkRecordChartProps) {
                       y={viewBox.cy || 0}
                       className="fill-foreground text-2xl font-bold"
                     >
-                      {isNaN(totalVisitors - (data?.totalAvailablePerks || 0))
-                        ? 0
-                        : (
-                            totalVisitors - (data?.totalAvailablePerks || 0)
-                          )?.toLocaleString()}
+                      {totalVisitors}
                     </tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy || 0) + 16}
                       className="fill-muted-foreground"
                     >
-                      /{totalVisitors?.toLocaleString()}
+                      Total
                     </tspan>
                   </text>
                 );
