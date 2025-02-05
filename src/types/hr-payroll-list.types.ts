@@ -11,12 +11,17 @@ export interface Increments {
   date: string;
   _id: string;
 }
-
+export interface Department {
+  _id: string;
+  departmentName: string;
+}
 export interface EmployeeDetails {
   _id: string;
   firstName: string;
   lastName: string;
   Avatar?: string;
+  Designation?: string;
+  dep_ID?: Department[];
 }
 
 export interface Payroll {

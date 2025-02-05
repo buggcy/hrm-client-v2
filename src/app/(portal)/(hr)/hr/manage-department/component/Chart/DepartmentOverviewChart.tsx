@@ -70,7 +70,7 @@ export function DepartmentOverviewChat({ chartData }: ChartProps) {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={value => value.slice(0, 6)}
+                tickFormatter={value => value}
               />
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />
               <ChartLegend content={<ChartLegendContent />} />

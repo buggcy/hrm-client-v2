@@ -10,6 +10,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { EmployeeById } from '@/types/employee.types';
 
@@ -154,11 +160,21 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
                 {user?.Address?.zip || '-'}
               </dd>
             </div>
+
             <div className="flex justify-between gap-4">
               <dt className="text-nowrap font-medium">Full Address</dt>
-              <dd className="truncate text-right leading-relaxed text-gray-600 dark:text-gray-300">
-                {user?.Address?.full || '-'}
-              </dd>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <dd className="truncate text-right leading-relaxed text-gray-600 dark:text-gray-300">
+                      {user?.Address?.full || '-'}
+                    </dd>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {user?.Address?.full || 'No address available'}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </dl>
         </CardContent>

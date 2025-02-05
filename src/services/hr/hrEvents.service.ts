@@ -1,4 +1,3 @@
-import { AddHrEventsFormData } from '@/app/(portal)/(hr)/hr/manage-events/components/AddHrEventsDialog';
 import { AddHrEventsFormData as EditHrEventsFormData } from '@/app/(portal)/(hr)/hr/manage-events/components/EditHrEventsDialog';
 import {
   HrEventsApiResponse,
@@ -77,7 +76,15 @@ export const addHrEventsData = async ({
   EventType,
   status,
   hrId,
-}: AddHrEventsFormData): Promise<SuccessMessageResponse> => {
+}: {
+  EventTitle: string;
+  Description: string;
+  Start_Date: string;
+  End_Date: string;
+  EventType: string;
+  status: string;
+  hrId: string;
+}): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.post(`/events`, {
     Event_Name: EventTitle,
     Event_Start: Start_Date,

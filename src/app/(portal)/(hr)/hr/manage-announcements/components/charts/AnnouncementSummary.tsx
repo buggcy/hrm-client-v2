@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
@@ -36,6 +38,10 @@ interface EmployeeProductivityChartProps {
 export function AnnouncementSummaryChart({
   data,
 }: EmployeeProductivityChartProps) {
+  const chartData =
+    data && data?.length === 1
+      ? [...data, { ...data[0], month: `${data[0].month} ` }]
+      : data;
   return (
     <Card className="col-span-1">
       <CardHeader>
@@ -48,7 +54,7 @@ export function AnnouncementSummaryChart({
         >
           <AreaChart
             accessibilityLayer
-            data={data}
+            data={chartData}
             margin={{
               left: 12,
               right: 12,
@@ -87,6 +93,7 @@ export function AnnouncementSummaryChart({
               fillOpacity={0.4}
               stroke="var(--color-high)"
             />
+            <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>
         </ChartContainer>
       </CardContent>

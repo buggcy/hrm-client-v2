@@ -34,6 +34,7 @@ import { useStores } from '@/providers/Store.Provider';
 import { addHrEventsData } from '@/services/hr/hrEvents.service';
 import { AuthStoreType } from '@/stores/auth';
 import { HrEventsStoreType } from '@/stores/hr/hrEvents';
+import { formatedDate } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -117,6 +118,8 @@ export function HrEventsDialogDemo({
   const onSubmit = (data: AddHrEventsFormData) => {
     const payload = {
       ...data,
+      Start_Date: data?.Start_Date ? formatedDate(data?.Start_Date) : '',
+      End_Date: data?.End_Date ? formatedDate(data?.End_Date) : '',
       hrId: user ? user.id : '',
     };
 

@@ -406,13 +406,7 @@ export default function HrEventsCalendar() {
     id: event._id,
     title: event.Event_Name || 'Untitled Event',
     start: event.Event_Start ? new Date(event.Event_Start) : new Date(),
-    end: event.Event_End
-      ? new Date(
-          new Date(event.Event_End).setDate(
-            new Date(event.Event_End).getDate() + 1,
-          ),
-        )
-      : new Date(),
+    end: event.Event_End ? new Date(event.Event_End) : new Date(),
     Event_Name: event.Event_Name,
     Event_Start: event.Event_Start,
     Event_End: event.Event_End,
