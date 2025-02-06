@@ -136,23 +136,26 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
 
       root.render(
         <Payslip
-          payslipDate={data.Date ? formatDate(data.Date) : 'N/A'}
+          payslipDate={payslipData.Date ? formatDate(payslipData.Date) : 'N/A'}
           date={today || ''}
-          employeeName={data.Employee_Name || 'N/A'}
+          employeeName={payslipData.Employee_Name || 'N/A'}
           employeeDesignation={data?.Emp_ID?.Designation || 'N/A'}
           employeeDepartment={departmentNames || 'N/A'}
-          basicSalary={data.Basic_Salary || 0}
-          absentDeduction={data.Absent_Deduction || 0}
-          incentivePay={0}
-          professionalTax={0}
-          houseRentAllowance={0}
-          loan={0}
-          mealAllowance={0}
-          totalEarnings={0}
-          totalAfterTax={data.Tax_Amount || 0}
-          salaryDeduction={data.Total_SalaryDeducton || 0}
-          paymentStatus={data.Pay_Status || 'N/A'}
-          {...payslipData}
+          basicSalary={payslipData.Basic_Salary || 0}
+          absentDeduction={payslipData.Absent_Deduction || 0}
+          totalEarnings={payslipData.Net_Salary || 1}
+          totalAfterTax={
+            (payslipData.Net_Salary || 0) - (payslipData.Tax_Amount || 0)
+          }
+          salaryDeduction={payslipData.Total_SalaryDeducton || 0}
+          paymentStatus={payslipData.Pay_Status || 'N/A'}
+          totalIncrements={payslipData.totalIncrements}
+          totalDecrements={payslipData.totalDecrements}
+          totalPerkIncrement={payslipData.totalPerkIncrement || 0}
+          totalPerkDecrement={payslipData.totalPerkDecrement || 0}
+          casualLeaves={payslipData.casualLeaves || 0}
+          sickLeaves={payslipData.sickLeaves || 0}
+          annualLeaves={payslipData.annualLeaves || 0}
         />,
       );
     } else {

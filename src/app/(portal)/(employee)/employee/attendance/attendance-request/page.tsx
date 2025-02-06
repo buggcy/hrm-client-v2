@@ -1,9 +1,8 @@
 'use client';
 
-import { FunctionComponent, Suspense, useEffect, useState } from 'react';
+import { FunctionComponent, Suspense, useState } from 'react';
 
-import { useMutation } from '@tanstack/react-query';
-import { RefreshCw } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import moment from 'moment';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
@@ -17,18 +16,14 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useTodayAttendence } from '@/hooks/attendanceHistory/useAttendanceHistoryList.hook';
-import { getAttendanceHistoryStats } from '@/services/employee/attendance-history.service';
 import { AuthStoreType } from '@/stores/auth';
-import { AttendanceHistoryStoreType } from '@/stores/employee/attendance-history';
-import { formatedDate } from '@/utils';
 
 import AttendanceCards from './components/AttendanceCards';
-import AttendanceHistoryTable from './components/AttendanceHistoryTable.component';
-import { RefreshAttendanceDialog } from './components/RefreshAttendanceDialog';
+import AttendanceRequestTable from './components/AttendanceRequestTable.component';
+import { RequestAttendanceDialog } from './components/RequestAttendanceDialog.component';
 
 interface EmployeeDashboardProps {}
 
@@ -37,11 +32,6 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     useTimeRange();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
-  const { attendanceHistoryStore } = useStores() as {
-    attendanceHistoryStore: AttendanceHistoryStoreType;
-  };
-  const { setRefetchAttendanceHistoryList, refetchAttendanceHistoryList } =
-    attendanceHistoryStore;
   const todayDate = moment().format('YYYY-MM-DD');
 
   const { data } = useTodayAttendence(
@@ -49,69 +39,13 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     user?.Tahometer_ID ? todayDate : '',
   );
 
-  const {
-    mutate,
-    isPending,
-    data: attendanceHistoryStats,
-  } = useMutation({
-    mutationFn: ({
-      id,
-      from,
-      to,
-    }: {
-      id: string;
-      from?: string;
-      to?: string;
-    }) =>
-      getAttendanceHistoryStats({
-        id,
-        from,
-        to,
-      }),
-    onError: err => {
-      toast({
-        title: 'Error',
-        description: err?.message || 'Error on fetching stats data!',
-        variant: 'error',
-      });
-    },
-  });
-
-  useEffect(() => {
-    if (user) {
-      mutate({
-        id: user?.Tahometer_ID ? user.Tahometer_ID : '',
-        from: formatedDate(selectedDate?.from),
-        to: formatedDate(selectedDate?.to),
-      });
-    }
-  }, [selectedDate, user, mutate]);
-
-  useEffect(() => {
-    if (refetchAttendanceHistoryList) {
-      mutate({
-        id: user?.Tahometer_ID ? user.Tahometer_ID : '',
-        from: selectedDate?.from?.toISOString(),
-        to: selectedDate?.to?.toISOString(),
-      });
-      setRefetchAttendanceHistoryList(false);
-    }
-  }, [
-    refetchAttendanceHistoryList,
-    selectedDate,
-    user,
-    mutate,
-    setRefetchAttendanceHistoryList,
-  ]);
-
-  const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
-
-  const handleRefreshDialogOpen = () => {
-    setRefreshDialogOpen(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
   };
 
-  const handleRefreshDialogClose = () => {
-    setRefreshDialogOpen(false);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -148,22 +82,23 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
             />
             <Button
               className="flex items-center gap-1"
-              onClick={handleRefreshDialogOpen}
+              onClick={handleDialogOpen}
             >
-              <RefreshCw size={16} />
-              <span className="hidden lg:block">Refresh Attendance</span>
+              <Plus size={16} />
+              <span className="hidden sm:block">Request Attendance</span>
             </Button>
           </div>
         </Header>
-        <AttendanceCards data={attendanceHistoryStats} isPending={isPending} />
+        <AttendanceCards dates={selectedDate} />
         <Suspense fallback={<div>Loading...</div>}>
-          <AttendanceHistoryTable dates={selectedDate} />
+          <AttendanceRequestTable dates={selectedDate} />
         </Suspense>
       </LayoutWrapper>
-      <RefreshAttendanceDialog
-        open={RefreshDialogOpen}
-        onOpenChange={handleRefreshDialogClose}
-        onCloseChange={handleRefreshDialogClose}
+      <RequestAttendanceDialog
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        onCloseChange={handleDialogClose}
+        type="add"
       />
     </Layout>
   );

@@ -139,6 +139,29 @@ const employeePayrollSchema = z.object({
   __v: z.number().optional(),
   // type: z.literal('employeePayroll').optional(),
   type: z.string().optional(),
+  totalIncrements: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        totalIncrement: z.number(),
+      }),
+    )
+    .optional(),
+  totalDecrements: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        assignedDecrementAmount: z.number(),
+      }),
+    )
+    .optional(),
+  totalPerkIncrement: z.number().optional(),
+  totalPerkDecrement: z.number().optional(),
+  casualLeaves: z.number().optional(),
+  sickLeaves: z.number().optional(),
+  annualLeaves: z.number().optional(),
 });
 
 const hrEventsSchema = z.object({

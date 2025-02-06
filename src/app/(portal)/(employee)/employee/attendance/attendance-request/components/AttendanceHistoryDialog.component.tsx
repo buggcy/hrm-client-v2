@@ -53,7 +53,7 @@ const AttendanceHistoryDialog = ({
   const breaks: AttendanceBreaks[] = data?.breaks;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full sm:max-w-[600px]">
+      <DialogContent>
         <DialogHeader className="mt-2 flex flex-row items-center justify-between">
           <DialogTitle>Attendance Details</DialogTitle>
           <Badge
@@ -72,15 +72,12 @@ const AttendanceHistoryDialog = ({
 
         <div className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
           <div className="flex items-center">
-            <Calendar className="mr-2 size-5 min-h-5 min-w-5" />
+            <Calendar className="mr-2" size={16} />
             <span>Date:</span>
-            <span className="ml-4">
-              {' '}
-              {date ? new Date(date).toDateString() : 'N/A'}
-            </span>
+            <span className="ml-4">{date.toLocaleDateString()}</span>
           </div>
           <div className="flex items-center py-2">
-            <Clock size={16} className="mr-2 size-5 min-h-5 min-w-5" />
+            <Clock size={16} className="mr-2" />
             <span>Total Time:</span>
             <span className="pl-1">{totalTime}</span>
           </div>
@@ -88,7 +85,7 @@ const AttendanceHistoryDialog = ({
             <AlarmClockCheck
               size={16}
               color="hsl(var(--chart-1))"
-              className="mr-2 size-5 min-h-5 min-w-5"
+              className="mr-2"
             />{' '}
             <span>Start Time:</span>
             <span className="ml-4">{startTime}</span>
@@ -97,7 +94,7 @@ const AttendanceHistoryDialog = ({
             <AlarmClockMinus
               size={16}
               color="hsl(var(--chart-3))"
-              className="mr-2 size-5 min-h-5 min-w-5"
+              className="mr-2"
             />
             <span>End Time:</span>
             <span className="ml-4">{endTime}</span>

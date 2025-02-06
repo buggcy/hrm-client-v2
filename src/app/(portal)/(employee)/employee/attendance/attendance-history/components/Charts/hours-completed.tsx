@@ -43,7 +43,7 @@ export function HoursCompletedChart({
       <RadialBarChart
         data={chartData}
         startAngle={90}
-        endAngle={((timeCompleted ?? 0) / 100) * -270}
+        endAngle={90 - ((timeCompleted ?? 0) / 100) * 360}
         innerRadius={60}
         outerRadius={80}
       >
@@ -72,8 +72,11 @@ export function HoursCompletedChart({
                       y={(viewBox.cy || 0) - 20}
                       className="fill-foreground text-base font-bold"
                     >
-                      {timeCompleted?.toLocaleString()}%
+                      {`${Math.min(100, Math.max(0, timeCompleted ?? 0))
+                        .toFixed(1)
+                        .toLocaleString()}%`}
                     </tspan>
+
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy || 0) + 4}

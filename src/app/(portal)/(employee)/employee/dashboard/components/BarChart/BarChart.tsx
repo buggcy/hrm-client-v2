@@ -17,6 +17,7 @@ import { useUserId } from '@/hooks/employee/useUserId';
 export interface ChartData {
   date: string | number | Date;
   Hours: number;
+  totalHours: string;
   status?: string;
   startTime?: string | number | Date;
   endTime?: string | number | Date;
@@ -50,6 +51,7 @@ export function BChart({ from, to }: { from: string; to: string }) {
   const placeholderData: ChartData[] = Array.from({ length: 7 }, (_, i) => ({
     date: (i + 1).toString(),
     Hours: 0,
+    totalHours: '00:00',
     status: '',
     startTime: '',
     endTime: '',
@@ -80,7 +82,7 @@ export function BChart({ from, to }: { from: string; to: string }) {
 
   const currentWeekData =
     chartData && Array.isArray(chartData) ? getCurrentWeekData(chartData) : [];
-  const dataToShow = isMonthlyView
+  const dataToShow: ChartData[] = isMonthlyView
     ? Array.isArray(chartData)
       ? chartData
       : []
@@ -158,7 +160,7 @@ export function BChart({ from, to }: { from: string; to: string }) {
             <Tooltip
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
-                  const { date, Hours, status, startTime, endTime } =
+                  const { date, totalHours, status, startTime, endTime } =
                     payload[0].payload;
                   return (
                     <div className="grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
@@ -176,7 +178,7 @@ export function BChart({ from, to }: { from: string; to: string }) {
                           : 'Invalid date'}
                       </p>
                       <p>
-                        <strong>Hours:</strong> {Hours}
+                        <strong>Hours:</strong> {totalHours}
                       </p>
                       <p>
                         <strong>Status:</strong> {status}

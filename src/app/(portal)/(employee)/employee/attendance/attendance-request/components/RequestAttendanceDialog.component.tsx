@@ -24,7 +24,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { AttendanceRequestType } from '@/libs/validations/attendance-history';
-import { requestAttendance } from '@/services/employee/attendance-history.service';
+import { requestAttendance } from '@/services/employee/attendance-request.service';
 import { AuthStoreType } from '@/stores/auth';
 import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
 

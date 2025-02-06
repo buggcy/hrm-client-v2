@@ -1,7 +1,9 @@
-import { AddPerkFormData } from '@/app/(portal)/(hr)/hr/manage-perks/add-perks/components/AddPerksDialog';
+import { AddPerkFormData } from '@/app/(portal)/(hr)/hr/manage-perks/add-perks/components/AddPerksForm';
 import {
   HrEmployeeAllPerksApiResponse,
   HrEmployeeAllPerksApiResponseSchema,
+  HrPerkListApiResponse,
+  hrperklistApiResponseSchema,
   HrPerkRecordApiResponse,
   hrPerkRecordApiResponseSchema,
   HrPerkRequestsApiResponseSchema,
@@ -27,6 +29,38 @@ export interface HrPerkRequestsParams {
   from?: string;
   to?: string;
 }
+
+export interface HrPerkRequestsTableParams {
+  page?: number;
+  limit?: number;
+  from?: string;
+  to?: string;
+  status?: string[];
+  query?: string;
+}
+
+export const getHrDataTablePerksRequest = async (
+  params: HrPerkRequestsTableParams = {},
+): Promise<HrPerkListApiResponse> => {
+  const defaultParams: HrPerkRequestsTableParams = {
+    page: 1,
+    limit: 5,
+    from: '',
+    to: '',
+    status: [],
+    query: '',
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  try {
+    const response = await baseAPI.post(`/v2/hr/perks`, mergedParams);
+    return schemaParse(hrperklistApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching perks and benefits list:', error);
+    throw error;
+  }
+};
 
 export const getHrPerksList = async (
   params: HrPerksListParams = {},
@@ -201,6 +235,9 @@ export const approvePerkRequest = async ({
   employeeId: string;
   perkId: string;
 }): Promise<SuccessMessageResponse> => {
+  console.log('id', id);
+  console.log('employeeId', employeeId);
+  console.log('perkId', perkId);
   const { message }: SuccessMessageResponse = await baseAPI.put(
     `/hr/employee/${employeeId}/perks/${perkId}/perk-requests/${id}/approve`,
   );

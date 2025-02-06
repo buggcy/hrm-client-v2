@@ -124,7 +124,10 @@ export function AttendanceDialog({
     resolver: zodResolver(addAttendanceSchema),
     defaultValues: {
       employee: type === 'edit' ? data?.user.Tahometer_ID : '',
-      date: type === 'edit' && data?.date ? new Date(data.date) : new Date(),
+      date:
+        type === 'edit' && data?.date
+          ? new Date(data.date)
+          : new Date(new Date().setDate(new Date().getDate() - 1)),
       inTime:
         type === 'edit' && data?.Start_Date
           ? formatUTCToLocalTime(data.Start_Date)
@@ -319,7 +322,10 @@ export function AttendanceDialog({
                     onDateChange={field.onChange}
                     className="h-auto"
                     disabled={date =>
-                      date > new Date() || date < new Date('1900-01-01')
+                      date >=
+                        new Date(
+                          new Date().setDate(new Date().getDate() - 1) + 1,
+                        ) || date < new Date('1900-01-01')
                     }
                   />
                 )}

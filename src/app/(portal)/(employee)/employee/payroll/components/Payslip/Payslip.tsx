@@ -12,15 +12,25 @@ interface PayslipProps {
   employeeDepartment: string;
   basicSalary: number;
   absentDeduction: number;
-  incentivePay: number;
-  professionalTax: number;
-  houseRentAllowance: number;
-  loan: number;
-  mealAllowance: number;
   totalEarnings: number;
   totalAfterTax: number;
   salaryDeduction: number;
   paymentStatus: string;
+  totalIncrements?: {
+    id: string;
+    name: string;
+    totalIncrement: number;
+  }[];
+  totalDecrements?: {
+    id: string;
+    name: string;
+    assignedDecrementAmount: number;
+  }[];
+  totalPerkIncrement?: number;
+  totalPerkDecrement?: number;
+  casualLeaves?: number;
+  sickLeaves?: number;
+  annualLeaves?: number;
 }
 
 const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
@@ -33,21 +43,23 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       employeeDepartment,
       basicSalary,
       absentDeduction,
-      incentivePay,
-      professionalTax,
-      houseRentAllowance,
-      loan,
-      mealAllowance,
       totalEarnings,
       totalAfterTax,
       salaryDeduction,
       paymentStatus,
+      totalIncrements,
+      totalDecrements,
+      totalPerkIncrement,
+      totalPerkDecrement,
+      casualLeaves,
+      sickLeaves,
+      annualLeaves,
     },
     ref,
   ) => {
     return (
       <div
-        className="relative box-border flex justify-center bg-gray-100 p-10"
+        className="relative box-border flex justify-center bg-gray-100 p-10 font-sans"
         id="print-area"
         ref={ref}
       >
@@ -61,7 +73,14 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
             </div>
             <div className="text-right">
               <p>
-                <strong className="text-blue-600">Date:</strong> {date}
+                <strong
+                  style={{
+                    color: '#30bbf2',
+                  }}
+                >
+                  Date:
+                </strong>{' '}
+                {date}
               </p>
             </div>
           </div>
@@ -91,45 +110,59 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
             <table className="w-full table-auto border-collapse">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="p-2 text-blue-600">Earnings</th>
-                  <th className="p-2 text-blue-600">Amount</th>
-                  <th className="p-2 text-blue-600">Deductions</th>
-                  <th className="p-2 text-blue-600">Amount</th>
+                  <th className="p-2" style={{ color: '#30bbf2' }}>
+                    Earnings
+                  </th>
+                  <th className="p-2" style={{ color: '#30bbf2' }}>
+                    Amount
+                  </th>
+                  <th className="p-2" style={{ color: '#30bbf2' }}>
+                    Deductions
+                  </th>
+                  <th className="p-2" style={{ color: '#30bbf2' }}>
+                    Amount
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="border-b border-gray-300 p-2">Basic</td>
+                  <td className="border-b border-gray-300 p-2">Basic Salary</td>
                   <td className="border-b border-gray-300 p-2">{`Rs ${basicSalary}`}</td>
-                  <td className="border-b border-gray-300 p-2">Late/Absent</td>
+                  <td className="border-b border-gray-300 p-2">
+                    Absent Deduction
+                  </td>
                   <td className="border-b border-gray-300 p-2">{`Rs ${absentDeduction}`}</td>
                 </tr>
-                <tr>
-                  <td className="border-b border-gray-300 p-2">
-                    Incentive Pay
-                  </td>
-                  <td className="border-b border-gray-300 p-2">{`Rs ${incentivePay}`}</td>
-                  <td className="border-b border-gray-300 p-2">
-                    Professional Tax
-                  </td>
-                  <td className="border-b border-gray-300 p-2">{`Rs ${professionalTax}`}</td>
-                </tr>
-                <tr>
-                  <td className="border-b border-gray-300 p-2">
-                    House Rent Allowance
-                  </td>
-                  <td className="border-b border-gray-300 p-2">{`Rs ${houseRentAllowance}`}</td>
-                  <td className="border-b border-gray-300 p-2">Loan</td>
-                  <td className="border-b border-gray-300 p-2">{`Rs ${loan}`}</td>
-                </tr>
-                <tr>
-                  <td className="border-b border-gray-300 p-2">
-                    Meal Allowance
-                  </td>
-                  <td className="border-b border-gray-300 p-2">{`Rs ${mealAllowance}`}</td>
-                </tr>
+                {Array.from({
+                  length: Math.max(
+                    totalIncrements?.length || 0,
+                    totalDecrements?.length || 0,
+                  ),
+                }).map((_, index) => {
+                  const increment = totalIncrements?.[index];
+                  const decrement = totalDecrements?.[index];
+                  return (
+                    <tr key={index}>
+                      <td className="border-b border-gray-300 p-2">
+                        {increment ? increment.name : ''}
+                      </td>
+                      <td className="border-b border-gray-300 p-2">
+                        {increment ? `Rs ${increment.totalIncrement}` : ''}
+                      </td>
+                      <td className="border-b border-gray-300 p-2">
+                        {decrement ? decrement.name : ''}
+                      </td>
+                      <td className="border-b border-gray-300 p-2">
+                        {decrement
+                          ? `Rs ${decrement.assignedDecrementAmount}`
+                          : ''}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
                 <strong>Total Earnings:</strong>
@@ -138,31 +171,42 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
+                <strong>Total Perk Increments:</strong>
+              </p>
+              <p>{`Rs ${totalPerkIncrement || 0}`}</p>
+            </div>
+            <div className="flex justify-between border-t border-gray-300 p-2">
+              <p>
                 <strong>Total Deductions:</strong>
               </p>
-              <p>{`Rs ${salaryDeduction}`}</p>
+              <p>{`Rs ${salaryDeduction + (totalPerkDecrement || 0)}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
                 <strong>Net Salary:</strong>
               </p>
-              <p>{`Rs ${totalAfterTax}`}</p>
+              <p>{`Rs ${totalAfterTax + (totalPerkIncrement || 0) - (totalPerkDecrement || 0)}`}</p>
             </div>
           </div>
           <div className="mb-4 text-center">
-            <p className="text-xl font-bold text-blue-600">
+            <p
+              className="text-xl font-bold"
+              style={{
+                color: '#30bbf2',
+              }}
+            >
               Availed Leaves Record
             </p>
           </div>
           <ul className="list-none p-0">
             <li className="flex justify-between border-b border-gray-300 p-2">
-              <p>Casual Leaves</p> <span>0</span>
+              <p>Casual Leaves</p> <span>{casualLeaves || 0}</span>
             </li>
             <li className="flex justify-between border-b border-gray-300 p-2">
-              <p>Sick Leaves</p> <span>0</span>
+              <p>Sick Leaves</p> <span>{sickLeaves || 0}</span>
             </li>
             <li className="flex justify-between border-b border-gray-300 p-2">
-              <p>Annual Leaves</p> <span>0</span>
+              <p>Annual Leaves</p> <span>{annualLeaves || 0}</span>
             </li>
           </ul>
           <div className="mt-6">

@@ -37,7 +37,6 @@ export function AttendanceHistoryListToolbar<TData extends DataTableType>({
   setFilterValue,
   filterValue,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
   const selectedRowIds: string[] = table
     .getSelectedRowModel()
     .rows.map(row => row.original._id);
@@ -81,12 +80,13 @@ export function AttendanceHistoryListToolbar<TData extends DataTableType>({
           filterValue={filterValue}
         />
 
-        {(isFiltered || searchTerm) && (
+        {(filterValue.length || searchTerm) && (
           <Button
             variant="ghost"
             onClick={() => {
               table.resetColumnFilters();
               onSearch('');
+              setFilterValue([]);
             }}
             className="h-8 px-2 lg:px-3"
           >

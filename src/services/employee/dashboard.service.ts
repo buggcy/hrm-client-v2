@@ -42,10 +42,11 @@ export const fetchMonthlyAttendanceChartData = async (
   const data: Attendence[] = response?.data;
 
   const formattedData: ChartData[] = data.map((item, index) => {
-    const [hours] = item.totalHours.split(':').map(Number);
+    const [hours, minutes] = item.totalHours.split(':').map(Number);
     return {
       name: (index + 1).toString(),
-      Hours: hours,
+      Hours: hours + minutes / 60,
+      totalHours: item.totalHours,
       date: item.date,
       status: item.status,
       startTime: item.startTime,

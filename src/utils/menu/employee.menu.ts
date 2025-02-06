@@ -1,6 +1,7 @@
 import {
   AlertOctagon,
   CalendarClock,
+  ClipboardPlus,
   DollarSignIcon,
   Gift,
   Home,
@@ -32,6 +33,10 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
         accessPermissions.some(
           permission =>
             permission.name === 'accessLeaveHistory' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessAttendanceRequest' && permission.allowed,
         )
       ),
       children: [
@@ -42,6 +47,16 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessAttendanceHistory' &&
+              permission.allowed,
+          ),
+        },
+        {
+          title: 'Attendance Request',
+          icon: ClipboardPlus,
+          href: '/employee/attendance/attendance-request',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessAttendanceRequest' &&
               permission.allowed,
           ),
         },

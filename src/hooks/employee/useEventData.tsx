@@ -12,7 +12,7 @@ export const useEventsData = () => {
     queryKey: ['events'],
     queryFn: fetchCurrentMonthEvents,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
   });
 };
@@ -21,7 +21,7 @@ export const useWeeklyEvents = () => {
     queryKey: ['weeklyEvents'],
     queryFn: fetchWeeklyEvents,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
   });
 };
