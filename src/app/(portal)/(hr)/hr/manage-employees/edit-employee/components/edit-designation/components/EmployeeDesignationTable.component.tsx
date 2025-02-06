@@ -20,6 +20,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -58,7 +59,7 @@ const EmployeeDesignationTable = ({
   }, [refetchData, refetchSalaryIncrementList]);
   return (
     <>
-      {data && data?.length > 0 ? (
+      {data && (
         <ScrollArea className="w-full whitespace-nowrap rounded-md border">
           <Table>
             <TableHeader>
@@ -69,64 +70,81 @@ const EmployeeDesignationTable = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data
-                ?.slice()
-                .reverse()
-                .map(designation => {
-                  const wholeDate = new Date(
-                    designation.timestamp as string | number | Date,
-                  ).toDateString();
-                  const day = wholeDate.split(' ')[0];
-                  const date = wholeDate.split(' ').slice(1).join(' ');
-                  return (
-                    <TableRow
-                      key={designation._id}
-                      className={cn(
-                        designation.isCurrent ? 'bg-foreground/10' : '',
-                      )}
-                    >
-                      <TableCell className="text-center font-medium">
-                        {designation.position}
-                      </TableCell>
-                      <TableCell className="flex justify-center gap-2 text-center">
-                        <Badge variant="outline" className="hidden sm:block">
-                          {day}
-                        </Badge>{' '}
-                        {date}
-                      </TableCell>
-                      <TableCell className="p-0 text-center">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild className="mx-auto">
-                            <Button
-                              variant="ghost"
-                              className="flex size-8 p-0 data-[state=open]:bg-muted"
+              {data?.length > 0 ? (
+                data
+                  ?.slice()
+                  .reverse()
+                  .map(designation => {
+                    const wholeDate = new Date(
+                      designation.timestamp as string | number | Date,
+                    ).toDateString();
+                    const day = wholeDate.split(' ')[0];
+                    const date = wholeDate.split(' ').slice(1).join(' ');
+                    return (
+                      <TableRow
+                        key={designation._id}
+                        className={cn(
+                          designation.isCurrent ? 'bg-foreground/10' : '',
+                        )}
+                      >
+                        <TableCell className="text-center font-medium">
+                          {designation.position}
+                        </TableCell>
+                        <TableCell className="flex justify-center gap-2 text-center">
+                          <Badge variant="outline" className="hidden sm:block">
+                            {day}
+                          </Badge>{' '}
+                          {date}
+                        </TableCell>
+                        <TableCell className="p-0 text-center">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild className="mx-auto">
+                              <Button
+                                variant="ghost"
+                                className="flex size-8 p-0 data-[state=open]:bg-muted"
+                              >
+                                <MoreHorizontal className="size-4" />
+                                <span className="sr-only">Open menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-[150px]"
                             >
-                              <MoreHorizontal className="size-4" />
-                              <span className="sr-only">Open menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="w-[150px]"
-                          >
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onSelect={() => {
-                                handleDeleteDialogOpen(designation._id);
-                              }}
-                              className="text-red-600"
-                            >
-                              <Trash2 className="mr-2 size-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onSelect={() => {
+                                  handleDeleteDialogOpen(designation._id);
+                                }}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="mr-2 size-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={3}
+                    className="text-center text-gray-500 dark:text-gray-300"
+                  >
+                    No Designation Available!
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={3}>Total Records</TableCell>
+                <TableCell className="text-right">{data?.length}</TableCell>
+              </TableRow>
+            </TableFooter>
             <DeleteDialog
               id={toBeDeletedId || ''}
               isOpen={showDeleteDialog}
@@ -137,10 +155,6 @@ const EmployeeDesignationTable = ({
           </Table>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-      ) : (
-        <p className="text-center text-gray-500 dark:text-gray-300">
-          No Designation Available!
-        </p>
       )}
     </>
   );
