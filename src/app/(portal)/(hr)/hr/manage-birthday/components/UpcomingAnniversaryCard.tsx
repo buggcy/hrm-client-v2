@@ -8,8 +8,8 @@ import { useEmployeeDobChartQuery } from '@/hooks/EmployeeDobTable/useEmpDob.hoo
 
 interface Employee {
   remainingDays: number;
-  DOB: Date;
-  Joining_Date?: Date | null;
+  DOB?: string;
+  Joining_Date?: string;
   firstName: string;
   lastName: string;
   Avatar?: string;
@@ -43,12 +43,12 @@ const UpcomingAnniversaryCard: React.FC = () => {
         new Date(employee?.Joining_Date ?? ''),
       );
       return {
-        DOB: employee.DOB,
+        DOB: employee?.DOB,
         Joining_Date: employee?.Joining_Date,
-        firstName: employee.firstName,
-        lastName: employee.lastName,
-        _id: employee._id,
-        Avatar: employee.Avatar || '',
+        firstName: employee?.firstName,
+        lastName: employee?.lastName,
+        _id: employee?._id,
+        Avatar: employee?.Avatar || '',
         remainingDays,
       };
     }) || [];
@@ -66,9 +66,7 @@ const UpcomingAnniversaryCard: React.FC = () => {
 
     return upcomingAnniversaries.slice(0, 3);
   };
-
   const displayDobs = getUpcomingDobs();
-
   if (isError) {
     return (
       <Card className="rounded-md bg-white p-4 shadow">

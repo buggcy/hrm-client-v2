@@ -40,18 +40,18 @@ const RecentAnnouncements = ({
     switch (priority.toLowerCase()) {
       case 'high':
         return {
-          icon: <CircleArrowUp className="size-6" />,
+          icon: <CircleArrowUp className="size-6 text-red-600" />,
           color: 'text-red-600',
         };
       case 'medium':
         return {
-          icon: <CircleArrowRight className="size-6" />,
+          icon: <CircleArrowRight className="size-6 text-yellow-500" />,
           color: 'text-yellow-500',
         };
       case 'low':
       default:
         return {
-          icon: <CircleArrowDown className="size-6" />,
+          icon: <CircleArrowDown className="size-6 text-green-500" />,
           color: 'text-green-500',
         };
     }

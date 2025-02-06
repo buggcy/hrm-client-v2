@@ -22,6 +22,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -231,6 +232,8 @@ const EducationExperienceTable = ({
       deleteEducationExperienceData({ id: empId || '', body: deletedItems });
     }
   }, [deleteEducationExperienceData, deletedItems, empId]);
+  const educationData = tableData?.filter(exp => exp.type === 'education');
+  const experienceData = tableData?.filter(exp => exp.type === 'experience');
 
   return (
     <>
@@ -244,131 +247,295 @@ const EducationExperienceTable = ({
           Add More
         </Button>
       </div>
-      {tableData && tableData?.length > 0 ? (
-        <ScrollArea className="mt-2 w-full whitespace-nowrap rounded-md border md:w-[1070px]">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Type</TableHead>
-                <TableHead className="text-center">Start Date</TableHead>
-                <TableHead className="text-center">End Date</TableHead>
-                <TableHead className="text-center">Company/Institute</TableHead>
-                <TableHead className="text-center">Position/Degree</TableHead>
-                <TableHead className="text-center">Reference Number</TableHead>
-                <TableHead className="text-center">Document Type</TableHead>
-                <TableHead className="text-center">Document</TableHead>
-                <TableHead className="text-center">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tableData?.map(exp => {
-                const startDateStr = new Date(
-                  exp.Start_Date as string | number | Date,
-                ).toDateString();
-                const startDay = startDateStr.split(' ')[0];
-                const startDate = startDateStr.split(' ').slice(1).join(' ');
-                const endDateStr = new Date(
-                  exp.End_Date as string | number | Date,
-                ).toDateString();
-                const endDay = endDateStr.split(' ')[0];
-                const endDate = endDateStr.split(' ').slice(1).join(' ');
-                return (
-                  <TableRow key={exp._id}>
-                    <TableCell className="text-center font-medium capitalize">
-                      {exp.type}
-                    </TableCell>
-                    <TableCell className="text-nowrap text-center">
-                      <Badge
-                        variant="outline"
-                        className="hidden sm:inline-block"
-                      >
-                        {startDay}
-                      </Badge>{' '}
-                      {startDate}
-                    </TableCell>
-                    <TableCell className="text-nowrap text-center">
-                      <Badge
-                        variant="outline"
-                        className="hidden sm:inline-block"
-                      >
-                        {endDay}
-                      </Badge>{' '}
-                      {endDate}
-                    </TableCell>
-                    <TableCell className="text-center capitalize">
-                      {exp.Institute}
-                    </TableCell>
-                    <TableCell className="text-center capitalize">
-                      {exp.Position}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {exp.referenceNumber || ''}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {exp.documentType || ''}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Link href={exp.Document}>
-                        <Button variant="outline">View</Button>
-                      </Link>
-                    </TableCell>
-                    <TableCell className="p-0 text-center">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild className="mx-auto">
-                          <Button
-                            variant="ghost"
-                            className="flex size-8 p-0 data-[state=open]:bg-muted"
+
+      {educationData && (
+        <div>
+          <ScrollArea className="mt-2 w-full whitespace-nowrap rounded-md border md:w-[1070px]">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center">Type</TableHead>
+                  <TableHead className="text-center">Start Date</TableHead>
+                  <TableHead className="text-center">End Date</TableHead>
+                  <TableHead className="text-center">Institute</TableHead>
+                  <TableHead className="text-center">Degree</TableHead>
+                  <TableHead className="text-center">Document Type</TableHead>
+                  <TableHead className="text-center">Document</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {educationData?.length > 0 ? (
+                  educationData.map(exp => {
+                    const startDateStr = new Date(
+                      exp.Start_Date as string | number | Date,
+                    ).toDateString();
+                    const startDay = startDateStr.split(' ')[0];
+                    const startDate = startDateStr
+                      .split(' ')
+                      .slice(1)
+                      .join(' ');
+                    const endDateStr = new Date(
+                      exp.End_Date as string | number | Date,
+                    ).toDateString();
+                    const endDay = endDateStr.split(' ')[0];
+                    const endDate = endDateStr.split(' ').slice(1).join(' ');
+                    return (
+                      <TableRow key={exp._id}>
+                        <TableCell className="text-center font-medium capitalize">
+                          {exp.type}
+                        </TableCell>
+                        <TableCell className="text-nowrap text-center">
+                          <Badge
+                            variant="outline"
+                            className="hidden sm:inline-block"
                           >
-                            <MoreHorizontal className="size-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[150px]">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onSelect={() => {
-                              handleEditClick(exp);
-                            }}
+                            {startDay}
+                          </Badge>{' '}
+                          {startDate}
+                        </TableCell>
+                        <TableCell className="text-nowrap text-center">
+                          <Badge
+                            variant="outline"
+                            className="hidden sm:inline-block"
                           >
-                            <Pencil className="mr-2 size-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onSelect={() => {
-                              setTableData(
-                                tableData?.filter(item => item._id !== exp._id),
-                              );
-                              setDeletedItems([...deletedItems, exp._id]);
-                            }}
-                            className="text-red-600"
-                          >
-                            <Trash2 className="mr-2 size-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            {endDay}
+                          </Badge>{' '}
+                          {endDate}
+                        </TableCell>
+                        <TableCell className="text-center capitalize">
+                          {exp.Institute}
+                        </TableCell>
+                        <TableCell className="text-center capitalize">
+                          {exp.Position}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {exp.documentType || ''}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Link href={exp.Document}>
+                            <Button variant="outline">View</Button>
+                          </Link>
+                        </TableCell>
+                        <TableCell className="p-0 text-center">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild className="mx-auto">
+                              <Button
+                                variant="ghost"
+                                className="flex size-8 p-0 data-[state=open]:bg-muted"
+                              >
+                                <MoreHorizontal className="size-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-[150px]"
+                            >
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onSelect={() => handleEditClick(exp)}
+                              >
+                                <Pencil className="mr-2 size-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={() => {
+                                  setTableData(
+                                    tableData &&
+                                      tableData.filter(
+                                        item => item._id !== exp._id,
+                                      ),
+                                  );
+                                  setDeletedItems([...deletedItems, exp._id]);
+                                }}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="mr-2 size-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={8}
+                      className="text-center text-gray-500 dark:text-gray-300"
+                    >
+                      No Education Provided!
                     </TableCell>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-            <EduEpxDialog
-              open={dialogOpen}
-              onOpenChange={handleDialogClose}
-              onCloseChange={handleDialogClose}
-              handleExperienceSubmit={handleExperienceSubmit}
-              editingItem={editingItem}
-              userId={empId || ''}
-            />
-          </Table>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-      ) : (
-        <p className="text-center text-gray-500 dark:text-gray-300">
-          No Education & Experience Provided!
-        </p>
+                )}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={8}>Total Records</TableCell>
+                  <TableCell className="text-right">
+                    {educationData?.length}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
       )}
+
+      {experienceData && (
+        <div>
+          <ScrollArea className="mt-4 w-full whitespace-nowrap rounded-md border md:w-[1070px]">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center">Type</TableHead>
+                  <TableHead className="text-center">Start Date</TableHead>
+                  <TableHead className="text-center">End Date</TableHead>
+                  <TableHead className="text-center">Company</TableHead>
+                  <TableHead className="text-center">Position</TableHead>
+                  <TableHead className="text-center">
+                    Reference Number
+                  </TableHead>
+                  <TableHead className="text-center">Document Type</TableHead>
+                  <TableHead className="text-center">Document</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {experienceData?.length > 0 ? (
+                  experienceData?.map(exp => {
+                    const startDateStr = new Date(
+                      exp.Start_Date as string | number | Date,
+                    ).toDateString();
+                    const startDay = startDateStr.split(' ')[0];
+                    const startDate = startDateStr
+                      .split(' ')
+                      .slice(1)
+                      .join(' ');
+                    const endDateStr = new Date(
+                      exp.End_Date as string | number | Date,
+                    ).toDateString();
+                    const endDay = endDateStr.split(' ')[0];
+                    const endDate = endDateStr.split(' ').slice(1).join(' ');
+                    return (
+                      <TableRow key={exp._id}>
+                        <TableCell className="text-center font-medium capitalize">
+                          {exp.type}
+                        </TableCell>
+                        <TableCell className="text-nowrap text-center">
+                          <Badge
+                            variant="outline"
+                            className="hidden sm:inline-block"
+                          >
+                            {startDay}
+                          </Badge>{' '}
+                          {startDate}
+                        </TableCell>
+                        <TableCell className="text-nowrap text-center">
+                          <Badge
+                            variant="outline"
+                            className="hidden sm:inline-block"
+                          >
+                            {endDay}
+                          </Badge>{' '}
+                          {endDate}
+                        </TableCell>
+                        <TableCell className="text-center capitalize">
+                          {exp.Institute}
+                        </TableCell>
+                        <TableCell className="text-center capitalize">
+                          {exp.Position}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {exp.referenceNumber || ''}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {exp.documentType || ''}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Link href={exp.Document}>
+                            <Button variant="outline">View</Button>
+                          </Link>
+                        </TableCell>
+                        <TableCell className="p-0 text-center">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild className="mx-auto">
+                              <Button
+                                variant="ghost"
+                                className="flex size-8 p-0 data-[state=open]:bg-muted"
+                              >
+                                <MoreHorizontal className="size-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-[150px]"
+                            >
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onSelect={() => handleEditClick(exp)}
+                              >
+                                <Pencil className="mr-2 size-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={() => {
+                                  setTableData(
+                                    tableData &&
+                                      tableData.filter(
+                                        item => item._id !== exp._id,
+                                      ),
+                                  );
+                                  setDeletedItems([...deletedItems, exp._id]);
+                                }}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="mr-2 size-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={9}
+                      className="text-center text-gray-500 dark:text-gray-300"
+                    >
+                      No Experience Provided!
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={8}>Total Records</TableCell>
+                  <TableCell className="text-right">
+                    {experienceData?.length}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
+      )}
+
+      <EduEpxDialog
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        onCloseChange={handleDialogClose}
+        handleExperienceSubmit={handleExperienceSubmit}
+        editingItem={editingItem}
+        userId={empId || ''}
+      />
     </>
   );
 };

@@ -80,14 +80,18 @@ export function EmployeePayrollListRowActions({
     const rootElement = newWindow.document.getElementById('payslip-root');
     if (rootElement) {
       const root = createRoot(rootElement);
-
+      const departmentNames =
+        data?.Emp_ID?.dep_ID &&
+        data?.Emp_ID?.dep_ID
+          .map(dept => dept.departmentName.replace(' Department', ''))
+          .join(', ');
       root.render(
         <Payslip
           payslipDate={data.Date ? formatDate(data.Date) : 'N/A'}
           date={today || ''}
           employeeName={data.Employee_Name || 'N/A'}
           employeeDesignation={user?.Designation || 'N/A'}
-          employeeDepartment={'N/A'}
+          employeeDepartment={departmentNames || 'N/A'}
           basicSalary={data.Basic_Salary || 0}
           absentDeduction={data.Absent_Deduction || 0}
           incentivePay={0}

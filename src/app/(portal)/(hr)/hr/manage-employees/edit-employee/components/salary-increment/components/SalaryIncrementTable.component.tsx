@@ -20,6 +20,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -79,7 +80,7 @@ const SalaryIncrementTable = ({
   }, [refetchData, refetchSalaryIncrementList]);
   return (
     <>
-      {data?.incrementRecords && data?.incrementRecords?.length > 0 ? (
+      {data?.incrementRecords && (
         <ScrollArea className="w-full whitespace-nowrap rounded-md border">
           <Table>
             <TableHeader>
@@ -91,64 +92,86 @@ const SalaryIncrementTable = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.incrementRecords.map(increment => {
-                const wholeDate = new Date(
-                  increment.date as string | number | Date,
-                ).toDateString();
-                const day = wholeDate.split(' ')[0];
-                const date = wholeDate.split(' ').slice(1).join(' ');
-                return (
-                  <TableRow key={increment._id}>
-                    <TableCell className="text-center font-medium">
-                      {increment.title}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {increment.amount}
-                    </TableCell>
-                    <TableCell className="flex justify-center gap-2 text-center">
-                      <Badge variant="outline" className="hidden sm:block">
-                        {day}
-                      </Badge>{' '}
-                      {date}
-                    </TableCell>
-                    <TableCell className="p-0 text-center">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild className="mx-auto">
-                          <Button
-                            variant="ghost"
-                            className="flex size-8 p-0 data-[state=open]:bg-muted"
+              {data?.incrementRecords?.length > 0 ? (
+                data?.incrementRecords.map(increment => {
+                  const wholeDate = new Date(
+                    increment.date as string | number | Date,
+                  ).toDateString();
+                  const day = wholeDate.split(' ')[0];
+                  const date = wholeDate.split(' ').slice(1).join(' ');
+                  return (
+                    <TableRow key={increment._id}>
+                      <TableCell className="text-center font-medium">
+                        {increment.title}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {increment.amount}
+                      </TableCell>
+                      <TableCell className="flex justify-center gap-2 text-center">
+                        <Badge variant="outline" className="hidden sm:block">
+                          {day}
+                        </Badge>{' '}
+                        {date}
+                      </TableCell>
+                      <TableCell className="p-0 text-center">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild className="mx-auto">
+                            <Button
+                              variant="ghost"
+                              className="flex size-8 p-0 data-[state=open]:bg-muted"
+                            >
+                              <MoreHorizontal className="size-4" />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className="w-[150px]"
                           >
-                            <MoreHorizontal className="size-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[150px]">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onSelect={() => {
-                              handleEditDialogOpen(increment._id);
-                            }}
-                          >
-                            <Pencil className="mr-2 size-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onSelect={() => {
-                              handleDeleteDialogOpen(increment._id);
-                            }}
-                            className="text-red-600"
-                          >
-                            <Trash2 className="mr-2 size-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                handleEditDialogOpen(increment._id);
+                              }}
+                            >
+                              <Pencil className="mr-2 size-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                handleDeleteDialogOpen(increment._id);
+                              }}
+                              className="text-red-600"
+                            >
+                              <Trash2 className="mr-2 size-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="text-center text-gray-500 dark:text-gray-300"
+                  >
+                    No Salary Increment Available!
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={3}>Total Records</TableCell>
+                <TableCell className="text-right">
+                  {data?.incrementRecords?.length}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
             <SalaryIncrementDialog
               open={editDialogOpen}
               onOpenChange={handleEditDialogClose}
@@ -171,10 +194,6 @@ const SalaryIncrementTable = ({
           </Table>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-      ) : (
-        <p className="text-center text-gray-500 dark:text-gray-300">
-          No Salary Increment Available!
-        </p>
       )}
     </>
   );
