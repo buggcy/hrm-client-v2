@@ -300,8 +300,8 @@ export interface DobData {
   _id: string;
   firstName: string;
   lastName: string;
-  DOB: Date;
-  Joining_Date?: Date | null;
+  DOB?: string;
+  Joining_Date?: string;
   remainingDays: number;
 }
 export const getAddEmployeeCharts = async (): Promise<CardData> => {

@@ -26,8 +26,8 @@ interface Employee {
   _id: string;
   firstName: string;
   lastName: string;
-  DOB: Date;
-  Joining_Date?: Date | null;
+  DOB?: string;
+  Joining_Date?: string;
   remainingDays: number;
 }
 
@@ -45,13 +45,13 @@ const chartConfig = {
 export function BirthdayAreaChart() {
   const { data: myData } = useEmployeeDobChartQuery();
 
-  // Prepare chart data
   const chartData = Array.from({ length: 12 }, (_, index) => {
     const month = new Date(0, index).toLocaleString('default', {
       month: 'long',
     });
     const dobThisMonth = myData?.filter(
-      (employee: Employee) => new Date(employee?.DOB).getMonth() === index,
+      (employee: Employee) =>
+        employee?.DOB && new Date(employee?.DOB).getMonth() === index,
     );
     const anniversaryThisMonth = myData?.filter(
       (employee: Employee) =>
