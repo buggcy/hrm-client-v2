@@ -7,8 +7,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useEmployeeDobChartQuery } from '@/hooks/EmployeeDobTable/useEmpDob.hook';
 
 interface Employee {
-  DOB: Date;
-  Joining_Date?: Date | null;
+  DOB?: string;
+  Joining_Date?: string;
   firstName: string;
   lastName: string;
   Avatar?: string;
@@ -23,13 +23,13 @@ const UpcomingDobCard: React.FC = () => {
 
   const upcomingDobs: Employee[] =
     myData?.map((employee: Employee) => ({
-      DOB: employee.DOB,
+      DOB: employee?.DOB,
       Joining_Date: employee?.Joining_Date,
-      firstName: employee.firstName,
-      lastName: employee.lastName,
-      remainingDays: employee.remainingDays,
+      firstName: employee?.firstName,
+      lastName: employee?.lastName,
+      remainingDays: employee?.remainingDays,
       Avatar: employee?.Avatar || '',
-      _id: employee._id,
+      _id: employee?._id,
     })) || [];
 
   const getUpcomingDobs = () => {
@@ -37,7 +37,13 @@ const UpcomingDobCard: React.FC = () => {
     const upcomingDOBs: Employee[] = [];
 
     upcomingDobs.forEach(employee => {
-      const dobDate = new Date(employee.DOB);
+      const dobDate =
+        employee?.DOB && typeof employee.DOB === 'string'
+          ? new Date(employee.DOB)
+          : undefined;
+
+      if (!dobDate || isNaN(dobDate.getTime())) return;
+
       const nextBirthday = new Date(
         today.getFullYear(),
         dobDate.getMonth(),
@@ -52,16 +58,21 @@ const UpcomingDobCard: React.FC = () => {
     });
 
     upcomingDOBs.sort((a, b) => {
+      const aDob = a.DOB ? new Date(a.DOB) : null;
+      const bDob = b.DOB ? new Date(b.DOB) : null;
+      if (!aDob || isNaN(aDob.getTime())) return 1;
+      if (!bDob || isNaN(bDob.getTime())) return -1;
       const aNextBirthday = new Date(
         today.getFullYear(),
-        new Date(a.DOB).getMonth(),
-        new Date(a.DOB).getDate(),
+        aDob.getMonth(),
+        aDob.getDate(),
       );
       const bNextBirthday = new Date(
         today.getFullYear(),
-        new Date(b.DOB).getMonth(),
-        new Date(b.DOB).getDate(),
+        bDob.getMonth(),
+        bDob.getDate(),
       );
+
       return aNextBirthday.getTime() - bNextBirthday.getTime();
     });
 
@@ -89,7 +100,12 @@ const UpcomingDobCard: React.FC = () => {
         <ul className="space-y-2">
           <ScrollArea className="h-60 w-full">
             {displayDobs.map(employee => {
-              const dobDate = new Date(employee.DOB);
+              const dobDate =
+                employee?.DOB && typeof employee.DOB === 'string'
+                  ? new Date(employee.DOB)
+                  : undefined;
+              if (!dobDate || isNaN(dobDate.getTime())) return;
+
               const nextBirthday = new Date(
                 today.getFullYear(),
                 dobDate.getMonth(),
