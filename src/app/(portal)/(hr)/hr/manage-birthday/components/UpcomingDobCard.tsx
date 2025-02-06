@@ -93,8 +93,8 @@ const UpcomingDobCard: React.FC = () => {
     <Card className="h-[340px] w-1/5 overflow-y-auto rounded-md bg-white p-4 shadow dark:bg-zinc-900 dark:text-white max-lg:w-full">
       <h2 className="mb-4 font-bold">Upcoming Birthdays</h2>
       {displayDobs.length === 0 ? (
-        <p className="text-xs text-gray-600">
-          No upcoming birthdays this month.
+        <p className="my-32 text-center text-xs text-gray-600">
+          No upcoming birthdays this month
         </p>
       ) : (
         <ul className="space-y-2">
