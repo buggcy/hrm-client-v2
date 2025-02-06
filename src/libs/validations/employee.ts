@@ -188,11 +188,8 @@ const employeeDobDataSchema = z.array(
     firstName: z.string(),
     lastName: z.string(),
     Avatar: z.string().optional(),
-    DOB: z.preprocess(val => new Date(val as string), z.date()),
-    Joining_Date: z
-      .preprocess(val => new Date(val as string), z.date())
-      .nullable()
-      .optional(),
+    DOB: z.string().optional(),
+    Joining_Date: z.string().optional(),
     remainingDays: z.number(),
   }),
 );
@@ -201,11 +198,8 @@ const employeeDobTableSchema = z.object({
   _id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  DOB: z.preprocess(val => new Date(val as string), z.date()),
-  Joining_Date: z
-    .preprocess(val => new Date(val as string), z.date())
-    .nullable()
-    .optional(),
+  DOB: z.string().optional(),
+  Joining_Date: z.string().optional(),
   remainingDays: z.number(),
 });
 
