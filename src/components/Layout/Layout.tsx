@@ -3,11 +3,15 @@ import { FC } from 'react';
 import { cn } from '@/utils';
 
 import { LayoutBaseProps, LayoutHeaderProps } from './types';
+import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 
 const Layout: FC<LayoutBaseProps> = ({ children, className }) => {
   return (
     <div data-testid="layout" className={cn('min-h-screen', className)}>
-      {children}
+      <ScrollArea className="h-screen w-full overflow-auto">
+        {children}
+        <ScrollBar orientation="vertical" />
+      </ScrollArea>
     </div>
   );
 };
