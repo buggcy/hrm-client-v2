@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useStores } from '@/providers/Store.Provider';
 
-import { AddPerksDialog } from '@/app/(portal)/(hr)/hr/manage-perks/add-perks/components/AddPerksDialog';
+import { EditPerksDialog } from '@/app/(portal)/(hr)/hr/manage-perks/add-perks/components/EditPerksDialog';
 import { HrPerksListType } from '@/libs/validations/hr-perks';
 import { deletePerk } from '@/services/hr/perks-list.service';
 import { PerkListStoreType } from '@/stores/hr/perk-list';
@@ -80,7 +80,7 @@ export function HrPerkListRowActions({ row }: DataTableRowActionsProps) {
         mutationFunc={deletePerk}
         setRefetch={setRefetchPerkList}
       />
-      <AddPerksDialog
+      <EditPerksDialog
         open={editDialogOpen}
         onOpenChange={handleEditDialogClose}
         onCloseChange={handleEditDialogClose}

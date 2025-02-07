@@ -15,7 +15,7 @@ export const useAttendanceReport = (
     queryKey: ['attendance-report', tahometerId, params],
     queryFn: () => fetchAttendanceReport(tahometerId ?? '', params),
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!tahometerId && !!params?.from,
   });
 };

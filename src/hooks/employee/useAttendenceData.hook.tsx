@@ -18,7 +18,7 @@ export const useAttendanceData = (
       fetchMonthlyAttendanceChartData(taho_id ? taho_id : '', params),
     enabled: !!taho_id,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
   });

@@ -66,11 +66,20 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
   };
 
   const formatCurrency = (amount: number) => {
-    return `Rs. ${amount.toLocaleString('en-PK', {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-    })}`;
+    if (amount >= 1_000_000) {
+      return `Rs. ${(amount / 1_000_000).toFixed(2)}M`;
+    } else if (amount >= 100_000) {
+      return `Rs. ${(amount / 1_000).toFixed(1)}k`;
+    } else if (amount >= 10_000) {
+      return `Rs. ${(amount / 1_000).toFixed(2)}k`;
+    } else {
+      return `Rs. ${amount.toLocaleString('en-PK', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      })}`;
+    }
   };
+
   return (
     <Card className="flex h-full flex-col">
       <CardHeader className="items-center pb-0">

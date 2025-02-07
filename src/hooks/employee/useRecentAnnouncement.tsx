@@ -8,6 +8,6 @@ export const useRecentAnnouncements = () => {
     queryFn: () => fetchRecentAnnouncements(),
     refetchInterval: 1000 * 60 * 5,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 };

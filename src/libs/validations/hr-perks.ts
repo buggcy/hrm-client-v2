@@ -128,6 +128,43 @@ export type hrPerkChartDataArrayType =
   | z.infer<typeof hrPerkChartDataSchema>[]
   | [];
 
+const employeePerkApplicationSchema = z.object({
+  appliedAmount: z.number(),
+  hrApproval: z.string(),
+  decisionDate: z.string().optional().nullable(),
+  dateApplied: z.string(),
+  Proof_Document: z.string().optional(),
+  _id: z.string(),
+});
+
+const hrperkListSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  incrementAmount: employeePerkApplicationSchema.shape.appliedAmount,
+  dateApplied: employeePerkApplicationSchema.shape.dateApplied,
+  decisionDate: employeePerkApplicationSchema.shape.decisionDate,
+  hrApproval: employeePerkApplicationSchema.shape.hrApproval,
+  userId: z.object({
+    _id: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    Avatar: z.string().optional(),
+    companyEmail: z.string().email(),
+  }),
+  requestId: employeePerkApplicationSchema.shape._id,
+  description: z.string(),
+  Proof_Document: z.string().optional(),
+});
+
+export type HrPerkRequestListType = z.infer<typeof hrperkListSchema>;
+
+const hrperklistApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(hrperkListSchema),
+});
+
+export type HrPerkListApiResponse = z.infer<typeof hrperklistApiResponseSchema>;
+
 export {
   hrPerksListApiResponseSchema,
   HrPerksGetEmployeesApiResponseSchema,
@@ -136,4 +173,6 @@ export {
   hrPerkChartDataSchema,
   hrTopAvailedPerkSchema,
   hrPerkRecordApiResponseSchema,
+  hrperklistApiResponseSchema,
+  hrperkListSchema,
 };

@@ -1,13 +1,18 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { HrEmployeeAllPerksApiResponse } from '@/libs/validations/hr-perks';
+import {
+  HrEmployeeAllPerksApiResponse,
+  HrPerkListApiResponse,
+} from '@/libs/validations/hr-perks';
 import {
   fetchEmployeesAllPerks,
   fetchEmployeesForPerks,
   fetchPerkRequests,
+  getHrDataTablePerksRequest,
   getHrPerksList,
   getPerkCardRecords,
   HrPerkRequestsParams,
+  HrPerkRequestsTableParams,
   HrPerksListParams,
 } from '@/services/hr/perks-list.service';
 
@@ -41,6 +46,19 @@ export const useHrPerksEmpoyeeQuery = (config: UseQueryConfig = {}) =>
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<HrPerksGetEmployeesApiResponse, Error>;
+
+export const useHrPerkRequestsTableQuery = (
+  params: HrPerkRequestsTableParams,
+  config: UseQueryConfig = {},
+) =>
+  useQuery({
+    queryKey: ['hrPerkRequests', params],
+    queryFn: () => getHrDataTablePerksRequest(params),
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<HrPerkListApiResponse, Error>;
 
 export const useHrPerkRequestsQuery = (
   params: HrPerkRequestsParams,

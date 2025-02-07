@@ -114,13 +114,3 @@ export const getTodayAttendence = async (
 export type SuccessMessageResponse = {
   message: string;
 };
-
-export const requestAttendance = async (
-  formData: FormData,
-): Promise<SuccessMessageResponse> => {
-  const { message }: SuccessMessageResponse = await baseAPI.post(
-    `/addAttendanceRequest`,
-    formData,
-  );
-  return { message };
-};

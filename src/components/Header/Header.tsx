@@ -41,7 +41,7 @@ const Header = ({ subheading, children }: HeaderProps) => {
           />
         </div>
         <div>
-          <h1 className="text-xl">
+          <h1 className="text-xl capitalize">
             <span className="font-bold">Welcome Back,</span> {user?.firstName}{' '}
             {user?.lastName} <span className="text-2xl">👋</span>
           </h1>

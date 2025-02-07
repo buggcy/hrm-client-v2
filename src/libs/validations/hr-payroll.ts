@@ -56,6 +56,29 @@ const HRPayrollSchema = z.object({
   isDeleted: z.boolean().optional(),
   __v: z.number().optional(),
   amountToBePaid: z.number().optional(),
+  totalIncrements: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        totalIncrement: z.number(),
+      }),
+    )
+    .optional(),
+  totalDecrements: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        assignedDecrementAmount: z.number(),
+      }),
+    )
+    .optional(),
+  totalPerkIncrement: z.number().optional(),
+  totalPerkDecrement: z.number().optional(),
+  casualLeaves: z.number().optional(),
+  sickLeaves: z.number().optional(),
+  annualLeaves: z.number().optional(),
 });
 
 const HRPayrollApiResponseSchema = z.object({

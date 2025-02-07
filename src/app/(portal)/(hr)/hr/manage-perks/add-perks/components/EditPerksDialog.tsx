@@ -46,7 +46,7 @@ interface AddPerkDialogProps {
   editData?: HrPerksListType;
 }
 
-export function AddPerksDialog({
+export function EditPerksDialog({
   open,
   onOpenChange,
   onCloseChange,

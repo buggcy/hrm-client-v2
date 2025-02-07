@@ -20,5 +20,6 @@ export interface Attendence {
 export interface ChartData {
   name: string;
   Hours: number;
+  totalHours: string;
   date: string;
 }
