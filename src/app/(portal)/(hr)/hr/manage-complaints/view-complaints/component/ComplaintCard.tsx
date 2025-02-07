@@ -134,7 +134,21 @@ export const ComplaintCard = ({
               {person?.title}
             </span>
           </div>
-
+          <div className="mt-2 flex justify-between">
+            <p className="text-sm font-semibold">{'Complaint Description'}</p>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="w-32 truncate text-right text-sm font-medium leading-relaxed text-muted-foreground">
+                    {person?.complaint || '-'}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                  {person?.complaint || 'No Description Provided!'}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <div className="flex justify-between">
             <p className="text-sm font-semibold">{'Proof Document'}</p>
             {person?.document ? (
@@ -167,22 +181,6 @@ export const ComplaintCard = ({
                 </span>
               </>
             )}
-          </div>
-
-          <div className="mt-2 flex justify-between">
-            <p className="text-sm font-semibold">{'Complaint Description'}</p>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="w-32 truncate text-right text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-300">
-                    {person?.complaint || '-'}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                  {person?.complaint || 'No Description Provided!'}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </div>
         </CardContent>
         <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
