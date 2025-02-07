@@ -60,18 +60,6 @@ const ViewResignedModal = ({ open, onCloseChange, data }: ViewProps) => {
               </p>
             </div>
           </div>
-          <div className="flex flex-row justify-between">
-            <div className="w-5/12">
-              <p className="text-sm font-semibold">Applied Date</p>
-            </div>
-            <div className="w-7/12">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {data?.appliedDate
-                  ? new Date(data.appliedDate).toDateString()
-                  : 'N/A'}{' '}
-              </p>
-            </div>
-          </div>
           {data?.type && (
             <div className="flex flex-row justify-between">
               <div className="w-5/12">
@@ -79,11 +67,36 @@ const ViewResignedModal = ({ open, onCloseChange, data }: ViewProps) => {
               </div>
               <div className="w-7/12">
                 <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {data?.type}
+                  {data?.type.charAt(0).toUpperCase() + data?.type.slice(1)}
                 </p>
               </div>
             </div>
           )}
+          <div className="flex flex-row justify-between">
+            <div className="w-5/12">
+              <p className="text-sm font-semibold">Applied Date</p>
+            </div>
+            <div className="w-7/12">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                {data?.appliedDate
+                  ? (() => {
+                      const field = new Date(Date.parse(data?.appliedDate));
+                      const day = field.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                      });
+                      const date = field.toDateString().slice(4);
+                      return (
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{day}</Badge>
+                          <span className="max-w-[500px] truncate">{date}</span>
+                        </div>
+                      );
+                    })()
+                  : 'N/A'}
+              </p>
+            </div>
+          </div>
+
           <div className="flex flex-row justify-between">
             <div className="w-5/12">
               <p className="text-sm font-semibold">
@@ -92,13 +105,51 @@ const ViewResignedModal = ({ open, onCloseChange, data }: ViewProps) => {
             </div>
             <div className="w-7/12">
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                {data?.type
-                  ? data?.immedaiteDate
-                    ? new Date(data.immedaiteDate).toDateString()
-                    : 'N/A'
-                  : data?.assignedDate
-                    ? new Date(data.assignedDate).toDateString()
-                    : 'N/A'}{' '}
+                {data?.type ? (
+                  <>
+                    {data?.immedaiteDate
+                      ? (() => {
+                          const field = new Date(
+                            Date.parse(data?.immedaiteDate),
+                          );
+                          const day = field.toLocaleDateString('en-US', {
+                            weekday: 'short',
+                          });
+                          const date = field.toDateString().slice(4);
+                          return (
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline">{day}</Badge>
+                              <span className="max-w-[500px] truncate">
+                                {date}
+                              </span>
+                            </div>
+                          );
+                        })()
+                      : 'N/A'}
+                  </>
+                ) : (
+                  <>
+                    {data?.assignedDate
+                      ? (() => {
+                          const field = new Date(
+                            Date.parse(data?.assignedDate),
+                          );
+                          const day = field.toLocaleDateString('en-US', {
+                            weekday: 'short',
+                          });
+                          const date = field.toDateString().slice(4);
+                          return (
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline">{day}</Badge>
+                              <span className="max-w-[500px] truncate">
+                                {date}
+                              </span>
+                            </div>
+                          );
+                        })()
+                      : 'N/A'}
+                  </>
+                )}
               </p>
             </div>
           </div>

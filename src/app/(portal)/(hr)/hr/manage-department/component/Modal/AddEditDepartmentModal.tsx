@@ -484,7 +484,7 @@ const AddEditDepartmentModal = ({
               size={'sm'}
               disabled={type === 'add' ? isPending : EditPending}
             >
-              {type === 'add' ? 'Add ' : 'Update '}
+              {type === 'add' ? 'Add ' : 'Edit '}
             </Button>
           </DialogFooter>
         </form>

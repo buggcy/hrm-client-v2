@@ -16,7 +16,7 @@ import DataTableType from '@/libs/validations/data-table-type';
 import { exportEmployeeCSVData } from '@/services/hr/employee.service';
 import { downloadFile } from '@/utils/downloadFile.utils';
 
-import { unapproved_status } from '../../filters';
+import { resigned_fired_status } from '../../filters';
 
 import { MessageErrorResponseWithError } from '@/types';
 
@@ -78,7 +78,7 @@ export function UnapprovedEmployeeToolbar<TData extends DataTableType>({
         />
 
         <DataTableFacetedFilter
-          options={unapproved_status}
+          options={resigned_fired_status}
           onFilterChange={setFilterValue}
           title="Status"
           filterValue={filterValue}
