@@ -71,16 +71,48 @@ const ViewLeaveList = ({ open, onCloseChange, data }: ViewLeaveProps) => {
           </div>
           <div className="flex flex-row justify-between">
             <div className="w-5/12">
-              <p className="text-sm font-semibold">Leave Duration</p>
+              <p className="text-sm font-semibold">Start Date</p>
             </div>
             <div className="w-7/12">
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {data?.Start_Date
-                  ? new Date(data.Start_Date).toDateString()
-                  : 'N/A'}{' '}
-                -{' '}
+                  ? (() => {
+                      const field = new Date(Date.parse(data?.Start_Date));
+                      const day = field.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                      });
+                      const date = field.toDateString().slice(4);
+                      return (
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{day}</Badge>
+                          <span className="max-w-[500px] truncate">{date}</span>
+                        </div>
+                      );
+                    })()
+                  : 'N/A'}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="w-5/12">
+              <p className="text-sm font-semibold">End Date</p>
+            </div>
+            <div className="w-7/12">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 {data?.End_Date
-                  ? new Date(data.End_Date).toDateString()
+                  ? (() => {
+                      const field = new Date(Date.parse(data?.End_Date));
+                      const day = field.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                      });
+                      const date = field.toDateString().slice(4);
+                      return (
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{day}</Badge>
+                          <span className="max-w-[500px] truncate">{date}</span>
+                        </div>
+                      );
+                    })()
                   : 'N/A'}
               </p>
             </div>
