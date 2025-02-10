@@ -95,7 +95,13 @@ export const educationExperienceSchema = z
   .refine(data => data.Start_Date <= data.End_Date, {
     message: 'End date cannot be before Start date',
     path: ['End_Date'],
-  });
+  })
+  .refine(data => {
+    if (data.type === 'experience' && data.referenceNumber) {
+      return /^(03|\+923)/.test(data.referenceNumber);
+    }
+    return true;
+  }, 'Reference number must start with "03" or "+923"');
 
 export type EducationExperienceType = z.infer<typeof educationExperienceSchema>;
 const mainFormSchema = z.object({

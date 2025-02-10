@@ -12,6 +12,13 @@ import { MainFormData } from './VerifyCodeForm';
 
 type CNICImage = File | string | null;
 
+export const getPreviewUrl = (fileOrUrl: File | string | null): string => {
+  if (fileOrUrl instanceof File) {
+    return URL.createObjectURL(fileOrUrl);
+  }
+  return typeof fileOrUrl === 'string' ? fileOrUrl : '';
+};
+
 export function KYC({
   onNext,
   onBack,
@@ -28,13 +35,6 @@ export function KYC({
 
   const cnicFrontPicture: CNICImage = watch('kyc.cnicFrontPicture');
   const cnicBackPicture: CNICImage = watch('kyc.cnicBackPicture');
-
-  const getPreviewUrl = (fileOrUrl: File | string | null): string => {
-    if (fileOrUrl instanceof File) {
-      return URL.createObjectURL(fileOrUrl);
-    }
-    return typeof fileOrUrl === 'string' ? fileOrUrl : '';
-  };
 
   return (
     <Card className="border-none shadow-none">
