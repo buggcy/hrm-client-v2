@@ -41,7 +41,9 @@ const CountdownTimer: FunctionComponent<CountdownTimerProps> = ({
       .padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  return <span className="font-bold">{formatTime(timeLeft)}</span>;
+  return (
+    <span className="font-bold">{formatTime(timeLeft > 0 ? timeLeft : 0)}</span>
+  );
 };
 
 export default CountdownTimer;
