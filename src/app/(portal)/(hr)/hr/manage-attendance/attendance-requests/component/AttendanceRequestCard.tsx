@@ -258,7 +258,7 @@ export const AttendanceRequestCard = ({
             onClick={() => {
               handleReject(request?._id);
             }}
-            disabled={AcceptPending || RejectPending}
+            disabled={RejectPending}
           >
             Reject Request
           </Button>
@@ -268,7 +268,7 @@ export const AttendanceRequestCard = ({
             onClick={() => {
               handleAccept(request?._id);
             }}
-            disabled={AcceptPending || RejectPending}
+            disabled={AcceptPending}
           >
             Accept Request
           </Button>
