@@ -3,6 +3,7 @@
 import React, { createContext, ReactNode, useContext } from 'react';
 
 import { useAttendanceHistoryStore } from '@/stores/employee/attendance-history';
+import { useAttendanceRequestStore } from '@/stores/employee/attendance-request';
 import { useComplaintStore } from '@/stores/employee/complaint';
 import { useEmployeePayrollStore } from '@/stores/employee/employeePayroll';
 import { useLeaveHistoryStore } from '@/stores/employee/leave-history';
@@ -51,6 +52,7 @@ interface StoreContextType {
   complaintStore: ReturnType<typeof useComplaintStore>;
   projectStore: ReturnType<typeof useProjectStore>;
   policiesStore: ReturnType<typeof usePoliciesStore>;
+  attendanceRequestStore: ReturnType<typeof useAttendanceRequestStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -79,6 +81,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const complaintStore = useComplaintStore();
   const projectStore = useProjectStore();
   const policiesStore = usePoliciesStore();
+  const attendanceRequestStore = useAttendanceRequestStore();
 
   return (
     <StoreContext.Provider
@@ -106,6 +109,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         complaintStore,
         projectStore,
         policiesStore,
+        attendanceRequestStore,
       }}
     >
       {children}

@@ -27,7 +27,6 @@ interface RecentAttendanceRequestsProps {
 export function RecentAttendanceRequests({
   data,
 }: RecentAttendanceRequestsProps) {
-  console.log(data);
   return (
     <Card className="col-span-1">
       <CardHeader>
@@ -44,17 +43,18 @@ export function RecentAttendanceRequests({
               <div className="flex size-full flex-row items-center gap-2">
                 <CalendarDays
                   className={cn({
-                    'size-8 text-[hsl(var(--chart-1))]':
+                    'size-6 min-h-6 min-w-6 text-[hsl(var(--chart-1))]':
                       request?.Status === 'Approved',
-                    'size-8 text-[hsl(var(--chart-4))]':
+                    'size-6 min-h-6 min-w-6 text-[hsl(var(--chart-4))]':
                       request?.Status === 'Pending',
-                    'size-8 text-[hsl(var(--chart-3))]':
-                      request?.Status === 'Rejected',
+                    'size-6 min-h-6 min-w-6 text-[hsl(var(--chart-3))]':
+                      request?.Status === 'Rejected' ||
+                      request?.Status === 'Cancelled',
                   })}
                 />
                 <div className="flex w-full flex-row items-center justify-between">
                   <div className="flex flex-col">
-                    <p className="p-0">
+                    <p className="p-0 text-sm font-semibold">
                       {new Date(request?.date).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
@@ -65,10 +65,10 @@ export function RecentAttendanceRequests({
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <p className="p-0">
+                          <p className="p-0 text-xs">
                             {request?.reason?.length &&
-                            request?.reason?.length > 28
-                              ? `${request?.reason?.slice(0, 28)}...`
+                            request?.reason?.length > 36
+                              ? `${request?.reason?.slice(0, 36)}...`
                               : request?.reason}
                           </p>
                         </TooltipTrigger>
@@ -85,7 +85,8 @@ export function RecentAttendanceRequests({
                       'rounded-md border bg-muted p-1 text-sm text-[hsl(var(--chart-4))]':
                         request?.Status === 'Pending',
                       'rounded-md border bg-muted p-1 text-sm text-[hsl(var(--chart-3))]':
-                        request?.Status === 'Rejected',
+                        request?.Status === 'Rejected' ||
+                        request?.Status === 'Cancelled',
                     })}
                   >
                     {request?.Status}

@@ -1,4 +1,6 @@
 import {
+  AttendanceRequestApiResponse,
+  attendanceRequestApiResponseSchema,
   AttendanceRequestStatsAPIResponse,
   attendanceRequestStatsAPIResponseSchema,
 } from '@/libs/validations/attendance-request';
@@ -14,6 +16,9 @@ export type AttendanceRequestStatsParams = {
 };
 
 export type AttendanceRequestsParams = {
+  userId: string;
+  page: number;
+  limit: number;
   from?: string;
   to?: string;
   date?: string;
@@ -54,9 +59,12 @@ export const getAttendanceRequestStats = async (
 };
 
 export const getAttendanceRequests = async (
-  params: AttendanceRequestsParams = {},
-): Promise<AttendanceRequestStatsAPIResponse> => {
+  params: AttendanceRequestsParams,
+): Promise<AttendanceRequestApiResponse> => {
   const defaultParams: AttendanceRequestsParams = {
+    userId: '',
+    page: 1,
+    limit: 5,
     from: '',
     to: '',
     date: '',
@@ -67,14 +75,17 @@ export const getAttendanceRequests = async (
 
   try {
     const response = await baseAPI.post(`/getAttendanceRequests`, {
+      userId: mergedParams.userId,
+      page: mergedParams.page,
+      limit: mergedParams.limit,
       from: mergedParams.from,
       to: mergedParams.to,
       date: mergedParams.date,
       status: mergedParams.status,
     });
-    return schemaParse(attendanceRequestStatsAPIResponseSchema)(response);
+    return schemaParse(attendanceRequestApiResponseSchema)(response);
   } catch (error) {
-    console.error('Error fetching employee list:', error);
+    console.error('Error fetching attendance request list:', error);
     throw error;
   }
 };
@@ -85,6 +96,15 @@ export const requestAttendance = async (
   const { message }: SuccessMessageResponse = await baseAPI.post(
     `/addAttendanceRequest`,
     formData,
+  );
+  return { message };
+};
+
+export const cancelAttendanceRequest = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/cancelAttendanceRequest/${id}`,
   );
   return { message };
 };
