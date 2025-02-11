@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -75,82 +76,106 @@ const ViewLogDetails = ({ open, onCloseChange, data }: ViewLogProps) => {
             <div className="w-7/12">
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {data?.createdAt
-                  ? new Date(data.createdAt).toDateString()
-                  : 'N/A'}{' '}
+                  ? (() => {
+                      const field = new Date(Date.parse(data?.createdAt));
+                      const day = field.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                      });
+                      const date = field.toDateString().slice(4);
+                      return (
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{day}</Badge>
+                          <span className="max-w-[500px] truncate">{date}</span>
+                        </div>
+                      );
+                    })()
+                  : 'N/A'}
               </p>
             </div>
           </div>
           <div>
             <p className="mb-2 text-sm font-semibold">Log Messages</p>
-            <div className="overflow-x-auto">
-              <Table className="mb-2">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Message</TableHead>
-                    {data?.overallStatus === 'Error' && (
-                      <TableHead>Error Message</TableHead>
-                    )}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data?.message && data?.message?.length > 0 ? (
-                    data?.message?.map((message, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="text-xs">
-                          {message?.timestamp
-                            ? formatedTime(message?.timestamp)
-                            : 'N/A'}
-                        </TableCell>
-                        <TableCell className="text-xs">
-                          <Badge
-                            className="capitalize"
-                            variant={
-                              message?.status === 'Success'
-                                ? 'success'
-                                : message?.status === 'Error'
-                                  ? 'destructive'
-                                  : 'default'
-                            }
-                          >
-                            {message?.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-xs">
-                          {message?.message || '-'}
-                        </TableCell>
+            <div>
+              {data?.message && data?.message?.length > 0 ? (
+                <>
+                  <Table className="mb-2">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Time</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Message</TableHead>
                         {data?.overallStatus === 'Error' && (
-                          <TableCell className="text-xs">
-                            {message?.errorMessage || '-'}
-                          </TableCell>
+                          <TableHead>Error Message</TableHead>
                         )}
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell
-                        colSpan={5}
-                        className="text-center text-gray-500 dark:text-gray-300"
-                      >
-                        No Message Available!
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TableCell
-                      colSpan={data?.overallStatus === 'Error' ? 4 : 3}
-                    >
-                      Total Records
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {data?.message?.length}
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
-              </Table>
+                    </TableHeader>
+                  </Table>
+                  <ScrollArea className="h-40">
+                    <Table>
+                      <TableBody>
+                        {data?.message && data?.message?.length > 0 ? (
+                          data?.message?.map((message, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="text-xs">
+                                {message?.timestamp
+                                  ? formatedTime(message?.timestamp)
+                                  : 'N/A'}
+                              </TableCell>
+                              <TableCell className="text-xs">
+                                <Badge
+                                  className="capitalize"
+                                  variant={
+                                    message?.status === 'Success'
+                                      ? 'success'
+                                      : message?.status === 'Error'
+                                        ? 'destructive'
+                                        : 'default'
+                                  }
+                                >
+                                  {message?.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-xs">
+                                {message?.message || '-'}
+                              </TableCell>
+                              {data?.overallStatus === 'Error' && (
+                                <TableCell className="text-xs">
+                                  {message?.errorMessage || '-'}
+                                </TableCell>
+                              )}
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell
+                              colSpan={5}
+                              className="text-center text-gray-500 dark:text-gray-300"
+                            >
+                              No Message Available!
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                      <TableFooter>
+                        <TableRow>
+                          <TableCell
+                            colSpan={data?.overallStatus === 'Error' ? 4 : 3}
+                          >
+                            Total Records
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {data?.message?.length}
+                          </TableCell>
+                        </TableRow>
+                      </TableFooter>
+                    </Table>
+                  </ScrollArea>
+                </>
+              ) : (
+                <div className="text-center text-sm text-gray-600 dark:text-gray-300">
+                  No Logs Messages found!
+                </div>
+              )}
             </div>
           </div>
         </DialogContent>
