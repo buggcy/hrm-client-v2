@@ -156,20 +156,22 @@ const ViewLogDetails = ({ open, onCloseChange, data }: ViewLogProps) => {
                           </TableRow>
                         )}
                       </TableBody>
-                      <TableFooter>
-                        <TableRow>
-                          <TableCell
-                            colSpan={data?.overallStatus === 'Error' ? 4 : 3}
-                          >
-                            Total Records
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {data?.message?.length}
-                          </TableCell>
-                        </TableRow>
-                      </TableFooter>
                     </Table>
                   </ScrollArea>
+                  <Table>
+                    <TableFooter>
+                      <TableRow>
+                        <TableCell
+                          colSpan={data?.overallStatus === 'Error' ? 4 : 3}
+                        >
+                          Total Records
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {data?.message?.length}
+                        </TableCell>
+                      </TableRow>
+                    </TableFooter>
+                  </Table>
                 </>
               ) : (
                 <div className="text-center text-sm text-gray-600 dark:text-gray-300">
