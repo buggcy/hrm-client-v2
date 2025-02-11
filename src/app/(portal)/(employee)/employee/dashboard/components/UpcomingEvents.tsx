@@ -98,7 +98,10 @@ const EventsAndBirthdays = () => {
                   className="mb-2 flex items-start space-x-4 rounded-md"
                 >
                   {'DOB' in item ? (
-                    <>
+                    <Button
+                      variant="outline"
+                      className="pointer-events-none flex size-full flex-row items-center justify-start gap-2 px-2"
+                    >
                       <Avatar className="size-6">
                         {item.Avatar ? (
                           <img
@@ -113,18 +116,21 @@ const EventsAndBirthdays = () => {
                           </div>
                         )}
                       </Avatar>
-                      <div className="-ml-4">
+                      <div className="flex w-full flex-col items-start">
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                           {item.firstName} {item.lastName}
                         </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-300">
+                        <p className="text-xs text-gray-500 dark:text-gray-300">
                           {new Date(item.DOB).toLocaleDateString('en-US', {
                             day: 'numeric',
                             month: 'long',
                           })}
                         </p>
                       </div>
-                    </>
+                      <Badge variant="warning" className="text-xs">
+                        Birthday
+                      </Badge>
+                    </Button>
                   ) : (
                     // Render Event
                     <Button

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -31,6 +30,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { EduEpxDialog } from '@/app/(authentication)/auth/register/components/EduExpDialg';
+import { getPreviewUrl } from '@/app/(authentication)/auth/register/components/KYC';
 import { EducationExperienceType as EduExpType } from '@/app/(authentication)/auth/register/components/VerifyCodeForm';
 import { EducationExperienceType } from '@/libs/validations/edit-employee';
 import {
@@ -313,9 +313,13 @@ const EducationExperienceTable = ({
                           {exp.documentType || ''}
                         </TableCell>
                         <TableCell className="text-center">
-                          <Link href={exp.Document}>
+                          <a
+                            href={getPreviewUrl(exp.Document)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <Button variant="outline">View</Button>
-                          </Link>
+                          </a>
                         </TableCell>
                         <TableCell className="p-0 text-center">
                           <DropdownMenu>
@@ -456,9 +460,13 @@ const EducationExperienceTable = ({
                           {exp.documentType || ''}
                         </TableCell>
                         <TableCell className="text-center">
-                          <Link href={exp.Document}>
+                          <a
+                            href={getPreviewUrl(exp.Document)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <Button variant="outline">View</Button>
-                          </Link>
+                          </a>
                         </TableCell>
                         <TableCell className="p-0 text-center">
                           <DropdownMenu>

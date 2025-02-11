@@ -80,7 +80,7 @@ const KYC = ({ data, empId }: KYCProps) => {
       cnic: data?.cnic.number || '',
       frontPicture: null,
       backPicture: null,
-      accountHolderName: data?.bankDetails.accountHolderName || '',
+      accountHolderName: data?.bankDetails.accountHolderName ?? '',
       accountNumber: data?.bankDetails.accountNumber || '',
       branchName: data?.bankDetails.branchName || '',
       iban: data?.bankDetails.iban || '',
@@ -103,7 +103,6 @@ const KYC = ({ data, empId }: KYCProps) => {
         variant: 'success',
       });
       setRefetchEditEmployeeData(true);
-      reset();
     },
   });
   const onSubmit = (newData: KYCFormData) => {
@@ -136,6 +135,22 @@ const KYC = ({ data, empId }: KYCProps) => {
       }
     }
   }, [clearErrors, cnicNumber, setError]);
+
+  useEffect(() => {
+    if (data) {
+      reset({
+        empId: empId || '',
+        cnic: data?.cnic.number || '',
+        frontPicture: null,
+        backPicture: null,
+        accountHolderName: data?.bankDetails.accountHolderName ?? '',
+        accountNumber: data?.bankDetails.accountNumber || '',
+        branchName: data?.bankDetails.branchName || '',
+        iban: data?.bankDetails.iban || '',
+      });
+    }
+  }, [data, empId, reset]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
       <div className="mb-4 flex flex-col gap-8">
@@ -249,7 +264,7 @@ const KYC = ({ data, empId }: KYCProps) => {
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="accountHolderName" className="mb-2 text-left">
-              Acount Name<span className="text-destructive/90">*</span>
+              Account Name <span className="text-destructive/90">*</span>
             </Label>
             <Controller
               name="accountHolderName"

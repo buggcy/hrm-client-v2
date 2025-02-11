@@ -60,6 +60,8 @@ export function EduEpxDialog({
 
   const {
     watch,
+    setError,
+    clearErrors,
     handleSubmit,
     setValue,
     register,
@@ -306,6 +308,20 @@ export function EduEpxDialog({
                 id="referenceNumber"
                 {...register('referenceNumber')}
                 placeholder="03XXXXXXXXX"
+                onBlur={() => {
+                  const phone = watch('referenceNumber');
+                  const strippedVal = phone?.replace(/^(03|\+923)/, '');
+                  const isDigit = /^\d+$/.test(strippedVal || '');
+                  if (phone && (strippedVal?.length !== 9 || !isDigit)) {
+                    setError('referenceNumber', {
+                      type: 'manual',
+                      message:
+                        'Phone number must have exactly 9 digits after 03 or +923',
+                    });
+                  } else {
+                    clearErrors('referenceNumber');
+                  }
+                }}
               />
               {errors.referenceNumber && (
                 <span className="text-xs text-red-500">

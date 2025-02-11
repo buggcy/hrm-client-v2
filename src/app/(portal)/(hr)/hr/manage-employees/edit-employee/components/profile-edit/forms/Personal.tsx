@@ -377,9 +377,7 @@ const Personal = ({ empId, data }: PersonalProps) => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup className="text-sm">
-                      <SelectItem value="married" disabled>
-                        Married
-                      </SelectItem>
+                      <SelectItem value="married">Married</SelectItem>
                       <SelectItem value="unmarried">Unmarried</SelectItem>
                     </SelectGroup>
                   </SelectContent>

@@ -20,8 +20,8 @@ import { PerkListStoreType } from '@/stores/hr/perk-list';
 import { MessageErrorResponse } from '@/types';
 
 const addPerkSchema = z.object({
-  name: z.string(),
-  description: z.string().optional(),
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required'),
   salaryIncrement: z.boolean(),
   salaryDecrement: z.boolean(),
 });
@@ -34,6 +34,8 @@ const AddPerksForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
+    clearErrors,
   } = useForm<AddPerkFormData>({
     resolver: zodResolver(addPerkSchema),
     defaultValues: {
@@ -62,10 +64,23 @@ const AddPerksForm = () => {
       });
       reset();
       setRefetchPerkList(true);
+      clearErrors();
     },
   });
   const onSubmit = (data: AddPerkFormData) => {
-    addPerkData(data);
+    if (data.salaryIncrement && data.salaryDecrement) {
+      setError('salaryDecrement', {
+        message: 'Salary Increment and Decrement cannot be selected together',
+      });
+      return;
+    } else if (!data.salaryIncrement && !data.salaryDecrement) {
+      setError('salaryDecrement', {
+        message: 'Select either Salary Increment or Decrement',
+      });
+      return;
+    } else {
+      addPerkData(data);
+    }
   };
   return (
     <div>
