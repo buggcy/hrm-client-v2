@@ -271,15 +271,39 @@ export const LeaveRequestCard = ({
             <p className="text-sm font-semibold">Start Date</p>
             <span className="text-sm font-medium text-muted-foreground">
               {person?.Start_Date
-                ? new Date(person?.Start_Date).toDateString()
-                : 'N/A'}{' '}
+                ? (() => {
+                    const field = new Date(Date.parse(person?.Start_Date));
+                    const day = field.toLocaleDateString('en-US', {
+                      weekday: 'short',
+                    });
+                    const date = field.toDateString().slice(4);
+                    return (
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline">{day}</Badge>
+                        <span className="max-w-[500px] truncate">{date}</span>
+                      </div>
+                    );
+                  })()
+                : 'N/A'}
             </span>
           </div>
           <div className="flex justify-between">
             <p className="text-sm font-semibold">End Date</p>
             <span className="text-sm font-medium text-muted-foreground">
               {person?.End_Date
-                ? new Date(person?.End_Date).toDateString()
+                ? (() => {
+                    const field = new Date(Date.parse(person?.End_Date));
+                    const day = field.toLocaleDateString('en-US', {
+                      weekday: 'short',
+                    });
+                    const date = field.toDateString().slice(4);
+                    return (
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline">{day}</Badge>
+                        <span className="max-w-[500px] truncate">{date}</span>
+                      </div>
+                    );
+                  })()
                 : 'N/A'}
             </span>
           </div>

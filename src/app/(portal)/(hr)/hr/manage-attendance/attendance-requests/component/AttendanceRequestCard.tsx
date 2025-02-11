@@ -184,11 +184,19 @@ export const AttendanceRequestCard = ({
             <p className="text-sm font-semibold">Date</p>
             <span className="text-sm font-medium text-muted-foreground">
               {request?.date
-                ? new Date(request.date).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric',
-                  })
+                ? (() => {
+                    const field = new Date(Date.parse(request?.date));
+                    const day = field.toLocaleDateString('en-US', {
+                      weekday: 'short',
+                    });
+                    const date = field.toDateString().slice(4);
+                    return (
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline">{day}</Badge>
+                        <span className="max-w-[500px] truncate">{date}</span>
+                      </div>
+                    );
+                  })()
                 : 'N/A'}
             </span>
           </div>
@@ -250,7 +258,7 @@ export const AttendanceRequestCard = ({
             onClick={() => {
               handleReject(request?._id);
             }}
-            disabled={AcceptPending || RejectPending}
+            disabled={RejectPending}
           >
             Reject Request
           </Button>
@@ -260,7 +268,7 @@ export const AttendanceRequestCard = ({
             onClick={() => {
               handleAccept(request?._id);
             }}
-            disabled={AcceptPending || RejectPending}
+            disabled={AcceptPending}
           >
             Accept Request
           </Button>

@@ -13,8 +13,10 @@ import {
   CircleFadingPlus,
   HelpCircle,
   Loader,
+  Minus,
   PackagePlus,
   PersonStanding,
+  Plus,
   ScrollText,
   Sun,
   Timer,
@@ -160,12 +162,12 @@ export const perk_type_options = [
   {
     value: 'Increment',
     label: 'Increment',
-    icon: Circle,
+    icon: Plus,
   },
   {
     value: 'Decrement',
     label: 'Decrement',
-    icon: Circle,
+    icon: Minus,
   },
 ];
 

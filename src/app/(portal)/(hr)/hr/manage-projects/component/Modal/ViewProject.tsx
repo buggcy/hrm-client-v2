@@ -58,6 +58,28 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
 
           {activeTab === 'project' && (
             <>
+              <div className="flex justify-end">
+                <Badge
+                  className="capitalize"
+                  variant={
+                    data?.status === 'Completed'
+                      ? 'success'
+                      : data?.status === 'Overdue'
+                        ? 'destructive'
+                        : data?.status === 'Pending'
+                          ? 'secondary'
+                          : data?.status === 'Cancelled'
+                            ? 'error'
+                            : data?.status === 'In Progress'
+                              ? 'default'
+                              : data?.status === 'Not Started'
+                                ? 'progress'
+                                : 'warning'
+                  }
+                >
+                  {data?.status || 'N/A'}
+                </Badge>
+              </div>
               <div className="flex flex-row justify-between">
                 <div className="w-5/12">
                   <p className="text-sm font-semibold">Project Name</p>
@@ -78,33 +100,7 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-row justify-between">
-                <div className="w-5/12">
-                  <p className="text-sm font-semibold">Project Status</p>
-                </div>
-                <div className="w-7/12">
-                  <Badge
-                    className="capitalize"
-                    variant={
-                      data?.status === 'Completed'
-                        ? 'success'
-                        : data?.status === 'Overdue'
-                          ? 'destructive'
-                          : data?.status === 'Pending'
-                            ? 'secondary'
-                            : data?.status === 'Cancelled'
-                              ? 'error'
-                              : data?.status === 'In Progress'
-                                ? 'warning'
-                                : data?.status === 'Not Started'
-                                  ? 'progress'
-                                  : 'default'
-                    }
-                  >
-                    {data?.status || 'N/A'}
-                  </Badge>
-                </div>
-              </div>
+
               {data?.status === 'Cancelled' && (
                 <div className="flex flex-row justify-between">
                   <div className="w-5/12">
@@ -119,22 +115,65 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
               )}
               <div className="flex flex-row justify-between">
                 <div className="w-5/12">
-                  <p className="text-sm font-semibold">Project Duration</p>
+                  <p className="text-sm font-semibold">Project Start Date</p>
                 </div>
                 <div className="w-7/12">
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     {data?.startDate
-                      ? new Date(data?.startDate).toDateString()
-                      : 'N/A'}{' '}
-                    {' - '}
-                    {data?.isContinue === true
-                      ? 'Continue'
-                      : data?.endDate
-                        ? new Date(data?.endDate).toDateString()
-                        : 'N/A'}
+                      ? (() => {
+                          const field = new Date(Date.parse(data?.startDate));
+                          const day = field.toLocaleDateString('en-US', {
+                            weekday: 'short',
+                          });
+                          const date = field.toDateString().slice(4);
+                          return (
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline">{day}</Badge>
+                              <span className="max-w-[500px] truncate">
+                                {date}
+                              </span>
+                            </div>
+                          );
+                        })()
+                      : 'N/A'}
                   </p>
                 </div>
               </div>
+
+              <div className="flex flex-row justify-between">
+                <div className="w-5/12">
+                  <p className="text-sm font-semibold">Project End Date</p>
+                </div>
+                <div className="w-7/12">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {data?.isContinue === true ? (
+                      'Continue'
+                    ) : (
+                      <>
+                        {' '}
+                        {data?.endDate
+                          ? (() => {
+                              const field = new Date(Date.parse(data?.endDate));
+                              const day = field.toLocaleDateString('en-US', {
+                                weekday: 'short',
+                              });
+                              const date = field.toDateString().slice(4);
+                              return (
+                                <div className="flex items-center space-x-2">
+                                  <Badge variant="outline">{day}</Badge>
+                                  <span className="max-w-[500px] truncate">
+                                    {date}
+                                  </span>
+                                </div>
+                              );
+                            })()
+                          : 'N/A'}
+                      </>
+                    )}
+                  </p>
+                </div>
+              </div>
+
               <div className="flex flex-row justify-between">
                 <div className="w-5/12">
                   <p className="text-sm font-semibold">Project Deadline</p>
@@ -142,8 +181,22 @@ const ViewProject = ({ open, onCloseChange, data }: ModelProps) => {
                 <div className="w-7/12">
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     {data?.deadline
-                      ? new Date(data?.deadline).toDateString()
-                      : 'N/A'}{' '}
+                      ? (() => {
+                          const field = new Date(Date.parse(data?.deadline));
+                          const day = field.toLocaleDateString('en-US', {
+                            weekday: 'short',
+                          });
+                          const date = field.toDateString().slice(4);
+                          return (
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline">{day}</Badge>
+                              <span className="max-w-[500px] truncate">
+                                {date}
+                              </span>
+                            </div>
+                          );
+                        })()
+                      : 'N/A'}
                   </p>
                 </div>
               </div>

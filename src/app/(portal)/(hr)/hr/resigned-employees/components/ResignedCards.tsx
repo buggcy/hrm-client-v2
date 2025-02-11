@@ -101,7 +101,7 @@ export const ResignedRequestCard = ({
     <>
       <Card
         className={cn(
-          'group flex h-full flex-col justify-between rounded-md p-4 outline-primary hover:shadow',
+          'group flex flex-col justify-between rounded-md p-4 outline-primary hover:shadow',
           {
             'ring ring-primary': selected,
             'cursor-pointer': isSelectable,
@@ -166,10 +166,10 @@ export const ResignedRequestCard = ({
             </p>
           </div>
           {person?.type && (
-            <div className="flex justify-between">
+            <div className="mt-2 flex justify-between">
               <p className="text-sm font-semibold">{'Resignation Type'}</p>
               <span className="text-sm font-medium text-muted-foreground">
-                {person?.type}
+                {person?.type.charAt(0).toUpperCase() + person?.type.slice(1)}
               </span>
             </div>
           )}
@@ -177,18 +177,77 @@ export const ResignedRequestCard = ({
             <p className="text-sm font-semibold">{'Applied Date'}</p>
             <span className="text-sm font-medium text-muted-foreground">
               {person?.appliedDate
-                ? new Date(person?.appliedDate).toDateString()
+                ? (() => {
+                    const field = new Date(Date.parse(person?.appliedDate));
+                    const day = field.toLocaleDateString('en-US', {
+                      weekday: 'short',
+                    });
+                    const date = field.toDateString().slice(4);
+                    return (
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline">{day}</Badge>
+                        <span className="max-w-[500px] truncate">{date}</span>
+                      </div>
+                    );
+                  })()
                 : 'N/A'}
             </span>
           </div>
-          <div className="flex justify-between">
-            <p className="text-sm font-semibold">{'Assigned Date'}</p>
-            <span className="text-sm font-medium text-muted-foreground">
-              {person?.assignedDate
-                ? new Date(person.assignedDate).toDateString()
-                : 'N/A'}
-            </span>
-          </div>
+          {person?.type === 'immediate' ? (
+            <>
+              <div className="flex justify-between">
+                <p className="text-sm font-semibold">{'Immediate Date'}</p>
+                <span className="text-sm font-medium text-muted-foreground">
+                  {person?.immedaiteDate
+                    ? (() => {
+                        const field = new Date(
+                          Date.parse(person.immedaiteDate),
+                        );
+                        const day = field.toLocaleDateString('en-US', {
+                          weekday: 'short',
+                        });
+                        const date = field.toDateString().slice(4);
+                        return (
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="outline">{day}</Badge>
+                            <span className="max-w-[500px] truncate">
+                              {date}
+                            </span>
+                          </div>
+                        );
+                      })()
+                    : 'N/A'}
+                </span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between">
+                <p className="text-sm font-semibold">{'Assigned Date'}</p>
+                <span className="text-sm font-medium text-muted-foreground">
+                  {person?.assignedDate
+                    ? (() => {
+                        const field = new Date(
+                          Date.parse(person?.assignedDate),
+                        );
+                        const day = field.toLocaleDateString('en-US', {
+                          weekday: 'short',
+                        });
+                        const date = field.toDateString().slice(4);
+                        return (
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="outline">{day}</Badge>
+                            <span className="max-w-[500px] truncate">
+                              {date}
+                            </span>
+                          </div>
+                        );
+                      })()
+                    : 'N/A'}
+                </span>
+              </div>
+            </>
+          )}
           <div className="flex justify-between">
             <p className="text-sm font-semibold">{'Reason'}</p>
             <span className="text-sm font-medium text-muted-foreground">

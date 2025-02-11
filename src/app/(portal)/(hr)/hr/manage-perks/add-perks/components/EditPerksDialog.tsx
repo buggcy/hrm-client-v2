@@ -131,7 +131,7 @@ export function EditPerksDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="p-8">
         <DialogHeader>
-          <DialogTitle>Add Perk</DialogTitle>
+          <DialogTitle>{type === 'edit' ? 'Edit' : 'Add'} Perk</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 py-4">
           <div className="grid grid-cols-1 gap-8">
@@ -221,7 +221,7 @@ export function EditPerksDialog({
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isAdding || isUpdating}>
-              {type === 'edit' ? 'Update' : 'Add'}
+              {type === 'edit' ? 'Edit' : 'Add'}
             </Button>
           </DialogFooter>
         </form>

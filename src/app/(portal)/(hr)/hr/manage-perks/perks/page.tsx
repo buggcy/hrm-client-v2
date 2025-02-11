@@ -21,6 +21,7 @@ import {
 } from '@/hooks/hrPerksList/useHrPerksList.hook';
 import { AuthStoreType } from '@/stores/auth';
 import { PerkListStoreType } from '@/stores/hr/perk-list';
+import { formatedDate } from '@/utils';
 
 import { PerkRequests } from './components/charts/PerkRequestsStats';
 import { PerkStats } from './components/charts/PerkStats';
@@ -38,7 +39,10 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
   const { setRefetchPerkList, refetchPerkList } = perkListStore;
 
   const router = useRouter();
-  const { data: perkRequests } = useHrPerkRequestsQuery({});
+  const { data: perkRequests } = useHrPerkRequestsQuery({
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
+  });
   const { data: hrPerkRecords, refetch: refetchRecord } =
     useHrPerkRecordQuery();
   useEffect(() => {
@@ -50,6 +54,7 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
       setRefetchPerkList(false);
     }
   }, [refetchPerkList, setRefetchPerkList, refetchRecord]);
+
   return (
     <Layout>
       <HighTrafficBanner />

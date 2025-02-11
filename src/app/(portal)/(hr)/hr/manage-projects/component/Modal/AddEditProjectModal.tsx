@@ -769,7 +769,7 @@ const AddEditProjectModal = ({
               type="submit"
               disabled={type === 'add' ? isPending : EditPending}
             >
-              {type === 'add' ? 'Add ' : 'Update '}
+              {type === 'add' ? 'Add ' : 'Edit '}
             </Button>
           </DialogFooter>
         </form>
