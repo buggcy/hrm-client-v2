@@ -63,7 +63,7 @@ export const employeePerkListColumns: ColumnDef<TransformedPerkData>[] = [
           {isDateValid ? (
             <p>{new Date(field).toDateString()}</p>
           ) : (
-            <p>To be Approved</p>
+            <p className="text-muted-foreground">To be Approved</p>
           )}
         </div>
       );

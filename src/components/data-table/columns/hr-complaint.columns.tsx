@@ -91,7 +91,7 @@ export const hrComplaintColumns: ColumnDef<ComplaintListType>[] = [
           </div>
         );
       } else if (status === 'Pending') {
-        content = <span className="text-yellow-600">In Process</span>;
+        content = <span className="text-muted-foreground">In Process</span>;
       } else if (status === 'Canceled') {
         content = <span className="text-red-600">-</span>;
       } else {
@@ -131,7 +131,7 @@ export const hrComplaintColumns: ColumnDef<ComplaintListType>[] = [
           </div>
         );
       } else if (status === 'Pending') {
-        content = <span className="text-yellow-600">Under Review</span>;
+        content = <span className="text-muted-foreground">Under Review</span>;
       } else if (status === 'Canceled') {
         content = <span className="text-red-600">-</span>;
       } else {
