@@ -60,23 +60,22 @@ export const employeeDobListColumns: ColumnDef<EmployeeDobTableListType>[] = [
     ),
     cell: ({ row }) => {
       const dobString: string = row.getValue('DOB');
+
       const dob = new Date(dobString);
       const currentDate = new Date();
 
       dob.setFullYear(currentDate.getFullYear());
 
-      let diffDays = Math.ceil(
-        (dob.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24),
-      );
-
-      if (diffDays < 0) {
+      if (dob < currentDate) {
         dob.setFullYear(currentDate.getFullYear() + 1);
-        diffDays = Math.ceil(
-          (dob.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24),
-        );
       }
 
+      const diffTime = dob.getTime() - currentDate.getTime();
+
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
       let displayText = '';
+
       if (diffDays === 0) {
         displayText = 'Today';
       } else if (diffDays === 1) {
@@ -84,17 +83,36 @@ export const employeeDobListColumns: ColumnDef<EmployeeDobTableListType>[] = [
       } else if (diffDays === -1) {
         displayText = 'Yesterday';
       } else {
-        const months = Math.floor(diffDays / 30);
-        const weeks = Math.floor((diffDays % 30) / 7);
-        const days = diffDays % 7;
+        const startDate = new Date(currentDate);
+        const endDate = new Date(dob);
+
+        let months = endDate.getMonth() - startDate.getMonth();
+        const years = endDate.getFullYear() - startDate.getFullYear();
+        months += years * 12;
+
+        const tempDate = new Date(startDate);
+        tempDate.setMonth(tempDate.getMonth() + months);
+
+        if (tempDate > endDate) {
+          months--;
+          tempDate.setMonth(tempDate.getMonth() - 1);
+        }
+
+        const remainingDays = Math.ceil(
+          (endDate.getTime() - tempDate.getTime()) / (1000 * 3600 * 24),
+        );
+
+        const weeks = Math.floor(remainingDays / 7);
+        const days = remainingDays % 7;
 
         const parts = [];
-        if (months > 0) parts.push(`${months} month${months > 1 ? 's' : ''}`);
-        if (weeks > 0) parts.push(`${weeks} week${weeks > 1 ? 's' : ''}`);
-        if (days > 0) parts.push(`${days} day${days > 1 ? 's' : ''}`);
+        if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
+        if (weeks > 0) parts.push(`${weeks} week${weeks !== 1 ? 's' : ''}`);
+        if (days > 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
 
         displayText = `${parts.join(', ')} left`;
       }
+
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">

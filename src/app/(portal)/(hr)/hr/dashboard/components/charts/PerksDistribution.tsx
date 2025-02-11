@@ -73,8 +73,8 @@ export function PerksDistribution({ data, from, to }: PerksDistributionProps) {
       <CardHeader className="pb-0">
         <CardTitle>Perk Requests</CardTitle>
         <CardDescription>
-          Showing total requests for the months of{' '}
-          {monthName === toMonth ? monthName : `${monthName} to ${toMonth}`}
+          Total requests from{' '}
+          {monthName === toMonth ? monthName : `${monthName} - ${toMonth}`}
         </CardDescription>
       </CardHeader>
       <CardContent className="h-full lg:pb-0">
