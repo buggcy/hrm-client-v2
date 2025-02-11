@@ -192,6 +192,29 @@ export const attendance_history_status_options = [
   },
 ];
 
+export const attendance_request_status_options = [
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Approved',
+    label: 'Approved',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Rejected',
+    label: 'Rejected',
+    icon: XCircle,
+  },
+  {
+    value: 'Cancelled',
+    label: 'Cancelled',
+    icon: XCircle,
+  },
+];
+
 export const leave_history_status_options = [
   {
     value: 'Approved',

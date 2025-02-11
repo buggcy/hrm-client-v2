@@ -26,7 +26,7 @@ import { useStores } from '@/providers/Store.Provider';
 import { AttendanceRequestType } from '@/libs/validations/attendance-history';
 import { requestAttendance } from '@/services/employee/attendance-request.service';
 import { AuthStoreType } from '@/stores/auth';
-import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
+import { AttendanceRequestStoreType } from '@/stores/employee/attendance-request';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -132,10 +132,10 @@ export function RequestAttendanceDialog({
     },
   });
 
-  const { attendanceListStore } = useStores() as {
-    attendanceListStore: AttendanceListStoreType;
+  const { attendanceRequestStore } = useStores() as {
+    attendanceRequestStore: AttendanceRequestStoreType;
   };
-  const { setRefetchAttendanceList } = attendanceListStore;
+  const { setRefetchAttendanceRequestList } = attendanceRequestStore;
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
@@ -191,7 +191,7 @@ export function RequestAttendanceDialog({
       });
       reset();
       onCloseChange();
-      setRefetchAttendanceList(true);
+      setRefetchAttendanceRequestList(true);
     },
   });
 

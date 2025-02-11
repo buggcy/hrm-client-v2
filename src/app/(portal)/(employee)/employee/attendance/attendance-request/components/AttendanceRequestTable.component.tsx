@@ -4,15 +4,15 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { DateRange } from 'react-day-picker';
 
-import { attendanceHistoryListColumns } from '@/components/data-table/columns/attendance-history-list.columns';
+import { attendanceRequestListColumns } from '@/components/data-table/columns/attendance-request-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useAttendanceHistoryListQuery } from '@/hooks/attendanceHistory/useAttendanceHistoryList.hook';
-import { AttendanceHistoryListType } from '@/libs/validations/attendance-history';
+import { useAttendanceRequests } from '@/hooks/employee/useEmployeeAttendanceRequest.hook';
+import { AttendanceRequest } from '@/libs/validations/attendance-request';
 import { AuthStoreType } from '@/stores/auth';
-import { AttendanceHistoryStoreType } from '@/stores/employee/attendance-history';
+import { AttendanceRequestStoreType } from '@/stores/employee/attendance-request';
 import { formatedDate } from '@/utils';
 
 interface AttendanceHistoryTableProps {
@@ -26,11 +26,11 @@ const AttendanceRequestTable: FunctionComponent<
   const { user } = authStore;
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { attendanceHistoryStore } = useStores() as {
-    attendanceHistoryStore: AttendanceHistoryStoreType;
+  const { attendanceRequestStore } = useStores() as {
+    attendanceRequestStore: AttendanceRequestStoreType;
   };
-  const { setRefetchAttendanceHistoryList, refetchAttendanceHistoryList } =
-    attendanceHistoryStore;
+  const { refetchAttendanceRequestList, setRefetchAttendanceRequestList } =
+    attendanceRequestStore;
 
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
@@ -42,19 +42,18 @@ const AttendanceRequestTable: FunctionComponent<
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
 
   const {
-    data: attendanceHistoryList,
+    data: attendanceRequestList,
     isLoading,
     isFetching,
-    error,
     refetch,
-  } = useAttendanceHistoryListQuery({
+  } = useAttendanceRequests({
     page,
     limit,
-    id: user?.Tahometer_ID,
+    userId: user?.id || '',
     from: formatedDate(dates?.from),
     to: formatedDate(dates?.to),
     status: statusFilter,
-    query: debouncedSearchTerm,
+    date: debouncedSearchTerm,
   });
 
   useEffect(() => {
@@ -68,14 +67,14 @@ const AttendanceRequestTable: FunctionComponent<
   }, [searchTerm]);
 
   useEffect(() => {
-    if (refetchAttendanceHistoryList) {
+    if (refetchAttendanceRequestList) {
       void (async () => {
         await refetch();
       })();
 
-      setRefetchAttendanceHistoryList(false);
+      setRefetchAttendanceRequestList(false);
     }
-  }, [refetchAttendanceHistoryList, setRefetchAttendanceHistoryList, refetch]);
+  }, [refetchAttendanceRequestList, setRefetchAttendanceRequestList, refetch]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -88,18 +87,10 @@ const AttendanceRequestTable: FunctionComponent<
     router.push(`?${params.toString()}`);
   };
 
-  if (error)
-    return (
-      <div className="py-4 text-center text-red-500">
-        Error: {error.message}
-      </div>
-    );
-
-  const tableData: AttendanceHistoryListType[] = (attendanceHistoryList?.data ||
-    []) as AttendanceHistoryListType[];
+  const tableData: AttendanceRequest[] = attendanceRequestList?.data || [];
 
   const tablePageCount: number | undefined =
-    attendanceHistoryList?.pagination.totalPages;
+    attendanceRequestList?.pagination.totalPages;
 
   return (
     <>
@@ -109,7 +100,7 @@ const AttendanceRequestTable: FunctionComponent<
         <DataTable
           searchLoading={isLoading || isFetching}
           data={tableData || []}
-          columns={attendanceHistoryListColumns}
+          columns={attendanceRequestListColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
@@ -118,7 +109,7 @@ const AttendanceRequestTable: FunctionComponent<
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
-          toolbarType="attendanceHistory"
+          toolbarType="attendanceRequests"
           setFilterValue={setStatusFilter}
           filterValue={statusFilter}
         />

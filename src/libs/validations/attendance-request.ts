@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-const attendance_request_status = ['Pending', 'Approved', 'Rejected'] as const;
+const attendance_request_status = [
+  'Pending',
+  'Approved',
+  'Rejected',
+  'Cancelled',
+] as const;
 
 const paginationSchema = z.object({
   page: z.number(),

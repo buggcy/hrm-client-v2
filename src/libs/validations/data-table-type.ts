@@ -9,12 +9,14 @@ import {
 import { PolicyType } from '@/libs/validations/hr-policy';
 import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
+import { AttendanceRequest } from './attendance-request';
 import { AnnouncementType } from './hr-announcements';
 import { HRPayrollListType } from './hr-payroll';
 import { HrPerksListType } from './hr-perks';
 import { PolicyListType } from './policies';
 
 type DataTableType =
+  | AttendanceRequest
   | AnnouncementType
   | PolicyListType
   | HrPerksListType
