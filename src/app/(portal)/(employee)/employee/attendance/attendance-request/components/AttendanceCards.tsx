@@ -5,6 +5,7 @@ import { DateRange } from 'react-day-picker';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useAttendanceRequestStats } from '@/hooks/employee/useEmployeeAttendanceRequest.hook';
+import { AuthStoreType } from '@/stores/auth';
 import { AttendanceRequestStoreType } from '@/stores/employee/attendance-request';
 import { formatedDate } from '@/utils';
 
@@ -19,9 +20,12 @@ interface AttendanceCardsProps {
 const AttendanceCards: FunctionComponent<AttendanceCardsProps> = ({
   dates,
 }) => {
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const { data, refetch } = useAttendanceRequestStats({
     from: formatedDate(dates?.from),
     to: formatedDate(dates?.to),
+    userId: user?.id,
   });
   const { attendanceRequestStore } = useStores() as {
     attendanceRequestStore: AttendanceRequestStoreType;

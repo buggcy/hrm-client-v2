@@ -13,6 +13,7 @@ export type SuccessMessageResponse = {
 export type AttendanceRequestStatsParams = {
   from?: string;
   to?: string;
+  userId?: string;
 };
 
 export type AttendanceRequestsParams = {
@@ -31,6 +32,7 @@ export const getAttendanceRequestStats = async (
   const defaultParams: AttendanceRequestStatsParams = {
     from: '',
     to: '',
+    userId: '',
   };
 
   const mergedParams = { ...defaultParams, ...params };

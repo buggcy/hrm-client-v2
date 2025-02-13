@@ -158,33 +158,34 @@ export function ViewLeaveHistoryDialog({
             </div>
           </div>
         )}
-        <div className="flex flex-row justify-between">
-          <div className="w-5/12">
-            <p className="text-sm font-semibold">Proof Document</p>
+        {data.Proof_Document && (
+          <div className="flex flex-row justify-between">
+            <div className="w-5/12">
+              <p className="text-sm font-semibold">Proof Document</p>
+            </div>
+            <div className="w-7/12">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Eye
+                          className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                          onClick={() =>
+                            data.Proof_Document &&
+                            window.open(String(data.Proof_Document), '_blank')
+                          }
+                          size={18}
+                        />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>Click to Preview Document</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </p>
+            </div>
           </div>
-          <div className="w-7/12">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span>
-                      <Eye
-                        className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
-                        onClick={() =>
-                          data.Proof_Document &&
-                          window.open(String(data.Proof_Document), '_blank')
-                        }
-                        size={18}
-                      />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>Click to Preview Document</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </p>
-          </div>
-        </div>
-
+        )}
         <div className="flex flex-col">
           <p className="text-sm font-semibold">Description</p>
           <p className="indent-16 text-sm text-gray-600 dark:text-gray-300">
