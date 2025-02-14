@@ -375,7 +375,7 @@ export function RequestAttendanceDialog({
 
           <DialogFooter>
             <Button type="submit" disabled={isPending}>
-              {type === 'add' ? 'Add' : 'Edit'} Attendance
+              Request Attendance
             </Button>
           </DialogFooter>
         </form>

@@ -101,7 +101,7 @@ export function PerkModal({
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
-        description: err.message || 'Error on avalied perks!',
+        description: err?.response?.data?.message || 'Error on avalied perks!',
         variant: 'error',
       });
     },

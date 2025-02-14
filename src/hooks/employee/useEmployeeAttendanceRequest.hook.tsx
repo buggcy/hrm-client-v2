@@ -24,6 +24,7 @@ export const useAttendanceRequestStats = (
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
+    enabled: !!params?.userId,
   }) as UseQueryResult<AttendanceRequestStatsAPIResponse, Error>;
 
 export const useAttendanceRequests = (

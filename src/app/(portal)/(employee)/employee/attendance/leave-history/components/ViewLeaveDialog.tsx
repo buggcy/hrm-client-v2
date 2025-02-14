@@ -86,32 +86,56 @@ export function ViewLeaveHistoryDialog({
             </p>
           </div>
         </div>
+
         <div className="flex flex-row justify-between">
           <div className="w-5/12">
-            <p className="text-sm font-semibold">Leave Duration</p>
+            <p className="text-sm font-semibold">Start Date</p>
           </div>
           <div className="w-7/12">
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              {startDate
-                ? new Date(startDate).toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric',
-                  })
-                : 'N/A'}{' '}
-              -{' '}
-              {endDate
-                ? new Date(endDate).toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric',
-                  })
+              {data?.Start_Date
+                ? (() => {
+                    const field = new Date(Date.parse(data?.Start_Date));
+                    const day = field.toLocaleDateString('en-US', {
+                      weekday: 'short',
+                    });
+                    const date = field.toDateString().slice(4);
+                    return (
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline">{day}</Badge>
+                        <span className="max-w-[500px] truncate">{date}</span>
+                      </div>
+                    );
+                  })()
                 : 'N/A'}
             </p>
           </div>
         </div>
+        <div className="flex flex-row justify-between">
+          <div className="w-5/12">
+            <p className="text-sm font-semibold">End Date</p>
+          </div>
+          <div className="w-7/12">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              {data?.End_Date
+                ? (() => {
+                    const field = new Date(Date.parse(data?.End_Date));
+                    const day = field.toLocaleDateString('en-US', {
+                      weekday: 'short',
+                    });
+                    const date = field.toDateString().slice(4);
+                    return (
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline">{day}</Badge>
+                        <span className="max-w-[500px] truncate">{date}</span>
+                      </div>
+                    );
+                  })()
+                : 'N/A'}
+            </p>
+          </div>
+        </div>
+
         <div className="flex flex-row justify-between">
           <div className="w-5/12">
             <p className="text-sm font-semibold">Days</p>
@@ -158,33 +182,34 @@ export function ViewLeaveHistoryDialog({
             </div>
           </div>
         )}
-        <div className="flex flex-row justify-between">
-          <div className="w-5/12">
-            <p className="text-sm font-semibold">Proof Document</p>
+        {data.Proof_Document && (
+          <div className="flex flex-row justify-between">
+            <div className="w-5/12">
+              <p className="text-sm font-semibold">Proof Document</p>
+            </div>
+            <div className="w-7/12">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Eye
+                          className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                          onClick={() =>
+                            data.Proof_Document &&
+                            window.open(String(data.Proof_Document), '_blank')
+                          }
+                          size={18}
+                        />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>Click to Preview Document</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </p>
+            </div>
           </div>
-          <div className="w-7/12">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span>
-                      <Eye
-                        className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
-                        onClick={() =>
-                          data.Proof_Document &&
-                          window.open(String(data.Proof_Document), '_blank')
-                        }
-                        size={18}
-                      />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>Click to Preview Document</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </p>
-          </div>
-        </div>
-
+        )}
         <div className="flex flex-col">
           <p className="text-sm font-semibold">Description</p>
           <p className="indent-16 text-sm text-gray-600 dark:text-gray-300">

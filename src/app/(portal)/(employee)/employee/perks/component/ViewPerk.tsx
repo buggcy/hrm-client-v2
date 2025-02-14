@@ -76,7 +76,19 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
             <div className="w-6/12">
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.dateApplied
-                  ? new Date(viewData.dateApplied).toDateString()
+                  ? (() => {
+                      const field = new Date(Date.parse(viewData?.dateApplied));
+                      const day = field.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                      });
+                      const date = field.toDateString().slice(4);
+                      return (
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{day}</Badge>
+                          <span className="max-w-[500px] truncate">{date}</span>
+                        </div>
+                      );
+                    })()
                   : 'N/A'}
               </p>
             </div>
