@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 
 import { HrPerkRequestListType } from '@/libs/validations/hr-perks';
 
+import { formatCurrency } from './hr-payroll.columns';
 import { PerkRequestListRowActions } from '../actions/hr-perk-requests-list.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
@@ -61,10 +62,11 @@ export const hrPerkListColumns: ColumnDef<HrPerkRequestListType>[] = [
       <DataTableColumnHeader column={column} title="Amount" />
     ),
     cell: ({ row }) => {
+      const amount: number = row.getValue('incrementAmount');
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue('incrementAmount')}
+            {formatCurrency(amount)}
           </span>
         </div>
       );

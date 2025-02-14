@@ -11,11 +11,11 @@ import { HRPayrollListType } from '@/libs/validations/hr-payroll';
 import { HRPayrollListRowActions } from '../actions/hr-payroll.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
-const formatCurrency = (amount: number | undefined) => {
+export const formatCurrency = (amount: number | undefined) => {
   if (amount === undefined) return 'Rs. 0.00';
   return `Rs. ${amount.toLocaleString('en-PK', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
   })}`;
 };
 

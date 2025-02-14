@@ -74,8 +74,8 @@ export const StackedRadialChart: React.FC<StackedRadialChartProps> = ({
       return `Rs. ${(amount / 1_000).toFixed(2)}k`;
     } else {
       return `Rs. ${amount.toLocaleString('en-PK', {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0,
       })}`;
     }
   };
