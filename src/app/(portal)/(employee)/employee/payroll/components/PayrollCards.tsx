@@ -59,9 +59,9 @@ const PayrollCards: FunctionComponent = () => {
     if (amount === undefined) {
       return 'Rs. 0.00';
     }
-    return `Rs. ${amount.toLocaleString('en-PK', {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
+    return `Rs ${amount.toLocaleString('en-PK', {
+      maximumFractionDigits: 0,
+      minimumFractionDigits: 0,
     })}`;
   };
 

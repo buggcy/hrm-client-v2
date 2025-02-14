@@ -67,24 +67,36 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ data }) => {
       icon: <ArrowUpRight color="#4779e5" />,
       title: 'Average Increment',
       value: records?.averages
-        ? Number(records?.averages?.averageIncrementAmount)?.toFixed(1) || '0'
-        : '0',
+        ? `Rs ${
+            Number(records?.averages?.averageIncrementAmount)
+              .toFixed(1)
+              .replace(/\.0$/, '') || '0'
+          }`
+        : 'Rs 0',
       color: '',
     },
     {
       icon: <Plus color="#4779e5" />,
       title: 'Total Increment',
       value: records?.records
-        ? String(records?.records?.totalIncrementAmount) || '0'
-        : '0',
+        ? `Rs ${
+            Number(records?.records?.totalIncrementAmount)
+              .toFixed(1)
+              .replace(/\.0$/, '') || '0'
+          }`
+        : 'Rs 0',
       color: '',
     },
     {
       icon: <ArrowDownRight color="#FF0000" />,
       title: 'Average Decrement',
       value: records?.averages
-        ? Number(records?.averages?.averageDecrementAmount)?.toFixed(1) || '0'
-        : '0',
+        ? `Rs ${
+            Number(records?.averages?.averageDecrementAmount)
+              .toFixed(1)
+              .replace(/\.0$/, '') || '0'
+          }`
+        : 'Rs 0',
       color: '',
     },
 
@@ -92,8 +104,12 @@ const PerkCards: FunctionComponent<PerkCardProps> = ({ data }) => {
       icon: <Minus color="#FF0000" />,
       title: 'Total Decrement',
       value: records?.records
-        ? String(records?.records?.totalDecrementAmount) || '0'
-        : '0',
+        ? `Rs ${
+            Number(records?.records?.totalDecrementAmount)
+              .toFixed(1)
+              .replace(/\.0$/, '') || '0'
+          }`
+        : 'Rs 0',
       color: '',
     },
   ];

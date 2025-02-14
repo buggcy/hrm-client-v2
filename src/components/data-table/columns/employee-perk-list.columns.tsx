@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 
 import { TransformedPerkData } from '@/libs/validations/perk';
 
+import { formatCurrency } from './hr-payroll.columns';
 import { PerkListRowActions } from '../actions/employee-perk-list.actions';
 import { DataTableColumnHeader } from '../data-table-column-header';
 
@@ -32,10 +33,11 @@ export const employeePerkListColumns: ColumnDef<TransformedPerkData>[] = [
       <DataTableColumnHeader column={column} title="Amount" />
     ),
     cell: ({ row }) => {
+      const amount: number = row.getValue('incrementAmount');
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue('incrementAmount')}
+            {formatCurrency(amount)}
           </span>
         </div>
       );

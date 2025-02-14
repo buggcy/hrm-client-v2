@@ -1,5 +1,5 @@
 'use client';
-import { FunctionComponent, Suspense } from 'react';
+import { FunctionComponent, Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Header from '@/components/Header/Header';
@@ -16,7 +16,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { AuthStoreType } from '@/stores/auth';
 
-import AddPerksForm from './components/AddPerksForm';
+import { AddPerksDialog } from './components/AddPerkDialog';
 import HrPerksListTable from './components/HrPerksListTable.component';
 
 interface AddPerksProps {}
@@ -24,8 +24,16 @@ interface AddPerksProps {}
 const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const router = useRouter();
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
   return (
     <Layout>
       <HighTrafficBanner />
@@ -46,12 +54,19 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
           >
             Assign Perks
           </Button>
+          <Button variant="default" onClick={handleDialogOpen}>
+            Add Perk
+          </Button>
         </Header>
-        <AddPerksForm />
         <Suspense fallback={<div>Loading...</div>}>
           <HrPerksListTable />
         </Suspense>
       </LayoutWrapper>
+      <AddPerksDialog
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        onCloseChange={handleDialogClose}
+      />
     </Layout>
   );
 };

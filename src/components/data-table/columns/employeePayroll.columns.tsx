@@ -13,8 +13,8 @@ import { DataTableColumnHeader } from '../data-table-column-header';
 const formatCurrency = (amount: number | undefined) => {
   if (amount === undefined) return 'Rs. 0.00';
   return `Rs. ${amount.toLocaleString('en-PK', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
   })}`;
 };
 

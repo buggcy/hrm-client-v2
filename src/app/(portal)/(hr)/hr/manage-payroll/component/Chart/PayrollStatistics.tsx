@@ -33,6 +33,23 @@ const Cards: FunctionComponent<CardsProps> = ({
   value,
   color,
 }) => {
+  const formatCurrency = (value: number | undefined) => {
+    if (!value) return '₨ 0';
+
+    const units = [
+      { threshold: 1_00_00_000, suffix: ' Cr' },
+      { threshold: 10_00_000, suffix: ' M' },
+    ];
+
+    for (const { threshold, suffix } of units) {
+      if (value >= threshold) {
+        return `₨ ${(value / threshold).toFixed(2).replace(/\.00$/, '')}${suffix}`;
+      }
+    }
+
+    return `₨ ${value.toLocaleString('en-PK', { maximumFractionDigits: 0 })}`;
+  };
+
   return (
     <Card className="w-full">
       <CardHeader className="p-4 pb-0" style={{ color: color }}>
@@ -41,7 +58,10 @@ const Cards: FunctionComponent<CardsProps> = ({
       <CardContent className="flex items-center justify-between p-4 sm:gap-2">
         <div className="flex flex-col gap-4">
           <p className="text-xs">{title}</p>
-          <p className="truncate text-xl font-bold md:text-2xl">{value}</p>
+          <p className="truncate text-xl font-bold md:text-2xl">
+            {' '}
+            {formatCurrency(value)}
+          </p>
         </div>
       </CardContent>
     </Card>
