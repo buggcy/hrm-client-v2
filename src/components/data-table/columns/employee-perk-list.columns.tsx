@@ -3,6 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { perk_status_options } from '@/components/filters';
+import { Badge } from '@/components/ui/badge';
 
 import { TransformedPerkData } from '@/libs/validations/perk';
 
@@ -47,7 +48,14 @@ export const employeePerkListColumns: ColumnDef<TransformedPerkData>[] = [
     ),
     cell: ({ row }) => {
       const field = new Date(Date.parse(row.getValue('dateApplied')));
-      return <div>{field?.toDateString()}</div>;
+      const day = field.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = field.toDateString().slice(4);
+      return (
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline">{day}</Badge>
+          <span className="max-w-[500px] truncate">{date}</span>
+        </div>
+      );
     },
   },
   {
@@ -58,10 +66,16 @@ export const employeePerkListColumns: ColumnDef<TransformedPerkData>[] = [
     cell: ({ row }) => {
       const field = row.getValue('decisionDate');
       const isDateValid = typeof field === 'string' && Date.parse(field);
+      const getDate = new Date(Date.parse(row.getValue('decisionDate')));
+      const day = getDate.toLocaleDateString('en-US', { weekday: 'short' });
+      const date = getDate.toDateString().slice(4);
       return (
         <div>
           {isDateValid ? (
-            <p>{new Date(field).toDateString()}</p>
+            <div className="flex items-center space-x-2">
+              <Badge variant="outline">{day}</Badge>
+              <span className="max-w-[500px] truncate">{date}</span>
+            </div>
           ) : (
             <p className="text-muted-foreground">To be Approved</p>
           )}
