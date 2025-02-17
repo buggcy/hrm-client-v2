@@ -65,7 +65,9 @@ export const LeaveRequestCard = ({
     leaveListStore: LeaveListStoreType;
   };
   const { setRefetchLeaveList } = leaveListStore;
-  const { data: allowLeaveList } = useAllowLeaveListQuery(person?.User_ID?._id);
+  const { data: allowLeaveList, refetch } = useAllowLeaveListQuery(
+    person?.User_ID?._id,
+  );
 
   const { mutate: AcceptMutate, isPending: AcceptPending } = useMutation({
     mutationFn: ({ id, hrId }: { id: string; hrId: string | undefined }) =>
@@ -78,13 +80,14 @@ export const LeaveRequestCard = ({
         variant: 'error',
       });
     },
-    onSuccess: response => {
+    onSuccess: async response => {
       toast({
         title: 'Success',
         description: response?.message,
         variant: 'success',
       });
       setRefetchLeaveList(true);
+      await refetch();
       setShowAcceptDialog(false);
     },
   });

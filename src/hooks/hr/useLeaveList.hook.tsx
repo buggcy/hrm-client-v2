@@ -79,4 +79,5 @@ export const useAllowLeaveListQuery = (
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
+    enabled: !!id,
   }) as UseQueryResult<EmployeeLeavesDataApiResponse, Error>;
