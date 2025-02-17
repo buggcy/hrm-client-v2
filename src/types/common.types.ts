@@ -38,6 +38,7 @@ export interface SuccessResponse {
 
 export interface MessageErrorResponse {
   message: string;
+  error?: string;
 }
 
 export interface MessageErrorResponseWithError {

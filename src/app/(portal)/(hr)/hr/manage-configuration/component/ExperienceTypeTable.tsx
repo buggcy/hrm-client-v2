@@ -74,8 +74,8 @@ const ExperienceTypeTable: FunctionComponent<ExperienceTypeTableProps> = () => {
       toast({
         title: 'Error',
         description:
-          axiosError?.response?.data?.message ||
-          'Error on fetching search data!',
+          axiosError?.response?.data?.error ||
+          'An unexpected error occurred. Please try again later or contact support if the issue persists.',
         variant: 'error',
       });
     },
