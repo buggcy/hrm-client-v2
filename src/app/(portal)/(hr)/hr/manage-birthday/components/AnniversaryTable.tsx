@@ -61,8 +61,9 @@ const AnniversaryTable: FunctionComponent = () => {
       toast({
         title: 'Error',
         description:
+          axiosError?.response?.data?.error ||
           axiosError?.response?.data?.message ||
-          'Error on fetching search data!',
+          'An unexpected error occurred. Please try again later or contact support if the issue persists.',
         variant: 'error',
       });
     },

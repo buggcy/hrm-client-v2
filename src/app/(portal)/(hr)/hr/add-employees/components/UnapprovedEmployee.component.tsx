@@ -52,6 +52,7 @@ const UnApprovedEmployeeTable: FunctionComponent = () => {
       toast({
         title: 'Error',
         description:
+          axiosError?.response?.data?.error ||
           axiosError?.response?.data?.message ||
           'Error on fetching search data!',
         variant: 'error',
