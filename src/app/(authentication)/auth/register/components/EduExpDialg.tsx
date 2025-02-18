@@ -136,6 +136,7 @@ export function EduEpxDialog({
               onValueChange={(value: 'education' | 'experience') => {
                 if (value === 'education' || value === 'experience') {
                   setValue('type', value);
+                  clearErrors('type');
                 }
               }}
             >
@@ -179,6 +180,7 @@ export function EduEpxDialog({
               onDateChange={date => {
                 if (date) {
                   setValue('Start_Date', date);
+                  clearErrors('Start_Date');
                 }
               }}
               disabled={date => date > new Date()}
@@ -200,6 +202,7 @@ export function EduEpxDialog({
               onDateChange={date => {
                 if (date) {
                   setValue('End_Date', date);
+                  clearErrors('End_Date');
                 }
               }}
               disabled={date => date > new Date()}
@@ -260,6 +263,7 @@ export function EduEpxDialog({
               onValueChange={value => {
                 if (value) {
                   setValue('documentType', value);
+                  clearErrors('documentType');
                 }
               }}
             >
@@ -360,6 +364,7 @@ export function EduEpxDialog({
               onChange={e => {
                 const file = e.target?.files?.[0] || '';
                 setValue('Document', file);
+                clearErrors('Document');
               }}
               accept="image/jpeg, image/png, image/jpg, application/pdf"
               type="file"

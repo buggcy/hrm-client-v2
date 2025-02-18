@@ -44,19 +44,29 @@ const verifyCodeSchema = z.object({
 type verifyCodeFormType = z.infer<typeof verifyCodeSchema>;
 
 const imageFileSchema = z
-  .instanceof(File)
+  .any()
+  .refine(file => file instanceof File, { message: 'File is required.' })
   .refine(
     file =>
+      file &&
       ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'].includes(
         file.type,
       ),
     { message: 'File must be a JPG, JPEG, PNG image or a PDF document.' },
   )
-  .refine(file => file.size / 1024 <= 200, {
+  .refine(file => file && file.size / 1024 <= 200, {
     message: 'File size must be less than 200KB.',
   });
 
-const imageSchema = z.union([z.string().url(), imageFileSchema]);
+const imageSchema = z.preprocess(
+  value => {
+    if (typeof value === 'string' && value.trim() === '') {
+      return null;
+    }
+    return value;
+  },
+  z.union([imageFileSchema, z.string().url()]),
+);
 
 export type ImageUrlType = z.infer<typeof imageSchema>;
 
