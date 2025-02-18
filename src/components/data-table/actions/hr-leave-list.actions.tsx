@@ -23,6 +23,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import AcceptRejectLeaveDialog from '@/app/(portal)/(hr)/hr/manage-attendance/leave-list/components/Modal/AcceptRejectLeaveModal';
 import ViewLeaveList from '@/app/(portal)/(hr)/hr/manage-attendance/leave-list/components/Modal/ViewLeaveModal';
+import { useAllowLeaveListQuery } from '@/hooks/hr/useLeaveList.hook';
 import { LeaveListType } from '@/libs/validations/hr-leave-list';
 import {
   acceptLeaveRecord,
@@ -54,6 +55,7 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
     leaveListStore: LeaveListStoreType;
   };
   const { setRefetchLeaveList } = leaveListStore;
+  const { refetch } = useAllowLeaveListQuery(data?.User_ID?._id);
 
   const viewToggle = () => {
     setIsView(false);
@@ -68,13 +70,14 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
         variant: 'error',
       });
     },
-    onSuccess: response => {
+    onSuccess: async response => {
       toast({
         title: 'Success',
         description: response?.message,
         variant: 'success',
       });
       setRefetchLeaveList(true);
+      await refetch();
       setShowDeleteDialog(false);
     },
   });
@@ -90,13 +93,14 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
         variant: 'error',
       });
     },
-    onSuccess: response => {
+    onSuccess: async response => {
       toast({
         title: 'Success',
         description: response?.message,
         variant: 'success',
       });
       setRefetchLeaveList(true);
+      await refetch();
       setShowAcceptDialog(false);
     },
   });
