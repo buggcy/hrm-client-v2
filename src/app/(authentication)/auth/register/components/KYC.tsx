@@ -145,8 +145,10 @@ export function KYC({
             <Input
               id="cnicFrontPicture"
               onChange={e => {
-                const file = e.target?.files?.[0] || '';
-                setValue('kyc.cnicFrontPicture', file);
+                const file = e.target.files?.[0] || '';
+                setValue('kyc.cnicFrontPicture', file, {
+                  shouldValidate: true,
+                });
               }}
               accept="image/jpeg, image/png, image/jpg"
               type="file"
@@ -177,7 +179,9 @@ export function KYC({
               id="cnicBackPicture"
               onChange={e => {
                 const file = e.target?.files?.[0] || '';
-                setValue('kyc.cnicBackPicture', file);
+                setValue('kyc.cnicBackPicture', file, {
+                  shouldValidate: true,
+                });
               }}
               accept="image/jpeg, image/png, image/jpg"
               type="file"

@@ -69,7 +69,8 @@ const LeaveApproval: FunctionComponent<HrLeaveRequestsProps> = () => {
           setDate={handleSetDate}
         />
       </Header>
-      <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-4 lg:gap-6">
+
+      <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-6 xl:grid-cols-2 2xl:grid-cols-4">
         {isLoading || isFetching ? (
           <Skeleton className="h-6 w-full" />
         ) : getPendingLeaveRequest?.pagination?.totalCount &&

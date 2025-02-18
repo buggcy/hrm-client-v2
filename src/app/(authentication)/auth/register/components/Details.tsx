@@ -2,23 +2,18 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@radix-ui/react-popover';
-import {
   Select,
   SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@radix-ui/react-select';
-import { format, isAfter, subYears } from 'date-fns';
-import { CalendarIcon, ChevronDown } from 'lucide-react';
+import { isAfter, subYears } from 'date-fns';
+import { ChevronDown } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,7 +24,6 @@ import {
   useCountries,
   useStates,
 } from '@/hooks/country/useCountryOption.hook';
-import { cn } from '@/utils';
 
 import { MainFormData } from './VerifyCodeForm';
 
@@ -221,38 +215,17 @@ export function Details({ onNext }: { onNext: () => void }) {
             <Label htmlFor="DOB" className="mb-2 text-left">
               Date of Birth <span className="text-red-600">*</span>
             </Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={'outline'}
-                  className={cn(
-                    'justify-start text-left font-normal',
-                    !dateOfBirth && 'text-muted-foreground',
-                  )}
-                >
-                  <CalendarIcon className="mr-2 size-4" />
-                  {dateOfBirth ? (
-                    format(dateOfBirth, 'PPP')
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="z-50 w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dateOfBirth || cutoffDate}
-                  defaultMonth={dateOfBirth}
-                  onSelect={date => {
-                    if (date && !isAfter(date, cutoffDate)) {
-                      setValue('additionalInfo.DOB', date);
-                    }
-                  }}
-                  className="z-50 mt-6 rounded-md border bg-white dark:bg-gray-800"
-                  disabled={date => isAfter(date, cutoffDate)}
-                />
-              </PopoverContent>
-            </Popover>
+
+            <CustomDayPicker
+              initialDate={dateOfBirth || cutoffDate}
+              onDateChange={date => {
+                if (date) {
+                  setValue('additionalInfo.DOB', date);
+                }
+              }}
+              disabled={date => isAfter(date, cutoffDate)}
+              className="h-auto"
+            />
             {errors.additionalInfo?.DOB && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.DOB.message}
