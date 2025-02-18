@@ -596,7 +596,7 @@ const ProfileTab: React.FC<UserProps> = ({ user }) => {
               htmlFor="address.street"
               className="col-span-12 mt-3 text-left md:col-span-4 lg:col-span-4 lg:text-right"
             >
-              Street
+              Street/Block/Apartment
             </Label>
             <div className="relative col-span-12 md:col-span-8 lg:col-span-8">
               <Controller

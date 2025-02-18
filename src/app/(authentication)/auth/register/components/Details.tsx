@@ -505,12 +505,12 @@ export function Details({ onNext }: { onNext: () => void }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="street" className="mb-2 text-left">
-              Street <span className="text-red-600">*</span>
+              Street/Block/Apartment<span className="text-red-600">*</span>
             </Label>
             <Input
               id="street"
               {...register('additionalInfo.Address.street')}
-              placeholder="Street Address"
+              placeholder="Street No, Block B, Apart"
             />
             {errors.additionalInfo?.Address?.street && (
               <span className="text-xs text-red-500">
@@ -525,7 +525,7 @@ export function Details({ onNext }: { onNext: () => void }) {
             <Input
               id="landMark"
               {...register('additionalInfo.Address.landMark')}
-              placeholder="Landmark"
+              placeholder="Enter a nearby landmark"
             />
           </div>
           <div className="flex flex-col">
@@ -688,12 +688,12 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="full" className="mb-2 text-left">
-              Description
+              Full Address
             </Label>
             <Input
               id="full"
               {...register('additionalInfo.Address.full')}
-              placeholder="Description"
+              placeholder="123 Main St, LHR, Pakistan"
             />
           </div>
         </div>
