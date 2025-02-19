@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
@@ -12,43 +12,62 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
+import { Button } from '@/components/ui/button';
 
+import { RefreshPayrollDialog } from './component/Model/RefreshModel';
 import PayrollCard from './component/PayrollCard';
 import PayrollTable from './components/PayrollTable.component';
 
 export default function ManagePayrollPage() {
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
+  const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
+  const handleRefreshDialogOpen = () => {
+    setRefreshDialogOpen(true);
+  };
 
+  const handleRefreshDialogClose = () => {
+    setRefreshDialogOpen(false);
+  };
   return (
-    <Layout>
-      <HighTrafficBanner />
-      <LayoutHeader title="Manage Payroll">
-        <LayoutHeaderButtonsBlock>
-          <Notification />
-        </LayoutHeaderButtonsBlock>
-      </LayoutHeader>
-      <LayoutWrapper wrapperClassName="flex flex-1">
-        <Header subheading="Swift payroll, zero stress, happier employees.">
-          <DateRangePicker
-            timeRange={timeRange}
-            selectedDate={selectedDate}
-            setTimeRange={setTimeRange}
-            setDate={handleSetDate}
-          />
-        </Header>
-        <div className="mt-6">
-          <Suspense fallback={<div>Loading...</div>}>
-            <PayrollCard dates={selectedDate} />
-          </Suspense>
-        </div>
+    <>
+      <Layout>
+        <HighTrafficBanner />
+        <LayoutHeader title="Manage Payroll">
+          <LayoutHeaderButtonsBlock>
+            <Notification />
+          </LayoutHeaderButtonsBlock>
+        </LayoutHeader>
+        <LayoutWrapper wrapperClassName="flex flex-1">
+          <Header subheading="Swift payroll, zero stress, happier employees.">
+            <DateRangePicker
+              timeRange={timeRange}
+              selectedDate={selectedDate}
+              setTimeRange={setTimeRange}
+              setDate={handleSetDate}
+            />
+            <Button size={'sm'} onClick={handleRefreshDialogOpen}>
+              Refresh Payroll
+            </Button>
+          </Header>
+          <div className="mt-6">
+            <Suspense fallback={<div>Loading...</div>}>
+              <PayrollCard dates={selectedDate} />
+            </Suspense>
+          </div>
 
-        <div className="mt-6">
-          <Suspense fallback={<div>Loading...</div>}>
-            <PayrollTable dates={selectedDate} />
-          </Suspense>
-        </div>
-      </LayoutWrapper>
-    </Layout>
+          <div className="mt-6">
+            <Suspense fallback={<div>Loading...</div>}>
+              <PayrollTable dates={selectedDate} />
+            </Suspense>
+          </div>
+        </LayoutWrapper>
+      </Layout>
+      <RefreshPayrollDialog
+        open={RefreshDialogOpen}
+        onOpenChange={handleRefreshDialogClose}
+        onCloseChange={handleRefreshDialogClose}
+      />
+    </>
   );
 }
