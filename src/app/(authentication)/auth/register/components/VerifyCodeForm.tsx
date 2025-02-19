@@ -26,6 +26,7 @@ import {
   maritalStatus,
 } from '@/libs/validations/employee';
 import { registerEmployee, verifyRegisterCode } from '@/services';
+import { formatedDate } from '@/utils';
 
 import { Details } from './Details';
 import { ExperienceTable } from './Experience';
@@ -305,6 +306,7 @@ export function VerifyCodeForm(): JSX.Element {
               Position: exp.Position || '',
               referenceNumber: exp.referenceNumber || '',
               user_id: exp.user_id || '',
+              _id: exp?._id,
             })) || [],
           Additional_Documents: additionalDocuments?.Document || [],
           additionalId: additionalDocuments?._id || '',
@@ -368,10 +370,10 @@ export function VerifyCodeForm(): JSX.Element {
 
     const educationExperiences = educationalDocument.educationExperiences.map(
       (entry, index) => ({
-        _id: entry._id || undefined,
+        _id: entry?._id,
         Institute: entry.Institute,
-        Start_Date: entry.Start_Date.toISOString(),
-        End_Date: entry.End_Date.toISOString(),
+        Start_Date: formatedDate(entry?.Start_Date),
+        End_Date: formatedDate(entry?.End_Date),
         type: entry.type,
         documentType: entry.documentType,
         Document: `Document${index}`,
