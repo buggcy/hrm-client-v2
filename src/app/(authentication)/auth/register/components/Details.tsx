@@ -8,9 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@radix-ui/react-select';
-import { isAfter, subYears } from 'date-fns';
 import { ChevronDown } from 'lucide-react';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import CustomDayPicker from '@/components/CustomDayPicker';
 import { Button } from '@/components/ui/button';
@@ -48,8 +47,6 @@ export function Details({ onNext }: { onNext: () => void }) {
   const { data: states } = useStates(selectedCountry);
   const { data: cities } = useCities(selectedCountry, selectedState);
 
-  const cutoffDate = subYears(new Date(), 18);
-  const dateOfBirth = watch('additionalInfo.DOB');
   const maritalStatus = watch('additionalInfo.Marital_Status');
   const bloodGroup = watch('additionalInfo.Blood_Group');
   const gender = watch('additionalInfo.Gender');
@@ -211,20 +208,22 @@ export function Details({ onNext }: { onNext: () => void }) {
               </span>
             )}
           </div>
+
           <div className="flex flex-col">
             <Label htmlFor="DOB" className="mb-2 text-left">
-              Date of Birth <span className="text-red-600">*</span>
+              Date of Birth
             </Label>
-
-            <CustomDayPicker
-              initialDate={dateOfBirth || cutoffDate}
-              onDateChange={date => {
-                if (date) {
-                  setValue('additionalInfo.DOB', date);
-                }
-              }}
-              disabled={date => isAfter(date, cutoffDate)}
-              className="h-auto"
+            <Controller
+              name="additionalInfo.DOB"
+              render={({ field }) => (
+                <CustomDayPicker
+                  initialDate={field.value ? new Date(field.value) : undefined}
+                  onDateChange={(date: Date | undefined) =>
+                    field.onChange(date ?? undefined)
+                  }
+                  className="h-auto"
+                />
+              )}
             />
             {errors.additionalInfo?.DOB && (
               <span className="text-xs text-red-500">
@@ -232,6 +231,7 @@ export function Details({ onNext }: { onNext: () => void }) {
               </span>
             )}
           </div>
+
           <div className="flex flex-col">
             <Label htmlFor="marital-status" className="mb-2 text-left">
               Marital Status
@@ -505,12 +505,12 @@ export function Details({ onNext }: { onNext: () => void }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-col">
             <Label htmlFor="street" className="mb-2 text-left">
-              Street <span className="text-red-600">*</span>
+              Street/Block/Apartment<span className="text-red-600">*</span>
             </Label>
             <Input
               id="street"
               {...register('additionalInfo.Address.street')}
-              placeholder="Street Address"
+              placeholder="Street No, Block B, Apart"
             />
             {errors.additionalInfo?.Address?.street && (
               <span className="text-xs text-red-500">
@@ -525,7 +525,7 @@ export function Details({ onNext }: { onNext: () => void }) {
             <Input
               id="landMark"
               {...register('additionalInfo.Address.landMark')}
-              placeholder="Landmark"
+              placeholder="Enter a nearby landmark"
             />
           </div>
           <div className="flex flex-col">
@@ -688,12 +688,12 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="full" className="mb-2 text-left">
-              Description
+              Full Address
             </Label>
             <Input
               id="full"
               {...register('additionalInfo.Address.full')}
-              placeholder="Description"
+              placeholder="123 Main St, LHR, Pakistan"
             />
           </div>
         </div>

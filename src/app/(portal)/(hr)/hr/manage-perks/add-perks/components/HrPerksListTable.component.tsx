@@ -63,7 +63,9 @@ const HrPerksListTable: FunctionComponent = () => {
     onError: err => {
       toast({
         title: 'Error',
-        description: err?.message || 'Error on fetching search data!',
+        description:
+          err?.message ||
+          'An unexpected error occurred. Please try again later or contact support if the issue persists.',
         variant: 'error',
       });
     },

@@ -261,11 +261,19 @@ export function AttendanceDialog({
     });
   };
 
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="md:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle> {type === 'add' ? 'Add' : 'Edit'} Employee</DialogTitle>
+          <DialogTitle>
+            {type === 'add' ? 'Add' : 'Edit'} Attendance
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 py-4">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">

@@ -44,9 +44,9 @@ export function AddAreaChart() {
   return (
     <Card className="h-[330px] w-[55%] max-lg:w-full">
       <CardHeader>
-        <CardTitle>Area Chart - Legend</CardTitle>
+        <CardTitle>Device Usage Analytics</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Tracking desktop and mobile logins for the last 6 months
         </CardDescription>
       </CardHeader>
       <CardContent>

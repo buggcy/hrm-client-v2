@@ -1,0 +1,63 @@
+import React from 'react';
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+
+import { AuthLayout } from '../Layout.component';
+
+const PageNotFound = () => {
+  return (
+    <AuthLayout maxWidth={false}>
+      <div className="mt-4 flex items-center justify-center bg-white dark:bg-gray-900 sm:mt-16 md:mt-28">
+        <div className="container mx-auto px-6 py-12 lg:flex lg:items-center lg:gap-12">
+          <div className="lg:w-1/2">
+            <p className="text-sm font-medium text-error dark:text-blue-400">
+              404 error
+            </p>
+            <h1 className="mt-3 text-2xl font-semibold text-gray-800 dark:text-white md:text-3xl">
+              Page not found
+            </h1>
+            <p className="mt-4 text-muted-foreground dark:text-gray-400">
+              Sorry, the page you are looking for doesn&apos;t exist.
+            </p>
+
+            <div className="mt-6 flex items-center gap-x-3">
+              <Button className="flex w-1/2 items-center justify-center gap-x-2 rounded-lg border bg-white px-5 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 sm:w-auto">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="size-5 rtl:rotate-180"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+                  />
+                </svg>
+                <span>Go back</span>
+              </Button>
+              <Button variant="default" asChild>
+                <Link href="/auth/sign-in" className="flex items-center">
+                  Return to Page
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          <div className="relative mt-12 w-full lg:mt-0 lg:w-1/2">
+            <img
+              className="w-full max-w-lg lg:mx-auto"
+              src="https://merakiui.com/images/components/illustration.svg"
+              alt="404 illustration"
+            />
+          </div>
+        </div>
+      </div>
+    </AuthLayout>
+  );
+};
+
+export default PageNotFound;
