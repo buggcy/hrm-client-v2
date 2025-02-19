@@ -2,12 +2,15 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import { ZodError } from 'zod';
+
 import { employeePerkListColumns } from '@/components/data-table/columns/employee-perk-list.columns';
 import { EmployeePerkDataTable } from '@/components/data-table/data-table-employee-perk';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import {
@@ -97,6 +100,29 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
     }
   }, [refetchPerkList, setRefetchPerkList, refetch, refetchRecord, status]);
 
+  useEffect(() => {
+    if (error) {
+      if (error instanceof ZodError) {
+        error.issues.forEach(issue => {
+          const path = issue.path;
+          const message = issue.message;
+
+          toast({
+            title: `Validation Error at ${path.join(', ')}`,
+            description: message,
+            variant: 'error',
+          });
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'An error occurred',
+          variant: 'error',
+        });
+      }
+    }
+  }, [error]);
+
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
@@ -111,7 +137,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Error: {error.message}
+        Failed to load Perks & Benefits. Please check the data.
       </div>
     );
 

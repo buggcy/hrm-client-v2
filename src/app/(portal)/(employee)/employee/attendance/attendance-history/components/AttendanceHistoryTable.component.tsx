@@ -3,10 +3,12 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { DateRange } from 'react-day-picker';
+import { ZodError } from 'zod';
 
 import { attendanceHistoryListColumns } from '@/components/data-table/columns/attendance-history-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useAttendanceHistoryListQuery } from '@/hooks/attendanceHistory/useAttendanceHistoryList.hook';
@@ -68,6 +70,29 @@ const AttendanceHistoryTable: FunctionComponent<
   }, [searchTerm]);
 
   useEffect(() => {
+    if (error) {
+      if (error instanceof ZodError) {
+        error.issues.forEach(issue => {
+          const path = issue.path;
+          const message = issue.message;
+
+          toast({
+            title: `Validation Error at ${path.join(', ')}`,
+            description: message,
+            variant: 'error',
+          });
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'An error occurred',
+          variant: 'error',
+        });
+      }
+    }
+  }, [error]);
+
+  useEffect(() => {
     if (refetchAttendanceHistoryList) {
       void (async () => {
         await refetch();
@@ -91,7 +116,7 @@ const AttendanceHistoryTable: FunctionComponent<
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Error: {error.message}
+        Failed to Attendance. Please check the data.
       </div>
     );
 
