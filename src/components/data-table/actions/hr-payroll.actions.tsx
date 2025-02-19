@@ -6,7 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
-import { Eye, HandCoins, MoreHorizontal } from 'lucide-react';
+import { Eye, HandCoins, MoreHorizontal, RefreshCw } from 'lucide-react';
+import moment from 'moment';
 import { createRoot } from 'react-dom/client';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -41,6 +42,7 @@ import Payslip from '@/app/(portal)/(employee)/employee/payroll/components/Paysl
 import { EmployeePayrollListType } from '@/libs/validations/employee';
 import { HRPayrollListType } from '@/libs/validations/hr-payroll';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
+import { refreshPayroll } from '@/services/hr/hr-payroll.service';
 import { payPayroll } from '@/services/hr/payroll.service';
 import { AuthStoreType } from '@/stores/auth';
 import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
@@ -202,10 +204,38 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
     },
   });
 
+  const { mutate: RefreshMutate } = useMutation({
+    mutationFn: refreshPayroll,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on refreshing the Payroll!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      setRefetchEmployeeList(true);
+    },
+  });
+
   const handlePay = (data: PayFormData) => {
     mutate(data);
   };
-
+  const handleRefresh = (row: HRPayrollListType) => {
+    const month = moment(row?.Date).format('MM');
+    const year = moment(row?.Date).format('YYYY');
+    RefreshMutate({
+      userIds: [row?.User_ID || ''],
+      month,
+      year,
+    });
+  };
   return (
     <Dialog>
       <DropdownMenu>
@@ -235,6 +265,15 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
             <DropdownMenuItem>
               <Eye className="mr-2 size-4" />
               View Payslip
+            </DropdownMenuItem>
+          </DialogTrigger>
+          <DialogTrigger
+            asChild
+            onClick={() => handleRefresh(data as HRPayrollListType)}
+          >
+            <DropdownMenuItem>
+              <RefreshCw className="mr-2 size-4" />
+              Refresh
             </DropdownMenuItem>
           </DialogTrigger>
         </DropdownMenuContent>

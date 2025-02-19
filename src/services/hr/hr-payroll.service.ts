@@ -4,6 +4,8 @@ import {
 } from '@/libs/validations/hr-payroll';
 import { baseAPI, schemaParse } from '@/utils';
 
+import { SuccessMessageResponse } from './employee.service';
+
 export interface PayrollRecordParams {
   from?: string;
   to?: string;
@@ -39,4 +41,21 @@ export const getPayrollStatistics = async (
     console.error('Error fetching payroll statistics:', error);
     throw error;
   }
+};
+
+export const refreshPayroll = async ({
+  userIds,
+  month,
+  year,
+}: {
+  userIds: string[];
+  month?: string;
+  year?: string;
+}): Promise<SuccessMessageResponse> => {
+  const body = { userIds, month, year };
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/manual-payroll`,
+    body,
+  );
+  return { message };
 };
