@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
@@ -23,12 +24,16 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { ViewTbaEmployeeDialog } from '@/app/(portal)/(hr)/hr/add-employees/components/ViewTbaEmployeeDialog.component';
+import { approvalSchema } from '@/app/(portal)/(hr)/hr/approval/ApprovalCard/ApprovalCard';
+import { RejectDialog } from '@/app/(portal)/(hr)/hr/approval/ApprovalCard/RejectDialog';
 import { AddEmployeeDialog } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
 import { EmployeeListType } from '@/libs/validations/employee';
 import {
   deleteEmployeeRecord,
+  employeeApprovalRequest,
   resendEmployeeInvitation,
 } from '@/services/hr/employee.service';
+import { AuthStoreType } from '@/stores/auth';
 import { EmployeeStoreType } from '@/stores/hr/employee';
 import { getWritePermissions } from '@/utils/permissions.utils';
 
@@ -42,19 +47,58 @@ export function UnapprovedEmployeeRowActions({
   row,
 }: DataTableRowActionsProps) {
   const writePermission = getWritePermissions('canWriteEmployees');
-  const [showDeleteDialog, setShowDeleteDialog] =
-    React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
 
-  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
+  const { employeeStore, authStore } = useStores() as {
+    employeeStore: EmployeeStoreType;
+    authStore: AuthStoreType;
+  };
   const { setRefetchEmployeeList } = employeeStore;
+  const { user } = authStore;
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-
-  const [tbaDialogOpen, setTbaDialogOpen] = React.useState(false);
-
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [tbaDialogOpen, setTbaDialogOpen] = useState(false);
   const data = row.original;
-
   const router = useRouter();
+
+  const { mutate } = useMutation({
+    mutationFn: resendEmployeeInvitation,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on adding employee!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+    },
+  });
+
+  const { mutate: rejectMutate, isPending: isRejectPending } = useMutation({
+    mutationFn: employeeApprovalRequest,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description: err?.response?.data?.message || 'Rejection failed',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response.message,
+        variant: 'success',
+      });
+      closeRejectDialog();
+    },
+  });
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -88,24 +132,41 @@ export function UnapprovedEmployeeRowActions({
     }
   };
 
-  const { mutate } = useMutation({
-    mutationFn: resendEmployeeInvitation,
-    onError: (err: AxiosError<MessageErrorResponse>) => {
+  const handleRejectClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsRejectDialogOpen(true);
+  };
+
+  const closeRejectDialog = () => {
+    setIsRejectDialogOpen(false);
+  };
+
+  const handleReject = (reason: string) => {
+    const rejectionData = {
+      isApproved: 'Rejected' as const,
+      hrId: user?.id || '',
+      employeeId: data._id,
+      rejectedReason: reason,
+    };
+
+    const validationResult = approvalSchema.safeParse(rejectionData);
+    if (validationResult.success) {
+      rejectMutate(rejectionData, {
+        onSuccess: () => {
+          closeRejectDialog();
+        },
+      });
+    } else {
+      const errors = validationResult.error.errors
+        .map(e => e.message)
+        .join(', ');
       toast({
-        title: 'Error',
-        description:
-          err?.response?.data?.message || 'Error on adding employee!',
+        title: 'Validation Error',
+        description: errors,
         variant: 'error',
       });
-    },
-    onSuccess: response => {
-      toast({
-        title: 'Success',
-        description: response?.message,
-        variant: 'success',
-      });
-    },
-  });
+    }
+  };
 
   return (
     <Dialog>
@@ -121,13 +182,22 @@ export function UnapprovedEmployeeRowActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          {writePermission && (
+          {writePermission && data.isApproved !== 'Rejected' && (
             <DropdownMenuItem onClick={() => mutate(data?._id)}>
               <Mail className="mr-2 size-4" />
               Resend Invitation
             </DropdownMenuItem>
           )}
 
+          {writePermission && data.isApproved !== 'tba' && (
+            <DropdownMenuItem
+              onClick={handleRejectClick}
+              disabled={isRejectPending}
+            >
+              <Mail className="mr-2 size-4" />
+              Reject Request
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSeparator />
           <DialogTrigger asChild onClick={() => {}}>
             <DropdownMenuItem onClick={handleViewDetails}>
@@ -172,6 +242,11 @@ export function UnapprovedEmployeeRowActions({
         showActionToggle={setShowDeleteDialog}
         mutationFunc={deleteEmployeeRecord}
         setRefetch={setRefetchEmployeeList}
+      />
+      <RejectDialog
+        isOpen={isRejectDialogOpen}
+        onClose={closeRejectDialog}
+        onReject={handleReject}
       />
     </Dialog>
   );
