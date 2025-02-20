@@ -41,7 +41,7 @@ const LeavePattern: FunctionComponent<LeavePatternProps> = ({ data }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Weekly Stats</CardTitle>
+        <CardTitle className="text-lg">Weekly Statistics</CardTitle>
       </CardHeader>
       <CardContent className="h-full grow">
         <ChartContainer

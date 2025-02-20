@@ -92,16 +92,10 @@ export const searchLeaveHistoryList = async ({
 
 export const getLeaveHistoryStats = async ({
   id,
-  from = '',
-  to = '',
 }: {
   id: string;
-  from?: string;
-  to?: string;
 }): Promise<LeaveApiResponse> => {
-  const res = await baseAPI.get(
-    `/leave/stats-v2?userId=${id}&from=${from}&to=${to}`,
-  );
+  const res = await baseAPI.get(`/leave/stats-v2?userId=${id}`);
   return schemaParse(leaveApiResponseSchema)(res);
 };
 
