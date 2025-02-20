@@ -149,8 +149,8 @@ const PayrollTable: FunctionComponent = () => {
     );
 
   const tableData: EmployeePayrollListType[] = debouncedSearchTerm
-    ? ((searchPayrollEmployeeData?.data || []) as EmployeePayrollListType[])
-    : ((payrollList?.data || []) as EmployeePayrollListType[]);
+    ? searchPayrollEmployeeData?.data || []
+    : payrollList?.data || [];
 
   const tablePageCount: number | undefined = debouncedSearchTerm
     ? searchPayrollEmployeeData?.pagination?.totalPages || 0

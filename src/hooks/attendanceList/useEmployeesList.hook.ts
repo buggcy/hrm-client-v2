@@ -9,7 +9,7 @@ export const useAttendanceUsersQuery = (config: UseQueryConfig = {}) =>
   useQuery({
     queryKey: ['attendanceUsers'],
     queryFn: () => getEmployeeList(),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,

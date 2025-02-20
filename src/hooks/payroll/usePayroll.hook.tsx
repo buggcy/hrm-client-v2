@@ -1,12 +1,12 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { EmployeePayrollApiResponse } from '@/libs/validations/employee';
 import {
   PayrollV2Params,
   postPayout,
 } from '@/services/employee/employeePayroll.service';
 
 import { UseQueryConfig } from '@/types';
-import { EmployeePayrollApiResponse } from '@/types/employeePayroll.types';
 
 export const usePayrollQuery = (
   params: PayrollV2Params,

@@ -1,9 +1,10 @@
 import { AxiosResponse } from 'axios';
 
-import { employeePayrollApiResponseSchema } from '@/libs/validations/employee';
+import {
+  EmployeePayrollApiResponse,
+  employeePayrollApiResponseSchema,
+} from '@/libs/validations/employee';
 import { baseAPI, schemaParse } from '@/utils';
-
-import { EmployeePayrollApiResponse } from '@/types/employeePayroll.types';
 
 export interface PayrollListParams {
   page?: number;
