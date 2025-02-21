@@ -9,7 +9,9 @@ const Layout: FC<LayoutBaseProps> = ({ children, className }) => {
   return (
     <div data-testid="layout" className={cn('min-h-screen', className)}>
       <ScrollArea className="h-screen w-full overflow-auto">
-        {children}
+        <div className="max-w-[calc(100vw-1rem)] sm:max-w-[calc(100vw-4rem)]">
+          {children}
+        </div>
         <ScrollBar orientation="vertical" />
       </ScrollArea>
     </div>

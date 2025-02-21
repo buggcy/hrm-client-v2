@@ -49,8 +49,8 @@ import { EmployeeLeavesDataApiResponse } from '@/types/leave-history.types';
 
 function getMonthName(monthNumber: number) {
   const date = new Date();
-  date.setMonth(monthNumber - 1); // Month is 0-based, so subtract 1
-  return date.toLocaleString('default', { month: 'long' }); // Use 'short' for abbreviated month names
+  date.setMonth(monthNumber - 1);
+  return date.toLocaleString('default', { month: 'long' });
 }
 
 function validateLeaveApplication(
@@ -219,7 +219,8 @@ const applyLeaveSchema = z
       }),
   })
   .refine(data => data.Start_Date <= data.End_Date, {
-    message: 'End date should be greater than start date',
+    message: 'End date must be greater than or equal to the start date',
+    path: ['End_Date'],
   });
 
 export type ApplyLeaveFormData = z.infer<typeof applyLeaveSchema>;
@@ -264,6 +265,7 @@ export function ApplyLeaveDialog({
       proofDocument: null,
     },
   });
+
   useEffect(() => {
     if (!open) {
       reset();

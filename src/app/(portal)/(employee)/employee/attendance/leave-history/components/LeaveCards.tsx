@@ -8,7 +8,6 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { getLeaveHistoryStats } from '@/services/employee/leave-history.service';
 import { AuthStoreType } from '@/stores/auth';
-import { formatedDate } from '@/utils';
 
 import ConsumedLeaves from './charts/ConsumedLeaves';
 import LeavePattern from './charts/LeavePattern';
@@ -23,11 +22,9 @@ const LeaveCards: FunctionComponent<LeaveCardsProps> = ({ date }) => {
   const { user } = authStore;
 
   const { mutate, data } = useMutation({
-    mutationFn: ({ id, from, to }: { id: string; from: string; to: string }) =>
+    mutationFn: ({ id }: { id: string }) =>
       getLeaveHistoryStats({
         id,
-        from,
-        to,
       }),
     onError: err => {
       toast({
@@ -42,8 +39,6 @@ const LeaveCards: FunctionComponent<LeaveCardsProps> = ({ date }) => {
     if (user) {
       mutate({
         id: user?.id ? user.id : '',
-        from: formatedDate(date?.from) || '',
-        to: formatedDate(date?.to) || '',
       });
     }
   }, [date, user, mutate]);

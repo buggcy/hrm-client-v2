@@ -2,8 +2,11 @@
 
 import * as React from 'react';
 
+import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
-import { Eye, MoreHorizontal } from 'lucide-react';
+import { AxiosError } from 'axios';
+import { Eye, MoreHorizontal, RefreshCw } from 'lucide-react';
+import moment from 'moment';
 import { createRoot } from 'react-dom/client';
 
 import DeleteDialog from '@/components/modals/delete-modal';
@@ -17,13 +20,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import Payslip from '@/app/(portal)/(employee)/employee/payroll/components/Payslip/Payslip';
 import { EmployeePayrollListType } from '@/libs/validations/employee';
 import { deleteEmployeeRecord } from '@/services/hr/employee.service';
+import { refreshPayroll } from '@/services/hr/hr-payroll.service';
 import { AuthStoreType } from '@/stores/auth';
 import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
+
+import { MessageErrorResponse } from '@/types';
 
 interface DataTableRowActionsProps {
   row: Row<EmployeePayrollListType>;
@@ -35,6 +42,9 @@ export function EmployeePayrollListRowActions({
   const { employeePayrollStore } = useStores() as {
     employeePayrollStore: EmployeePayrollStoreType;
   };
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
+
   const { setRefetchEmployeePayrollList } = employeePayrollStore;
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
@@ -56,9 +66,6 @@ export function EmployeePayrollListRowActions({
     month: '2-digit',
     day: '2-digit',
   });
-
-  const { authStore } = useStores() as { authStore: AuthStoreType };
-  const { user } = authStore;
 
   const handleViewPayslip = () => {
     const newWindow = window.open('', '_blank');
@@ -114,6 +121,34 @@ export function EmployeePayrollListRowActions({
     }
   };
 
+  const { mutate } = useMutation({
+    mutationFn: refreshPayroll,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on refreshing the Payroll!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      setRefetchEmployeePayrollList(true);
+    },
+  });
+  const handleRefresh = (row: EmployeePayrollListType) => {
+    const month = moment(row?.Date).format('MM');
+    const year = moment(row?.Date).format('YYYY');
+    mutate({
+      userIds: [row?.User_ID || ''],
+      month,
+      year,
+    });
+  };
   return (
     <Dialog>
       <DropdownMenu>
@@ -133,6 +168,12 @@ export function EmployeePayrollListRowActions({
             <DropdownMenuItem>
               <Eye className="mr-2 size-4" />
               View Payslip
+            </DropdownMenuItem>
+          </DialogTrigger>
+          <DialogTrigger asChild onClick={() => handleRefresh(data)}>
+            <DropdownMenuItem>
+              <RefreshCw className="mr-2 size-4" />
+              Refresh
             </DropdownMenuItem>
           </DialogTrigger>
         </DropdownMenuContent>
