@@ -151,8 +151,7 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
           }
           salaryDeduction={payslipData.Total_SalaryDeducton || 0}
           paymentStatus={payslipData.Pay_Status || 'N/A'}
-          totalIncrements={payslipData.totalIncrements}
-          totalDecrements={payslipData.totalDecrements}
+          perks={payslipData?.perks}
           totalPerkIncrement={payslipData.totalPerkIncrement || 0}
           totalPerkDecrement={payslipData.totalPerkDecrement || 0}
           casualLeaves={payslipData.casualLeaves || 0}

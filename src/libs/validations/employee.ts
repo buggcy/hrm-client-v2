@@ -139,26 +139,22 @@ const employeePayrollSchema = z.object({
   __v: z.number().optional(),
   // type: z.literal('employeePayroll').optional(),
   type: z.string().optional(),
-  totalIncrements: z
-    .array(
+  perks: z.object({
+    increments: z.array(
       z.object({
-        id: z.string(),
         name: z.string(),
-        totalIncrement: z.number(),
+        amount: z.number(),
       }),
-    )
-    .optional(),
-  totalDecrements: z
-    .array(
+    ),
+    decrements: z.array(
       z.object({
-        id: z.string(),
         name: z.string(),
-        assignedDecrementAmount: z.number(),
+        amount: z.number(),
       }),
-    )
-    .optional(),
-  totalPerkIncrement: z.number().optional(),
+    ),
+  }),
   totalPerkDecrement: z.number().optional(),
+  totalPerkIncrement: z.number().optional(),
   casualLeaves: z.number().optional(),
   sickLeaves: z.number().optional(),
   annualLeaves: z.number().optional(),
@@ -272,6 +268,9 @@ const employeePayrollApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeePayrollSchema),
 });
+export type EmployeePayrollApiResponse = z.infer<
+  typeof employeePayrollApiResponseSchema
+>;
 const employeeDobApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: employeeDobDataSchema,

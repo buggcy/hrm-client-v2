@@ -16,16 +16,16 @@ interface PayslipProps {
   totalAfterTax: number;
   salaryDeduction: number;
   paymentStatus: string;
-  totalIncrements?: {
-    id: string;
-    name: string;
-    totalIncrement: number;
-  }[];
-  totalDecrements?: {
-    id: string;
-    name: string;
-    assignedDecrementAmount: number;
-  }[];
+  perks: {
+    increments: {
+      name: string;
+      amount: number;
+    }[];
+    decrements: {
+      name: string;
+      amount: number;
+    }[];
+  };
   totalPerkIncrement?: number;
   totalPerkDecrement?: number;
   casualLeaves?: number;
@@ -47,8 +47,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       totalAfterTax,
       salaryDeduction,
       paymentStatus,
-      totalIncrements,
-      totalDecrements,
+      perks,
       totalPerkIncrement,
       totalPerkDecrement,
       casualLeaves,
@@ -57,6 +56,8 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
     },
     ref,
   ) => {
+    const netSalary =
+      totalAfterTax + (totalPerkIncrement || 0) - (totalPerkDecrement || 0);
     return (
       <div
         className="relative box-border flex justify-center bg-gray-100 p-10 font-sans"
@@ -135,27 +136,25 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
                 </tr>
                 {Array.from({
                   length: Math.max(
-                    totalIncrements?.length || 0,
-                    totalDecrements?.length || 0,
+                    perks.increments?.length || 0,
+                    perks.decrements?.length || 0,
                   ),
                 }).map((_, index) => {
-                  const increment = totalIncrements?.[index];
-                  const decrement = totalDecrements?.[index];
+                  const increment = perks.increments?.[index];
+                  const decrement = perks.decrements?.[index];
                   return (
                     <tr key={index}>
                       <td className="border-b border-gray-300 p-2">
                         {increment ? increment.name : ''}
                       </td>
                       <td className="border-b border-gray-300 p-2">
-                        {increment ? `Rs ${increment.totalIncrement}` : ''}
+                        {increment ? `Rs ${increment.amount}` : ''}
                       </td>
                       <td className="border-b border-gray-300 p-2">
                         {decrement ? decrement.name : ''}
                       </td>
                       <td className="border-b border-gray-300 p-2">
-                        {decrement
-                          ? `Rs ${decrement.assignedDecrementAmount}`
-                          : ''}
+                        {decrement ? `Rs ${decrement.amount}` : ''}
                       </td>
                     </tr>
                   );
@@ -167,13 +166,19 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Total Earnings:</strong>
               </p>
-              <p>{`Rs ${totalEarnings}`}</p>
+              <p>{`Rs ${totalEarnings > 0 ? totalEarnings : 0}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
                 <strong>Total Perk Increments:</strong>
               </p>
               <p>{`Rs ${totalPerkIncrement || 0}`}</p>
+            </div>
+            <div className="flex justify-between border-t border-gray-300 p-2">
+              <p>
+                <strong>Total Perk Decrements:</strong>
+              </p>
+              <p>{`Rs ${totalPerkDecrement || 0}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
@@ -185,7 +190,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Net Salary:</strong>
               </p>
-              <p>{`Rs ${totalAfterTax + (totalPerkIncrement || 0) - (totalPerkDecrement || 0)}`}</p>
+              <p>{`Rs ${netSalary > 0 ? netSalary : 0}`}</p>
             </div>
           </div>
           <div className="mb-4 text-center">

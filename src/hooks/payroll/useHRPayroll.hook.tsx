@@ -15,7 +15,7 @@ export const useHRPayrollListQuery = (
   useQuery({
     queryKey: ['payroll', params],
     queryFn: () => getPayrollList(params),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
