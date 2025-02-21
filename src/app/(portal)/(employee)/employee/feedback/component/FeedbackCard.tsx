@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from 'react';
 
 import { Clipboard, Lightbulb, List, ThumbsUp } from 'lucide-react';
+import { ZodError } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from '@/components/ui/use-toast';
 
 import { useEmployeeFeedbackQuery } from '@/hooks/hr/useFeedback.hook';
 import { useAuthStore } from '@/stores/auth';
@@ -33,6 +35,29 @@ const FeedbackCard: React.FC = () => {
       await refetch();
     })();
   }, [refetch]);
+
+  useEffect(() => {
+    if (error) {
+      if (error instanceof ZodError) {
+        error.issues.forEach(issue => {
+          const path = issue.path;
+          const message = issue.message;
+
+          toast({
+            title: `Validation Error at ${path.join(', ')}`,
+            description: message,
+            variant: 'error',
+          });
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'An error occurred',
+          variant: 'error',
+        });
+      }
+    }
+  }, [error]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -73,7 +98,7 @@ const FeedbackCard: React.FC = () => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Error: {error.message}
+        Failed to load Feedbacks. Please check the data.
       </div>
     );
 

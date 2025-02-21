@@ -2,9 +2,12 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import { ZodError } from 'zod';
+
 import { policyListColumns } from '@/components/data-table/columns/policy-list.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { usePolicyListQuery } from '@/hooks/Policies/usePolicyList.hook';
@@ -47,6 +50,29 @@ const PolicyTable: FunctionComponent<PolicyTableProps> = ({ category }) => {
     }
   }, [refetchPolicyList, page, limit, setRefetchPolicyList, refetch]);
 
+  useEffect(() => {
+    if (error) {
+      if (error instanceof ZodError) {
+        error.issues.forEach(issue => {
+          const path = issue.path;
+          const message = issue.message;
+
+          toast({
+            title: `Validation Error at ${path.join(', ')}`,
+            description: message,
+            variant: 'error',
+          });
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'An error occurred',
+          variant: 'error',
+        });
+      }
+    }
+  }, [error]);
+
   const handlePaginationChange = (newPage: number, newLimit: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
@@ -57,7 +83,7 @@ const PolicyTable: FunctionComponent<PolicyTableProps> = ({ category }) => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Error: {error.message}
+        Failed to load Policy. Please check the data.
       </div>
     );
 

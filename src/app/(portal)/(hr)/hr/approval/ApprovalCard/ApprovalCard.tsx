@@ -32,7 +32,7 @@ import { RejectDialog } from './RejectDialog';
 
 import { IPersona, MessageErrorResponse } from '@/types';
 
-const approvalSchema = z
+export const approvalSchema = z
   .object({
     hrId: z.string().min(1, 'HR ID is required'),
     employeeId: z.string().min(1, 'Employee ID is required'),

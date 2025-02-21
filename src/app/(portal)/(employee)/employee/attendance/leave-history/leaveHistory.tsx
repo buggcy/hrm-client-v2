@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { ZodError } from 'zod';
 
 import { leaveHistoryListColumns } from '@/components/data-table/columns/leave-history-list.columns';
 import { LeaveListDataTable } from '@/components/data-table/data-table-hr-leave-list';
@@ -96,6 +97,29 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   });
 
   useEffect(() => {
+    if (error) {
+      if (error instanceof ZodError) {
+        error.issues.forEach(issue => {
+          const path = issue.path;
+          const message = issue.message;
+
+          toast({
+            title: `Validation Error at ${path.join(', ')}`,
+            description: message,
+            variant: 'error',
+          });
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'An error occurred',
+          variant: 'error',
+        });
+      }
+    }
+  }, [error]);
+
+  useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, 800);
@@ -161,7 +185,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Error: {error.message}
+        Failed to load Leave History. Please check the data.
       </div>
     );
 

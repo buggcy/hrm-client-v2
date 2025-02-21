@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { ZodError } from 'zod';
 
 import { hrFeedbackColumns } from '@/components/data-table/columns/hr-feedback.columns';
 import { FeedbackDataTable } from '@/components/data-table/data-table-hr-feedback';
@@ -84,6 +85,29 @@ const FeedbackTable: FunctionComponent = () => {
   });
 
   useEffect(() => {
+    if (error) {
+      if (error instanceof ZodError) {
+        error.issues.forEach(issue => {
+          const path = issue.path;
+          const message = issue.message;
+
+          toast({
+            title: `Validation Error at ${path.join(', ')}`,
+            description: message,
+            variant: 'error',
+          });
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'An error occurred',
+          variant: 'error',
+        });
+      }
+    }
+  }, [error]);
+
+  useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, 800);
@@ -136,7 +160,7 @@ const FeedbackTable: FunctionComponent = () => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Error: {error.message}
+        Failed to load Feedbacks. Please check the data.
       </div>
     );
 

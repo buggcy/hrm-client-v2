@@ -19,7 +19,7 @@ const ManageConfiguration: FunctionComponent<ManageConfigurationProps> = () => {
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="Manage Configuration">
+      <LayoutHeader title="Manage Configurationn">
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>
