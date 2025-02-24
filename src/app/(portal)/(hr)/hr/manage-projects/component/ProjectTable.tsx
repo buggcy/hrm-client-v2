@@ -187,7 +187,7 @@ const ProjectTable: FunctionComponent = () => {
   if (error)
     return (
       <div className="py-32 text-center text-red-500">
-        Failed to load projects. Please check the data
+        Failed to load projects. Please try again later.
       </div>
     );
 

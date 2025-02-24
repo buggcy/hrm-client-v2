@@ -112,7 +112,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ selectedDate }) => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to load Perks & Benefits. Please check the data.
+        Failed to load Perks & Benefits. Please try again later.
       </div>
     );
   const tableData: HrPerkRequestListType[] = perkPostList?.data || [];

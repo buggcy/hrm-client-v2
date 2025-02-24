@@ -182,7 +182,7 @@ const HrComplaintTable: FunctionComponent<Props> = () => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to load Complaints. Please check the data.
+        Failed to load Complaints. Please try again later.
       </div>
     );
 

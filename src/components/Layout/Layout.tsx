@@ -21,6 +21,7 @@ const Layout: FC<LayoutBaseProps> = ({ children, className }) => {
 const LayoutHeader: FC<LayoutHeaderProps> = ({
   title,
   children,
+  leftElement,
   className,
 }) => {
   return (
@@ -30,6 +31,7 @@ const LayoutHeader: FC<LayoutHeaderProps> = ({
         className,
       )}
     >
+      {leftElement && <div className="mr-3">{leftElement}</div>}
       <h1 className="mr-5 hidden text-xl font-semibold sm:block">{title}</h1>
       {children}
     </header>

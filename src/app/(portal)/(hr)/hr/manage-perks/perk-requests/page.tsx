@@ -1,9 +1,11 @@
 'use client';
 
 import { FunctionComponent } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { ArrowLeft } from 'lucide-react';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
@@ -15,6 +17,7 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
+import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 
 import EmptyCard from '@/app/(authentication)/auth/register/components/emptyCard';
@@ -45,6 +48,8 @@ const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
     from: selectedDate?.from ? formatDate(selectedDate.from) : '',
     to: selectedDate?.to ? formatDate(selectedDate.to) : '',
   });
+
+  const router = useRouter();
 
   const { mutate: approvePerk, isPending: isApproving } = useMutation({
     mutationFn: approvePerkRequest,
@@ -94,7 +99,20 @@ const PerkRequestsPage: FunctionComponent<PerkRequestsProps> = () => {
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="Perk Requests">
+      <LayoutHeader
+        title="Perk Requests"
+        leftElement={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Go Back"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="size-5" />
+          </Button>
+        }
+      >
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>

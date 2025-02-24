@@ -138,7 +138,7 @@ const PolicyTable: React.FC<PolicyTableProps> = () => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to load Policy. Please check the data.
+        Failed to load Policy. Please try again later.
       </div>
     );
 

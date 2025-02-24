@@ -1,5 +1,8 @@
 'use client';
 import React, { FunctionComponent, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { ArrowLeft } from 'lucide-react';
 
 import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
@@ -10,6 +13,7 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon/NotificationIcon';
+import { Button } from '@/components/ui/button';
 
 import useNotificationActions from '@/hooks/useNotification/useNotificationActions';
 import { useNotificationStore } from '@/stores/useNotificationStore';
@@ -22,6 +26,7 @@ const AllNotifications: FunctionComponent = () => {
   const [isMarkingAllAsRead, setIsMarkingAllAsRead] = useState(false);
   const { notifications: storeNotifications } = useNotificationStore();
   const { handleMarkAsRead, handleAllMarkAsRead } = useNotificationActions();
+  const router = useRouter();
   const [loadingNotificationId, setLoadingNotificationId] = useState<
     string | null
   >(null);
@@ -70,7 +75,20 @@ const AllNotifications: FunctionComponent = () => {
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="All Notifications">
+      <LayoutHeader
+        title="All Notifications"
+        leftElement={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Go Back"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="size-5" />
+          </Button>
+        }
+      >
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>
