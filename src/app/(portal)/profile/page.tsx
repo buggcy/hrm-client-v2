@@ -1,6 +1,6 @@
 'use client';
 import { Suspense } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { ArrowLeft } from 'lucide-react';
 
@@ -18,10 +18,10 @@ import ProfileMain from './components/ProfileMain';
 import { ApprovalActions } from '../(hr)/hr/approval/ApprovalCard/ApprovalButtons';
 
 export default function MyProfile() {
-  const { employeeId } = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
   const showActions = searchParams.get('showActions') === 'true';
+  const employeeId = searchParams.get('employeeId');
 
   return (
     <Layout>
@@ -41,7 +41,9 @@ export default function MyProfile() {
         }
       >
         <LayoutHeaderButtonsBlock>
-          {showActions && <ApprovalActions employeeId={employeeId as string} />}
+          {showActions && employeeId && (
+            <ApprovalActions employeeId={employeeId} />
+          )}
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>

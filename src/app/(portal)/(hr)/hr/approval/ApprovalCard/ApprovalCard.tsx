@@ -134,7 +134,7 @@ export const ApprovalCard = ({
     >
       <CardContent className="flex flex-col gap-2 p-0">
         <div className="flex items-center justify-between">
-          <Link href={`/profile?showActions=true`}>
+          <Link href={`/profile?showActions=true&employeeId=${person._id}`}>
             <Avatar className="size-12">
               <AvatarImage src={person?.Avatar || ''} alt="User Avatar" />
               <AvatarFallback className="uppercase">
@@ -143,7 +143,7 @@ export const ApprovalCard = ({
               </AvatarFallback>
             </Avatar>
           </Link>
-          <div className="flex space-x-2">
+          <div className="ml-3 flex space-x-2">
             <Badge variant="label" className="w-fit truncate text-sm">
               {new Date(person.updatedAt).toDateString()}
             </Badge>
@@ -188,12 +188,10 @@ export const ApprovalCard = ({
       </CardContent>
       {writePermission && (
         <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
-          {writePermission && (
-            <ApprovalActions
-              employeeId={person._id}
-              refetchApprovalList={refetchApprovalList}
-            />
-          )}
+          <ApprovalActions
+            employeeId={person._id}
+            refetchApprovalList={refetchApprovalList}
+          />
         </CardFooter>
       )}
       <RejectDialog
