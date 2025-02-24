@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -23,6 +24,8 @@ export const ApprovalActions = ({
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
   const [isRejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const { mutate, isPending } = useMutation({
     mutationFn: employeeApprovalRequest,
@@ -41,6 +44,9 @@ export const ApprovalActions = ({
         variant: 'success',
       });
       refetchApprovalList?.();
+      pathname === '/hr/approval'
+        ? refetchApprovalList?.()
+        : router.replace('/hr/approval');
     },
   });
 
