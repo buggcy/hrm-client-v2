@@ -59,20 +59,22 @@ const HRPayrollSchema = z.object({
   casualLeaves: z.number().optional(),
   sickLeaves: z.number().optional(),
   annualLeaves: z.number().optional(),
-  perks: z.object({
-    increments: z.array(
-      z.object({
-        name: z.string(),
-        amount: z.number(),
-      }),
-    ),
-    decrements: z.array(
-      z.object({
-        name: z.string(),
-        amount: z.number(),
-      }),
-    ),
-  }),
+  perks: z
+    .object({
+      increments: z.array(
+        z.object({
+          name: z.string(),
+          amount: z.number(),
+        }),
+      ),
+      decrements: z.array(
+        z.object({
+          name: z.string(),
+          amount: z.number(),
+        }),
+      ),
+    })
+    .optional(),
   totalPerkDecrement: z.number().optional(),
   totalPerkIncrement: z.number().optional(),
 });

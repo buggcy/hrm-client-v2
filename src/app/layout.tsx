@@ -61,10 +61,6 @@ export default function RootLayout({
       <body
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
-          'h-screen w-screen overflow-hidden',
-          '[&::-webkit-scrollbar]:hidden',
-          '[-ms-overflow-style:"none"]',
-          '[scrollbar-width:"none"]',
           fontSans.variable,
         )}
       >
