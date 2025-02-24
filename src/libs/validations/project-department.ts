@@ -57,7 +57,7 @@ const projectIdSchema = z.object({
   techStack: z.array(z.string()).optional(),
 });
 const headSchema = z.object({
-  user: userIdSchema.optional(),
+  user: userIdSchema.nullable().optional(),
   isCurrent: z.boolean(),
   appointDate: z.string(),
   endDate: z.string().optional(),
