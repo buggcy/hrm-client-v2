@@ -30,7 +30,7 @@ const projectSchema = z.object({
   _id: z.string(),
   __v: z.number(),
   updatedBy: userIdSchema.optional(),
-  teamLead: userIdSchema.optional(),
+  teamLead: userIdSchema.nullable().optional(),
   teamMembers: z.array(userIdSchema).optional(),
   deletedMembers: z.array(userIdSchema).optional(),
   status: z.enum(projectStatus).optional(),
