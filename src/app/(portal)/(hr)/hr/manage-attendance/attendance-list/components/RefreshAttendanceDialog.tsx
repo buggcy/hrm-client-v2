@@ -86,6 +86,7 @@ export function RefreshAttendanceDialog({
       });
       reset();
       onCloseChange();
+      setIsAllSelected(false);
       setRefetchAttendanceList(true);
     },
   });

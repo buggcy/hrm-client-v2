@@ -100,6 +100,7 @@ export function RefreshPayrollDialog({
       });
       reset();
       onCloseChange();
+      setIsAllSelected(false);
       setRefetchEmployeeList(true);
     },
   });
