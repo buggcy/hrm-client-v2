@@ -56,8 +56,8 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
     },
     ref,
   ) => {
-    const netSalary =
-      totalAfterTax + (totalPerkIncrement || 0) - (totalPerkDecrement || 0);
+    const totalEarningsWithoutPerks =
+      totalEarnings - (totalPerkIncrement || 0) + (totalPerkDecrement || 0);
     return (
       <div
         className="relative box-border flex justify-center bg-gray-100 p-10 font-sans"
@@ -127,12 +127,14 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               </thead>
               <tbody>
                 <tr>
-                  <td className="border-b border-gray-300 p-2">Basic Salary</td>
-                  <td className="border-b border-gray-300 p-2">{`Rs ${basicSalary}`}</td>
-                  <td className="border-b border-gray-300 p-2">
+                  <td className="border-b border-gray-300 p-2 text-center">
+                    Basic Salary
+                  </td>
+                  <td className="border-b border-gray-300 p-2 text-center">{`Rs ${basicSalary}`}</td>
+                  <td className="border-b border-gray-300 p-2 text-center">
                     Absent Deduction
                   </td>
-                  <td className="border-b border-gray-300 p-2">{`Rs ${absentDeduction}`}</td>
+                  <td className="border-b border-gray-300 p-2 text-center">{`Rs ${absentDeduction}`}</td>
                 </tr>
                 {Array.from({
                   length: Math.max(
@@ -144,16 +146,16 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
                   const decrement = perks.decrements?.[index];
                   return (
                     <tr key={index}>
-                      <td className="border-b border-gray-300 p-2">
+                      <td className="border-b border-gray-300 p-2 text-center">
                         {increment ? increment.name : ''}
                       </td>
-                      <td className="border-b border-gray-300 p-2">
+                      <td className="border-b border-gray-300 p-2 text-center">
                         {increment ? `Rs ${increment.amount}` : ''}
                       </td>
-                      <td className="border-b border-gray-300 p-2">
+                      <td className="border-b border-gray-300 p-2 text-center">
                         {decrement ? decrement.name : ''}
                       </td>
-                      <td className="border-b border-gray-300 p-2">
+                      <td className="border-b border-gray-300 p-2 text-center">
                         {decrement ? `Rs ${decrement.amount}` : ''}
                       </td>
                     </tr>
@@ -166,7 +168,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Total Earnings:</strong>
               </p>
-              <p>{`Rs ${totalEarnings > 0 ? totalEarnings : 0}`}</p>
+              <p>{`Rs ${totalEarningsWithoutPerks > 0 ? totalEarningsWithoutPerks : 0}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
@@ -182,6 +184,12 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
+                <strong>Salary Deductions:</strong>
+              </p>
+              <p>{`Rs ${salaryDeduction}`}</p>
+            </div>
+            <div className="flex justify-between border-t border-gray-300 p-2">
+              <p>
                 <strong>Total Deductions:</strong>
               </p>
               <p>{`Rs ${salaryDeduction + (totalPerkDecrement || 0)}`}</p>
@@ -190,7 +198,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Net Salary:</strong>
               </p>
-              <p>{`Rs ${netSalary > 0 ? netSalary : 0}`}</p>
+              <p>{`Rs ${totalAfterTax > 0 ? totalAfterTax : 0}`}</p>
             </div>
           </div>
           <div className="mb-4 text-center">

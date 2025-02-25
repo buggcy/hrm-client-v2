@@ -53,6 +53,10 @@ export function AddPerksDialog({
     handleSubmit,
     formState: { errors },
     reset,
+    getValues,
+    setValue,
+    setError,
+    clearErrors,
   } = useForm<AddPerkFormData>({
     resolver: zodResolver(addPerkSchema),
     defaultValues: {
@@ -88,6 +92,20 @@ export function AddPerksDialog({
   });
 
   const onSubmit = (data: AddPerkFormData) => {
+    if (data.salaryIncrement && data.salaryDecrement) {
+      setError('salaryDecrement', {
+        type: 'manual',
+        message: '',
+      });
+      return;
+    } else if (!data.salaryIncrement && !data.salaryDecrement) {
+      setError('salaryDecrement', {
+        type: 'manual',
+        message:
+          'At least one of salary increment or decrement should be selected',
+      });
+      return;
+    }
     addPerkData(data);
   };
 
@@ -150,7 +168,21 @@ export function AddPerksDialog({
                     <Switch
                       id="salaryIncrement"
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={(checked: boolean) => {
+                        field.onChange();
+                        setValue('salaryIncrement', checked);
+                        const salaryIncrement = getValues('salaryIncrement');
+                        const salaryDecrement = getValues('salaryDecrement');
+                        if (salaryIncrement && salaryDecrement) {
+                          setError('salaryDecrement', {
+                            type: 'manual',
+                            message:
+                              'Both salary increment and decrement cannot be selected',
+                          });
+                        } else {
+                          clearErrors('salaryDecrement');
+                        }
+                      }}
                     />
                   )}
                 />
@@ -171,17 +203,31 @@ export function AddPerksDialog({
                     <Switch
                       id="salaryDecrement"
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={(checked: boolean) => {
+                        field.onChange();
+                        setValue('salaryDecrement', checked);
+                        const salaryIncrement = getValues('salaryIncrement');
+                        const salaryDecrement = getValues('salaryDecrement');
+                        if (salaryIncrement && salaryDecrement) {
+                          setError('salaryDecrement', {
+                            type: 'manual',
+                            message:
+                              'Both salary increment and decrement cannot be selected',
+                          });
+                        } else {
+                          clearErrors('salaryDecrement');
+                        }
+                      }}
                     />
                   )}
                 />
-                {errors.salaryDecrement && (
-                  <span className="text-sm text-red-500">
-                    {errors.salaryDecrement.message}
-                  </span>
-                )}
               </div>
             </div>
+            {errors.salaryDecrement && (
+              <span className="text-sm text-red-500">
+                {errors.salaryDecrement.message}
+              </span>
+            )}
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isAdding}>
