@@ -154,9 +154,9 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
           perks={payslipData?.perks}
           totalPerkIncrement={payslipData.totalPerkIncrement || 0}
           totalPerkDecrement={payslipData.totalPerkDecrement || 0}
-          casualLeaves={payslipData.casualLeaves || 0}
-          sickLeaves={payslipData.sickLeaves || 0}
-          annualLeaves={payslipData.annualLeaves || 0}
+          casualLeaves={payslipData?.Leaves?.casual || 0}
+          sickLeaves={payslipData?.Leaves?.sick || 0}
+          annualLeaves={payslipData?.Leaves?.annual || 0}
         />,
       );
     } else {
