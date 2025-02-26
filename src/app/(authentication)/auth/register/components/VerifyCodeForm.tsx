@@ -77,21 +77,23 @@ const minAgeDate = new Date();
 minAgeDate.setFullYear(minAgeDate.getFullYear() - 18);
 
 const addressSchema = z.object({
-  street: z.string().min(1, 'Street is required'),
-  landMark: z.string().optional(),
-  country: z.string().min(1, 'Country is required'),
-  province: z.string().min(1, 'Province is required'),
-  city: z.string().min(1, 'City is required'),
-  zip: z.string().min(1, 'Postal code is required'),
-  full: z.string().optional(),
+  street: z.string().min(1, 'Required'),
+  landMark: z.string().min(1, 'Required'),
+  country: z.string().min(1, 'Required'),
+  province: z.string().min(1, 'Required'),
+  city: z.string().min(1, 'Required'),
+  zip: z.string().min(1, 'Required'),
+  full: z.string().min(1, 'Required'),
 });
 
 export const educationExperienceSchema = z
   .object({
     _id: z.string().optional(),
     Institute: z.string().min(1, 'Required'),
-    Start_Date: z.date({ invalid_type_error: 'Invalid Start Date format' }),
-    End_Date: z.date({ invalid_type_error: 'Invalid End Date format' }),
+    Start_Date: z.coerce.date({
+      invalid_type_error: 'Invalid Start Date format',
+    }),
+    End_Date: z.coerce.date({ invalid_type_error: 'Invalid End Date format' }),
     type: z.enum(['education', 'experience'], {
       errorMap: () => ({
         message: 'Type must be either "Education" or "Experience"',
@@ -103,16 +105,43 @@ export const educationExperienceSchema = z
     referenceNumber: z.string().optional(),
     user_id: z.string().min(1, 'User Id is required'),
   })
-  .refine(data => data.Start_Date <= data.End_Date, {
-    message: 'End date cannot be before Start date',
-    path: ['End_Date'],
-  })
-  .refine(data => {
-    if (data.type === 'experience' && data.referenceNumber) {
-      return /^(03|\+923)/.test(data.referenceNumber);
-    }
-    return true;
-  }, 'Reference number must start with "03" or "+923"');
+  .refine(
+    data =>
+      new Date(data.Start_Date).getTime() <= new Date(data.End_Date).getTime(),
+    {
+      message: 'End date cannot be before Start date',
+      path: ['End_Date'],
+    },
+  )
+  .refine(
+    data => {
+      if (data.type === 'experience' && data.referenceNumber) {
+        return /^(03|\+923)/.test(data.referenceNumber);
+      }
+      return true;
+    },
+    {
+      message: 'Reference number must start with "03" or "+923"',
+      path: ['referenceNumber'],
+    },
+  )
+  .refine(
+    data => {
+      if (data.type === 'experience' && data.referenceNumber) {
+        if (data.referenceNumber.startsWith('03')) {
+          return data.referenceNumber.length === 11;
+        }
+        if (data.referenceNumber.startsWith('+923')) {
+          return data.referenceNumber.length === 13;
+        }
+      }
+      return true;
+    },
+    {
+      message: 'Invalid reference number format',
+      path: ['referenceNumber'],
+    },
+  );
 
 export type EducationExperienceType = z.infer<typeof educationExperienceSchema>;
 const mainFormSchema = z.object({
