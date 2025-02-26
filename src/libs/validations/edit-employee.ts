@@ -85,6 +85,7 @@ const employeeSchema = z.object({
   profileDescription: z.string().optional(),
   Tahometer_ID: z.string().optional(),
   basicSalary: z.number(),
+  desiredSalary: z.number().optional(),
   activeStatus: z.boolean().optional(),
   updatedAt: z.string(),
   position: z.array(positionSchema).optional(),
@@ -130,6 +131,7 @@ const additionalDocumentsSchema = z.object({
 const incrementRecordSchema = z.object({
   title: z.string(),
   amount: z.number(),
+  desiredSalary: z.number().optional(),
   date: z.string(),
   _id: z.string(),
 });

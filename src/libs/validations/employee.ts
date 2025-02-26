@@ -79,7 +79,10 @@ const employeeListSchema = z.object({
   roleId: z.number(),
   companyEmail: z.string().email(),
   Ed_Exp_ID: z.array(z.string()).optional(),
-  dep_ID: z.array(z.string()).optional(),
+  dep_ID: z
+    .union([z.array(depIdSchema), depIdSchema])
+    .optional()
+    .transform(val => (Array.isArray(val) ? val : val ? [val] : [])),
   isDeleted: z.boolean().optional(),
   UniqueCodeExpire: z.string().optional(),
   Blood_Group: z.string().optional(),
@@ -100,6 +103,7 @@ const employeeListSchema = z.object({
   profileDescription: z.string().optional(),
   Tahometer_ID: z.string().optional(),
   basicSalary: z.number(),
+  desiredSalary: z.number().optional(),
   activeStatus: z.boolean().optional(),
   updatedAt: z.string(),
   position: z.array(positionSchema).optional(),

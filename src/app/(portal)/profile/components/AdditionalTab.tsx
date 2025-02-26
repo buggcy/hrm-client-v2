@@ -130,7 +130,14 @@ const AdditionalTab: React.FC<AdditionalTabsProps> = ({
                 </TableRow>
               )
             ) : (
-              ''
+              <TableRow>
+                <TableCell
+                  colSpan={2}
+                  className="text-center text-gray-500 dark:text-gray-300"
+                >
+                  Currently No Additional Documents Available!
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
           <TableFooter>

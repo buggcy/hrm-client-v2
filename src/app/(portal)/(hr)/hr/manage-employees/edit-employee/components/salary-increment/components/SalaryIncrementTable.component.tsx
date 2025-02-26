@@ -49,6 +49,7 @@ const SalaryIncrementTable = ({
     incrementId: '',
     incrementTitle: '',
     incrementAmount: 0,
+    desiredSalary: 0,
   });
   const [toBeDeletedId, setToBeDeletedId] = useState('');
 
@@ -60,6 +61,7 @@ const SalaryIncrementTable = ({
       incrementId: id,
       incrementTitle: increment?.title || '',
       incrementAmount: increment?.amount || 0,
+      desiredSalary: increment?.desiredSalary || 0,
     });
     setEditDialogOpen(true);
   };
@@ -87,6 +89,7 @@ const SalaryIncrementTable = ({
               <TableRow>
                 <TableHead className="text-center">Title</TableHead>
                 <TableHead className="text-center">Amount</TableHead>
+                <TableHead className="text-center">Desired Salary</TableHead>
                 <TableHead className="text-center">Date</TableHead>
                 <TableHead className="text-center">Actions</TableHead>
               </TableRow>
@@ -107,11 +110,14 @@ const SalaryIncrementTable = ({
                       <TableCell className="text-center">
                         {increment.amount}
                       </TableCell>
+                      <TableCell className="text-center">
+                        {increment.desiredSalary || '0'}
+                      </TableCell>
                       <TableCell className="flex justify-center gap-2 text-center">
-                        <Badge variant="outline" className="hidden sm:block">
-                          {day}
-                        </Badge>{' '}
-                        {date}
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{day}</Badge>
+                          <span className="max-w-[500px] truncate">{date}</span>
+                        </div>
                       </TableCell>
                       <TableCell className="p-0 text-center">
                         <DropdownMenu>
@@ -166,7 +172,7 @@ const SalaryIncrementTable = ({
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={3}>Total Records</TableCell>
+                <TableCell colSpan={4}>Total Records</TableCell>
                 <TableCell className="text-right">
                   {data?.incrementRecords?.length}
                 </TableCell>
@@ -182,6 +188,7 @@ const SalaryIncrementTable = ({
                 incrementId: selectedIncrementData.incrementId,
                 incrementTitle: selectedIncrementData.incrementTitle,
                 incrementAmount: selectedIncrementData.incrementAmount,
+                desiredSalary: selectedIncrementData?.desiredSalary,
               }}
             />
             <DeleteDialog

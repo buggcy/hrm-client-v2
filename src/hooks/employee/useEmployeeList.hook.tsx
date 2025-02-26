@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { EmployeeApiResponse } from '@/libs/validations/employee';
 import {
   EmployeeListParams,
   getEmployeeList,
@@ -7,10 +8,7 @@ import {
 } from '@/services/hr/employee.service';
 
 import { UseQueryConfig } from '@/types';
-import {
-  EmployeeApiResponse,
-  GetEmployeeByIdResponse,
-} from '@/types/employee.types';
+import { GetEmployeeByIdResponse } from '@/types/employee.types';
 
 export const useEmployeeListQuery = (
   params: EmployeeListParams,

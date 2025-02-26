@@ -56,6 +56,10 @@ const addEmployeeSchema = z.object({
     .string()
     .min(1, 'Salary is required')
     .regex(/^\d+$/, 'Salary must be a valid number'),
+  desiredSalary: z
+    .string()
+    .min(1, 'Desired Salary is required')
+    .regex(/^\d+$/, 'Desired Salary must be a valid number'),
   Joining_Date: z.date(),
   Designation: z.string().min(1, 'Designation is required'),
   dep_ID: z.array(z.string()).min(1, 'Department is required'),
@@ -105,6 +109,7 @@ export function AddEmployeeDialog({
       companyEmail: '',
       contactNo: '',
       basicSalary: '0',
+      desiredSalary: '0',
       Joining_Date: new Date(),
       Designation: '',
       dep_ID: [],
@@ -114,6 +119,7 @@ export function AddEmployeeDialog({
   const handleDepChange = (newSelectedIds: string[]) => {
     setValue('dep_ID', newSelectedIds);
   };
+
   useEffect(() => {
     if (editData) {
       reset({
@@ -123,14 +129,29 @@ export function AddEmployeeDialog({
         companyEmail: editData.companyEmail,
         contactNo: editData.contactNo,
         basicSalary: editData.basicSalary.toString(),
+        desiredSalary: editData?.desiredSalary
+          ? editData.desiredSalary.toString()
+          : '',
         Joining_Date: editData?.Joining_Date
           ? new Date(editData?.Joining_Date)
           : undefined,
         Designation: editData.Designation,
+        dep_ID: Array.isArray(editData.dep_ID)
+          ? (editData.dep_ID as { _id: string; departmentName: string }[]).map(
+              dep => dep._id,
+            )
+          : editData.dep_ID && typeof editData.dep_ID === 'object'
+            ? [(editData.dep_ID as { _id: string; departmentName: string })._id]
+            : [],
       });
     }
   }, [editData, reset]);
 
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
   const { mutate, isPending } = useMutation({
     mutationFn: editData ? updateTBAEmployeeData : addEmployeeData,
     onError: (err: AxiosError<MessageErrorResponse>) => {
@@ -284,6 +305,32 @@ export function AddEmployeeDialog({
                 </span>
               )}
             </div>
+
+            <div className="flex flex-1 flex-col">
+              <Label htmlFor="desiredSalary" className="mb-2 text-left">
+                Desired Salary <span className="text-red-600">*</span>
+              </Label>
+              <Controller
+                name="desiredSalary"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="desiredSalary"
+                    placeholder="10000"
+                    type="number"
+                  />
+                )}
+              />
+              {errors.desiredSalary && (
+                <span className="text-sm text-red-500">
+                  {errors.desiredSalary.message}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="basicSalary" className="mb-2 text-left">
                 Basic Salary
@@ -306,9 +353,6 @@ export function AddEmployeeDialog({
                 </span>
               )}
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="flex flex-col">
               <Label htmlFor="Joining_Date" className="mb-2 text-left">
                 Joining Date
@@ -372,7 +416,9 @@ export function AddEmployeeDialog({
                 </span>
               )}
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="flex flex-col">
               <div className="mb-1 flex justify-between">
                 <Label htmlFor="dep_ID" className="mb-2 text-left">

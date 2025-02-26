@@ -31,6 +31,7 @@ const addSalaryIncrementSchema = z.object({
   empId: z.string(),
   incrementTitle: z.string(),
   incrementAmount: z.coerce.number(),
+  desiredSalary: z.coerce.number(),
 });
 
 export type AddSalaryIncrementFormData = z.infer<
@@ -46,6 +47,7 @@ interface SalaryIncrementDialogProps {
     incrementId: string;
     incrementTitle: string;
     incrementAmount: number;
+    desiredSalary: number;
   };
   refetchSalaryIncrementList: () => void;
 }
@@ -69,6 +71,7 @@ export function SalaryIncrementDialog({
       empId: '',
       incrementTitle: '',
       incrementAmount: 0,
+      desiredSalary: 0,
     },
   });
 
@@ -78,6 +81,7 @@ export function SalaryIncrementDialog({
         empId: empId || '',
         incrementTitle: editData?.incrementTitle || '',
         incrementAmount: editData?.incrementAmount || 0,
+        desiredSalary: editData?.desiredSalary || 0,
       });
     }
   }, [editData, reset, empId]);
@@ -142,6 +146,28 @@ export function SalaryIncrementDialog({
               {errors.incrementTitle && (
                 <span className="text-sm text-red-500">
                   {errors.incrementTitle.message}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <Label htmlFor="desiredSalary" className="mb-2 text-left">
+                Desired Salary
+              </Label>
+              <Controller
+                name="desiredSalary"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="desiredSalary"
+                    placeholder="10000"
+                    type="number"
+                  />
+                )}
+              />
+              {errors.desiredSalary && (
+                <span className="text-sm text-red-500">
+                  {errors.desiredSalary.message}
                 </span>
               )}
             </div>

@@ -166,6 +166,7 @@ export const addEmployeeData = async ({
     companyEmail: data.companyEmail.toLowerCase(),
     contactNo: data.contactNo,
     basicSalary: data.basicSalary,
+    desiredSalary: data.desiredSalary,
     Joining_Date: data.Joining_Date,
     Designation: data.Designation,
     dep_ID: data.dep_ID,
@@ -189,8 +190,10 @@ export const updateTBAEmployeeData = async ({
       companyEmail: data.companyEmail.toLowerCase(),
       contactNo: data.contactNo,
       basicSalary: data.basicSalary,
+      desiredSalary: data.desiredSalary,
       Joining_Date: data.Joining_Date,
       Designation: data.Designation,
+      dep_ID: data.dep_ID,
     },
   );
   return { message };

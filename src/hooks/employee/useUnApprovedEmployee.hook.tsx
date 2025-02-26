@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { EmployeeApiResponse } from '@/libs/validations/employee';
 import {
   EmployeeListParams,
   getResignedFiredEmployeeList,
@@ -8,10 +9,7 @@ import {
 } from '@/services/hr/employee.service';
 
 import { UseQueryConfig } from '@/types';
-import {
-  EmployeeApiResponse,
-  GetResignationByIdResponse,
-} from '@/types/employee.types';
+import { GetResignationByIdResponse } from '@/types/employee.types';
 
 export const useUnapprovedEmployeeQuery = (
   params: EmployeeListParams,
