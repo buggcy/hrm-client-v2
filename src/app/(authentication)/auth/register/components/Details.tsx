@@ -520,13 +520,18 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="landMark" className="mb-2 text-left">
-              Landmark
+              Landmark <span className="text-red-600">*</span>
             </Label>
             <Input
               id="landMark"
               {...register('additionalInfo.Address.landMark')}
               placeholder="Enter a nearby landmark"
             />
+            {errors.additionalInfo?.Address?.landMark && (
+              <span className="text-xs text-red-500">
+                {errors.additionalInfo.Address.landMark.message}
+              </span>
+            )}
           </div>
           <div className="flex flex-col">
             <Label htmlFor="country" className="mb-2 text-left">
@@ -688,13 +693,18 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
           <div className="flex flex-col">
             <Label htmlFor="full" className="mb-2 text-left">
-              Full Address
+              Full Address <span className="text-red-600">*</span>
             </Label>
             <Input
               id="full"
               {...register('additionalInfo.Address.full')}
               placeholder="123 Main St, LHR, Pakistan"
             />
+            {errors.additionalInfo?.Address?.full && (
+              <span className="text-xs text-red-500">
+                {errors.additionalInfo.Address.full.message}
+              </span>
+            )}
           </div>
         </div>
       </CardContent>
