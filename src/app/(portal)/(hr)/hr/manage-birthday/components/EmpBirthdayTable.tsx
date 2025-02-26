@@ -142,7 +142,7 @@ const EmpBirthdayTable: FunctionComponent = () => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to load Birthdays. Please check the data.
+        Failed to load Birthdays. Please try again later.
       </div>
     );
 

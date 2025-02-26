@@ -116,7 +116,7 @@ const AttendanceHistoryTable: FunctionComponent<
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to Attendance. Please check the data.
+        Failed to Attendance. Please try again later.
       </div>
     );
 

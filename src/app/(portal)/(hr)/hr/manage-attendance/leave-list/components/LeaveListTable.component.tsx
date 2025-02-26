@@ -200,7 +200,7 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to load Leave List. Please check the data.
+        Failed to load Leave List. Please try again later.
       </div>
     );
 

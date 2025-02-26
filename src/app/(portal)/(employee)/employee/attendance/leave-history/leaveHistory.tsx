@@ -185,7 +185,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to load Leave History. Please check the data.
+        Failed to load Leave History. Please try again later.
       </div>
     );
 

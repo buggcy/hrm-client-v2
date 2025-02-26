@@ -160,7 +160,7 @@ const ManageAnnouncementTable: FunctionComponent<
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to load Announcements. Please check the data.
+        Failed to load Announcements. Please try again later.
       </div>
     );
 

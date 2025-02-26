@@ -1,5 +1,8 @@
 'use client';
 import React, { Suspense } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { ArrowLeft } from 'lucide-react';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
@@ -10,6 +13,7 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
+import { Button } from '@/components/ui/button';
 
 import ResignedApproval from './components/ResignedApproval';
 import ResignedListTable from './components/ResignedTable';
@@ -17,10 +21,24 @@ import ResignedListTable from './components/ResignedTable';
 export default function ResignedEmployeesPage() {
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
+  const router = useRouter();
 
   return (
     <Layout>
-      <LayoutHeader title="Resigned Employees">
+      <LayoutHeader
+        title="Resigned Employees"
+        leftElement={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Go Back"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="size-5" />
+          </Button>
+        }
+      >
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 import {
   Tooltip,
@@ -14,7 +15,6 @@ import { Mail, Phone, UserCog } from 'lucide-react';
 import { z } from 'zod';
 
 import CopyToClipboard from '@/components/CopyToClipboard';
-import { LoadingButton } from '@/components/LoadingButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,7 @@ import { AuthStoreType } from '@/stores/auth';
 import { cn } from '@/utils';
 import { getWritePermissions } from '@/utils/permissions.utils';
 
+import { ApprovalActions } from './ApprovalButtons';
 import { RejectDialog } from './RejectDialog';
 
 import { IPersona, MessageErrorResponse } from '@/types';
@@ -71,7 +72,7 @@ export const ApprovalCard = ({
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: employeeApprovalRequest,
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
@@ -91,36 +92,8 @@ export const ApprovalCard = ({
     },
   });
 
-  const handleRejectClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setRejectDialogOpen(true);
-  };
-
   const closeRejectDialog = () => {
     setRejectDialogOpen(false);
-  };
-
-  const handleAccept = () => {
-    const approvalData = {
-      isApproved: 'Approved' as const,
-      hrId: user?.id || '',
-      employeeId: person._id,
-    };
-
-    const validationResult = approvalSchema.safeParse(approvalData);
-
-    if (validationResult.success) {
-      mutate(approvalData);
-    } else {
-      const errorMessages = validationResult.error.errors.map(
-        error => error.message,
-      );
-      toast({
-        title: 'Validation Error',
-        description: errorMessages.join(', '),
-        variant: 'error',
-      });
-    }
   };
 
   const handleReject = (reason: string) => {
@@ -161,14 +134,16 @@ export const ApprovalCard = ({
     >
       <CardContent className="flex flex-col gap-2 p-0">
         <div className="flex items-center justify-between">
-          <Avatar className="size-12">
-            <AvatarImage src={person?.Avatar || ''} alt="User Avatar" />
-            <AvatarFallback className="uppercase">
-              {person?.firstName?.charAt(0)}
-              {person?.lastName?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex space-x-2">
+          <Link href={`/profile?showActions=true&employeeId=${person._id}`}>
+            <Avatar className="size-12">
+              <AvatarImage src={person?.Avatar || ''} alt="User Avatar" />
+              <AvatarFallback className="uppercase">
+                {person?.firstName?.charAt(0)}
+                {person?.lastName?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+          <div className="ml-3 flex space-x-2">
             <Badge variant="label" className="w-fit truncate text-sm">
               {new Date(person.updatedAt).toDateString()}
             </Badge>
@@ -213,24 +188,10 @@ export const ApprovalCard = ({
       </CardContent>
       {writePermission && (
         <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
-          <LoadingButton
-            className="p-2 text-sm"
-            variant="outline"
-            loading={isPending}
-            disabled={isPending}
-            onClick={handleRejectClick}
-          >
-            Reject Request
-          </LoadingButton>
-          <LoadingButton
-            className="p-2 text-sm"
-            variant="primary-inverted"
-            onClick={handleAccept}
-            loading={isPending}
-            disabled={isPending}
-          >
-            Accept Request
-          </LoadingButton>
+          <ApprovalActions
+            employeeId={person._id}
+            refetchApprovalList={refetchApprovalList}
+          />
         </CardFooter>
       )}
       <RejectDialog
