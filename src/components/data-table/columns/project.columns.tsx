@@ -37,18 +37,29 @@ export const ProjectColumns: ColumnDef<ProjectListType>[] = [
       const lastName = row.original?.teamLead?.lastName;
       const avatar = row.original?.teamLead?.Avatar;
       const initials = `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
-
+      const field = row.getValue('teamLead');
       return (
-        <div className="flex items-center space-x-2">
-          <Avatar className="size-8">
-            <AvatarImage src={avatar || ''} alt={`${firstName} ${lastName}`} />
-            <AvatarFallback className="uppercase">{initials}</AvatarFallback>
-          </Avatar>
+        <>
+          {field ? (
+            <div className="flex items-center space-x-2">
+              <Avatar className="size-8">
+                <AvatarImage
+                  src={avatar || ''}
+                  alt={`${firstName} ${lastName}`}
+                />
+                <AvatarFallback className="uppercase">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
 
-          <span className="max-w-[500px] truncate font-medium capitalize">
-            {`${firstName} ${lastName}`}
-          </span>
-        </div>
+              <span className="max-w-[500px] truncate font-medium capitalize">
+                {`${firstName} ${lastName}`}
+              </span>
+            </div>
+          ) : (
+            <span className="italic text-gray-500">No Team Lead Available</span>
+          )}
+        </>
       );
     },
   },

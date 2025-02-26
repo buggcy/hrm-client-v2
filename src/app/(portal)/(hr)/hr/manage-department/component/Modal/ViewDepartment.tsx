@@ -78,21 +78,29 @@ const ViewDepartment = ({ open, onCloseChange, data }: ModelProps) => {
                   <p className="text-sm font-semibold">Department Head</p>
                 </div>
                 <div className="w-7/12">
-                  <div className="flex items-center space-x-2">
-                    <Avatar className="size-6">
-                      <AvatarImage
-                        src={avatar || ''}
-                        alt={`${firstName} ${lastName}`}
-                      />
-                      <AvatarFallback className="uppercase">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
-
-                    <span className="max-w-[500px] truncate text-sm font-medium capitalize text-gray-600 dark:text-gray-300">
-                      {`${firstName} ${lastName}`}
+                  {data?.departmentHead?.some(
+                    head => head.isCurrent && !head.user,
+                  ) ? (
+                    <span className="text-sm italic text-gray-500">
+                      No Department Head Available
                     </span>
-                  </div>
+                  ) : (
+                    <div className="flex items-center space-x-2">
+                      <Avatar className="size-6">
+                        <AvatarImage
+                          src={avatar || ''}
+                          alt={`${firstName} ${lastName}`}
+                        />
+                        <AvatarFallback className="uppercase">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
+
+                      <span className="max-w-[500px] truncate text-sm font-medium capitalize text-gray-600 dark:text-gray-300">
+                        {`${firstName} ${lastName}`}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex flex-row justify-between">

@@ -30,7 +30,7 @@ const projectSchema = z.object({
   _id: z.string(),
   __v: z.number(),
   updatedBy: userIdSchema.optional(),
-  teamLead: userIdSchema.optional(),
+  teamLead: userIdSchema.nullable().optional(),
   teamMembers: z.array(userIdSchema).optional(),
   deletedMembers: z.array(userIdSchema).optional(),
   status: z.enum(projectStatus).optional(),
@@ -57,7 +57,7 @@ const projectIdSchema = z.object({
   techStack: z.array(z.string()).optional(),
 });
 const headSchema = z.object({
-  user: userIdSchema.optional(),
+  user: userIdSchema.nullable().optional(),
   isCurrent: z.boolean(),
   appointDate: z.string(),
   endDate: z.string().optional(),

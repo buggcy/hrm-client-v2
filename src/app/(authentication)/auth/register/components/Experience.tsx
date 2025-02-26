@@ -25,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -120,82 +121,84 @@ export function ExperienceTable({
           Add More
         </Button>
       </div>
+      <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+        <Table className="">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Type</TableHead>
+              <TableHead>Start Date</TableHead>
+              <TableHead>End Date</TableHead>
+              <TableHead>Institute/Company</TableHead>
+              <TableHead>Position/Degree</TableHead>
+              <TableHead>Reference No</TableHead>
+              <TableHead>Document</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {educationExperiences.map(
+              (item: EducationExperienceType, index: number) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                  </TableCell>
+                  <TableCell>{item.Start_Date.toDateString()}</TableCell>
+                  <TableCell>{item.End_Date.toDateString()}</TableCell>
+                  <TableCell>{item.Institute}</TableCell>
+                  <TableCell>{item.Position}</TableCell>
+                  <TableCell>{item.referenceNumber}</TableCell>
+                  <TableCell> {item.documentType}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="flex size-8 p-0 data-[state=open]:bg-muted"
+                          >
+                            <MoreHorizontal className="size-4" />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[200px]">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
 
-      <Table className="">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Type</TableHead>
-            <TableHead>Start Date</TableHead>
-            <TableHead>End Date</TableHead>
-            <TableHead>Institute/Company</TableHead>
-            <TableHead>Position/Degree</TableHead>
-            <TableHead>Reference No</TableHead>
-            <TableHead>Document</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {educationExperiences.map(
-            (item: EducationExperienceType, index: number) => (
-              <TableRow key={index}>
-                <TableCell>
-                  {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                </TableCell>
-                <TableCell>{item.Start_Date.toDateString()}</TableCell>
-                <TableCell>{item.End_Date.toDateString()}</TableCell>
-                <TableCell>{item.Institute}</TableCell>
-                <TableCell>{item.Position}</TableCell>
-                <TableCell>{item.referenceNumber}</TableCell>
-                <TableCell> {item.documentType}</TableCell>
-                <TableCell>
-                  <Dialog>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="flex size-8 p-0 data-[state=open]:bg-muted"
-                        >
-                          <MoreHorizontal className="size-4" />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-[200px]">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-
-                        <DialogTrigger
-                          asChild
-                          onClick={() => handleEditClick(item)}
-                        >
-                          <DropdownMenuItem>
-                            <Pencil className="mr-2 size-4" />
-                            Edit Details
+                          <DialogTrigger
+                            asChild
+                            onClick={() => handleEditClick(item)}
+                          >
+                            <DropdownMenuItem>
+                              <Pencil className="mr-2 size-4" />
+                              Edit Details
+                            </DropdownMenuItem>
+                          </DialogTrigger>
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteClick(item)}
+                            className="text-red-600"
+                          >
+                            <Trash2 className="mr-2 size-4" />
+                            Delete Details
                           </DropdownMenuItem>
-                        </DialogTrigger>
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteClick(item)}
-                          className="text-red-600"
-                        >
-                          <Trash2 className="mr-2 size-4" />
-                          Delete Details
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </Dialog>
-                </TableCell>
-              </TableRow>
-            ),
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={7}>Total Records</TableCell>
-            <TableCell className="text-right">
-              {educationExperiences.length}
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ),
+            )}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={7}>Total Records</TableCell>
+              <TableCell className="text-right">
+                {educationExperiences.length}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
       {educationExperiences?.length === 0 &&
         errors?.educationalDocument?.educationExperiences && (
           <span className="text-xs text-red-500">

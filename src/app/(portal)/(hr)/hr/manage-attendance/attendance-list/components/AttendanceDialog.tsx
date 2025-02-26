@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { ChevronDown } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
@@ -83,7 +83,7 @@ export function formatUTCToLocalTime(utcDateString: string) {
 }
 
 export function convertTo24Hour(timeStr: string) {
-  const [time, modifier] = timeStr.split(' '); // Split time and AM/PM part
+  const [time, modifier] = timeStr.split(' ');
   let hours = time.split(':')[0];
   const minutes = time.split(':')[1];
 
@@ -146,7 +146,7 @@ export function AttendanceDialog({
     attendanceListStore: AttendanceListStoreType;
   };
   const { setRefetchAttendanceList } = attendanceListStore;
-
+  const queryClient = useQueryClient();
   const inTime = watch('inTime');
   const outTime = watch('outTime');
   const date = watch('date');
@@ -237,6 +237,10 @@ export function AttendanceDialog({
       });
       reset();
       onCloseChange();
+      void queryClient.invalidateQueries({
+        queryKey: ['attendanceOverviewList'],
+      });
+
       setRefetchAttendanceList(true);
     },
   });

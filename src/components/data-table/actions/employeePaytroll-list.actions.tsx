@@ -108,7 +108,7 @@ export function EmployeePayrollListRowActions({
           }
           salaryDeduction={payslipData.Total_SalaryDeducton || 0}
           paymentStatus={payslipData.Pay_Status || 'N/A'}
-          perks={payslipData.perks || []}
+          perks={payslipData?.perks || { increments: [], decrements: [] }}
           totalPerkIncrement={payslipData.totalPerkIncrement || 0}
           totalPerkDecrement={payslipData.totalPerkDecrement || 0}
           casualLeaves={payslipData?.Leaves?.casual || 0}
