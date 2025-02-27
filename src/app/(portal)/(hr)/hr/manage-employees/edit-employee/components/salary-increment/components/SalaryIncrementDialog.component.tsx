@@ -29,8 +29,10 @@ import { MessageErrorResponse } from '@/types';
 
 const addSalaryIncrementSchema = z.object({
   empId: z.string(),
-  incrementTitle: z.string(),
-  incrementAmount: z.coerce.number(),
+  incrementTitle: z.string().min(1, 'Title is required'),
+  incrementAmount: z.coerce
+    .number()
+    .positive('Increment Amount must be a positive number'),
   desiredSalary: z.coerce.number(),
 });
 
@@ -75,6 +77,11 @@ export function SalaryIncrementDialog({
     },
   });
 
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
   useEffect(() => {
     if (editData) {
       reset({
@@ -130,7 +137,7 @@ export function SalaryIncrementDialog({
           <div className="mb-4 flex flex-col gap-8">
             <div className="flex flex-col">
               <Label htmlFor="incrementTitle" className="mb-2 text-left">
-                Increment Title
+                Increment Title <span className="text-sm text-red-500">*</span>
               </Label>
               <Controller
                 name="incrementTitle"
@@ -149,6 +156,30 @@ export function SalaryIncrementDialog({
                 </span>
               )}
             </div>
+
+            <div className="flex flex-col">
+              <Label htmlFor="incrementAmount" className="mb-2 text-left">
+                Increment Amount <span className="text-sm text-red-500">*</span>
+              </Label>
+              <Controller
+                name="incrementAmount"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="incrementAmount"
+                    placeholder="10000"
+                    type="number"
+                  />
+                )}
+              />
+              {errors.incrementAmount && (
+                <span className="text-sm text-red-500">
+                  {errors.incrementAmount.message}
+                </span>
+              )}
+            </div>
+
             <div className="flex flex-col">
               <Label htmlFor="desiredSalary" className="mb-2 text-left">
                 Desired Salary
@@ -168,28 +199,6 @@ export function SalaryIncrementDialog({
               {errors.desiredSalary && (
                 <span className="text-sm text-red-500">
                   {errors.desiredSalary.message}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="incrementAmount" className="mb-2 text-left">
-                Increment Amount
-              </Label>
-              <Controller
-                name="incrementAmount"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="incrementAmount"
-                    placeholder="10000"
-                    type="number"
-                  />
-                )}
-              />
-              {errors.incrementAmount && (
-                <span className="text-sm text-red-500">
-                  {errors.incrementAmount.message}
                 </span>
               )}
             </div>
