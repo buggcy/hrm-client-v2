@@ -29,6 +29,7 @@ const ViewDepartment = ({ open, onCloseChange, data }: ModelProps) => {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   };
+
   return (
     <>
       <Dialog open={open} onOpenChange={onCloseChange}>
@@ -153,75 +154,82 @@ const ViewDepartment = ({ open, onCloseChange, data }: ModelProps) => {
           {activeTab === 'project' && (
             <ScrollArea className="h-60 w-full">
               <div className="space-y-4">
-                {data?.projects?.map(project => (
-                  <div key={project._id} className="rounded-lg border p-4">
-                    <div className="mb-2 flex justify-between">
-                      <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                        {project.projectName}
-                      </p>
-                      <Badge
-                        className="capitalize"
-                        variant={
-                          project.status === 'Completed'
-                            ? 'success'
-                            : project.status === 'Overdue'
-                              ? 'destructive'
-                              : project.status === 'Pending'
-                                ? 'secondary'
-                                : project.status === 'Cancelled'
-                                  ? 'error'
-                                  : project.status === 'In Progress'
-                                    ? 'warning'
-                                    : project.status === 'Not Started'
-                                      ? 'progress'
-                                      : 'default'
-                        }
-                      >
-                        {project.status || 'N/A'}
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {project.projectTitle}
-                      </p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {project.startDate
-                          ? new Date(project.startDate).toDateString()
-                          : 'N/A'}
-                      </p>
-                    </div>
-
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <span className="text-sm">Technology:</span>{' '}
-                      {project?.techStack && project?.techStack?.length > 0 ? (
-                        <ul
-                          className="grid list-disc grid-cols-3 gap-x-6 pl-1"
-                          style={{
-                            listStyleType: 'disc',
-                            listStylePosition: 'inside',
-                          }}
-                        >
-                          {project.techStack.map((tech, index) => (
-                            <li
-                              key={index}
-                              className="text-sm text-gray-600 dark:text-gray-300"
-                              style={{
-                                fontSize: '0.8rem',
-                                lineHeight: '1rem',
-                              }}
-                            >
-                              {tech}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-center text-xs text-gray-600 dark:text-gray-300">
-                          No Tech Stack Available!
+                {data?.projects && data?.projects?.length > 0 ? (
+                  data?.projects?.map(project => (
+                    <div key={project._id} className="rounded-lg border p-4">
+                      <div className="mb-2 flex justify-between">
+                        <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                          {project.projectName}
                         </p>
-                      )}
-                    </p>
-                  </div>
-                ))}
+                        <Badge
+                          className="capitalize"
+                          variant={
+                            project.status === 'Completed'
+                              ? 'success'
+                              : project.status === 'Overdue'
+                                ? 'destructive'
+                                : project.status === 'Pending'
+                                  ? 'secondary'
+                                  : project.status === 'Cancelled'
+                                    ? 'error'
+                                    : project.status === 'In Progress'
+                                      ? 'warning'
+                                      : project.status === 'Not Started'
+                                        ? 'progress'
+                                        : 'default'
+                          }
+                        >
+                          {project.status || 'N/A'}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {project.projectTitle}
+                        </p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          {project.startDate
+                            ? new Date(project.startDate).toDateString()
+                            : 'N/A'}
+                        </p>
+                      </div>
+
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-sm">Technology:</span>{' '}
+                        {project?.techStack &&
+                        project?.techStack?.length > 0 ? (
+                          <ul
+                            className="grid list-disc grid-cols-3 gap-x-6 pl-1"
+                            style={{
+                              listStyleType: 'disc',
+                              listStylePosition: 'inside',
+                            }}
+                          >
+                            {project.techStack.map((tech, index) => (
+                              <li
+                                key={index}
+                                className="text-sm text-gray-600 dark:text-gray-300"
+                                style={{
+                                  fontSize: '0.8rem',
+                                  lineHeight: '1rem',
+                                }}
+                              >
+                                {tech}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-center text-xs text-gray-600 dark:text-gray-300">
+                            No Tech Stack Available!
+                          </p>
+                        )}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-xs text-gray-600 dark:text-gray-300">
+                    No Projects Found!
+                  </p>
+                )}
               </div>
             </ScrollArea>
           )}

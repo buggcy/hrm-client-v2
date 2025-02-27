@@ -41,19 +41,31 @@ export const MobileHeader = () => {
 
   const clearSearch = () => setSearchQuery('');
 
-  const filteredMenuItems = menuItems.filter(item => {
-    const matchesTitle = item.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+  const filteredMenuItems = menuItems
+    .map(item => {
+      const matchesTitle = item.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
 
-    const matchesChildren =
-      item.children &&
-      item.children.some(child =>
-        child.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
+      const matchedChildren = item.children
+        ? item.children.filter(child =>
+            child.title.toLowerCase().includes(searchQuery.toLowerCase()),
+          )
+        : [];
 
-    return matchesTitle || matchesChildren;
-  });
+      if (matchesTitle) {
+        return {
+          ...item,
+          children:
+            matchedChildren.length > 0 ? matchedChildren : item.children,
+        };
+      } else if (matchedChildren.length > 0) {
+        return { ...item, children: matchedChildren };
+      }
+
+      return null;
+    })
+    .filter(item => item !== null);
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
