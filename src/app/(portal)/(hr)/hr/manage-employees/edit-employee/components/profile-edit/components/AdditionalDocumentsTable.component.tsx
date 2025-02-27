@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
+  Eye,
   File as FileIcon,
   FileText,
   MoreHorizontal,
@@ -31,6 +32,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -224,14 +231,24 @@ const AdditionalDocumentsTable = ({
                             </div>
                           </TableCell>
 
-                          <TableCell className="text-center">
-                            <a
-                              href={getPreviewUrl(fileURL)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <Button variant="outline">View</Button>
-                            </a>
+                          <TableCell className="p-0 text-center">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <a
+                                    href={getPreviewUrl(fileURL)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mx-auto text-primary/80 hover:text-primary"
+                                  >
+                                    <Eye className="mx-auto size-4" />
+                                  </a>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  Click to Preview Image
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           </TableCell>
                           <TableCell className="p-0 text-center">
                             <DropdownMenu>
@@ -282,11 +299,9 @@ const AdditionalDocumentsTable = ({
                 <TableRow>
                   <TableCell colSpan={2}>Total Records</TableCell>
                   <TableCell className="text-right">
-                    {
-                      tableData.filter(
-                        item => item?.Document && item?.Document.length > 0,
-                      ).length
-                    }
+                    {(tableData?.length > 0 &&
+                      tableData[0]?.Document?.length) ||
+                      0}
                   </TableCell>
                 </TableRow>
               </TableFooter>

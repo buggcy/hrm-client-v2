@@ -294,9 +294,7 @@ export function Details({ onNext }: { onNext: () => void }) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup className="text-sm">
-                      <SelectItem value="None" disabled>
-                        Select Blood Group
-                      </SelectItem>
+                      <SelectItem value="None">Select Blood Group</SelectItem>
                       <SelectItem value="A+">A+</SelectItem>
                       <SelectItem value="A-">A-</SelectItem>
                       <SelectItem value="B+">B+</SelectItem>
@@ -340,11 +338,9 @@ export function Details({ onNext }: { onNext: () => void }) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup className="text-sm">
-                      <SelectItem value="None" disabled>
-                        Select Gender
-                      </SelectItem>
+                      <SelectItem value="None">Select Gender</SelectItem>
                       <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
