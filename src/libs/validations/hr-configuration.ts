@@ -5,6 +5,7 @@ export const ConfigurationType = [
   'education',
   'experience',
   'feedback',
+  'timecutoff',
 ] as const;
 
 const paginationSchema = z.object({
@@ -31,6 +32,7 @@ const configurationSchema = z.object({
   educationType: z.string().optional(),
   designationType: z.string().optional(),
   feedbackType: z.string().optional(),
+  timeCutOff: z.number().optional(),
   isDeleted: z.boolean(),
   isIntern: z.boolean().optional(),
   isProbational: z.boolean().optional(),

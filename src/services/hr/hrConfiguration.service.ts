@@ -195,3 +195,16 @@ export const editFeedbackType = async (payload: {
   );
   return { message };
 };
+
+export const addTimeCutOffType = async (payload: {
+  userId: string;
+  timeCutOff?: number;
+}): Promise<SuccessMessageResponse> => {
+  const { userId, timeCutOff } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(`/add/types`, {
+    userId,
+    status: 'timecutoff',
+    timeCutOff,
+  });
+  return { message };
+};

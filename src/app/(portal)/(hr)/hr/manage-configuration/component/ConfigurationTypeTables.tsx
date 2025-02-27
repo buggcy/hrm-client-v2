@@ -15,6 +15,7 @@ import DesignationTypeTable from './DesignationTypeTable';
 import EducationTypeTable from './EducationTypeTable';
 import ExperienceTypeTable from './ExperienceTypeTable';
 import FeedbackTypeTable from './FeedbackTypeTable';
+import TimeCutOffTable from './TimeCutOffTable';
 
 interface ConfigurationTypeTableProps {}
 const ConfigurationTypeTable: FunctionComponent<
@@ -39,6 +40,7 @@ const ConfigurationTypeTable: FunctionComponent<
                 <SelectItem value="Education Type">Education Type</SelectItem>
                 <SelectItem value="Experience Type">Experience Type</SelectItem>
                 <SelectItem value="Feedback Type">Feedback Type</SelectItem>
+                <SelectItem value="Time Cut Off">Time Cut Off</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -63,6 +65,11 @@ const ConfigurationTypeTable: FunctionComponent<
         {selectedType === 'Feedback Type' && (
           <div>
             <FeedbackTypeTable />
+          </div>
+        )}
+        {selectedType === 'Time Cut Off' && (
+          <div>
+            <TimeCutOffTable />
           </div>
         )}
       </div>
