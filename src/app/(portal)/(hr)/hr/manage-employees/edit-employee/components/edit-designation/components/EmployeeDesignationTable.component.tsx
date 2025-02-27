@@ -20,7 +20,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -84,11 +83,23 @@ const EmployeeDesignationTable = ({
                       <TableRow
                         key={designation._id}
                         className={cn(
-                          designation.isCurrent ? 'bg-foreground/10' : '',
+                          designation.isCurrent
+                            ? 'border-l-4 border-primary bg-foreground/5'
+                            : '',
                         )}
                       >
-                        <TableCell className="text-center font-medium">
-                          {designation.position}
+                        <TableCell>
+                          <div className="flex justify-center gap-2 text-center font-medium">
+                            {designation.isCurrent && (
+                              <Badge
+                                variant="outline"
+                                className="hidden sm:block"
+                              >
+                                Current
+                              </Badge>
+                            )}
+                            {designation.position}
+                          </div>
                         </TableCell>
                         <TableCell className="flex justify-center gap-2 text-center">
                           <Badge variant="outline" className="hidden sm:block">
@@ -139,12 +150,6 @@ const EmployeeDesignationTable = ({
                 </TableRow>
               )}
             </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={3}>Total Records</TableCell>
-                <TableCell className="text-right">{data?.length}</TableCell>
-              </TableRow>
-            </TableFooter>
             <DeleteDialog
               id={toBeDeletedId || ''}
               isOpen={showDeleteDialog}

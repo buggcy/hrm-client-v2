@@ -20,11 +20,6 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/use-toast';
 
-import {
-  bloodgroupStatus,
-  gender,
-  maritalStatus,
-} from '@/libs/validations/employee';
 import { registerEmployee, verifyRegisterCode } from '@/services';
 import { formatedDate } from '@/utils';
 
@@ -160,9 +155,9 @@ const mainFormSchema = z.object({
       .date()
       .max(new Date(), 'Invalid date of birth')
       .max(minAgeDate, 'You must be at least 18 years old'),
-    Marital_Status: z.enum(maritalStatus),
-    Blood_Group: z.enum(bloodgroupStatus),
-    Gender: z.enum(gender),
+    Marital_Status: z.string().optional(),
+    Blood_Group: z.string().optional(),
+    Gender: z.string().optional(),
     Nationality: z.string().min(1, 'Nationality is required'),
     Family_Name: z.string().min(1, 'Family member name is required'),
     Family_Relation: z.string().min(1, 'Relation is required'),
@@ -206,9 +201,9 @@ const defaultMainFormValues = {
     contactNo: '',
     Emergency_Phone: '',
     DOB: cutoffDate,
-    Marital_Status: maritalStatus[0],
-    Blood_Group: bloodgroupStatus[0],
-    Gender: gender[0],
+    Marital_Status: '',
+    Blood_Group: '',
+    Gender: '',
     Nationality: '',
     Family_Name: '',
     Family_Relation: '',
@@ -294,9 +289,9 @@ export function VerifyCodeForm(): JSX.Element {
           DOB: employee?.DOB
             ? new Date(employee.DOB)
             : subYears(new Date(), 18),
-          Marital_Status: employee?.Marital_Status || maritalStatus[0],
-          Blood_Group: employee?.Blood_Group || bloodgroupStatus[0],
-          Gender: employee?.Gender || gender[0],
+          Marital_Status: employee?.Marital_Status || '',
+          Blood_Group: employee?.Blood_Group || '',
+          Gender: employee?.Gender || '',
           Nationality: employee?.Nationality || '',
           Family_Name: employee?.Family_Name || '',
           Family_Relation: employee?.Family_Relation || '',

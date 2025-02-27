@@ -21,24 +21,15 @@ export type VerifyEmployeeType = {
   createdAt: string;
   updatedAt: string;
   __v: number;
-  Blood_Group?:
-    | 'A+'
-    | 'A-'
-    | 'B+'
-    | 'B-'
-    | 'O+'
-    | 'O-'
-    | 'AB+'
-    | 'AB-'
-    | undefined;
+  Blood_Group?: string;
   DOB: string;
   Emergency_Phone: string;
   Family_Name: string;
   Family_Occupation: string;
   Family_PhoneNo: string;
   Family_Relation: string;
-  Gender: 'male' | 'female';
-  Marital_Status: 'married' | 'unmarried';
+  Gender: string;
+  Marital_Status: string;
   Nationality: string;
   rejectedReason: string;
 };

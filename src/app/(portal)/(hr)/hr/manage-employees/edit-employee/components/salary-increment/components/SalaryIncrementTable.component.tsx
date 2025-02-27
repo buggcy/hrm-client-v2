@@ -7,6 +7,7 @@ import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import DeleteDialog from '@/components/modals/delete-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -80,6 +81,18 @@ const SalaryIncrementTable = ({
       setRefetchData(false);
     }
   }, [refetchData, refetchSalaryIncrementList]);
+
+  const basicSalary = data?.incrementRecords?.length
+    ? data.incrementRecords[0].amount
+    : 0;
+
+  const incrementSalary =
+    data?.incrementRecords?.reduce((acc, curr, index) => {
+      return index !== 0 ? acc + curr.amount : acc;
+    }, 0) || 0;
+
+  const totalSalary = basicSalary + incrementSalary;
+
   return (
     <>
       {data?.incrementRecords && (
@@ -161,12 +174,10 @@ const SalaryIncrementTable = ({
                 })
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={4}
-                    className="text-center text-gray-500 dark:text-gray-300"
-                  >
-                    No Salary Increment Available!
-                  </TableCell>
+                  <TableHead className="text-center">Title</TableHead>
+                  <TableHead className="text-center">Amount</TableHead>
+                  <TableHead className="text-center">Date</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               )}
             </TableBody>
@@ -202,6 +213,42 @@ const SalaryIncrementTable = ({
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       )}
+      <div className="mt-4 flex justify-end">
+        <Card className="w-[350px] rounded-xl border bg-white shadow dark:bg-gray-800">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-gray-700 dark:text-white">
+              Salary Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-500 dark:text-gray-300">
+                Basic Salary:
+              </span>
+              <span className="font-medium text-gray-700 dark:text-white">
+                Rs {basicSalary.toLocaleString('en-PK')}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500 dark:text-gray-300">
+                Increment Salary:
+              </span>
+              <span className="font-medium text-gray-700 dark:text-white">
+                Rs {incrementSalary.toLocaleString('en-PK')}
+              </span>
+            </div>
+            <hr />
+            <div className="flex justify-between text-lg font-semibold">
+              <span className="text-gray-700 dark:text-white">
+                Total Salary:
+              </span>
+              <span className="text-green-600">
+                Rs {totalSalary.toLocaleString('en-PK')}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };

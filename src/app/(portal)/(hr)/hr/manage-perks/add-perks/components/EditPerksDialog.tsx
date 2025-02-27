@@ -120,7 +120,7 @@ export function EditPerksDialog({
     if (data.salaryIncrement && data.salaryDecrement) {
       setError('salaryDecrement', {
         type: 'manual',
-        message: '',
+        message: 'Both salary increment and decrement cannot be selected',
       });
       return;
     } else if (!data.salaryIncrement && !data.salaryDecrement) {

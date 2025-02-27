@@ -1,14 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, { useEffect, useState } from 'react';
 
-import {
-  Select,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@radix-ui/react-select';
-import { ChevronDown } from 'lucide-react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import CustomDayPicker from '@/components/CustomDayPicker';
@@ -16,7 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SelectContent } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import {
   useCities,
@@ -35,6 +34,7 @@ export function Details({ onNext }: { onNext: () => void }) {
     watch,
     setValue,
     setError,
+    control,
   } = useFormContext<MainFormData>();
   const DEFAULT_COUNTRY_CODE = 'PK';
 
@@ -47,9 +47,6 @@ export function Details({ onNext }: { onNext: () => void }) {
   const { data: states } = useStates(selectedCountry);
   const { data: cities } = useCities(selectedCountry, selectedState);
 
-  const maritalStatus = watch('additionalInfo.Marital_Status');
-  const bloodGroup = watch('additionalInfo.Blood_Group');
-  const gender = watch('additionalInfo.Gender');
   const country = watch('additionalInfo.Address.country');
   const province = watch('additionalInfo.Address.province');
   const city = watch('additionalInfo.Address.city');
@@ -233,43 +230,41 @@ export function Details({ onNext }: { onNext: () => void }) {
           </div>
 
           <div className="flex flex-col">
-            <Label htmlFor="marital-status" className="mb-2 text-left">
+            <Label
+              htmlFor="additionalInfo.Marital_Status"
+              className="mb-2 text-left"
+            >
               Marital Status
             </Label>
-            <Select
-              value={maritalStatus || 'Select marital status'}
-              onValueChange={(value: 'married' | 'unmarried') => {
-                if (value === 'married' || value === 'unmarried') {
-                  setValue('additionalInfo.Marital_Status', value);
-                }
-              }}
-            >
-              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                <SelectValue>
-                  {maritalStatus
-                    ? maritalStatus.charAt(0).toUpperCase() +
-                      maritalStatus.slice(1)
-                    : 'Select marital status'}
-                </SelectValue>
-                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup className="text-sm">
-                  <SelectItem
-                    value="married"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    Married
-                  </SelectItem>
-                  <SelectItem
-                    value="unmarried"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    Unmarried
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <Controller
+              name="additionalInfo.Marital_Status"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value: string) => {
+                    if (value === 'None') {
+                      field.onChange('');
+                    } else {
+                      field.onChange(value);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="relative z-50 h-[38px] w-full rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectValue placeholder="Select Marital Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem value="None">
+                        Select Marital Status
+                      </SelectItem>
+                      <SelectItem value="married">Married</SelectItem>
+                      <SelectItem value="unmarried">Unmarried</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.additionalInfo?.Marital_Status && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Marital_Status.message}
@@ -280,75 +275,41 @@ export function Details({ onNext }: { onNext: () => void }) {
             <Label htmlFor="blood-group" className="mb-2 text-left">
               Blood Group
             </Label>
-            <Select
-              value={bloodGroup || 'Select blood group'}
-              onValueChange={(
-                value: 'A+' | 'A-' | 'B+' | 'B-' | 'O+' | 'O-' | 'AB+' | 'AB-',
-              ) => {
-                if (value) {
-                  setValue('additionalInfo.Blood_Group', value);
-                }
-              }}
-            >
-              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                <SelectValue>
-                  {bloodGroup ? bloodGroup : 'Select blood group'}
-                </SelectValue>
-                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup className="text-sm">
-                  <SelectItem
-                    value="A+"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    A+
-                  </SelectItem>
-                  <SelectItem
-                    value="A-"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    A-
-                  </SelectItem>
-                  <SelectItem
-                    value="B+"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    B+
-                  </SelectItem>
-                  <SelectItem
-                    value="B-"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    B-
-                  </SelectItem>
-                  <SelectItem
-                    value="O+"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    O+
-                  </SelectItem>
-                  <SelectItem
-                    value="O-"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    O-
-                  </SelectItem>
-                  <SelectItem
-                    value="AB+"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    AB+
-                  </SelectItem>
-                  <SelectItem
-                    value="AB-"
-                    className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                  >
-                    AB-
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <Controller
+              name="additionalInfo.Blood_Group"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value: string) => {
+                    if (value === 'None') {
+                      field.onChange('');
+                    } else {
+                      field.onChange(value);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="relative z-50 h-[38px] w-full rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectValue placeholder="Select blood group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem value="None" disabled>
+                        Select Blood Group
+                      </SelectItem>
+                      <SelectItem value="A+">A+</SelectItem>
+                      <SelectItem value="A-">A-</SelectItem>
+                      <SelectItem value="B+">B+</SelectItem>
+                      <SelectItem value="B-">B-</SelectItem>
+                      <SelectItem value="O+">O+</SelectItem>
+                      <SelectItem value="O-">O-</SelectItem>
+                      <SelectItem value="AB+">AB+</SelectItem>
+                      <SelectItem value="AB-">AB-</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.additionalInfo?.Blood_Group && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Blood_Group.message}
@@ -360,39 +321,35 @@ export function Details({ onNext }: { onNext: () => void }) {
             <Label htmlFor="gender" className="mb-2 text-left">
               Gender <span className="text-red-600">*</span>
             </Label>
-            <Select
-              value={gender || 'Select Gender'}
-              onValueChange={(value: 'male' | 'female') => {
-                if (value) {
-                  setValue('additionalInfo.Gender', value);
-                }
-              }}
-            >
-              <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
-                <SelectValue>
-                  {gender
-                    ? gender.charAt(0).toUpperCase() + gender.slice(1)
-                    : 'Select Gender'}
-                </SelectValue>
-                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
-                <SelectContent>
-                  <SelectGroup className="text-sm">
-                    <SelectItem
-                      value="male"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Male
-                    </SelectItem>
-                    <SelectItem
-                      value="female"
-                      className="cursor-pointer rounded px-3 py-2 hover:bg-gray-200 dark:bg-gray-800"
-                    >
-                      Female
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </SelectTrigger>
-            </Select>
+            <Controller
+              name="additionalInfo.Gender"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value: string) => {
+                    if (value === 'None') {
+                      field.onChange('');
+                    } else {
+                      field.onChange(value);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="relative z-50 h-[38px] w-full rounded-md border px-3 py-2 text-left text-sm">
+                    <SelectValue placeholder="Select Gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="text-sm">
+                      <SelectItem value="None" disabled>
+                        Select Gender
+                      </SelectItem>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Male</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.additionalInfo?.Gender && (
               <span className="text-xs text-red-500">
                 {errors.additionalInfo.Gender.message}
@@ -543,12 +500,6 @@ export function Details({ onNext }: { onNext: () => void }) {
             >
               <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                 <SelectValue>
-                  {/* {selectedCountry
-                    ? countries?.find(
-                        (country: CountryType) =>
-                          country.iso2 === selectedCountry,
-                      )?.name
-                    : 'Select country'} */}
                   {country
                     ? country
                     : selectedCountry
@@ -558,7 +509,6 @@ export function Details({ onNext }: { onNext: () => void }) {
                         )?.name
                       : 'Select country'}
                 </SelectValue>
-                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup className="text-sm">
@@ -592,11 +542,6 @@ export function Details({ onNext }: { onNext: () => void }) {
             >
               <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                 <SelectValue>
-                  {/* {selectedState
-                    ? states.find(
-                        (state: CountryType) => state.iso2 === selectedState,
-                      )?.name || 'Select province'
-                    : 'Select province'} */}
                   {province
                     ? province
                     : selectedState
@@ -605,7 +550,6 @@ export function Details({ onNext }: { onNext: () => void }) {
                         )?.name || 'Select province'
                       : 'Select province'}
                 </SelectValue>
-                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup className="text-sm">
@@ -640,11 +584,6 @@ export function Details({ onNext }: { onNext: () => void }) {
             >
               <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                 <SelectValue>
-                  {/* {selectedCity
-                    ? cities?.find(
-                        (city: CityType) => city.name === selectedCity,
-                      )?.name
-                    : 'Select city'} */}
                   {city
                     ? city
                     : selectedCity
@@ -653,7 +592,6 @@ export function Details({ onNext }: { onNext: () => void }) {
                         )?.name
                       : 'Select city'}
                 </SelectValue>
-                <ChevronDown className="absolute right-2 top-0 size-4 translate-y-1/2" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup className="text-sm">
