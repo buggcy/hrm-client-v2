@@ -377,6 +377,18 @@ export const updateEmployeeProfile = async ({
   }
 };
 
+export const deleteEmployeeAvatar = async (id: string) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.put(
+      `/employee/edit/avatar/${id}`,
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error deleting employee avatar', error);
+    throw error;
+  }
+};
+
 export const updateEmployeeData = async ({
   id,
   body,

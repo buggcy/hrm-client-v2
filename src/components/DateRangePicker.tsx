@@ -83,26 +83,29 @@ export const DateRangePicker = ({
         to,
       });
     } else if (timeRange === 'Last 3 Months') {
-      const lastMonth = subMonths(now, 1);
+      const lastMonth = new Date();
+      lastMonth.setHours(23, 59, 59, 999);
       const from = subMonths(startOfMonth(lastMonth), 2);
-      const to = endOfMonth(lastMonth);
+      const to = lastMonth;
       setDate({
         from,
         to,
       });
     } else if (timeRange === 'Last 6 Months') {
-      const lastMonth = subMonths(now, 1);
+      const lastMonth = new Date();
+      lastMonth.setHours(23, 59, 59, 999);
       const from = subMonths(startOfMonth(lastMonth), 5);
-      const to = endOfMonth(lastMonth);
+      const to = lastMonth;
 
       setDate({
         from,
         to,
       });
     } else if (timeRange === 'Last 12 Months') {
-      const lastMonth = subMonths(now, 1);
+      const lastMonth = new Date();
+      lastMonth.setHours(23, 59, 59, 999);
       const from = subMonths(startOfMonth(lastMonth), 11);
-      const to = endOfMonth(lastMonth);
+      const to = lastMonth;
 
       setDate({
         from,

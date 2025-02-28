@@ -21,7 +21,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -110,7 +109,7 @@ const SalaryIncrementTable = ({
               </TableHeader>
               <TableBody>
                 {data?.incrementRecords?.length > 0 ? (
-                  data?.incrementRecords.map(increment => {
+                  data?.incrementRecords.map((increment, index) => {
                     const wholeDate = new Date(
                       increment.date as string | number | Date,
                     ).toDateString();
@@ -138,43 +137,45 @@ const SalaryIncrementTable = ({
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell className="p-0 text-center">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild className="mx-auto">
-                              <Button
-                                variant="ghost"
-                                className="flex size-8 p-0 data-[state=open]:bg-muted"
+                        {index !== 0 && (
+                          <TableCell className="p-0 text-center">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild className="mx-auto">
+                                <Button
+                                  variant="ghost"
+                                  className="flex size-8 p-0 data-[state=open]:bg-muted"
+                                >
+                                  <MoreHorizontal className="size-4" />
+                                  <span className="sr-only">Open menu</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent
+                                align="end"
+                                className="w-[150px]"
                               >
-                                <MoreHorizontal className="size-4" />
-                                <span className="sr-only">Open menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                              align="end"
-                              className="w-[150px]"
-                            >
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  handleEditDialogOpen(increment._id);
-                                }}
-                              >
-                                <Pencil className="mr-2 size-4" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  handleDeleteDialogOpen(increment._id);
-                                }}
-                                className="text-red-600"
-                              >
-                                <Trash2 className="mr-2 size-4" />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onSelect={() => {
+                                    handleEditDialogOpen(increment._id);
+                                  }}
+                                >
+                                  <Pencil className="mr-2 size-4" />
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onSelect={() => {
+                                    handleDeleteDialogOpen(increment._id);
+                                  }}
+                                  className="text-red-600"
+                                >
+                                  <Trash2 className="mr-2 size-4" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        )}
                       </TableRow>
                     );
                   })
@@ -189,14 +190,6 @@ const SalaryIncrementTable = ({
                   </TableRow>
                 )}
               </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={4}>Total Records</TableCell>
-                  <TableCell className="text-right">
-                    {data?.incrementRecords?.length}
-                  </TableCell>
-                </TableRow>
-              </TableFooter>
               <SalaryIncrementDialog
                 open={editDialogOpen}
                 onOpenChange={handleEditDialogClose}
