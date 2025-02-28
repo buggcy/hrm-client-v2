@@ -100,7 +100,8 @@ export const ApprovalCard = ({
     setRejectDialogOpen(false);
   };
 
-  const handleAccept = () => {
+  const handleAccept = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const approvalData = {
       isApproved: 'Approved' as const,
       hrId: user?.id || '',
@@ -157,11 +158,10 @@ export const ApprovalCard = ({
           'cursor-pointer': isSelectable,
         },
       )}
-      onClick={handleSelect}
     >
       <CardContent className="flex flex-col gap-2 p-0">
         <div className="flex items-center justify-between">
-          <Avatar className="size-12">
+          <Avatar className="size-12" onClick={handleSelect}>
             <AvatarImage src={person?.Avatar || ''} alt="User Avatar" />
             <AvatarFallback className="uppercase">
               {person?.firstName?.charAt(0)}

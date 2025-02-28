@@ -1,11 +1,14 @@
 /* eslint-disable tailwindcss/no-custom-classname */
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import moment from 'moment';
 
+import { LoadingButton } from '@/components/LoadingButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,16 +19,121 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { toast } from '@/components/ui/use-toast';
 
+import { employeeApprovalRequest } from '@/services/hr/employee.service';
+
+import { approvalSchema } from '../../(hr)/hr/approval/ApprovalCard/ApprovalCard';
+import { RejectDialog } from '../../(hr)/hr/approval/ApprovalCard/RejectDialog';
+
+import { MessageErrorResponse } from '@/types';
 import { EmployeeById } from '@/types/employee.types';
 
 interface ProfileDetailsProps {
   user: EmployeeById;
+  hrId?: string;
+  refetch: () => void;
 }
 
-const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
+const ProfileDetails: React.FC<ProfileDetailsProps> = ({
+  user,
+  hrId,
+  refetch,
+}) => {
+  const [isRejectDialogOpen, setRejectDialogOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const userIdFromParams = searchParams.get('userId');
+  const router = useRouter();
+  const [isRejecting, setIsRejecting] = useState<boolean>(false);
+  const [isAccepting, setIsAccepting] = useState<boolean>(false);
+
+  const { mutate } = useMutation({
+    mutationFn: employeeApprovalRequest,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on employee approvel request!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      refetch();
+    },
+  });
+  const closeRejectDialog = () => {
+    setRejectDialogOpen(false);
+  };
+
+  const handleRejectClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRejectDialogOpen(true);
+  };
+  const handleAccept = () => {
+    setIsAccepting(true);
+    const approvalData = {
+      isApproved: 'Approved' as const,
+      hrId: hrId || '',
+      employeeId: user?._id,
+    };
+
+    const validationResult = approvalSchema.safeParse(approvalData);
+
+    if (validationResult.success) {
+      mutate(approvalData, {
+        onSettled: () => setIsAccepting(false),
+      });
+    } else {
+      setIsAccepting(false);
+      const errorMessages = validationResult.error.errors.map(
+        error => error.message,
+      );
+      toast({
+        title: 'Validation Error',
+        description: errorMessages.join(', '),
+        variant: 'error',
+      });
+    }
+  };
+
+  const handleReject = (reason: string) => {
+    setIsRejecting(true);
+    const rejectionData = {
+      isApproved: 'Rejected' as const,
+      hrId: hrId || '',
+      employeeId: user?._id,
+      rejectedReason: reason,
+    };
+
+    const validationResult = approvalSchema.safeParse(rejectionData);
+
+    if (validationResult.success) {
+      mutate(rejectionData, {
+        onSuccess: () => {
+          setTimeout(() => {
+            router.push(`/hr/add-employees`);
+          }, 1000);
+        },
+        onSettled: () => setIsRejecting(false),
+      });
+      closeRejectDialog();
+    } else {
+      setIsRejecting(false);
+      const errorMessages = validationResult.error.errors.map(
+        error => error.message,
+      );
+      toast({
+        title: 'Validation Error',
+        description: errorMessages.join(', '),
+        variant: 'error',
+      });
+    }
+  };
 
   return (
     <>
@@ -54,6 +162,30 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
               {user?.Designation || ''}
             </div>
           </div>
+          {userIdFromParams && user?.isApproved === 'Pending' && (
+            <>
+              <div className="flex w-full flex-col gap-2 sm:flex-row">
+                <LoadingButton
+                  className="flex-1 p-2 text-sm"
+                  variant="outline"
+                  loading={isRejecting}
+                  disabled={isRejecting}
+                  onClick={handleRejectClick}
+                >
+                  Reject Request
+                </LoadingButton>
+                <LoadingButton
+                  className="flex-1 p-2 text-sm"
+                  variant="primary-inverted"
+                  loading={isAccepting}
+                  disabled={isAccepting}
+                  onClick={handleAccept}
+                >
+                  Accept Request
+                </LoadingButton>
+              </div>
+            </>
+          )}
           {!userIdFromParams && (
             <Link href="/profile-setting">
               <Button
@@ -179,6 +311,11 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ user }) => {
           </dl>
         </CardContent>
       </Card>
+      <RejectDialog
+        isOpen={isRejectDialogOpen}
+        onClose={closeRejectDialog}
+        onReject={handleReject}
+      />
     </>
   );
 };

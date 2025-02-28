@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { EmployeeListType } from '@/libs/validations/employee';
 
@@ -17,9 +18,10 @@ export function ApprovalRequest({
 }) {
   const [selected, setSelected] = useState(false);
   const [isLoading] = useState(false);
-
+  const router = useRouter();
   const handleSelect = () => {
     setSelected(!selected);
+    router.push(`/profile?userId=${data?._id}`);
   };
 
   const handleJoin = (id: string) => {
