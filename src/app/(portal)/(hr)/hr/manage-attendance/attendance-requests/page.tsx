@@ -1,6 +1,9 @@
 'use client';
 
 import { FunctionComponent, Suspense } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { ArrowLeft } from 'lucide-react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -10,16 +13,32 @@ import {
   LayoutWrapper,
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
+import { Button } from '@/components/ui/button';
 
 import AttendanceApproval from './component/AttendanceApproval';
 
 interface HrLeaveRequestsProps {}
 
 const HrLeaveRequests: FunctionComponent<HrLeaveRequestsProps> = () => {
+  const router = useRouter();
+
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="Manage Attendance Requests">
+      <LayoutHeader
+        title="Attendance Requests"
+        leftElement={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Go Back"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="size-5" />
+          </Button>
+        }
+      >
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>

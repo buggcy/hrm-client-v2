@@ -28,6 +28,7 @@ type DeleteProps = {
   showActionToggle: (open: boolean) => void;
   mutationFunc: (id: string) => Promise<SuccessMessageResponse>;
   setRefetch: (refetch: boolean) => void;
+  reset?: () => void;
 };
 
 export default function DeleteDialog({
@@ -36,6 +37,7 @@ export default function DeleteDialog({
   showActionToggle,
   mutationFunc,
   setRefetch,
+  reset,
 }: DeleteProps) {
   const { mutate, isPending } = useMutation({
     mutationFn: mutationFunc,
@@ -54,6 +56,7 @@ export default function DeleteDialog({
         variant: 'success',
       });
       setRefetch(true);
+      reset?.();
       showActionToggle(false);
     },
   });

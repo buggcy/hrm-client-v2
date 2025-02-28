@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -54,6 +54,7 @@ export type PersonalSchemaFormData = z.infer<typeof personalSchema>;
 
 const Profile = ({ empId, data }: PersonalProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { editEmployeeStore } = useStores() as {
     editEmployeeStore: EditEmployeeStoreType;
@@ -64,6 +65,7 @@ const Profile = ({ empId, data }: PersonalProps) => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<PersonalSchemaFormData>({
     resolver: zodResolver(personalSchema),
     defaultValues: {
@@ -105,7 +107,9 @@ const Profile = ({ empId, data }: PersonalProps) => {
 
   const onSubmit = (newData: PersonalSchemaFormData) => {
     const formData = new FormData();
-    formData.append('Avatar', newData.Avatar || '');
+    if (newData.Avatar) {
+      formData.append('Avatar', newData.Avatar);
+    }
     formData.append('availability', newData.availability);
     formData.append('profileDescription', newData.profileDescription || '');
     updateEmployeeProfileData({
@@ -116,6 +120,13 @@ const Profile = ({ empId, data }: PersonalProps) => {
   const handleAvatarDelete = () => {
     setShowDeleteDialog(true);
   };
+  const resetAvatar = () => {
+    setValue('Avatar', null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
       <div className="mb-4 flex flex-col gap-4">
@@ -151,6 +162,7 @@ const Profile = ({ empId, data }: PersonalProps) => {
                   render={({ field }) => (
                     <Input
                       id="Avatar"
+                      ref={fileInputRef}
                       placeholder="Choose a file"
                       type="file"
                       onChange={e => {
@@ -248,6 +260,7 @@ const Profile = ({ empId, data }: PersonalProps) => {
         showActionToggle={setShowDeleteDialog}
         mutationFunc={deleteEmployeeAvatar}
         setRefetch={setRefetchEditEmployeeData}
+        reset={resetAvatar}
       />
     </form>
   );
