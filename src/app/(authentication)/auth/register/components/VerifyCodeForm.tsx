@@ -157,7 +157,7 @@ const mainFormSchema = z.object({
       .max(minAgeDate, 'You must be at least 18 years old'),
     Marital_Status: z.string().optional(),
     Blood_Group: z.string().optional(),
-    Gender: z.string().optional(),
+    Gender: z.string().min(1, 'Gender is required'),
     Nationality: z.string().min(1, 'Nationality is required'),
     Family_Name: z.string().min(1, 'Family member name is required'),
     Family_Relation: z.string().min(1, 'Relation is required'),

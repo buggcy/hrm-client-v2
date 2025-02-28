@@ -52,14 +52,8 @@ const addEmployeeSchema = z.object({
   contactNo: z
     .string()
     .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
-  basicSalary: z
-    .string()
-    .min(1, 'Salary is required')
-    .regex(/^\d+$/, 'Salary must be a valid number'),
-  desiredSalary: z
-    .string()
-    .min(1, 'Desired Salary is required')
-    .regex(/^\d+$/, 'Desired Salary must be a valid number'),
+  basicSalary: z.coerce.number().gt(0, 'Salary should be greater than zero'),
+  desiredSalary: z.coerce.number().min(1, 'Desired Salary is required'),
   Joining_Date: z.date(),
   Designation: z.string().min(1, 'Designation is required'),
   dep_ID: z.array(z.string()).min(1, 'Department is required'),
@@ -108,8 +102,8 @@ export function AddEmployeeDialog({
       email: '',
       companyEmail: '',
       contactNo: '',
-      basicSalary: '0',
-      desiredSalary: '0',
+      basicSalary: 0,
+      desiredSalary: 0,
       Joining_Date: new Date(),
       Designation: '',
       dep_ID: [],
@@ -128,10 +122,8 @@ export function AddEmployeeDialog({
         email: editData.email,
         companyEmail: editData.companyEmail,
         contactNo: editData.contactNo,
-        basicSalary: editData.basicSalary.toString(),
-        desiredSalary: editData?.desiredSalary
-          ? editData.desiredSalary.toString()
-          : '',
+        basicSalary: editData.basicSalary,
+        desiredSalary: editData?.desiredSalary ? editData.desiredSalary : 0,
         Joining_Date: editData?.Joining_Date
           ? new Date(editData?.Joining_Date)
           : undefined,
@@ -308,7 +300,7 @@ export function AddEmployeeDialog({
 
             <div className="flex flex-1 flex-col">
               <Label htmlFor="desiredSalary" className="mb-2 text-left">
-                Desired Salary <span className="text-red-600">*</span>
+                Desired Salary
               </Label>
               <Controller
                 name="desiredSalary"
@@ -333,7 +325,7 @@ export function AddEmployeeDialog({
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="flex flex-1 flex-col">
               <Label htmlFor="basicSalary" className="mb-2 text-left">
-                Basic Salary
+                Basic Salary <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="basicSalary"
