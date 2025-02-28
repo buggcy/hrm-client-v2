@@ -135,6 +135,14 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
         data?.Emp_ID?.dep_ID
           .map(dept => dept.departmentName.replace(' Department', ''))
           .join(', ');
+      const basicSalary = payslipData.Basic_Salary || 0;
+      const increments = payslipData.Increments;
+      const totalIncrements =
+        increments?.reduce(
+          (acc, increment) => acc + (increment.amount || 0),
+          0,
+        ) || 0;
+      const incrementedSalary = basicSalary + totalIncrements;
 
       root.render(
         <Payslip
@@ -143,7 +151,7 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
           employeeName={payslipData.Employee_Name || 'N/A'}
           employeeDesignation={data?.Emp_ID?.Designation || 'N/A'}
           employeeDepartment={departmentNames || 'N/A'}
-          basicSalary={payslipData.Basic_Salary || 0}
+          basicSalary={incrementedSalary}
           absentDeduction={payslipData.Absent_Deduction || 0}
           totalEarnings={payslipData.Net_Salary || 1}
           totalAfterTax={
