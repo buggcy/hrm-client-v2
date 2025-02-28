@@ -1,9 +1,11 @@
 'use client';
 
 import { FunctionComponent, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { ArrowLeft } from 'lucide-react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -49,6 +51,7 @@ import { HrPerksGetEmployees } from '@/types/hr-perks-list.types';
 interface AwardPerksProps {}
 
 const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
+  const router = useRouter();
   const [selectedEmployee, setSelectedEmployee] = useState<string>('');
   const [selectedEmployeeData, setSelectedEmployeeData] =
     useState<HrPerksGetEmployees>();
@@ -154,7 +157,20 @@ const AwardPerksPage: FunctionComponent<AwardPerksProps> = () => {
   return (
     <Layout>
       <HighTrafficBanner />
-      <LayoutHeader title="Award Perks">
+      <LayoutHeader
+        title="Award Perks"
+        leftElement={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Go Back"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="size-5" />
+          </Button>
+        }
+      >
         <LayoutHeaderButtonsBlock>
           <Notification />
         </LayoutHeaderButtonsBlock>
