@@ -49,7 +49,6 @@ const ResignedApproval: FunctionComponent<ResignedRequestProps> = ({
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
   });
-  useEffect(() => {}, [pendingResigned, selectedDate]);
 
   useEffect(() => {
     if (refetchEmployeeList) {

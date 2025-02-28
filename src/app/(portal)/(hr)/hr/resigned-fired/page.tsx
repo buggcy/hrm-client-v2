@@ -24,7 +24,7 @@ export default function AddEmployeesPage() {
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
         <Header subheading="Creating a culture where people thrive and businesses grow.">
-          <Button variant="outline" asChild>
+          <Button asChild>
             <Link href="/hr/resigned-employees" className="flex items-center">
               View Resignations
             </Link>

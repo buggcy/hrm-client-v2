@@ -187,7 +187,7 @@ export function AttendanceDialog({
     const fetchData = async () => {
       const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-      if (employee) {
+      if (employee && open) {
         const response = await getDateAttendance({
           date: formattedDate,
           id: employee,
@@ -215,7 +215,7 @@ export function AttendanceDialog({
     };
 
     void fetchData();
-  }, [date, employee, setValue]);
+  }, [date, employee, setValue, open]);
 
   const { data: users, isLoading } = useAttendanceUsersQuery();
 

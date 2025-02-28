@@ -354,7 +354,7 @@ export const LeaveRequestCard = ({
             </span>
           </div>
         </CardContent>
-        <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
+        <CardFooter className="mt-4 flex content-start items-start justify-end gap-6 p-0">
           <Button
             className="p-2 text-sm"
             variant="outline"
