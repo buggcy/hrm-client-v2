@@ -19,16 +19,14 @@ const createAssignPerkSchema = (
           .number({
             invalid_type_error: 'Increment must be a number',
           })
-          .min(1, 'Increment is required')
-          .positive('Increment must be a positive number')
+          .gt(0, 'Increment amount must be greater than zero')
       : z.number().optional(),
     decrement: salaryDecrement
       ? z
           .number({
             invalid_type_error: 'Decrement must be a number',
           })
-          .min(1, 'Decrement is required')
-          .positive('Decrement must be a positive number')
+          .gt(0, 'Decrement amount must be greater than zero')
       : z.number().optional(),
   });
 };
@@ -61,8 +59,8 @@ export const PerkForm = ({
     resolver: zodResolver(assignPerkSchema),
     mode: 'onChange',
     defaultValues: {
-      increment: perk.assignedIncrementAmount || 1,
-      decrement: perk.assignedDecrementAmount || 1,
+      increment: perk.assignedIncrementAmount || 0,
+      decrement: perk.assignedDecrementAmount || 0,
     },
   });
 
