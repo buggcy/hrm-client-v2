@@ -60,7 +60,7 @@ export function ViewHrEvent({
                 </div>
                 <p className="text-sm">{event.Event_Name || ''}</p>
               </div>
-              <div className="flex space-x-3 max-sm:justify-between">
+              <div className="flex space-x-3 max-sm:justify-between sm:ml-auto">
                 <div className="flex gap-3">
                   <Tag className="size-4 text-blue-500" />
                   <span className="text-sm font-medium">Type:</span>
@@ -79,7 +79,7 @@ export function ViewHrEvent({
                 </div>
                 <p className="text-sm">{formatDate(event.Event_Start)}</p>
               </div>
-              <div className="flex space-x-3 max-sm:justify-between">
+              <div className="flex space-x-3 max-sm:justify-between sm:ml-auto">
                 <div className="flex gap-3">
                   <Calendar className="size-4 text-blue-500" />
                   <span className="text-sm font-medium">End Date:</span>
