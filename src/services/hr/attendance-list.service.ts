@@ -1,5 +1,6 @@
 import { AddAttendanceFormData } from '@/app/(portal)/(hr)/hr/manage-attendance/attendance-list/components/AttendanceDialog';
 import {
+  AttendanceApiResponse,
   AttendanceDistributionStatsApiResponseSchema,
   attendanceListApiResponseSchema,
   AttendanceListStatsApiResponseSchema,
@@ -13,7 +14,6 @@ import { baseAPI, schemaParse } from '@/utils';
 
 import {
   AttendanceDistributionApiResponse,
-  AttendanceListApiResponse,
   AttendanceListStatsApiResponse,
   UserDateAttendance,
 } from '@/types/attendance-list.types';
@@ -96,7 +96,7 @@ export const searchAttedanceList = async ({
   from?: string;
   to?: string;
   Status: string[];
-}): Promise<AttendanceListApiResponse> => {
+}): Promise<AttendanceApiResponse> => {
   const res = await baseAPI.get(
     `/attendence-v2?page=${page}&limit=${limit}&fullname=${query}&from=${from}&to=${to}&Status=${Status.join(',')}`,
   );
@@ -105,7 +105,7 @@ export const searchAttedanceList = async ({
 
 export const getAttendanceList = async (
   params: AttendanceListParams = {},
-): Promise<AttendanceListApiResponse> => {
+): Promise<AttendanceApiResponse> => {
   const defaultParams: AttendanceListParams = {
     page: 1,
     limit: 5,
