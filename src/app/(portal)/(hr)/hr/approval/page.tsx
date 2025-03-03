@@ -29,10 +29,10 @@ export default function ManageEmployeesPage() {
         title="Approval Requests"
         leftElement={
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
             aria-label="Go Back"
-            className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-full p-1"
             onClick={() => router.back()}
           >
             <ArrowLeft className="size-5" />
@@ -44,7 +44,7 @@ export default function ManageEmployeesPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1" className="max-w-full">
-        <Header subheading="Review and Approve Employee Leave Requests"></Header>
+        <Header subheading="Manage Employee Approvals with Ease – View, Accept, or Reject Requests Instantly!"></Header>
         <div className="mt-4 grid h-full grid-cols-1 gap-6 lg:grid-cols-4">
           {data && data.length > 0 ? (
             data?.map(employee => (

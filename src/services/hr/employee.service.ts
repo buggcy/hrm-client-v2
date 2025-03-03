@@ -7,7 +7,10 @@ import {
   EmployeeApiResponse,
   employeeApiResponseSchema,
   employeeDobDataSchema,
+  employeeFiredResignedApiResponseSchema,
   EmployeeListType,
+  pendingResignedApiResponseSchema,
+  PendingResignedListApiResponse,
   resignedApiResponseSchema,
   ResignedListApiResponse,
 } from '@/libs/validations/employee';
@@ -338,12 +341,10 @@ export const resignedFiredSearchEmployeeList = async ({
 
 export const getPendingResignedRequest = async (
   params: GetResignedParams = {},
-): Promise<ResignedListApiResponse> => {
+): Promise<PendingResignedListApiResponse> => {
   const defaultParams: GetResignedParams = {
     from: '',
     to: '',
-    page: 1,
-    limit: 5,
   };
 
   const mergedParams = { ...defaultParams, ...params };
@@ -364,7 +365,7 @@ export const getPendingResignedRequest = async (
     const response = await baseAPI.get(
       `/get/resignation/approvals?${queryParams.toString()}`,
     );
-    return schemaParse(resignedApiResponseSchema)(response);
+    return schemaParse(pendingResignedApiResponseSchema)(response);
   } catch (error) {
     console.error('Error fetching Pending resigned requests!', error);
     throw error;
@@ -470,7 +471,7 @@ export const getResignedFiredEmployeeList = async (
       `/all/resigned-fired/employees`,
       mergedParams,
     );
-    return schemaParse(employeeApiResponseSchema)(response);
+    return schemaParse(employeeFiredResignedApiResponseSchema)(response);
   } catch (error) {
     console.error('Error fetching employee list:', error);
     throw error;

@@ -29,11 +29,11 @@ const chartConfig = {
   },
   absent: {
     label: 'Absent',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-3))',
   },
   leave: {
     label: 'Leave',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--chart-2))',
   },
 } satisfies ChartConfig;
 

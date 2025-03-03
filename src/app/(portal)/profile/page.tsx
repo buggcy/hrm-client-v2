@@ -29,10 +29,10 @@ export default function MyProfile() {
         {...(userIdFromParams && {
           leftElement: (
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
               aria-label="Go Back"
-              className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 p-1"
+              className="flex size-10 cursor-pointer items-center justify-center rounded-full p-1"
               onClick={() => router.back()}
             >
               <ArrowLeft className="size-5" />
