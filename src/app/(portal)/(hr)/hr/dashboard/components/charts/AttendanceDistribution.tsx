@@ -48,7 +48,7 @@ const chartConfig = {
   },
   late: {
     label: 'Late',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-5))',
   },
   absent: {
     label: 'Absent',
@@ -56,7 +56,7 @@ const chartConfig = {
   },
   leave: {
     label: 'Leave',
-    color: 'hsl(var(--chart-5))',
+    color: 'hsl(var(--chart-2))',
   },
 } satisfies ChartConfig;
 

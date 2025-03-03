@@ -274,6 +274,13 @@ const employeeApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeeListSchema),
 });
+
+const employeeFiredResignedApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  totalPendingCount: z.number(),
+  data: z.array(employeeListSchema),
+});
+
 const employeePayrollApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeePayrollSchema),
@@ -295,7 +302,17 @@ const resignedApiResponseSchema = z.object({
   data: z.array(resignedSchema),
 });
 
+const pendingResignedApiResponseSchema = z.object({
+  totalCount: z.number(),
+  data: z.array(resignedSchema),
+});
 export type ResignedListApiResponse = z.infer<typeof resignedApiResponseSchema>;
+export type PendingResignedListApiResponse = z.infer<
+  typeof pendingResignedApiResponseSchema
+>;
+export type EmployeeFiredResignedApiResponse = z.infer<
+  typeof employeeFiredResignedApiResponseSchema
+>;
 export type ResignedListType = z.infer<typeof resignedSchema>;
 export type ResignedListArrayType = z.infer<typeof resignedSchema>[] | [];
 
@@ -330,4 +347,6 @@ export {
   cardDataSchema,
   employeeDobDataSchema,
   employeeDobApiResponseSchema,
+  pendingResignedApiResponseSchema,
+  employeeFiredResignedApiResponseSchema,
 };
