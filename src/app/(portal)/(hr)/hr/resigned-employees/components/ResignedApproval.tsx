@@ -37,8 +37,6 @@ const ResignedApproval: FunctionComponent<ResignedRequestProps> = ({
     error,
     refetch,
   } = usePendingResignedRequestQuery({
-    page,
-    limit,
     from: selectedDate?.from ? formatedDate(selectedDate.from) : undefined,
     to: selectedDate?.to ? formatedDate(selectedDate.to) : undefined,
   });
@@ -49,7 +47,6 @@ const ResignedApproval: FunctionComponent<ResignedRequestProps> = ({
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
   });
-  useEffect(() => {}, [pendingResigned, selectedDate]);
 
   useEffect(() => {
     if (refetchEmployeeList) {
@@ -81,8 +78,7 @@ const ResignedApproval: FunctionComponent<ResignedRequestProps> = ({
       <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-3 lg:gap-6">
         {isLoading || isFetching ? (
           <Skeleton className="h-6 w-full" />
-        ) : pendingResigned?.pagination?.totalCount &&
-          pendingResigned?.pagination?.totalCount > 0 ? (
+        ) : pendingResigned?.totalCount && pendingResigned?.totalCount > 0 ? (
           pendingResigned?.data?.map(employee => (
             <ResignationRequest
               key={employee?._id}

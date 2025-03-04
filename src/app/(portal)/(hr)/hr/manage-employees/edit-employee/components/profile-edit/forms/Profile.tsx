@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { Eye } from 'lucide-react';
+import { Eye, X } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import DeleteDialog from '@/components/modals/delete-modal';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -25,7 +26,10 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { EmployeeType } from '@/libs/validations/edit-employee';
-import { updateEmployeeProfile } from '@/services/hr/edit-employee.service';
+import {
+  deleteEmployeeAvatar,
+  updateEmployeeProfile,
+} from '@/services/hr/edit-employee.service';
 import { EditEmployeeStoreType } from '@/stores/hr/edit-employee';
 
 import { MessageErrorResponse } from '@/types';
@@ -49,6 +53,9 @@ const personalSchema = z.object({
 export type PersonalSchemaFormData = z.infer<typeof personalSchema>;
 
 const Profile = ({ empId, data }: PersonalProps) => {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { editEmployeeStore } = useStores() as {
     editEmployeeStore: EditEmployeeStoreType;
   };
@@ -58,6 +65,7 @@ const Profile = ({ empId, data }: PersonalProps) => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<PersonalSchemaFormData>({
     resolver: zodResolver(personalSchema),
     defaultValues: {
@@ -99,7 +107,9 @@ const Profile = ({ empId, data }: PersonalProps) => {
 
   const onSubmit = (newData: PersonalSchemaFormData) => {
     const formData = new FormData();
-    formData.append('Avatar', newData.Avatar || '');
+    if (newData.Avatar) {
+      formData.append('Avatar', newData.Avatar);
+    }
     formData.append('availability', newData.availability);
     formData.append('profileDescription', newData.profileDescription || '');
     updateEmployeeProfileData({
@@ -107,6 +117,16 @@ const Profile = ({ empId, data }: PersonalProps) => {
       body: formData,
     });
   };
+  const handleAvatarDelete = () => {
+    setShowDeleteDialog(true);
+  };
+  const resetAvatar = () => {
+    setValue('Avatar', null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="py-4">
       <div className="mb-4 flex flex-col gap-4">
@@ -135,21 +155,30 @@ const Profile = ({ empId, data }: PersonalProps) => {
                   </TooltipProvider>
                 )}
               </Label>
-              <Controller
-                name="Avatar"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="Avatar"
-                    placeholder="Choose a file"
-                    type="file"
-                    onChange={e => {
-                      const file = e.target.files?.[0];
-                      field.onChange(file);
-                    }}
+              <div className="relative w-full">
+                <Controller
+                  name="Avatar"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      id="Avatar"
+                      ref={fileInputRef}
+                      placeholder="Choose a file"
+                      type="file"
+                      onChange={e => {
+                        const file = e.target.files?.[0];
+                        field.onChange(file);
+                      }}
+                    />
+                  )}
+                />
+                {data?.Avatar && (
+                  <X
+                    className="absolute right-2 top-2.5 size-5 cursor-pointer text-error"
+                    onClick={() => handleAvatarDelete()}
                   />
                 )}
-              />
+              </div>
               {errors.Avatar && (
                 <span className="text-sm text-red-500">
                   {errors.Avatar.message}
@@ -225,6 +254,14 @@ const Profile = ({ empId, data }: PersonalProps) => {
           Submit
         </Button>
       </DialogFooter>
+      <DeleteDialog
+        id={empId || ''}
+        isOpen={showDeleteDialog}
+        showActionToggle={setShowDeleteDialog}
+        mutationFunc={deleteEmployeeAvatar}
+        setRefetch={setRefetchEditEmployeeData}
+        reset={resetAvatar}
+      />
     </form>
   );
 };

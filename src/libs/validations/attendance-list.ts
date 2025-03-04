@@ -61,7 +61,7 @@ const userSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   companyEmail: z.string().optional(),
-  Avatar: z.string().optional(),
+  Avatar: z.string().optional().nullable(),
   Tahometer_ID: z.string().optional(),
 });
 

@@ -45,6 +45,7 @@ interface DataTableProps<TData, TValue> {
   onSearch: (term: string) => void;
   searchLoading: boolean;
   toolbarType: string;
+  tableType?: string;
 }
 
 export function ConfigurationTypeDataTable<
@@ -58,6 +59,7 @@ export function ConfigurationTypeDataTable<
   onSearch,
   searchTerm,
   toolbarType,
+  tableType,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -134,6 +136,11 @@ export function ConfigurationTypeDataTable<
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
+                    className={
+                      row.index === 0 && tableType && tableType === 'timecutoff'
+                        ? 'bg-primary/10'
+                        : ''
+                    }
                   >
                     {row.getVisibleCells().map(cell => (
                       <TableCell key={cell.id}>

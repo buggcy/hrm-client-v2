@@ -79,7 +79,10 @@ const employeeListSchema = z.object({
   roleId: z.number(),
   companyEmail: z.string().email(),
   Ed_Exp_ID: z.array(z.string()).optional(),
-  dep_ID: z.array(z.string()).optional(),
+  dep_ID: z
+    .union([z.array(depIdSchema), depIdSchema])
+    .optional()
+    .transform(val => (Array.isArray(val) ? val : val ? [val] : [])),
   isDeleted: z.boolean().optional(),
   UniqueCodeExpire: z.string().optional(),
   Blood_Group: z.string().optional(),
@@ -89,8 +92,8 @@ const employeeListSchema = z.object({
   Family_Occupation: z.string().optional(),
   Family_PhoneNo: z.string().optional(),
   Family_Relation: z.string().optional(),
-  Gender: z.enum(gender).optional(),
-  Marital_Status: z.enum(maritalStatus).optional(),
+  Gender: z.string().optional(),
+  Marital_Status: z.string().optional(),
   Nationality: z.string().optional(),
   isApproved: z.enum(approvalStatus),
   password: z.string().optional(),
@@ -100,6 +103,7 @@ const employeeListSchema = z.object({
   profileDescription: z.string().optional(),
   Tahometer_ID: z.string().optional(),
   basicSalary: z.number(),
+  desiredSalary: z.number().optional(),
   activeStatus: z.boolean().optional(),
   updatedAt: z.string(),
   position: z.array(positionSchema).optional(),
@@ -125,6 +129,13 @@ const employeePayrollSchema = z.object({
   Today_Days_Present: z.number().optional(),
   Total_Absent: z.number().optional(),
   Total_Leaves: z.number().optional(),
+  Leaves: z
+    .object({
+      casual: z.number().optional(),
+      sick: z.number().optional(),
+      annual: z.number().optional(),
+    })
+    .optional(),
   Late: z.number().optional(),
   Total_Minutes_Monthly: z.number().optional(),
   Total_Remaining_Minutes: z.number().optional(),
@@ -139,25 +150,24 @@ const employeePayrollSchema = z.object({
   __v: z.number().optional(),
   // type: z.literal('employeePayroll').optional(),
   type: z.string().optional(),
-  perks: z.object({
-    increments: z.array(
-      z.object({
-        name: z.string(),
-        amount: z.number(),
-      }),
-    ),
-    decrements: z.array(
-      z.object({
-        name: z.string(),
-        amount: z.number(),
-      }),
-    ),
-  }),
+  perks: z
+    .object({
+      increments: z.array(
+        z.object({
+          name: z.string(),
+          amount: z.number(),
+        }),
+      ),
+      decrements: z.array(
+        z.object({
+          name: z.string(),
+          amount: z.number(),
+        }),
+      ),
+    })
+    .optional(),
   totalPerkDecrement: z.number().optional(),
   totalPerkIncrement: z.number().optional(),
-  casualLeaves: z.number().optional(),
-  sickLeaves: z.number().optional(),
-  annualLeaves: z.number().optional(),
 });
 
 const hrEventsSchema = z.object({
@@ -264,6 +274,13 @@ const employeeApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeeListSchema),
 });
+
+const employeeFiredResignedApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  totalPendingCount: z.number(),
+  data: z.array(employeeListSchema),
+});
+
 const employeePayrollApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeePayrollSchema),
@@ -285,7 +302,17 @@ const resignedApiResponseSchema = z.object({
   data: z.array(resignedSchema),
 });
 
+const pendingResignedApiResponseSchema = z.object({
+  totalCount: z.number(),
+  data: z.array(resignedSchema),
+});
 export type ResignedListApiResponse = z.infer<typeof resignedApiResponseSchema>;
+export type PendingResignedListApiResponse = z.infer<
+  typeof pendingResignedApiResponseSchema
+>;
+export type EmployeeFiredResignedApiResponse = z.infer<
+  typeof employeeFiredResignedApiResponseSchema
+>;
 export type ResignedListType = z.infer<typeof resignedSchema>;
 export type ResignedListArrayType = z.infer<typeof resignedSchema>[] | [];
 
@@ -320,4 +347,6 @@ export {
   cardDataSchema,
   employeeDobDataSchema,
   employeeDobApiResponseSchema,
+  pendingResignedApiResponseSchema,
+  employeeFiredResignedApiResponseSchema,
 };

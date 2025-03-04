@@ -9,4 +9,5 @@ export interface LayoutHeaderProps {
   children?: React.ReactNode;
   title: string;
   className?: string;
+  leftElement?: React.ReactNode;
 }

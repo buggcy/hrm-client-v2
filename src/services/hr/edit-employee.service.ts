@@ -65,6 +65,7 @@ export const addEmployeeSalaryIncrementData = async ({
   empId,
   incrementTitle,
   incrementAmount,
+  desiredSalary,
 }: AddSalaryIncrementFormData): Promise<SuccessMessageResponse> => {
   try {
     const { message }: SuccessMessageResponse = await baseAPI.post(
@@ -73,6 +74,7 @@ export const addEmployeeSalaryIncrementData = async ({
         empId,
         incrementTitle,
         incrementAmount,
+        desiredSalary,
       },
     );
     return { message };
@@ -86,11 +88,13 @@ export const updateEmployeeSalaryIncrementData = async ({
   incrementId,
   empId,
   incrementTitle,
+  desiredSalary,
   incrementAmount,
 }: {
   incrementId: string;
   empId: string;
   incrementTitle: string;
+  desiredSalary: number;
   incrementAmount: number;
 }): Promise<SuccessMessageResponse> => {
   try {
@@ -101,6 +105,7 @@ export const updateEmployeeSalaryIncrementData = async ({
         empId,
         incrementTitle,
         incrementAmount,
+        desiredSalary,
       },
     );
     return { message };
@@ -368,6 +373,18 @@ export const updateEmployeeProfile = async ({
     return { message };
   } catch (error) {
     console.error('Error updating employee address', error);
+    throw error;
+  }
+};
+
+export const deleteEmployeeAvatar = async (id: string) => {
+  try {
+    const { message }: SuccessMessageResponse = await baseAPI.put(
+      `/employee/edit/avatar/${id}`,
+    );
+    return { message };
+  } catch (error) {
+    console.error('Error deleting employee avatar', error);
     throw error;
   }
 };

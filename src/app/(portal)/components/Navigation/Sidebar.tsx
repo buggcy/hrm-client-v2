@@ -39,19 +39,32 @@ export const Sidebar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
-  const filteredMenuItems = menuItems.filter(item => {
-    const matchesTitle = item.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+  const filteredMenuItems = menuItems
+    .map(item => {
+      const matchesTitle = item.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
 
-    const matchesChildren =
-      item.children &&
-      item.children.some(child =>
-        child.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
+      const matchedChildren = item.children
+        ? item.children.filter(child =>
+            child.title.toLowerCase().includes(searchQuery.toLowerCase()),
+          )
+        : [];
 
-    return matchesTitle || matchesChildren;
-  });
+      if (matchesTitle) {
+        return {
+          ...item,
+          children:
+            matchedChildren.length > 0 ? matchedChildren : item.children,
+        };
+      } else if (matchedChildren.length > 0) {
+        return { ...item, children: matchedChildren };
+      }
+
+      return null;
+    })
+    .filter(item => item !== null);
+
   const clearSearch = () => {
     setSearchQuery('');
   };

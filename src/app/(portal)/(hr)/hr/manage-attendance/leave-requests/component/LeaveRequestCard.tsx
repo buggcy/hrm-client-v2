@@ -319,25 +319,32 @@ export const LeaveRequestCard = ({
           <div className="flex justify-between">
             <p className="text-sm font-semibold">{'Proof Document'}</p>
             <span className="truncate text-sm font-medium text-muted-foreground">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span>
-                      <Eye
-                        className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
-                        onClick={() =>
-                          person?.Proof_Document &&
-                          window.open(String(person?.Proof_Document), '_blank')
-                        }
-                        size={18}
-                      />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                    Click to Preview Document
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {person?.Proof_Document ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Eye
+                          className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                          onClick={() =>
+                            person?.Proof_Document &&
+                            window.open(
+                              String(person?.Proof_Document),
+                              '_blank',
+                            )
+                          }
+                          size={18}
+                        />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                      Click to Preview Document
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                'N/A'
+              )}
             </span>
           </div>
           <div className="flex flex-col">
@@ -347,7 +354,7 @@ export const LeaveRequestCard = ({
             </span>
           </div>
         </CardContent>
-        <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
+        <CardFooter className="mt-4 flex content-start items-start justify-end gap-6 p-0">
           <Button
             className="p-2 text-sm"
             variant="outline"

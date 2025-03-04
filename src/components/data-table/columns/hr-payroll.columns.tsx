@@ -117,19 +117,17 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
       <DataTableColumnHeader column={column} title="Basic Salary" />
     ),
     cell: ({ row }) => {
-      const basicSalary = row.getValue('Basic_Salary');
-      if (
-        typeof basicSalary === 'number' ||
-        typeof basicSalary === 'undefined'
-      ) {
-        return (
-          <div className="flex space-x-2">
-            <span className="max-w-[500px] truncate font-medium">
-              {formatCurrency(basicSalary)}
-            </span>
-          </div>
-        );
-      }
+      const basicSalary = row.original?.Basic_Salary || 0;
+      const increments = row.original?.Increments;
+      const totalIncrements =
+        increments?.reduce((acc, increment) => acc + increment.amount, 0) || 0;
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {formatCurrency(basicSalary + totalIncrements)}
+          </span>
+        </div>
+      );
     },
   },
 
@@ -186,6 +184,24 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
           </div>
         );
       }
+    },
+  },
+  {
+    accessorKey: 'totalPerkDecrement',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Total Perk Amount" />
+    ),
+    cell: ({ row }) => {
+      const totalPerkAmount =
+        (row.original?.totalPerkIncrement || 0) -
+        (row.original?.totalPerkDecrement || 0);
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {formatCurrency(totalPerkAmount)}
+          </span>
+        </div>
+      );
     },
   },
 

@@ -117,10 +117,13 @@ export const attendanceListColumns: ColumnDef<AttendanceListType>[] = [
   {
     accessorKey: 'Start_Date',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Start Time" />
+      <DataTableColumnHeader column={column} title="Start Timea" />
     ),
     cell: ({ row }) => {
       const date = new Date(Date.parse(row.getValue('Start_Date')));
+      const isAbsent =
+        row.getValue('Start_Date')?.toString().split('T')[1] ===
+        '00:00:00.000Z';
 
       const time = date.toLocaleTimeString('en-PK', {
         hour: 'numeric',
@@ -130,7 +133,9 @@ export const attendanceListColumns: ColumnDef<AttendanceListType>[] = [
       });
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">{time}</span>
+          <span className="max-w-[500px] truncate font-medium">
+            {isAbsent ? '00:00 am' : time}
+          </span>
         </div>
       );
     },

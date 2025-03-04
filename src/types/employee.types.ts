@@ -60,7 +60,10 @@ export interface Kyc {
   };
   createdAt: string;
 }
-
+interface Department {
+  _id: string;
+  departmentName: string;
+}
 export interface Employee {
   _id: string;
   firstName: string;
@@ -71,7 +74,7 @@ export interface Employee {
   roleId: number;
   companyEmail: string;
   Ed_Exp_ID: string[];
-  dep_ID: string[];
+  dep_ID: Department[];
   isDeleted: boolean;
   UniqueCodeExpire: string;
   __v: number;
@@ -93,6 +96,7 @@ export interface Employee {
   profileDescription?: string;
   Tahometer_ID?: string;
   basicSalary: number;
+  desiredSalary?: number;
   activeStatus: boolean;
   updatedAt: string;
   position: Position[];

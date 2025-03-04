@@ -53,8 +53,6 @@ export type ApprovalEmployeeType = z.infer<typeof approvalSchema>;
 
 export const ApprovalCard = ({
   person,
-  selected,
-  isSelectable,
   handleSelect,
   refetchApprovalList,
 }: {
@@ -100,7 +98,8 @@ export const ApprovalCard = ({
     setRejectDialogOpen(false);
   };
 
-  const handleAccept = () => {
+  const handleAccept = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const approvalData = {
       isApproved: 'Approved' as const,
       hrId: user?.id || '',
@@ -151,23 +150,27 @@ export const ApprovalCard = ({
   return (
     <Card
       className={cn(
-        'group flex h-full flex-col justify-between rounded-md p-4 outline-primary hover:shadow',
-        {
-          'ring ring-primary': selected,
-          'cursor-pointer': isSelectable,
-        },
+        'group flex flex-col justify-between rounded-md p-4 outline-primary hover:shadow',
       )}
-      onClick={handleSelect}
     >
       <CardContent className="flex flex-col gap-2 p-0">
-        <div className="flex items-center justify-between">
-          <Avatar className="size-12">
-            <AvatarImage src={person?.Avatar || ''} alt="User Avatar" />
-            <AvatarFallback className="uppercase">
-              {person?.firstName?.charAt(0)}
-              {person?.lastName?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+        <div className="flex cursor-pointer items-center justify-between">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Avatar className="size-12" onClick={handleSelect}>
+                  <AvatarImage src={person?.Avatar || ''} alt="User Avatar" />
+                  <AvatarFallback className="uppercase">
+                    {person?.firstName?.charAt(0)}
+                    {person?.lastName?.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+              </TooltipTrigger>
+              <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                <p> View Profile </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <div className="flex space-x-2">
             <Badge variant="label" className="w-fit truncate text-sm">
               {new Date(person.updatedAt).toDateString()}
@@ -209,6 +212,12 @@ export const ApprovalCard = ({
           <p className="text-sm font-medium text-muted-foreground">
             {person.companyEmail}
           </p>
+        </div>
+        <div
+          className="cursor-pointer text-sm text-primary"
+          onClick={handleSelect}
+        >
+          Click here to view profile
         </div>
       </CardContent>
       {writePermission && (

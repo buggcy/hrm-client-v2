@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -312,14 +318,24 @@ const EducationExperienceTable = ({
                         <TableCell className="text-center">
                           {exp.documentType || ''}
                         </TableCell>
-                        <TableCell className="text-center">
-                          <a
-                            href={getPreviewUrl(exp.Document)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button variant="outline">View</Button>
-                          </a>
+                        <TableCell className="p-0 text-center">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <a
+                                  href={getPreviewUrl(exp.Document)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="mx-auto text-primary/80 hover:text-primary"
+                                >
+                                  <Eye className="mx-auto size-4" />
+                                </a>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                Click to Preview Image
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </TableCell>
                         <TableCell className="p-0 text-center">
                           <DropdownMenu>
@@ -459,14 +475,24 @@ const EducationExperienceTable = ({
                         <TableCell className="text-center">
                           {exp.documentType || ''}
                         </TableCell>
-                        <TableCell className="text-center">
-                          <a
-                            href={getPreviewUrl(exp.Document)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button variant="outline">View</Button>
-                          </a>
+                        <TableCell className="p-0 text-center">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <a
+                                  href={getPreviewUrl(exp.Document)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="mx-auto text-primary/80 hover:text-primary"
+                                >
+                                  <Eye className="mx-auto size-4" />
+                                </a>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                Click to Preview Image
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </TableCell>
                         <TableCell className="p-0 text-center">
                           <DropdownMenu>

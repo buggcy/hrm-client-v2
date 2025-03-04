@@ -8,7 +8,7 @@ import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 const Layout: FC<LayoutBaseProps> = ({ children, className }) => {
   return (
     <div data-testid="layout" className={cn('min-h-screen', className)}>
-      <ScrollArea className="h-screen w-full overflow-auto">
+      <ScrollArea className="h-[calc(100vh-4rem)] w-full sm:h-[calc(100vh-1rem)]">
         <div className="max-w-[calc(100vw-1rem)] sm:max-w-[calc(100vw-4rem)]">
           {children}
         </div>
@@ -21,6 +21,7 @@ const Layout: FC<LayoutBaseProps> = ({ children, className }) => {
 const LayoutHeader: FC<LayoutHeaderProps> = ({
   title,
   children,
+  leftElement,
   className,
 }) => {
   return (
@@ -30,6 +31,7 @@ const LayoutHeader: FC<LayoutHeaderProps> = ({
         className,
       )}
     >
+      {leftElement && <div className="mr-3">{leftElement}</div>}
       <h1 className="mr-5 hidden text-xl font-semibold sm:block">{title}</h1>
       {children}
     </header>

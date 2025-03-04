@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Pie, PieChart } from 'recharts';
 
@@ -15,9 +15,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-import { getAttendanceDistributionStats } from '@/services/hr/attendance-list.service';
-
-import { AttendanceDistributionApiResponse } from '@/types/attendance-list.types';
+import { useAttendanceOverviewQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
 
 export const description = 'A pie chart with a label';
 
@@ -31,30 +29,18 @@ const chartConfig = {
   },
   absent: {
     label: 'Absent',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-3))',
   },
   leave: {
     label: 'Leave',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--chart-2))',
   },
 } satisfies ChartConfig;
 
-const fetchData = async (date: Date) => {
-  const data: AttendanceDistributionApiResponse =
-    await getAttendanceDistributionStats({
-      date: date,
-    });
-  return data;
-};
-
 export function AttendanceDistribution() {
   const [date, setDate] = useState(new Date());
-  const [data, setData] = useState<AttendanceDistributionApiResponse | null>(
-    null,
-  );
-  useEffect(() => {
-    void fetchData(date).then(setData);
-  }, [date]);
+  const { data } = useAttendanceOverviewQuery(date, { enabled: !!date });
+
   const chartData = [
     {
       status: 'present',

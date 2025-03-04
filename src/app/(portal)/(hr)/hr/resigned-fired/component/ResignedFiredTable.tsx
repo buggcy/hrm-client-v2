@@ -1,5 +1,6 @@
 'use client';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
@@ -9,6 +10,8 @@ import { ZodError } from 'zod';
 import { unapprovedEmployeeColumns } from '@/components/data-table/columns/unapproved-employee.column';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
+import Header from '@/components/Header/Header';
+import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -153,26 +156,39 @@ const ResignedFiredEmployeeTable: FunctionComponent = () => {
 
   return (
     <>
-      {isLoading || isFetching ? (
-        <DataTableLoading columnCount={7} rowCount={limit} />
-      ) : (
-        <DataTable
-          searchLoading={isPending}
-          data={tableData || []}
-          columns={unapprovedEmployeeColumns}
-          pagination={{
-            pageCount: tablePageCount || 1,
-            page: page,
-            limit: limit,
-            onPaginationChange: handlePaginationChange,
-          }}
-          onSearch={handleSearchChange}
-          searchTerm={searchTerm}
-          toolbarType={'resignedFiredEmployeeList'}
-          setFilterValue={setStatusFilter}
-          filterValue={statusFilter}
-        />
-      )}
+      <Header subheading="Creating a culture where people thrive and businesses grow.">
+        <Button asChild>
+          <Link href="/hr/resigned-employees" className="flex items-center">
+            View Resignations
+            <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted text-gray-600 dark:text-gray-300">
+              {resignedFiredEmployeeList?.totalPendingCount || 0}
+            </span>
+          </Link>
+        </Button>
+      </Header>
+      <div className="mt-5">
+        {' '}
+        {isLoading || isFetching ? (
+          <DataTableLoading columnCount={7} rowCount={limit} />
+        ) : (
+          <DataTable
+            searchLoading={isPending}
+            data={tableData || []}
+            columns={unapprovedEmployeeColumns}
+            pagination={{
+              pageCount: tablePageCount || 1,
+              page: page,
+              limit: limit,
+              onPaginationChange: handlePaginationChange,
+            }}
+            onSearch={handleSearchChange}
+            searchTerm={searchTerm}
+            toolbarType={'resignedFiredEmployeeList'}
+            setFilterValue={setStatusFilter}
+            filterValue={statusFilter}
+          />
+        )}
+      </div>
     </>
   );
 };

@@ -20,11 +20,6 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/use-toast';
 
-import {
-  bloodgroupStatus,
-  gender,
-  maritalStatus,
-} from '@/libs/validations/employee';
 import { registerEmployee, verifyRegisterCode } from '@/services';
 import { formatedDate } from '@/utils';
 
@@ -77,21 +72,23 @@ const minAgeDate = new Date();
 minAgeDate.setFullYear(minAgeDate.getFullYear() - 18);
 
 const addressSchema = z.object({
-  street: z.string().min(1, 'Street is required'),
-  landMark: z.string().optional(),
-  country: z.string().min(1, 'Country is required'),
-  province: z.string().min(1, 'Province is required'),
-  city: z.string().min(1, 'City is required'),
-  zip: z.string().min(1, 'Postal code is required'),
-  full: z.string().optional(),
+  street: z.string().min(1, 'Required'),
+  landMark: z.string().min(1, 'Required'),
+  country: z.string().min(1, 'Required'),
+  province: z.string().min(1, 'Required'),
+  city: z.string().min(1, 'Required'),
+  zip: z.string().min(1, 'Required'),
+  full: z.string().min(1, 'Required'),
 });
 
 export const educationExperienceSchema = z
   .object({
     _id: z.string().optional(),
     Institute: z.string().min(1, 'Required'),
-    Start_Date: z.date({ invalid_type_error: 'Invalid Start Date format' }),
-    End_Date: z.date({ invalid_type_error: 'Invalid End Date format' }),
+    Start_Date: z.coerce.date({
+      invalid_type_error: 'Invalid Start Date format',
+    }),
+    End_Date: z.coerce.date({ invalid_type_error: 'Invalid End Date format' }),
     type: z.enum(['education', 'experience'], {
       errorMap: () => ({
         message: 'Type must be either "Education" or "Experience"',
@@ -103,16 +100,43 @@ export const educationExperienceSchema = z
     referenceNumber: z.string().optional(),
     user_id: z.string().min(1, 'User Id is required'),
   })
-  .refine(data => data.Start_Date <= data.End_Date, {
-    message: 'End date cannot be before Start date',
-    path: ['End_Date'],
-  })
-  .refine(data => {
-    if (data.type === 'experience' && data.referenceNumber) {
-      return /^(03|\+923)/.test(data.referenceNumber);
-    }
-    return true;
-  }, 'Reference number must start with "03" or "+923"');
+  .refine(
+    data =>
+      new Date(data.Start_Date).getTime() <= new Date(data.End_Date).getTime(),
+    {
+      message: 'End date cannot be before Start date',
+      path: ['End_Date'],
+    },
+  )
+  .refine(
+    data => {
+      if (data.type === 'experience' && data.referenceNumber) {
+        return /^(03|\+923)/.test(data.referenceNumber);
+      }
+      return true;
+    },
+    {
+      message: 'Reference number must start with "03" or "+923"',
+      path: ['referenceNumber'],
+    },
+  )
+  .refine(
+    data => {
+      if (data.type === 'experience' && data.referenceNumber) {
+        if (data.referenceNumber.startsWith('03')) {
+          return data.referenceNumber.length === 11;
+        }
+        if (data.referenceNumber.startsWith('+923')) {
+          return data.referenceNumber.length === 13;
+        }
+      }
+      return true;
+    },
+    {
+      message: 'Invalid reference number format',
+      path: ['referenceNumber'],
+    },
+  );
 
 export type EducationExperienceType = z.infer<typeof educationExperienceSchema>;
 const mainFormSchema = z.object({
@@ -131,9 +155,9 @@ const mainFormSchema = z.object({
       .date()
       .max(new Date(), 'Invalid date of birth')
       .max(minAgeDate, 'You must be at least 18 years old'),
-    Marital_Status: z.enum(maritalStatus),
-    Blood_Group: z.enum(bloodgroupStatus),
-    Gender: z.enum(gender),
+    Marital_Status: z.string().optional(),
+    Blood_Group: z.string().optional(),
+    Gender: z.string().min(1, 'Gender is required'),
     Nationality: z.string().min(1, 'Nationality is required'),
     Family_Name: z.string().min(1, 'Family member name is required'),
     Family_Relation: z.string().min(1, 'Relation is required'),
@@ -177,9 +201,9 @@ const defaultMainFormValues = {
     contactNo: '',
     Emergency_Phone: '',
     DOB: cutoffDate,
-    Marital_Status: maritalStatus[0],
-    Blood_Group: bloodgroupStatus[0],
-    Gender: gender[0],
+    Marital_Status: '',
+    Blood_Group: '',
+    Gender: '',
     Nationality: '',
     Family_Name: '',
     Family_Relation: '',
@@ -265,9 +289,9 @@ export function VerifyCodeForm(): JSX.Element {
           DOB: employee?.DOB
             ? new Date(employee.DOB)
             : subYears(new Date(), 18),
-          Marital_Status: employee?.Marital_Status || maritalStatus[0],
-          Blood_Group: employee?.Blood_Group || bloodgroupStatus[0],
-          Gender: employee?.Gender || gender[0],
+          Marital_Status: employee?.Marital_Status || '',
+          Blood_Group: employee?.Blood_Group || '',
+          Gender: employee?.Gender || '',
           Nationality: employee?.Nationality || '',
           Family_Name: employee?.Family_Name || '',
           Family_Relation: employee?.Family_Relation || '',

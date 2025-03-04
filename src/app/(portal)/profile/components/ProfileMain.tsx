@@ -18,9 +18,15 @@ export default function ProfileMain() {
 
   const userId = userIdFromParams || user?.id;
 
-  const { data } = useReadEmployeeRecordQuery(userId as string, {
+  const { data, refetch } = useReadEmployeeRecordQuery(userId as string, {
     enabled: !!userId,
   });
 
-  return <>{user && <ProfileComponent user={data} currentUser={user} />}</>;
+  return (
+    <>
+      {user && (
+        <ProfileComponent user={data} currentUser={user} refetch={refetch} />
+      )}
+    </>
+  );
 }

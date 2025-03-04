@@ -19,7 +19,7 @@ export const useAllPerkQuery = (id: string, config: UseQueryConfig = {}) =>
   useQuery({
     queryKey: ['allPerk', id],
     queryFn: () => PerkList(id),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
@@ -33,7 +33,7 @@ export const usePerkListPostQuery = (
   useQuery({
     queryKey: ['perkPostList', id, params],
     queryFn: () => postPerkList(params, id),
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,

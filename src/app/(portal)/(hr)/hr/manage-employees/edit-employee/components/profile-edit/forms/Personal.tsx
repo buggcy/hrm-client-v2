@@ -49,11 +49,9 @@ const personalSchema = z.object({
     .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
   Nationality: z.string().min(3).max(50).optional(),
   DOB: z.date(),
-  Marital_Status: z.enum(['married', 'unmarried']).optional(),
-  Blood_Group: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  Gender: z.enum(['male', 'female']).optional(),
+  Marital_Status: z.string().optional(),
+  Blood_Group: z.string().optional(),
+  Gender: z.string().optional(),
   Joining_Date: z.date().optional(),
   Family_Name: z.string().optional(),
   Family_Relation: z.string().optional(),
@@ -89,9 +87,9 @@ const Personal = ({ empId, data }: PersonalProps) => {
       Emergency_Phone: data?.Emergency_Phone || '',
       Nationality: data?.Nationality || '',
       DOB: data?.DOB ? new Date(data.DOB) : new Date(),
-      Marital_Status: data?.Marital_Status || 'unmarried',
-      Blood_Group: data?.Blood_Group || 'A+',
-      Gender: data?.Gender || 'male',
+      Marital_Status: data?.Marital_Status || '',
+      Blood_Group: data?.Blood_Group || '',
+      Gender: data?.Gender || '',
       Joining_Date: data?.Joining_Date
         ? new Date(data.Joining_Date)
         : new Date(),
@@ -369,14 +367,23 @@ const Personal = ({ empId, data }: PersonalProps) => {
               control={control}
               render={({ field }) => (
                 <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  onValueChange={(value: string) => {
+                    if (value === 'None') {
+                      field.onChange('');
+                    } else {
+                      field.onChange(value);
+                    }
+                  }}
+                  value={field.value}
                 >
                   <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                     <SelectValue placeholder="Select Marital Status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup className="text-sm">
+                      <SelectItem value="None">
+                        Select Marital Status
+                      </SelectItem>
                       <SelectItem value="married">Married</SelectItem>
                       <SelectItem value="unmarried">Unmarried</SelectItem>
                     </SelectGroup>
@@ -400,14 +407,21 @@ const Personal = ({ empId, data }: PersonalProps) => {
               control={control}
               render={({ field }) => (
                 <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  onValueChange={(value: string) => {
+                    if (value === 'None') {
+                      field.onChange('');
+                    } else {
+                      field.onChange(value);
+                    }
+                  }}
+                  value={field.value}
                 >
                   <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                     <SelectValue placeholder="Select Blood Group" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup className="text-sm">
+                      <SelectItem value="None">Select Blood Group</SelectItem>
                       <SelectItem value="A+">A+</SelectItem>
                       <SelectItem value="A-">A-</SelectItem>
                       <SelectItem value="B+">B+</SelectItem>
@@ -437,14 +451,21 @@ const Personal = ({ empId, data }: PersonalProps) => {
               control={control}
               render={({ field }) => (
                 <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  onValueChange={(value: string) => {
+                    if (value === 'None') {
+                      field.onChange('');
+                    } else {
+                      field.onChange(value);
+                    }
+                  }}
+                  value={field.value}
                 >
                   <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                     <SelectValue placeholder="Select Gender" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup className="text-sm">
+                      <SelectItem value="None">Select Gender</SelectItem>
                       <SelectItem value="male">Male</SelectItem>
                       <SelectItem value="female">Female</SelectItem>
                     </SelectGroup>

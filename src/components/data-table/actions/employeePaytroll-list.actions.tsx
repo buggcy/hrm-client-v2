@@ -93,6 +93,14 @@ export function EmployeePayrollListRowActions({
         data?.Emp_ID?.dep_ID
           .map(dept => dept.departmentName.replace(' Department', ''))
           .join(', ');
+      const basicSalary = payslipData.Basic_Salary || 0;
+      const increments = payslipData.Increments;
+      const totalIncrements =
+        increments?.reduce(
+          (acc, increment) => acc + (increment.amount || 0),
+          0,
+        ) || 0;
+      const incrementedSalary = basicSalary + totalIncrements;
       root.render(
         <Payslip
           payslipDate={payslipData.Date ? formatDate(payslipData.Date) : 'N/A'}
@@ -100,7 +108,7 @@ export function EmployeePayrollListRowActions({
           employeeName={payslipData.Employee_Name || 'N/A'}
           employeeDesignation={user?.Designation || 'N/A'}
           employeeDepartment={departmentNames || 'N/A'}
-          basicSalary={payslipData.Basic_Salary || 0}
+          basicSalary={incrementedSalary}
           absentDeduction={payslipData.Absent_Deduction || 0}
           totalEarnings={payslipData.Net_Salary || 1}
           totalAfterTax={
@@ -108,12 +116,12 @@ export function EmployeePayrollListRowActions({
           }
           salaryDeduction={payslipData.Total_SalaryDeducton || 0}
           paymentStatus={payslipData.Pay_Status || 'N/A'}
-          perks={payslipData.perks || []}
+          perks={payslipData?.perks || { increments: [], decrements: [] }}
           totalPerkIncrement={payslipData.totalPerkIncrement || 0}
           totalPerkDecrement={payslipData.totalPerkDecrement || 0}
-          casualLeaves={payslipData.casualLeaves || 0}
-          sickLeaves={payslipData.sickLeaves || 0}
-          annualLeaves={payslipData.annualLeaves || 0}
+          casualLeaves={payslipData?.Leaves?.casual || 0}
+          sickLeaves={payslipData?.Leaves?.sick || 0}
+          annualLeaves={payslipData?.Leaves?.annual || 0}
         />,
       );
     } else {

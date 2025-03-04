@@ -48,7 +48,10 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
     user?.Tahometer_ID || '',
     user?.Tahometer_ID ? todayDate : '',
   );
+  const startTime = moment(data?.data?.Start_Date).format('hh:mm A');
 
+  const lateThreshold = moment('10:30 AM', 'hh:mm A');
+  const userTime = moment(startTime, 'hh:mm A');
   const {
     mutate,
     isPending,
@@ -133,9 +136,9 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
                   : data?.data?.Status === 'Holiday'
                     ? 'Today is marked as a holiday and an off day.'
                     : data?.data?.Status === 'Present' &&
-                        data?.data?.Late_Minutes === 0
+                        userTime.isSameOrBefore(lateThreshold)
                       ? "You're marked as present today! Great job, you're on time!"
-                      : `You are ${data?.data?.Late_Minutes} minutes late today!`
+                      : `You are ${userTime.diff(lateThreshold, 'minutes')} minutes late today!`
               : "Your today's attendance not recorded yet."
           }
         >

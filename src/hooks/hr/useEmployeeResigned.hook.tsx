@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { PendingResignedListApiResponse } from '@/libs/validations/employee';
 import {
   getPendingResignedRequest,
   GetResignedParams,
@@ -34,4 +35,4 @@ export const usePendingResignedRequestQuery = (
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
-  }) as UseQueryResult<ResignedApiResponse, Error>;
+  }) as UseQueryResult<PendingResignedListApiResponse, Error>;
