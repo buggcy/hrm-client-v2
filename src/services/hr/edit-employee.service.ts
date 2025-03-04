@@ -66,6 +66,7 @@ export const addEmployeeSalaryIncrementData = async ({
   incrementTitle,
   incrementAmount,
   desiredSalary,
+  appliedDate,
 }: AddSalaryIncrementFormData): Promise<SuccessMessageResponse> => {
   try {
     const { message }: SuccessMessageResponse = await baseAPI.post(
@@ -75,6 +76,7 @@ export const addEmployeeSalaryIncrementData = async ({
         incrementTitle,
         incrementAmount,
         desiredSalary,
+        appliedDate,
       },
     );
     return { message };
@@ -90,12 +92,14 @@ export const updateEmployeeSalaryIncrementData = async ({
   incrementTitle,
   desiredSalary,
   incrementAmount,
+  appliedDate,
 }: {
   incrementId: string;
   empId: string;
   incrementTitle: string;
   desiredSalary: number;
   incrementAmount: number;
+  appliedDate: Date;
 }): Promise<SuccessMessageResponse> => {
   try {
     const { message }: SuccessMessageResponse = await baseAPI.put(
@@ -106,6 +110,7 @@ export const updateEmployeeSalaryIncrementData = async ({
         incrementTitle,
         incrementAmount,
         desiredSalary,
+        appliedDate,
       },
     );
     return { message };

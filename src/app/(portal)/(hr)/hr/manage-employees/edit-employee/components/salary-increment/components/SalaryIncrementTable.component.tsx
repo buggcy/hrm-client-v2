@@ -50,6 +50,7 @@ const SalaryIncrementTable = ({
     incrementTitle: '',
     incrementAmount: 0,
     desiredSalary: 0,
+    appliedDate: '',
   });
   const [toBeDeletedId, setToBeDeletedId] = useState('');
 
@@ -62,6 +63,7 @@ const SalaryIncrementTable = ({
       incrementTitle: increment?.title || '',
       incrementAmount: increment?.amount || 0,
       desiredSalary: increment?.desiredSalary || 0,
+      appliedDate: increment?.appliedDate || '',
     });
     setEditDialogOpen(true);
   };
@@ -103,7 +105,8 @@ const SalaryIncrementTable = ({
                   <TableHead className="text-center">Title</TableHead>
                   <TableHead className="text-center">Amount</TableHead>
                   <TableHead className="text-center">Desired Salary</TableHead>
-                  <TableHead className="text-center">Date</TableHead>
+                  <TableHead className="text-center">Applied Date</TableHead>
+                  <TableHead className="text-center">Created At</TableHead>
                   <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -115,6 +118,15 @@ const SalaryIncrementTable = ({
                     ).toDateString();
                     const day = wholeDate.split(' ')[0];
                     const date = wholeDate.split(' ').slice(1).join(' ');
+
+                    const appliedWholeDate = new Date(
+                      increment.appliedDate as string | number | Date,
+                    ).toDateString();
+                    const appliedDay = appliedWholeDate.split(' ')[0];
+                    const appliedDate = appliedWholeDate
+                      .split(' ')
+                      .slice(1)
+                      .join(' ');
                     return (
                       <TableRow key={increment._id}>
                         <TableCell className="text-center font-medium">
@@ -129,7 +141,15 @@ const SalaryIncrementTable = ({
                             increment?.desiredSalary.toLocaleString('en-PK')) ||
                             '0'}
                         </TableCell>
-                        <TableCell className="flex justify-center gap-2 text-center">
+                        <TableCell className="text-center">
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="outline">{appliedDay}</Badge>
+                            <span className="max-w-[500px] truncate">
+                              {appliedDate}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">
                           <div className="flex items-center space-x-2">
                             <Badge variant="outline">{day}</Badge>
                             <span className="max-w-[500px] truncate">
@@ -201,6 +221,7 @@ const SalaryIncrementTable = ({
                   incrementTitle: selectedIncrementData.incrementTitle,
                   incrementAmount: selectedIncrementData.incrementAmount,
                   desiredSalary: selectedIncrementData?.desiredSalary,
+                  appliedDate: selectedIncrementData?.appliedDate,
                 }}
               />
               <DeleteDialog
