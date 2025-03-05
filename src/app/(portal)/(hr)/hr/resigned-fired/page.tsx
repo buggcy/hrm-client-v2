@@ -11,7 +11,7 @@ import { Notification } from '@/components/NotificationIcon';
 
 import ResignedFiredEmployeeTable from './component/ResignedFiredTable';
 
-export default function AddEmployeesPage() {
+export default function ResignFiredPage() {
   return (
     <Layout>
       <LayoutHeader title="Resigned / Fired Employees">

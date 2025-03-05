@@ -2,6 +2,7 @@
 
 import { FunctionComponent, Suspense, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import { ClipboardList, EllipsisVertical, Plus, RefreshCw } from 'lucide-react';
 
@@ -34,6 +35,7 @@ import { RefreshAttendanceDialog } from './components/RefreshAttendanceDialog';
 interface HrAttendanceListProps {}
 
 const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
+  const path = usePathname();
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
 
@@ -84,7 +86,7 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                   {Array.isArray(pendingAttendanceRequests?.requests) &&
                     pendingAttendanceRequests.requests.length > 0 && (
                       <Link
-                        href="/hr/manage-attendance/attendance-requests"
+                        href={`${path.startsWith('/manager') ? '/manager' : 'hr'}/manage-attendance/attendance-requests`}
                         className="absolute right-0 top-0 z-10 ml-2 flex size-6 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full border bg-white text-black shadow-md"
                       >
                         {pendingAttendanceRequests.requests.length}
@@ -112,7 +114,7 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                 <DropdownMenuItem className="flex flex-row gap-1">
                   <ClipboardList size={16} />
                   <Link
-                    href="/hr/manage-attendance/attendance-requests"
+                    href={`${path.startsWith('/manager') ? '/manager' : 'hr'}/manage-attendance/attendance-requests`}
                     className="flex items-center"
                   >
                     Attendance Requests

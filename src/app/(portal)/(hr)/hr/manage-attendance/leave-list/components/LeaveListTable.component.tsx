@@ -238,7 +238,10 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
           </div>
           <div className="mt-2 flex flex-row justify-end md:mt-0">
             <Button asChild>
-              <Link href="/hr/manage-leave" className="flex items-center">
+              <Link
+                href={`/${user?.roleId === 3 ? 'manager' : user?.roleId === 1 ? 'hr' : ''}/manage-leave`}
+                className="flex items-center"
+              >
                 Assign Leaves
               </Link>
             </Button>
