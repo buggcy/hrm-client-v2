@@ -165,6 +165,7 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
           casualLeaves={payslipData?.Leaves?.casual || 0}
           sickLeaves={payslipData?.Leaves?.sick || 0}
           annualLeaves={payslipData?.Leaves?.annual || 0}
+          taxAmount={payslipData?.Tax_Amount || 0}
         />,
       );
     } else {

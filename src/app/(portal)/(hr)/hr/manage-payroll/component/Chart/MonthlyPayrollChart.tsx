@@ -73,7 +73,11 @@ const MonthlyPayrollGraph: FunctionComponent<ChartDataProps> = ({
               tickFormatter={value => value.slice(0, 3)}
             />
             <YAxis />
-            <Tooltip />
+            <Tooltip
+              formatter={(value: number) =>
+                new Intl.NumberFormat('en-IN').format(value)
+              }
+            />
             <Bar dataKey="Basic_Salary" fill="#82ca9d" radius={[4, 4, 0, 0]} />
             <Bar dataKey="Net_Salary" fill="#30bbf2" radius={[4, 4, 0, 0]} />
             <Bar dataKey="Tax_Amount" fill="#e74c3c" radius={[4, 4, 0, 0]} />
