@@ -10,6 +10,7 @@ import {
   Home,
   Layers2Icon,
   Megaphone,
+  Scroll,
   Settings,
   ShieldCheck,
   ThumbsUp,
@@ -213,6 +214,15 @@ export const managerMenu = (accessPermissions: Permission[]): MenuItem[] => {
           title: 'Perks & Benefits',
           icon: Gift,
           href: '/manager/manage-perks/add-perks',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessAddPerks' && permission.allowed,
+          ),
+        },
+        {
+          title: 'Perk Requests',
+          icon: Scroll,
+          href: '/manager/manage-perks/perks',
           disabled: !accessPermissions.some(
             permission =>
               permission.name === 'accessAddPerks' && permission.allowed,

@@ -69,7 +69,11 @@ export function MonthlyPayrollGraph({ payrollData }: MonthlyPayrollGraphProps) {
               tickFormatter={value => value.slice(0, 3)}
             />
             <YAxis />
-            <Tooltip />
+            <Tooltip
+              formatter={(value: number) =>
+                new Intl.NumberFormat('en-IN').format(value)
+              }
+            />
             <Bar dataKey="Net_Salary" fill="#30bbf2" radius={[8, 8, 0, 0]} />
           </BarChart>
         </ChartContainer>

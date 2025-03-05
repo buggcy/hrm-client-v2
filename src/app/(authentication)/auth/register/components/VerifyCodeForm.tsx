@@ -50,8 +50,8 @@ const imageFileSchema = z
       ),
     { message: 'File must be a JPG, JPEG, PNG image or a PDF document.' },
   )
-  .refine(file => file && file.size / 1024 <= 200, {
-    message: 'File size must be less than 200KB.',
+  .refine(file => file && file.size / 1024 <= 800, {
+    message: 'File size must be less than 800KB.',
   });
 
 const imageSchema = z.preprocess(

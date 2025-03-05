@@ -25,8 +25,8 @@ interface AdditionalDocumentDialogProps {
 const additionalDocumentSchema = z.object({
   document: z
     .instanceof(File, { message: 'File is required!' })
-    .refine(file => file === null || file.size <= 200 * 1024, {
-      message: 'File size should be less than 200KB',
+    .refine(file => file === null || file.size <= 800 * 1024, {
+      message: 'File size should be less than 800KB',
     }),
 });
 

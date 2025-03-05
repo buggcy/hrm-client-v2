@@ -173,6 +173,7 @@ export const addEmployeeData = async ({
     Joining_Date: data.Joining_Date,
     Designation: data.Designation,
     dep_ID: data.dep_ID,
+    roleId: parseInt(data.roleId),
   });
   return { message };
 };

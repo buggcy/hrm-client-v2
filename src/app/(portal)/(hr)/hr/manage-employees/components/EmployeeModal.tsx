@@ -39,6 +39,7 @@ import {
   addEmployeeData,
   updateTBAEmployeeData,
 } from '@/services/hr/employee.service';
+import { AuthStoreType } from '@/stores/auth';
 import { EmployeeStoreType } from '@/stores/hr/employee';
 
 import { MessageErrorResponse } from '@/types';
@@ -52,6 +53,7 @@ const addEmployeeSchema = z.object({
   contactNo: z
     .string()
     .regex(/^(03|\+923)/, 'Contact number must start with "03" or "+923"'),
+  roleId: z.string().min(1, 'Role is required'),
   basicSalary: z.coerce.number().gt(0, 'Salary should be greater than zero'),
   desiredSalary: z.coerce.number().min(1, 'Desired Salary is required'),
   Joining_Date: z.date(),
@@ -76,7 +78,8 @@ export function AddEmployeeDialog({
 }: AddEmployeeDialogProps) {
   const { data: types, isLoading } = useTypesQuery();
   const { data: departmentList } = useDepartmentListQuery();
-
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList } = employeeStore;
   const depOptions =
@@ -102,6 +105,7 @@ export function AddEmployeeDialog({
       email: '',
       companyEmail: '',
       contactNo: '',
+      roleId: user?.roleId === 1 ? '2' : '',
       basicSalary: 0,
       desiredSalary: 0,
       Joining_Date: new Date(),
@@ -454,6 +458,49 @@ export function AddEmployeeDialog({
                 </span>
               )}
             </div>
+            {user?.roleId === 3 && (
+              <div className="flex flex-col">
+                <Label htmlFor="Designation" className="mb-2 text-left">
+                  Role <span className="text-red-600">*</span>
+                </Label>
+                <Controller
+                  name="roleId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
+                        <SelectValue placeholder="Select Role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup className="text-sm">
+                          <SelectItem value="No Role" disabled>
+                            Select Role
+                          </SelectItem>
+                          <SelectItem value="1" className="capitalize">
+                            HR
+                          </SelectItem>
+                          <SelectItem value="2" className="capitalize">
+                            Employee
+                          </SelectItem>
+                          <SelectItem value="3" className="capitalize">
+                            Manager
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                      <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                    </Select>
+                  )}
+                />
+                {errors.Designation && (
+                  <span className="text-sm text-red-500">
+                    {errors.Designation.message}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           <DialogFooter>
