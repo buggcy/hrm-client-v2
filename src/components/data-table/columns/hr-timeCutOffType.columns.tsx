@@ -44,6 +44,46 @@ export const timeCutOffTypeColumns: ColumnDef<ConfigurationType>[] = [
     },
   },
   {
+    accessorKey: 'startTime',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Start Time" />
+    ),
+    cell: ({ row }) => {
+      const field = row.getValue('startTime');
+      return (
+        <div className="flex items-center space-x-2">
+          {field ? (
+            <span className="max-w-[500px] truncate font-medium capitalize">
+              {row.getValue('startTime')}
+            </span>
+          ) : (
+            <span className="italic text-gray-500">Not Provided!</span>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'endTime',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="End Time" />
+    ),
+    cell: ({ row }) => {
+      const field = row.getValue('endTime');
+      return (
+        <div className="flex items-center space-x-2">
+          {field ? (
+            <span className="max-w-[500px] truncate font-medium capitalize">
+              {row.getValue('endTime')}
+            </span>
+          ) : (
+            <span className="italic text-gray-500">Not Provided!</span>
+          )}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'userId',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Updated By" />

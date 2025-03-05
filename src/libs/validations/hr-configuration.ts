@@ -33,6 +33,8 @@ const configurationSchema = z.object({
   designationType: z.string().optional(),
   feedbackType: z.string().optional(),
   timeCutOff: z.number().optional(),
+  startTime: z.string().optional(),
+  endTime: z.string().optional(),
   isDeleted: z.boolean(),
   isIntern: z.boolean().optional(),
   isProbational: z.boolean().optional(),
