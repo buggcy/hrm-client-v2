@@ -11,8 +11,10 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
+import { useStores } from '@/providers/Store.Provider';
 
 import { useApprovalEmployeeQuery } from '@/hooks/employee/useApprovalEmployee.hook';
+import { AuthStoreType } from '@/stores/auth';
 import { getWritePermissions } from '@/utils/permissions.utils';
 
 import AddEmpCards from './components/AddEmpCards';
@@ -22,6 +24,8 @@ import { AddEmployeeDialog } from '../manage-employees/components/EmployeeModal'
 export default function AddEmployeesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data } = useApprovalEmployeeQuery();
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -51,7 +55,10 @@ export default function AddEmployeesPage() {
             </Button>
           )}
           <Button variant="outline" asChild>
-            <Link href="/hr/approval" className="flex items-center">
+            <Link
+              href={user?.roleId === 1 ? '/hr/approval' : '/manager/approval'}
+              className="flex items-center"
+            >
               View Approval Requests
               <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
                 {data?.length || 0}
