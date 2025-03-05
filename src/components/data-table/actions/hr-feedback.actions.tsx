@@ -36,6 +36,7 @@ import {
   deleteFeedback,
   enableDisableFeedback,
 } from '@/services/hr/hr-feedback.service';
+import { AuthStoreType } from '@/stores/auth';
 import { FeedbackStoreType } from '@/stores/hr/hr-feedback';
 
 import { MessageErrorResponse } from '@/types';
@@ -50,7 +51,8 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
     React.useState<boolean>(false);
   const { feedbackStore } = useStores() as { feedbackStore: FeedbackStoreType };
   const { setRefetchFeedbackList } = feedbackStore;
-
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const [isEnable, setIsEnable] = React.useState(false);
   const [type, setType] = React.useState('');
   const [selectedRow, setSelectedRow] = React.useState<FeedbackType | null>(
@@ -74,7 +76,12 @@ export function FeedbackRowActions({ row }: DataTableRowActionsProps) {
     setIsEnable(false);
   };
   const handleViewQuestions = () => {
-    router.push(`/hr/manage-feedbacks/view-questions?id=${data?._id}`);
+    const basePath =
+      user?.roleId === 3
+        ? '/manager/manage-feedbacks/view-questions'
+        : '/hr/manage-feedbacks/view-questions';
+
+    router.push(`${basePath}?id=${data?._id}`);
   };
 
   const { mutate, isPending } = useMutation({

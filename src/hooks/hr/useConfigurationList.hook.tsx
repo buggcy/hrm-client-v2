@@ -1,12 +1,12 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { ConfigurationApiResponse } from '@/libs/validations/hr-configuration';
 import {
   ConfigurationParams,
   getConfigurationType,
 } from '@/services/hr/hrConfiguration.service';
 
 import { UseQueryConfig } from '@/types';
-import { ConfigurationApiResponse } from '@/types/hr-configuration.types';
 
 export const useConfigurationQuery = (
   params: ConfigurationParams,

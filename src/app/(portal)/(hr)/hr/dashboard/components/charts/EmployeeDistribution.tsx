@@ -65,7 +65,7 @@ export function EmployeeDistribution({ data }: EmployeeDistributionProps) {
 
   return (
     <Card className="col-span-1 flex min-h-[250px] flex-col">
-      <CardHeader className="items-center pb-2">
+      <CardHeader className="pb-2">
         <CardTitle>Employees</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-row items-center justify-between pb-0">

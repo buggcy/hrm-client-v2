@@ -23,6 +23,7 @@ import {
 } from '@/hooks/complaint/useComplaint.hook';
 import { ComplaintListArrayType } from '@/libs/validations/complaint';
 import { searchComplaints } from '@/services/employee/complaint.service';
+import { AuthStoreType } from '@/stores/auth';
 import { ComplaintStoreType } from '@/stores/employee/complaint';
 import { formatedDate } from '@/utils';
 
@@ -36,6 +37,8 @@ interface Props {}
 const HrComplaintTable: FunctionComponent<Props> = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const { complaintStore } = useStores() as {
     complaintStore: ComplaintStoreType;
   };
@@ -204,7 +207,11 @@ const HrComplaintTable: FunctionComponent<Props> = () => {
         />
         <Button variant="outline" asChild>
           <Link
-            href="/hr/manage-complaints/view-complaints"
+            href={
+              user?.roleId === 3
+                ? '/manager/manage-complaints/view-complaints'
+                : '/hr/manage-complaints/view-complaints'
+            }
             className="flex items-center"
           >
             View Complaints

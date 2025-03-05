@@ -11,7 +11,7 @@ import { Notification } from '@/components/NotificationIcon';
 
 import FeedbackTable from './component/FeedbackTable';
 
-export default function ManageLeavePage() {
+export default function ManageFeedback() {
   return (
     <Layout>
       <LayoutHeader title="Manage Feedbacks">
