@@ -43,14 +43,14 @@ const kycSchema = z.object({
   frontPicture: z
     .instanceof(File)
     .nullable()
-    .refine(file => file === null || file.size <= 5 * 1024 * 1024, {
-      message: 'File size should be less than 5MB',
+    .refine(file => file === null || file.size <= 800 * 1024, {
+      message: 'File size should be less than 800KB',
     }),
   backPicture: z
     .instanceof(File)
     .nullable()
-    .refine(file => file === null || file.size <= 5 * 1024 * 1024, {
-      message: 'File size should be less than 5MB',
+    .refine(file => file === null || file.size <= 800 * 1024, {
+      message: 'File size should be less than 800KB',
     }),
   accountHolderName: z.string(),
   accountNumber: z.string(),
