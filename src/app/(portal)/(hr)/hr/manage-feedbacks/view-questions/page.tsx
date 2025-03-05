@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 
 import QuestionAnswerTypeTable from '../component/QuestionAnswerTable';
 
-export default function ManageLeavePage() {
+export default function ManageQuestions() {
   const router = useRouter();
 
   return (
