@@ -153,6 +153,46 @@ export function AddEditTimecutoff({
         </DialogHeader>
         <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-2">
+            <div className="mb-2 flex flex-col">
+              <Label htmlFor="inTime" className="mb-4 text-left">
+                Start Time <span className="text-red-600">*</span>
+              </Label>
+              <Controller
+                name="inTime"
+                control={control}
+                render={({ field }) => (
+                  <TimePicker
+                    time={field.value}
+                    onTimeChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.inTime && (
+                <span className="text-sm text-red-500">
+                  {errors.inTime.message}
+                </span>
+              )}
+            </div>
+            <div className="mb-2 flex flex-col">
+              <Label htmlFor="outTime" className="mb-4 text-left">
+                End Time <span className="text-red-600">*</span>
+              </Label>
+              <Controller
+                name="outTime"
+                control={control}
+                render={({ field }) => (
+                  <TimePicker
+                    time={field.value}
+                    onTimeChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.outTime && (
+                <span className="text-sm text-red-500">
+                  {errors.outTime.message}
+                </span>
+              )}
+            </div>
             <div className="flex flex-col">
               <Label htmlFor="type" className="mb-4 text-left">
                 {'Time Cut Off Minutes'}
@@ -173,46 +213,6 @@ export function AddEditTimecutoff({
               {errors.type && (
                 <span className="text-sm text-red-500">
                   {errors.type.message}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="inTime" className="mb-4 text-left">
-                Start Time <span className="text-red-600">*</span>
-              </Label>
-              <Controller
-                name="inTime"
-                control={control}
-                render={({ field }) => (
-                  <TimePicker
-                    time={field.value}
-                    onTimeChange={field.onChange}
-                  />
-                )}
-              />
-              {errors.inTime && (
-                <span className="text-sm text-red-500">
-                  {errors.inTime.message}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="outTime" className="mb-4 text-left">
-                End Time <span className="text-red-600">*</span>
-              </Label>
-              <Controller
-                name="outTime"
-                control={control}
-                render={({ field }) => (
-                  <TimePicker
-                    time={field.value}
-                    onTimeChange={field.onChange}
-                  />
-                )}
-              />
-              {errors.outTime && (
-                <span className="text-sm text-red-500">
-                  {errors.outTime.message}
                 </span>
               )}
             </div>
