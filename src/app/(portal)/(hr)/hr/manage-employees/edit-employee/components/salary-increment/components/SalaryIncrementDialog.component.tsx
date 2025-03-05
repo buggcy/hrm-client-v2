@@ -8,6 +8,7 @@ import { AxiosError } from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import CustomDayPicker from '@/components/CustomDayPicker';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -34,6 +35,7 @@ const addSalaryIncrementSchema = z.object({
     .number()
     .positive('Increment Amount must be a positive number'),
   desiredSalary: z.coerce.number(),
+  appliedDate: z.date(),
 });
 
 export type AddSalaryIncrementFormData = z.infer<
@@ -50,6 +52,7 @@ interface SalaryIncrementDialogProps {
     incrementTitle: string;
     incrementAmount: number;
     desiredSalary: number;
+    appliedDate: string;
   };
   refetchSalaryIncrementList: () => void;
 }
@@ -74,6 +77,7 @@ export function SalaryIncrementDialog({
       incrementTitle: '',
       incrementAmount: 0,
       desiredSalary: 0,
+      appliedDate: new Date(),
     },
   });
 
@@ -89,6 +93,7 @@ export function SalaryIncrementDialog({
         incrementTitle: editData?.incrementTitle || '',
         incrementAmount: editData?.incrementAmount || 0,
         desiredSalary: editData?.desiredSalary || 0,
+        appliedDate: new Date(editData?.appliedDate),
       });
     }
   }, [editData, reset, empId]);
@@ -199,6 +204,28 @@ export function SalaryIncrementDialog({
               {errors.desiredSalary && (
                 <span className="text-sm text-red-500">
                   {errors.desiredSalary.message}
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <Label htmlFor="appliedDate" className="mb-2 text-left">
+                Applied Date
+              </Label>
+              <Controller
+                name="appliedDate"
+                control={control}
+                render={({ field }) => (
+                  <CustomDayPicker
+                    initialDate={field.value}
+                    onDateChange={field.onChange}
+                    className="h-auto"
+                  />
+                )}
+              />
+              {errors.appliedDate && (
+                <span className="text-sm text-red-500">
+                  {errors.appliedDate.message}
                 </span>
               )}
             </div>
