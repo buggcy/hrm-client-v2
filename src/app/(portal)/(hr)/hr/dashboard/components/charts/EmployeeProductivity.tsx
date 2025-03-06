@@ -1,6 +1,5 @@
 'use client';
 
-import { TrendingUp } from 'lucide-react';
 import { LabelList, RadialBar, RadialBarChart } from 'recharts';
 
 import {
@@ -112,9 +111,9 @@ export function EmployeeProductivity({ data }: EmployeeProductivityProps) {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
+        {/* <div className="flex items-center gap-2 font-medium leading-none">
           Trending up by 5.2% this week <TrendingUp className="size-4" />
-        </div>
+        </div> */}
         <div className="leading-none text-muted-foreground">
           Showing average productivity for the week
         </div>
