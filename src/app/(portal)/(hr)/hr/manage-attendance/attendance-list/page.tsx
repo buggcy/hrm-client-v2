@@ -99,7 +99,8 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                         href={`${path.startsWith('/manager') ? '/manager' : 'hr'}/manage-attendance/attendance-requests`}
                         className="absolute right-0 top-0 z-10 ml-2 flex size-6 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full border bg-white text-black shadow-md"
                       >
-                        {pendingAttendanceRequests.requests.length}
+                        {pendingAttendanceRequests.requests.length +
+                          (pendingList?.totalCount || 0)}
                       </Link>
                     )}
 
