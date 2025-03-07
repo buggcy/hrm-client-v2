@@ -22,4 +22,5 @@ export interface User {
   profileDescription?: string;
   Ed_Exp_ID?: Array<string>;
   Avatar?: string;
+  Joining_Date?: string;
 }

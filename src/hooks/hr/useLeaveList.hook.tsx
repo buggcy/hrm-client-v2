@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { LeaveListApiResponse } from '@/libs/validations/hr-leave-list';
 import { getLeaveData } from '@/services/employee/leave-history.service';
 import {
   getLeaveListRecords,
@@ -13,7 +14,6 @@ import {
 
 import { UseQueryConfig } from '@/types';
 import {
-  LeaveListApiResponse,
   LeaveListRecords,
   LeaveTrendChartApiResponse,
 } from '@/types/hr-leave-list.types';

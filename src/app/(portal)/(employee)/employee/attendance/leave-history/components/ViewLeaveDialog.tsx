@@ -21,6 +21,8 @@ import {
 
 import { LeaveListType } from '@/libs/validations/hr-leave-list';
 
+import './ViewLeaveDialog.css';
+
 interface DialogDemoProps {
   data: LeaveListType;
   open: boolean;
@@ -210,11 +212,15 @@ export function ViewLeaveHistoryDialog({
             </div>
           </div>
         )}
-        <div className="flex flex-col">
-          <p className="text-sm font-semibold">Description</p>
-          <p className="indent-16 text-sm text-gray-600 dark:text-gray-300">
-            {data.Description}
-          </p>
+        <div className="flex flex-col space-y-3">
+          <span className="text-sm font-medium">Description:</span>
+          <div className="description-content max-h-60 overflow-y-auto rounded-md bg-muted/70 p-4 text-sm">
+            <div
+              dangerouslySetInnerHTML={{
+                __html: data.Description || '',
+              }}
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
