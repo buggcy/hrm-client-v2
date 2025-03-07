@@ -29,9 +29,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useStores } from '@/providers/Store.Provider';
 
 import { useAttendanceRequestsQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
 import { useOvertimeRequestsQuery } from '@/hooks/overtime/useOvertime.hook';
+import { AuthStoreType } from '@/stores/auth';
 import { formatedDate } from '@/utils';
 
 import AttendanceCharts from './components/AttendanceCharts';
@@ -45,7 +47,8 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
   const path = usePathname();
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
-
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const { data: pendingAttendanceRequests } = useAttendanceRequestsQuery({
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
@@ -125,7 +128,11 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                 <DropdownMenuItem className="flex flex-row gap-1">
                   <ClipboardList size={16} />
                   <Link
-                    href={`${path.startsWith('/manager') ? '/manager' : 'hr'}/manage-attendance/attendance-requests`}
+                    href={
+                      user?.roleId === 3
+                        ? '/manager/manage-attendance/attendance-requests'
+                        : '/hr/manage-attendance/attendance-requests'
+                    }
                     className="flex items-center"
                   >
                     Attendance Requests
@@ -137,7 +144,11 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                 <DropdownMenuItem className="flex flex-row gap-1">
                   <Clock size={16} />
                   <Link
-                    href={`/hr/manage-attendance/overtime-request`}
+                    href={
+                      user?.roleId === 3
+                        ? '/manager/manage-attendance/overtime-request'
+                        : '/hr/manage-attendance/overtime-request'
+                    }
                     className="flex items-center"
                   >
                     Overtime Requests
