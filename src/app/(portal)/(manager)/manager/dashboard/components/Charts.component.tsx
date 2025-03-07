@@ -1,38 +1,43 @@
 import React from 'react';
 
-// import { ComplaintsDistribution } from './charts/ComplaintsAndFeedbackDistribution.RadarChart';
+import { AttendanceDistribution } from '@/app/(portal)/(hr)/hr/dashboard/components/charts/AttendanceDistribution';
+import { EmployeeDistribution } from '@/app/(portal)/(hr)/hr/dashboard/components/charts/EmployeeDistribution';
+import { EmployeeProductivity } from '@/app/(portal)/(hr)/hr/dashboard/components/charts/EmployeeProductivity';
+import { PerksDistribution } from '@/app/(portal)/(hr)/hr/dashboard/components/charts/PerksDistribution';
+import { TopDepartmentChart } from '@/app/(portal)/(hr)/hr/manage-department/component/Chart/TopDepartmentChart';
+import { useManagerDashboardStatsQuery } from '@/hooks/hr/useManagerDashboardStats.hook';
+import { useDepartmentRecordQuery } from '@/hooks/hr/useProjectDepartment.hook';
+
 import ComplaintsDistribution from './charts/ComplaintsDistribution.RadarChart';
-import { Concerns } from './charts/Concerns.RadialChart';
-import { DepartmentPieChart } from './charts/DepartmentDistribution.PieChart';
-import { EmployeeImpactCard } from './charts/EmployeeImpactCard.mobile';
-import { FinanceDistribution } from './charts/FinanceDistribution.AreaChart';
-import PerksImpactChart from './charts/PerksImpact.DualAxisChart';
-import { PerksOverviewCard } from './charts/PerksOverview.mobile';
 import { ProjectDistribution } from './charts/ProjectsDistribution.RadialChart';
 
-const ManagerDashboardCharts = () => {
-  const perksData = {
-    totalSpent: 300000,
-    approvedRequests: 5,
-    rejectedRequests: 2,
-  };
+interface HrDashboardmeProps {
+  from: string;
+  to?: string;
+}
 
-  const employeeImpactData = {
-    performanceScore: 85,
-    performanceChange: 5,
-    sickLeaves: 3,
-    sickLeavesChange: -20,
-  };
+const ManagerDashboardCharts = ({ from, to }: HrDashboardmeProps) => {
+  const { data } = useManagerDashboardStatsQuery({ from, to });
+
+  const { data: departmentRecord } = useDepartmentRecordQuery();
   return (
     <div className="grid size-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <ComplaintsDistribution />
-      <Concerns />
-      <ProjectDistribution />
-      <FinanceDistribution />
-      <PerksImpactChart />
-      <PerksOverviewCard {...perksData} />
-      <EmployeeImpactCard {...employeeImpactData} />
-      <DepartmentPieChart />
+      {/* <FinanceDistribution />
+      <Concerns /> */}
+      <EmployeeDistribution data={data?.employeeCount} />
+      <AttendanceDistribution data={data?.attendanceData} />
+      <ProjectDistribution projectStats={data?.projectStatusCounts} />
+      <TopDepartmentChart
+        chartData={departmentRecord?.topChart}
+        type={'dashboard'}
+      />
+      <EmployeeProductivity data={data?.productivityData} />
+      {/* <FinanceDistribution /> */}
+      {/* <PerksImpactChart />
+      <PerksOverviewCard {...perksData} /> */}
+      {/* <EmployeeImpactCard {...employeeImpactData} /> */}
+      <PerksDistribution data={data?.perkData} from={from} to={to} />
+      <ComplaintsDistribution complaintStats={data?.complaintsData || []} />
     </div>
   );
 };
