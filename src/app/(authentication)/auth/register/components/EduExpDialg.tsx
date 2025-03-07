@@ -205,7 +205,6 @@ export function EduEpxDialog({
                   clearErrors('End_Date');
                 }
               }}
-              disabled={date => date > new Date()}
               className="h-auto"
             />
             {errors.End_Date && (

@@ -10,22 +10,19 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
+import { HoverCard, HoverCardTrigger } from '@/components/ui/hover-card';
 
+import { ManageProjectStatsType } from '@/libs/validations/manager-dashboard';
 import { cn } from '@/utils';
 
 export const description = 'A radial chart with stacked sections';
 
 const chartConfig = {
-  complete: {
-    label: 'Complete',
+  completed: {
+    label: 'Completed',
     color: 'hsl(var(--chart-1))',
   },
-  inProgress: {
+  inprogress: {
     label: 'In Progress',
     color: 'hsl(var(--chart-2))',
   },
@@ -41,35 +38,51 @@ const chartConfig = {
     label: 'Cancelled',
     color: 'hsl(var(--chart-4))',
   },
+  notstarted: {
+    label: 'Not Started',
+    color: 'hsl(var(--primary))',
+  },
 } satisfies ChartConfig;
 
-const mockData = {
-  complete: ['Project A', 'Project B', 'Project C', 'Project D', 'Project E'],
-  inProgress: ['Project F', 'Project G', 'Project H', 'Project I', 'Project J'],
-  pending: ['Project K', 'Project L', 'Project M', 'Project N', 'Project O'],
-  overdue: ['Project P', 'Project Q', 'Project R', 'Project S', 'Project T'],
-  cancelled: ['Project U', 'Project V', 'Project W', 'Project X', 'Project Y'],
-};
+export function ProjectDistribution({
+  projectStats,
+}: {
+  projectStats: ManageProjectStatsType[] | undefined;
+}) {
+  const defaultStats = {
+    completed: 0,
+    inprogress: 0,
+    pending: 0,
+    overdue: 0,
+    cancelled: 0,
+    notstarted: 0,
+  };
 
-export function ProjectDistribution() {
+  const mappedStats =
+    projectStats?.reduce(
+      (acc, { status, count }) => {
+        const key = status
+          .toLowerCase()
+          .replace(/\s+/g, '') as keyof typeof defaultStats;
+
+        if (key in defaultStats) {
+          acc[key] = count;
+        }
+        return acc;
+      },
+      { ...defaultStats },
+    ) || defaultStats;
+
+  // Prepare chart data
   const chartData = [
     {
-      month: 'january',
-      inProgress: 100,
-      overdue: 50,
-      complete: 20,
-      cancelled: 10,
-      pending: 10,
+      ...mappedStats,
     },
   ];
-  const totalRequests =
-    chartData.reduce(
-      (acc, { inProgress, overdue, complete, cancelled, pending }) =>
-        acc + inProgress + overdue + complete + cancelled + pending,
-      0,
-    ) || 1;
 
-  const categories = Object.keys(mockData) as Array<keyof typeof mockData>;
+  // Total number of projects
+  const totalRequests =
+    Object.values(mappedStats).reduce((acc, count) => acc + count, 0) || 1;
 
   return (
     <Card className="col-span-1 flex flex-col">
@@ -81,37 +94,27 @@ export function ProjectDistribution() {
       </CardHeader>
       <CardContent className="flex flex-1 flex-row items-center justify-between">
         <div className="flex flex-col gap-2 text-nowrap text-sm">
-          {categories.map(category => (
+          {Object.keys(chartConfig).map(category => (
             <HoverCard key={category} openDelay={100} closeDelay={100}>
               <HoverCardTrigger>
                 <div className="flex flex-row items-center gap-1">
                   <div
-                    className={cn(
-                      `size-2 rounded-full bg-[hsl(var(--chart-${chartConfig[
-                        category
-                      ].color.slice(16, 17)}))]`,
-                    )}
+                    style={{
+                      backgroundColor:
+                        chartConfig[category as keyof typeof chartConfig].color,
+                    }}
+                    className={cn(`size-2 rounded-full`)}
                   ></div>
                   <p className="hover:underline">
                     <span className="font-bold">
-                      {chartData[0][category].toLocaleString() || 0}
+                      {chartData[0][
+                        category as keyof (typeof chartData)[0]
+                      ].toLocaleString() || 0}
                     </span>{' '}
-                    {chartConfig[category].label}
+                    {chartConfig[category as keyof typeof chartConfig].label}
                   </p>
                 </div>
               </HoverCardTrigger>
-              <HoverCardContent>
-                <ul className="mb-2">
-                  {mockData[category].map((project, index) => (
-                    <li key={index} className="text-sm">
-                      {project}
-                    </li>
-                  ))}
-                </ul>
-                <Button variant="link" className="text-xs">
-                  See more
-                </Button>
-              </HoverCardContent>
             </HoverCard>
           ))}
         </div>
@@ -156,36 +159,15 @@ export function ProjectDistribution() {
                 }}
               />
             </PolarRadiusAxis>
-            <RadialBar
-              dataKey="complete"
-              fill="var(--color-complete)"
-              stackId="a"
-              className="stroke-transparent stroke-2"
-            />
-            <RadialBar
-              dataKey="inProgress"
-              stackId="a"
-              fill="var(--color-inProgress)"
-              className="stroke-transparent stroke-2"
-            />
-            <RadialBar
-              dataKey="pending"
-              fill="var(--color-pending)"
-              stackId="a"
-              className="stroke-transparent stroke-2"
-            />
-            <RadialBar
-              dataKey="overdue"
-              fill="var(--color-overdue)"
-              stackId="a"
-              className="stroke-transparent stroke-2"
-            />
-            <RadialBar
-              dataKey="cancelled"
-              fill="var(--color-cancelled)"
-              stackId="a"
-              className="stroke-transparent stroke-2"
-            />
+            {Object.keys(chartConfig).map(category => (
+              <RadialBar
+                key={category}
+                dataKey={category}
+                fill={chartConfig[category as keyof typeof chartConfig].color}
+                stackId="a"
+                className="stroke-transparent stroke-2"
+              />
+            ))}
           </RadialBarChart>
         </ChartContainer>
       </CardContent>

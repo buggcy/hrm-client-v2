@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, { useEffect, useState } from 'react';
 
+import { subDays, subYears } from 'date-fns';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import CustomDayPicker from '@/components/CustomDayPicker';
@@ -218,6 +219,7 @@ export function Details({ onNext }: { onNext: () => void }) {
                   onDateChange={(date: Date | undefined) =>
                     field.onChange(date ?? undefined)
                   }
+                  disabled={date => date > subDays(subYears(new Date(), 18), 1)}
                   className="h-auto"
                 />
               )}
