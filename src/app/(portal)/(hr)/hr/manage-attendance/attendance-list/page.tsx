@@ -4,7 +4,13 @@ import { FunctionComponent, Suspense, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { ClipboardList, EllipsisVertical, Plus, RefreshCw } from 'lucide-react';
+import {
+  ClipboardList,
+  Clock,
+  EllipsisVertical,
+  Plus,
+  RefreshCw,
+} from 'lucide-react';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
@@ -25,6 +31,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { useAttendanceRequestsQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
+import { useOvertimeRequestsQuery } from '@/hooks/overtime/useOvertime.hook';
 import { formatedDate } from '@/utils';
 
 import AttendanceCharts from './components/AttendanceCharts';
@@ -43,7 +50,10 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
   });
-
+  const { data: pendingList } = useOvertimeRequestsQuery({
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
 
@@ -120,6 +130,18 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                     Attendance Requests
                     <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
                       {pendingAttendanceRequests?.requests.length || 0}
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex flex-row gap-1">
+                  <Clock size={16} />
+                  <Link
+                    href={`/hr/manage-attendance/overtime-request`}
+                    className="flex items-center"
+                  >
+                    Overtime Requests
+                    <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                      {pendingList?.totalCount || 0}
                     </span>
                   </Link>
                 </DropdownMenuItem>

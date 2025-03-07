@@ -23,6 +23,8 @@ const pendingRequestsSchema = z.object({
   leave: z.number().nonnegative(),
   perk: z.number().nonnegative(),
   resignation: z.number().nonnegative(),
+  overtime: z.number().nonnegative(),
+  attandence: z.number().nonnegative(),
 });
 export type HrStatsPendingRequests = z.infer<typeof pendingRequestsSchema>;
 

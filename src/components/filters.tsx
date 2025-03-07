@@ -455,3 +455,26 @@ export const project_status_options = [
     icon: AlertCircle,
   },
 ];
+
+export const overtime_options = [
+  {
+    value: 'Approved',
+    label: 'Approved',
+    icon: CheckCircle2,
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+    icon: Circle,
+  },
+  {
+    value: 'Rejected',
+    label: 'Rejected',
+    icon: XCircle,
+  },
+  {
+    value: 'Canceled',
+    label: 'Canceled',
+    icon: XCircle,
+  },
+];
