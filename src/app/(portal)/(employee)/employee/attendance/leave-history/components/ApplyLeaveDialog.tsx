@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -45,162 +46,7 @@ import {
 import { AuthStoreType } from '@/stores/auth';
 import { LeaveHistoryStoreType } from '@/stores/employee/leave-history';
 
-import { EmployeeLeavesDataApiResponse } from '@/types/leave-history.types';
-
-function getMonthName(monthNumber: number) {
-  const date = new Date();
-  date.setMonth(monthNumber - 1);
-  return date.toLocaleString('default', { month: 'long' });
-}
-
-function validateLeaveApplication(
-  type: string,
-  start: Date,
-  end: Date,
-  leaveData: EmployeeLeavesDataApiResponse | undefined,
-) {
-  const startYear = start.getFullYear();
-  const startMonth = start.getMonth() + 1;
-  const startDay = start.getDate();
-
-  const endYear = end.getFullYear();
-  const endMonth = end.getMonth() + 1;
-
-  const totalDays =
-    Math.abs((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-
-  const employeeLeave = leaveData;
-
-  if (type === 'Annual') {
-    const allowedAnnualLeaves = employeeLeave?.annualLeavesAllowed;
-
-    if (endYear - startYear > 1) {
-      toast({
-        title: 'Error',
-        description: 'Requested leaves exceed allowed amount.',
-        variant: 'error',
-      });
-      return false;
-    }
-
-    if (endYear - startYear === 1) {
-      const maxAllowedForTwoYears = 2 * (allowedAnnualLeaves ?? 0);
-      if (totalDays > maxAllowedForTwoYears) {
-        toast({
-          title: 'Error',
-          description: 'Requested leaves exceed allowed amount for two years.',
-          variant: 'error',
-        });
-        return false;
-      }
-    }
-
-    const leavesInStartYear = employeeLeave?.annualLeavesRecords.find(
-      record => record.year === startYear,
-    );
-    const leavesInEndYear = employeeLeave?.annualLeavesRecords.find(
-      record => record.year === endYear,
-    );
-
-    const remainingStartYearLeaves =
-      (allowedAnnualLeaves ?? 0) -
-      (leavesInStartYear ? leavesInStartYear.annualLeaves : 0);
-    const remainingEndYearLeaves =
-      (allowedAnnualLeaves ?? 0) -
-      (leavesInEndYear ? leavesInEndYear.annualLeaves : 0);
-
-    const daysInStartYear =
-      startYear === endYear
-        ? totalDays
-        : new Date(startYear, 11, 31).getDate() - startDay + 1;
-    const daysInEndYear = totalDays - daysInStartYear;
-
-    if (daysInStartYear > remainingStartYearLeaves) {
-      toast({
-        title: 'Error',
-        description: `Requested leaves exceed remaining leaves for ${startYear}.`,
-        variant: 'error',
-      });
-      return false;
-    }
-    if (daysInEndYear > 0 && daysInEndYear > remainingEndYearLeaves) {
-      toast({
-        title: 'Error',
-        description: `Requested leaves exceed remaining leaves for ${endYear}.`,
-        variant: 'error',
-      });
-      return false;
-    }
-  }
-
-  if (type === 'Casual' || type === 'Sick') {
-    const allowedMonthlyLeaves = employeeLeave?.monthlyLeavesAllowed;
-
-    if (endMonth - startMonth > 1 || endYear !== startYear) {
-      toast({
-        title: 'Error',
-        description: 'Requested leaves exceed allowed amount.',
-        variant: 'error',
-      });
-      return false;
-    }
-
-    const maxAllowedForTwoMonths = 2 * (allowedMonthlyLeaves ?? 0);
-    if (endMonth - startMonth === 1 && totalDays > maxAllowedForTwoMonths) {
-      toast({
-        title: 'Error',
-        description: 'Requested leaves exceed allowed amount for two months.',
-        variant: 'error',
-      });
-      return false;
-    }
-
-    const leavesInStartMonth = employeeLeave?.monthlyLeaveRecords.find(
-      record => record.year === startYear && record.month === startMonth,
-    );
-    const leavesInEndMonth = employeeLeave?.monthlyLeaveRecords.find(
-      record => record.year === endYear && record.month === endMonth,
-    );
-
-    const remainingStartMonthLeaves =
-      (allowedMonthlyLeaves ?? 0) -
-      (leavesInStartMonth
-        ? leavesInStartMonth['casualLeaves'] + leavesInStartMonth['sickLeaves']
-        : 0);
-    const remainingEndMonthLeaves =
-      (allowedMonthlyLeaves ?? 0) -
-      (leavesInEndMonth
-        ? (leavesInStartMonth ? leavesInStartMonth['casualLeaves'] : 0) +
-          (leavesInStartMonth ? leavesInStartMonth['sickLeaves'] : 0)
-        : 0);
-
-    const daysInStartMonth =
-      startMonth === endMonth
-        ? totalDays
-        : new Date(startYear, startMonth, 0).getDate() - startDay + 1;
-    const daysInEndMonth = totalDays - daysInStartMonth;
-
-    if (daysInStartMonth > remainingStartMonthLeaves) {
-      const month = getMonthName(startMonth);
-      toast({
-        title: 'Error',
-        description: `Requested leaves exceed remaining leaves for ${month} ${startYear}.`,
-        variant: 'error',
-      });
-      return false;
-    }
-    if (daysInEndMonth > 0 && daysInEndMonth > remainingEndMonthLeaves) {
-      const month = getMonthName(endMonth);
-      toast({
-        title: 'Error',
-        description: `Requested leaves exceed remaining leaves for ${month} ${endYear}.`,
-        variant: 'error',
-      });
-      return false;
-    }
-  }
-  return true;
-}
+import distributeLeaves from './LeaveDistributionCalculator';
 
 const applyLeaveSchema = z
   .object({
@@ -246,12 +92,20 @@ export function ApplyLeaveDialog({
   const { setRefetchLeaveHistoryList } = leaveHistoryStore;
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
+  const [leaveDistribution, setLeaveDistribution] = useState<
+    { leaves: number; unpaidLeaves: number; annualLeaves?: number } | undefined
+  >({
+    leaves: 0,
+    unpaidLeaves: 0,
+    annualLeaves: 0,
+  });
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<ApplyLeaveFormData>({
     resolver: zodResolver(applyLeaveSchema),
     defaultValues: {
@@ -265,6 +119,9 @@ export function ApplyLeaveDialog({
       proofDocument: null,
     },
   });
+  const startDate = watch('Start_Date');
+  const endDate = watch('End_Date');
+  const leaveType = watch('Leave_Type');
 
   useEffect(() => {
     if (!open) {
@@ -339,13 +196,21 @@ export function ApplyLeaveDialog({
     }
   }, [user, fetchLeaveData]);
 
-  const onSubmit = (form: ApplyLeaveFormData) => {
-    const start = new Date(form.Start_Date);
-    const end = new Date(form.End_Date);
-    const type = form.Leave_Type;
-    if (!validateLeaveApplication(type, start, end, leaveData)) {
-      return;
+  useEffect(() => {
+    if (startDate && endDate && leaveType && leaveData) {
+      setLeaveDistribution(
+        distributeLeaves(
+          leaveType as 'Casual' | 'Sick' | 'Annual',
+          startDate,
+          endDate,
+          leaveData,
+          new Date(user?.Joining_Date || '') || new Date(),
+        ),
+      );
     }
+  }, [startDate, endDate, leaveType, leaveData, user?.Joining_Date]);
+
+  const onSubmit = (form: ApplyLeaveFormData) => {
     const startDateLocal = new Date(form.Start_Date);
     const endDateLocal = new Date(form.End_Date);
 
@@ -366,6 +231,20 @@ export function ApplyLeaveDialog({
     if (form.proofDocument) {
       formData.append('proofDocument', form.proofDocument);
     }
+    formData.append('paidLeaves', leaveDistribution?.leaves.toString() || '');
+    formData.append(
+      'unpaidLeaves',
+      leaveDistribution?.unpaidLeaves.toString() || '',
+    );
+    if (
+      leaveDistribution?.annualLeaves &&
+      leaveDistribution?.annualLeaves > 0
+    ) {
+      formData.append(
+        'annualLeaves',
+        leaveDistribution?.annualLeaves.toString() || '',
+      );
+    }
     if (data) {
       updateLeave({
         id: id || '',
@@ -378,77 +257,57 @@ export function ApplyLeaveDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[905px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle> {data ? 'Edit' : 'Apply For'} Leave</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 py-4">
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-center gap-4">
-            <div className="flex flex-col">
-              <Label htmlFor="Start_Date" className="mb-2 text-left">
-                Start Date
-              </Label>
-              <Controller
-                name="Start_Date"
-                control={control}
-                render={({ field }) => (
-                  <CustomDayPicker
-                    initialDate={field.value}
-                    onDateChange={field.onChange}
-                    className="h-auto"
-                    disabled={date => date < new Date()}
-                  />
+          <div className="flex w-full flex-col gap-4">
+            <div className="flex flex-row items-start justify-between gap-4">
+              <div className="flex w-full flex-col">
+                <Label htmlFor="Start_Date" className="mb-2 text-left">
+                  Start Date
+                </Label>
+                <Controller
+                  name="Start_Date"
+                  control={control}
+                  render={({ field }) => (
+                    <CustomDayPicker
+                      initialDate={field.value}
+                      onDateChange={field.onChange}
+                      className="h-auto"
+                      disabled={date => date < new Date()}
+                    />
+                  )}
+                />
+                {errors.Start_Date && (
+                  <span className="text-sm text-red-500">
+                    {errors.Start_Date.message}
+                  </span>
                 )}
-              />
-              {errors.Start_Date && (
-                <span className="text-sm text-red-500">
-                  {errors.Start_Date.message}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="End_Date" className="mb-2 text-left">
-                End Date
-              </Label>
-              <Controller
-                name="End_Date"
-                control={control}
-                render={({ field }) => (
-                  <CustomDayPicker
-                    initialDate={field.value}
-                    onDateChange={field.onChange}
-                    className="h-auto"
-                    disabled={date => date < new Date()}
-                  />
+              </div>
+              <div className="flex w-full flex-col">
+                <Label htmlFor="End_Date" className="mb-2 text-left">
+                  End Date
+                </Label>
+                <Controller
+                  name="End_Date"
+                  control={control}
+                  render={({ field }) => (
+                    <CustomDayPicker
+                      initialDate={field.value}
+                      onDateChange={field.onChange}
+                      className="h-auto"
+                      disabled={date => date < new Date()}
+                    />
+                  )}
+                />
+                {errors.End_Date && (
+                  <span className="text-sm text-red-500">
+                    {errors.End_Date.message}
+                  </span>
                 )}
-              />
-              {errors.End_Date && (
-                <span className="text-sm text-red-500">
-                  {errors.End_Date.message}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="Title" className="mb-2 text-left">
-                Title
-              </Label>
-              <Controller
-                name="Title"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="Title"
-                    placeholder="Title"
-                    className="w-full"
-                  />
-                )}
-              />
-              {errors.Title && (
-                <span className="text-sm text-red-500">
-                  {errors.Title.message}
-                </span>
-              )}
+              </div>
             </div>
             <div className="flex flex-col">
               <Label htmlFor="Leave_Type" className="mb-2 text-left">
@@ -486,6 +345,28 @@ export function ApplyLeaveDialog({
               )}
             </div>
             <div className="flex flex-col">
+              <Label htmlFor="Title" className="mb-2 text-left">
+                Title
+              </Label>
+              <Controller
+                name="Title"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="Title"
+                    placeholder="Title"
+                    className="w-full"
+                  />
+                )}
+              />
+              {errors.Title && (
+                <span className="text-sm text-red-500">
+                  {errors.Title.message}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
               <Label htmlFor="Description" className="mb-2 text-left">
                 Description
               </Label>
@@ -493,10 +374,9 @@ export function ApplyLeaveDialog({
                 name="Description"
                 control={control}
                 render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="Description"
-                    placeholder="Description"
+                  <FormattedTextArea
+                    value={field.value || ''}
+                    onChange={field.onChange}
                   />
                 )}
               />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Tooltip,
@@ -36,9 +36,13 @@ import { AuthStoreType } from '@/stores/auth';
 import { LeaveListStoreType } from '@/stores/hr/leave-list';
 import { cn } from '@/utils';
 
-import AcceptRejectLeaveDialog from '../../leave-list/components/Modal/AcceptRejectLeaveModal';
+import distributeLeaves from './LeaveDistributionCalculator';
+import AcceptLeaveDialog from '../../leave-list/components/Modal/AcceptLeaveModal';
+import RejectLeaveDialog from '../../leave-list/components/Modal/RejectLeaveModal';
 
 import { IPersona, MessageErrorResponse } from '@/types';
+
+import './LeaveRequestCard.css';
 
 export const LeaveRequestCard = ({
   person,
@@ -55,12 +59,32 @@ export const LeaveRequestCard = ({
   onClick: (id: IPersona['persona_id']) => void;
   isLoading?: boolean;
 }) => {
+  const [leaveDistribution, setLeaveDistribution] = useState<
+    { date: Date; isPaid: boolean; isAnnual: boolean }[]
+  >([]);
+  useEffect(() => {
+    if (person) {
+      const startDate = new Date(person.Start_Date || '');
+      const endDate = new Date(person.End_Date || '');
+      const joiningDate = new Date(person.User_ID.Joining_Date || '');
+      const leaveData = person?.leaveData;
+      const leaveType = person.Leave_Type as 'Casual' | 'Sick' | 'Annual';
+      const distribution = distributeLeaves(
+        leaveType,
+        startDate,
+        endDate,
+        joiningDate,
+        leaveData,
+      );
+      setLeaveDistribution(distribution);
+    }
+  }, [person]);
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
   const userId: string | undefined = user?.id;
-  const [type, setType] = useState<string>('');
   const [selectedLeaveId, setSelectedLeaveId] = useState<string>('');
   const [showAcceptDialog, setShowAcceptDialog] = useState<boolean>(false);
+  const [showRejectDialog, setShowRejectDialog] = useState<boolean>(false);
   const { leaveListStore } = useStores() as {
     leaveListStore: LeaveListStoreType;
   };
@@ -70,8 +94,15 @@ export const LeaveRequestCard = ({
   );
 
   const { mutate: AcceptMutate, isPending: AcceptPending } = useMutation({
-    mutationFn: ({ id, hrId }: { id: string; hrId: string | undefined }) =>
-      acceptLeaveRecord(id, hrId!),
+    mutationFn: ({
+      id,
+      hrId,
+      leaveDistribution,
+    }: {
+      id: string;
+      hrId: string | undefined;
+      leaveDistribution: { date: Date; isPaid: boolean; isAnnual: boolean }[];
+    }) => acceptLeaveRecord(id, hrId!, leaveDistribution),
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
@@ -116,7 +147,22 @@ export const LeaveRequestCard = ({
 
   const handleAccept = () => {
     const hrId = userId;
-    AcceptMutate({ id: selectedLeaveId, hrId });
+    AcceptMutate({ id: selectedLeaveId, hrId, leaveDistribution });
+  };
+
+  const onChange = (index: number, isPaid: boolean, isAnnual: boolean) => {
+    const newLeaveDistribution = [...leaveDistribution];
+    newLeaveDistribution[index].isPaid = isPaid;
+    newLeaveDistribution[index].isAnnual = isAnnual;
+    setLeaveDistribution(newLeaveDistribution);
+  };
+
+  const handleAcceptDialogOpen = () => {
+    setShowAcceptDialog(true);
+  };
+
+  const handleAcceptDialogClose = () => {
+    setShowAcceptDialog(false);
   };
 
   return (
@@ -347,11 +393,15 @@ export const LeaveRequestCard = ({
               )}
             </span>
           </div>
-          <div className="flex flex-col">
-            <p className="text-sm font-semibold">{'Leave Description'}</p>
-            <span className="ml-3 truncate text-sm font-medium text-muted-foreground">
-              {person?.Description}
-            </span>
+          <div className="flex flex-col space-y-3">
+            <span className="text-sm font-medium">Leave Description:</span>
+            <div className="description-content max-h-60 overflow-y-auto rounded-md bg-muted/70 p-4 text-sm">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: person?.Description || '',
+                }}
+              />
+            </div>
           </div>
         </CardContent>
         <CardFooter className="mt-4 flex content-start items-start justify-end gap-6 p-0">
@@ -360,8 +410,7 @@ export const LeaveRequestCard = ({
             variant="outline"
             onClick={() => {
               setSelectedLeaveId(person?._id);
-              setType('reject');
-              setShowAcceptDialog(true);
+              setShowRejectDialog(true);
             }}
           >
             Reject Request
@@ -370,32 +419,29 @@ export const LeaveRequestCard = ({
             className="p-2 text-sm"
             variant="primary-inverted"
             onClick={() => {
-              setType('accept');
               setSelectedLeaveId(person?._id);
-              setShowAcceptDialog(true);
+              handleAcceptDialogOpen();
             }}
           >
             Accept Request
           </Button>
         </CardFooter>
       </Card>
-      <AcceptRejectLeaveDialog
-        type={type}
-        isOpen={showAcceptDialog}
-        showActionToggle={setShowAcceptDialog}
-        title={
-          type === 'accept' ? 'Accept Leave Request' : 'Reject Leave Request'
-        }
-        isPending={AcceptPending}
-        description={
-          type === 'accept'
-            ? 'Are you sure you want to accept this leave request?'
-            : ''
-        }
-        onSubmit={handleAccept}
+      <RejectLeaveDialog
+        isOpen={showRejectDialog}
+        showActionToggle={setShowRejectDialog}
         id={selectedLeaveId}
         hrId={userId}
         setRefetchLeaveList={setRefetchLeaveList}
+      />
+      <AcceptLeaveDialog
+        isOpen={showAcceptDialog}
+        onOpenChange={handleAcceptDialogClose}
+        onSubmit={handleAccept}
+        isPending={AcceptPending}
+        leaveDistribution={leaveDistribution}
+        onChange={onChange}
+        isAnnualLeave={person?.Leave_Type === 'Annual'}
       />
     </>
   );

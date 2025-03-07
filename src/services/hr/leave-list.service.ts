@@ -161,12 +161,18 @@ export const deleteLeaveRecord = async (
 export const acceptLeaveRecord = async (
   id: string,
   hrId: string,
+  leaveDistribution: {
+    date: Date;
+    isPaid: boolean;
+    isAnnual: boolean;
+  }[],
 ): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.post(
     `/approve-leave/${id}`,
     {
       hrId,
       Status: 'Approved',
+      leaveDistribution,
     },
   );
   return { message };

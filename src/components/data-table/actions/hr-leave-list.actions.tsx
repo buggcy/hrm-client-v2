@@ -5,7 +5,13 @@ import * as React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
-import { Check, Eye, MoreHorizontal, Trash2, XCircle } from 'lucide-react';
+import {
+  // Check,
+  Eye,
+  MoreHorizontal,
+  Trash2,
+  // XCircle
+} from 'lucide-react';
 
 import ConfirmDialog from '@/components/modals/cancel-modal';
 import { Button } from '@/components/ui/button';
@@ -21,15 +27,15 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import AcceptRejectLeaveDialog from '@/app/(portal)/(hr)/hr/manage-attendance/leave-list/components/Modal/AcceptRejectLeaveModal';
+// import AcceptRejectLeaveDialog from '@/app/(portal)/(hr)/hr/manage-attendance/leave-list/components/Modal/AcceptRejectLeaveModal';
 import ViewLeaveList from '@/app/(portal)/(hr)/hr/manage-attendance/leave-list/components/Modal/ViewLeaveModal';
 import { useAllowLeaveListQuery } from '@/hooks/hr/useLeaveList.hook';
 import { LeaveListType } from '@/libs/validations/hr-leave-list';
 import {
-  acceptLeaveRecord,
+  // acceptLeaveRecord,
   deleteLeaveRecord,
 } from '@/services/hr/leave-list.service';
-import { useAuthStore } from '@/stores/auth';
+// import { useAuthStore } from '@/stores/auth';
 import { LeaveListStoreType } from '@/stores/hr/leave-list';
 
 import { MessageErrorResponse } from '@/types';
@@ -42,15 +48,15 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
-  const [showAcceptDialog, setShowAcceptDialog] =
-    React.useState<boolean>(false);
-  const [type, setType] = React.useState<string>('');
+  // const [showAcceptDialog, setShowAcceptDialog] =
+  //   React.useState<boolean>(false);
+  // const [type, setType] = React.useState<string>('');
   const [isView, setIsView] = React.useState(false);
   const [selectedLeave, setSelectedLeave] =
     React.useState<LeaveListType | null>(null);
   const data = row.original;
-  const { user } = useAuthStore();
-  const userId: string | undefined = user?.id;
+  // const { user } = useAuthStore();
+  // const userId: string | undefined = user?.id;
   const { leaveListStore } = useStores() as {
     leaveListStore: LeaveListStoreType;
   };
@@ -82,28 +88,28 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
     },
   });
 
-  const { mutate: AcceptMutate, isPending: AcceptPending } = useMutation({
-    mutationFn: ({ id, hrId }: { id: string; hrId: string | undefined }) =>
-      acceptLeaveRecord(id, hrId!),
-    onError: (err: AxiosError<MessageErrorResponse>) => {
-      toast({
-        title: 'Error',
-        description:
-          err?.response?.data?.message || 'Error on approval request!',
-        variant: 'error',
-      });
-    },
-    onSuccess: async response => {
-      toast({
-        title: 'Success',
-        description: response?.message,
-        variant: 'success',
-      });
-      setRefetchLeaveList(true);
-      await refetch();
-      setShowAcceptDialog(false);
-    },
-  });
+  // const { mutate: AcceptMutate, isPending: AcceptPending } = useMutation({
+  //   mutationFn: ({ id, hrId }: { id: string; hrId: string | undefined }) =>
+  //     acceptLeaveRecord(id, hrId!),
+  //   onError: (err: AxiosError<MessageErrorResponse>) => {
+  //     toast({
+  //       title: 'Error',
+  //       description:
+  //         err?.response?.data?.message || 'Error on approval request!',
+  //       variant: 'error',
+  //     });
+  //   },
+  //   onSuccess: async response => {
+  //     toast({
+  //       title: 'Success',
+  //       description: response?.message,
+  //       variant: 'success',
+  //     });
+  //     setRefetchLeaveList(true);
+  //     await refetch();
+  //     setShowAcceptDialog(false);
+  //   },
+  // });
 
   const handleView = (leave: LeaveListType) => {
     setSelectedLeave(leave);
@@ -114,10 +120,10 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
     mutate(data?._id);
   };
 
-  const handleAccept = () => {
-    const hrId = userId;
-    AcceptMutate({ id: data?._id, hrId });
-  };
+  // const handleAccept = () => {
+  //   const hrId = userId;
+  //   AcceptMutate({ id: data?._id, hrId });
+  // };
 
   return (
     <Dialog>
@@ -133,7 +139,7 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          {row?.getValue('Status') === 'Pending' ? (
+          {/* {row?.getValue('Status') === 'Pending' ? (
             <>
               <DropdownMenuItem
                 onSelect={() => {
@@ -154,7 +160,7 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
                 Reject Request
               </DropdownMenuItem>
             </>
-          ) : null}
+          ) : null} */}
           <DropdownMenuSeparator />
 
           <DropdownMenuItem onClick={() => handleView(data)}>
@@ -181,7 +187,7 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
         handleDelete={handleDelete}
       />
 
-      <AcceptRejectLeaveDialog
+      {/* <AcceptRejectLeaveDialog
         type={type}
         isOpen={showAcceptDialog}
         showActionToggle={setShowAcceptDialog}
@@ -198,7 +204,7 @@ export function LeaveListRowActions({ row }: DataTableRowActionsProps) {
         id={data?._id}
         hrId={userId}
         setRefetchLeaveList={setRefetchLeaveList}
-      />
+      /> */}
       <ViewLeaveList
         open={isView}
         onCloseChange={viewToggle}
