@@ -170,7 +170,7 @@ export function AddEditOvertime({
           <div className="flex flex-col gap-2">
             <div className="flex flex-col">
               <Label htmlFor="date" className="mb-2 text-left">
-                Overtime Date
+                Overtime Date <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="date"
@@ -192,8 +192,7 @@ export function AddEditOvertime({
             </div>
             <div className="flex flex-col">
               <Label htmlFor="type" className="mb-4 text-left">
-                {'Overtime Minutes'}
-                <span className="text-red-600">*</span>
+                Overtime Minutes <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="overtimeMinutes"
@@ -216,7 +215,7 @@ export function AddEditOvertime({
 
             <div className="flex flex-col">
               <Label htmlFor="reason" className="mb-2 text-left">
-                Overtime Reason
+                Overtime Reason <span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="reason"
