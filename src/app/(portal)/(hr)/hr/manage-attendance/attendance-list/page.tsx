@@ -116,14 +116,14 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                   className="flex flex-row gap-1"
                 >
                   <RefreshCw size={16} />
-                  <span className="hidden lg:block">Refresh Attendance</span>
+                  <span className="lg:block">Refresh Attendance</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleDialogOpen}
                   className="flex flex-row gap-1"
                 >
                   <Plus size={16} />
-                  <span className="hidden sm:block">Add Attendance</span>
+                  <span className="sm:block">Add Attendance</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex flex-row gap-1">
                   <ClipboardList size={16} />
