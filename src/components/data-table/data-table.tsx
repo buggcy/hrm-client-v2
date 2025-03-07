@@ -41,6 +41,7 @@ import { HrEmpAnniversaryListToolbar } from './toolbars/hrEmpAnniversaryTable-li
 import { HrEmpDobListToolbar } from './toolbars/hrEmpDobTable-list.toolbar';
 import { HrEventsListToolbar } from './toolbars/hrEvents-list.toolbar';
 import { LeaveHistoryListToolbar } from './toolbars/leave-history-list-toolbar';
+import { OvertimeToolbar } from './toolbars/overtime.toolbar';
 import { UnapprovedEmployeeToolbar } from './toolbars/unapproved-employee.toolbar';
 
 interface DataTableProps<TData, TValue> {
@@ -261,6 +262,17 @@ export function DataTable<TData extends DataTableType, TValue>({
             setFilterValue={setFilterValue}
             filterValue={filterValue}
             type={'resigned'}
+          />
+        );
+      case 'getOvertime':
+        return (
+          <OvertimeToolbar
+            table={table}
+            searchLoading={searchLoading}
+            onSearch={onSearch}
+            searchTerm={searchTerm}
+            setFilterValue={setFilterValue}
+            filterValue={filterValue}
           />
         );
       default:

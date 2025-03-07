@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import {
   Tooltip,
   TooltipContent,
@@ -8,7 +10,7 @@ import {
 } from '@radix-ui/react-tooltip';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { Eye, Mail, Phone, UserCog } from 'lucide-react';
+import { Mail, Phone, UserCog } from 'lucide-react';
 
 import CopyToClipboard from '@/components/CopyToClipboard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -18,33 +20,37 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { AttendanceRequestType } from '@/libs/validations/attendance-list';
-import {
-  acceptAttendanceRequest,
-  rejectAttendanceRequest,
-} from '@/services/hr/attendance-list.service';
-import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
+import { OvertimeListType } from '@/libs/validations/overtime';
+import { AcceptRejectOvertime } from '@/services/employee/overtime.service';
+import { AuthStoreType } from '@/stores/auth';
+import { OvertimeStoreType } from '@/stores/employee/overtime';
 import { cn } from '@/utils';
+
+import AcceptOrRejectOvertime from '../model/AcceptRejectModal';
 
 import { MessageErrorResponse } from '@/types';
 
-export const AttendanceRequestCard = ({
-  request,
-}: {
-  request: AttendanceRequestType;
-}) => {
-  const { attendanceListStore } = useStores() as {
-    attendanceListStore: AttendanceListStoreType;
+export const OvertimeCard = ({ request }: { request: OvertimeListType }) => {
+  const { overtimeStore } = useStores() as {
+    overtimeStore: OvertimeStoreType;
   };
-  const { setRefetchAttendanceList } = attendanceListStore;
+  const { setRefetchOvertimeList } = overtimeStore;
+
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
+  const userId: string | undefined = user?.id;
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>('');
+  const [requestCard, setRequestCard] = useState<OvertimeListType | null>(null);
 
   const { mutate: AcceptMutate, isPending: AcceptPending } = useMutation({
-    mutationFn: ({ id }: { id: string }) => acceptAttendanceRequest(id),
+    mutationFn: AcceptRejectOvertime,
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
         description:
-          err?.response?.data?.message || 'Error on approval request!',
+          err?.response?.data?.message || 'Error on rejecting overtime!',
         variant: 'error',
       });
     },
@@ -54,66 +60,23 @@ export const AttendanceRequestCard = ({
         description: response?.message,
         variant: 'success',
       });
-      setRefetchAttendanceList(true);
+      setRefetchOvertimeList(true);
+      setIsOpen(false);
     },
   });
 
-  const { mutate: RejectMutate, isPending: RejectPending } = useMutation({
-    mutationFn: ({ id }: { id: string }) => rejectAttendanceRequest(id),
-    onError: (err: AxiosError<MessageErrorResponse>) => {
-      toast({
-        title: 'Error',
-        description:
-          err?.response?.data?.message || 'Error on approval request!',
-        variant: 'error',
-      });
-    },
-    onSuccess: response => {
-      toast({
-        title: 'Success',
-        description: response?.message,
-        variant: 'success',
-      });
-      setRefetchAttendanceList(true);
-    },
-  });
-
-  const handleAccept = (requestId: string) => {
-    AcceptMutate({ id: requestId });
+  const handleAccept = () => {
+    const acceptBody = {
+      hrId: userId ?? '',
+      status: 'Approved',
+      userId: requestCard?.userId?._id ?? '',
+    };
+    AcceptMutate({ id: requestCard?._id ?? '', body: acceptBody });
   };
 
-  const handleReject = (requestId: string) => {
-    RejectMutate({ id: requestId });
-  };
-
-  const formatTime12Hour = (dateString: string | undefined | null) => {
-    if (!dateString) return 'N/A';
-
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return 'Invalid Date';
-
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes.toString().padStart(2, '0');
-
-    return `${formattedHours}:${formattedMinutes} ${ampm}`;
-  };
-
-  const formatMinutesToHours = (minutesStr: string | undefined | null) => {
-    if (!minutesStr || isNaN(Number(minutesStr)) || Number(minutesStr) < 0)
-      return 'N/A';
-
-    const minutes = Number(minutesStr);
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-
-    return hours > 0
-      ? `${hours}h ${remainingMinutes}m`
-      : `${remainingMinutes}m`;
-  };
-
+  const time = request?.overtimeMinutes || 0;
+  const hours = Math.floor(time / 60);
+  const minutes = time % 60;
   return (
     <>
       <Card
@@ -140,7 +103,7 @@ export const AttendanceRequestCard = ({
                   : 'N/A'}
               </Badge>
               <CopyToClipboard
-                text={request.userId.companyEmail}
+                text={request?.userId?.companyEmail}
                 icon={<Mail size={12} />}
                 type="Email address"
               />
@@ -162,7 +125,7 @@ export const AttendanceRequestCard = ({
                 </Tooltip>
               </TooltipProvider>
               <CopyToClipboard
-                text={request.userId.contactNo}
+                text={request?.userId?.contactNo}
                 icon={<Phone size={12} />}
                 type="Contact number"
               />
@@ -181,7 +144,7 @@ export const AttendanceRequestCard = ({
             </div>
           </div>
           <div className="flex justify-between">
-            <p className="text-sm font-semibold">Date</p>
+            <p className="text-sm font-semibold">Overtime Date</p>
             <span className="text-sm font-medium text-muted-foreground">
               {request?.date
                 ? (() => {
@@ -201,56 +164,25 @@ export const AttendanceRequestCard = ({
             </span>
           </div>
           <div className="flex justify-between">
-            <p className="text-sm font-semibold">Start Time</p>
+            <p className="text-sm font-semibold">Overtime Minutes</p>
             <span className="text-sm font-medium text-muted-foreground">
-              {request?.Start_Date
-                ? formatTime12Hour(request?.Start_Date)
-                : 'N/A'}{' '}
+              {request?.overtimeMinutes}
             </span>
           </div>
           <div className="flex justify-between">
-            <p className="text-sm font-semibold">End Time</p>
+            <p className="text-sm font-semibold">Overtime in Hours</p>
             <span className="text-sm font-medium text-muted-foreground">
-              {request?.End_Date ? formatTime12Hour(request?.End_Date) : 'N/A'}
+              {`${hours} Hours ${minutes} Minutes`}
             </span>
           </div>
-          <div className="flex flex-row justify-between">
-            <p className="text-sm font-semibold">Total Time</p>
-            <span className="truncate text-sm font-medium text-muted-foreground">
-              {formatMinutesToHours(request?.Total_Time)}
-            </span>
-          </div>
-          {request?.Document && (
-            <div className="flex justify-between">
-              <p className="text-sm font-semibold">{'Proof Document'}</p>
-              <span className="truncate text-sm font-medium text-muted-foreground">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span>
-                        <Eye
-                          className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
-                          onClick={() =>
-                            request?.Document &&
-                            window.open(String(request?.Document), '_blank')
-                          }
-                          size={18}
-                        />
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                      Click to Preview Document
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </span>
-            </div>
-          )}
           <div className="flex flex-col">
-            <p className="text-sm font-semibold">{'Reason'}</p>
-            <span className="ml-3 truncate text-sm font-medium text-muted-foreground">
-              {request?.reason}
-            </span>
+            <p className="text-sm font-semibold">{'Overtime Reason'}</p>
+            <span
+              className="ml-3 truncate text-sm font-medium text-muted-foreground"
+              dangerouslySetInnerHTML={{
+                __html: request?.reason || '',
+              }}
+            ></span>
           </div>
         </CardContent>
         <CardFooter className="mt-4 flex content-start items-start gap-6 p-0">
@@ -258,9 +190,10 @@ export const AttendanceRequestCard = ({
             className="p-2 text-sm"
             variant="outline"
             onClick={() => {
-              handleReject(request?._id);
+              setRequestCard(request);
+              setModalType('reject');
+              setIsOpen(true);
             }}
-            disabled={RejectPending}
           >
             Reject Request
           </Button>
@@ -268,14 +201,35 @@ export const AttendanceRequestCard = ({
             className="p-2 text-sm"
             variant="primary-inverted"
             onClick={() => {
-              handleAccept(request?._id);
+              setRequestCard(request);
+              setModalType('accept');
+              setIsOpen(true);
             }}
-            disabled={AcceptPending}
           >
             Accept Request
           </Button>
         </CardFooter>
       </Card>
+      <AcceptOrRejectOvertime
+        type={modalType}
+        isOpen={isOpen}
+        showActionToggle={setIsOpen}
+        title={
+          modalType === 'accept'
+            ? 'Accept Overtime Request'
+            : 'Reject Overtime Request'
+        }
+        isPending={AcceptPending}
+        description={
+          modalType === 'accept'
+            ? 'Are you sure you want to accept this overtime request?'
+            : ''
+        }
+        onSubmit={handleAccept}
+        request={requestCard}
+        hrId={userId}
+        setRefetchOvertimeList={setRefetchOvertimeList}
+      />
     </>
   );
 };

@@ -36,6 +36,14 @@ const chartConfig = {
     label: 'Resignation',
     color: 'hsl(var(--chart-3))',
   },
+  overtime: {
+    label: 'Overtime',
+    color: 'hsl(var(--chart-4))',
+  },
+  attandence: {
+    label: 'Attendance',
+    color: '#79ade4',
+  },
 } satisfies ChartConfig;
 
 interface RequestDistributionProps {
@@ -64,6 +72,16 @@ export function RequestDistribution({ data }: RequestDistributionProps) {
         employee: 'resignation',
         count: data?.resignation || 0,
         fill: 'var(--color-resignation)',
+      },
+      {
+        employee: 'overtime',
+        count: data?.overtime || 0,
+        fill: 'var(--color-overtime)',
+      },
+      {
+        employee: 'attandence',
+        count: data?.attandence || 0,
+        fill: 'var(--color-attandence)',
       },
     ],
     [data],
@@ -102,6 +120,19 @@ export function RequestDistribution({ data }: RequestDistributionProps) {
             <p>
               <span className="font-bold">{data?.resignation || 0}</span>{' '}
               Resignation
+            </p>
+          </div>
+          <div className="flex flex-row items-center gap-1">
+            <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
+            <p>
+              <span className="font-bold">{data?.overtime || 0}</span> Overtime
+            </p>
+          </div>
+          <div className="flex flex-row items-center gap-1">
+            <div className="size-2 rounded-full bg-[#79ade4]"></div>
+            <p>
+              <span className="font-bold">{data?.attandence || 0}</span>{' '}
+              Attendance
             </p>
           </div>
         </div>

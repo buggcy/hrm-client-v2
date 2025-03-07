@@ -22,12 +22,12 @@ import { useLogStore } from '@/stores/hr/logs';
 import { usePerkListStore } from '@/stores/hr/perk-list';
 
 import { useAuthStore } from '../stores/auth';
+import { useOvertimeStore } from '../stores/employee/overtime';
 import { useFeedbackStore } from '../stores/hr/hr-feedback';
 import { usePoliciesStore } from '../stores/hr/policy';
 import { useProjectStore } from '../stores/hr/project-department';
 import { usePolicyStore } from '../stores/hr-policies.Store';
 import { useNotificationStore } from '../stores/useNotificationStore';
-
 interface StoreContextType {
   authStore: ReturnType<typeof useAuthStore>;
   employeeStore: ReturnType<typeof useEmployeeStore>;
@@ -53,6 +53,7 @@ interface StoreContextType {
   projectStore: ReturnType<typeof useProjectStore>;
   policiesStore: ReturnType<typeof usePoliciesStore>;
   attendanceRequestStore: ReturnType<typeof useAttendanceRequestStore>;
+  overtimeStore: ReturnType<typeof useOvertimeStore>;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -82,7 +83,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const projectStore = useProjectStore();
   const policiesStore = usePoliciesStore();
   const attendanceRequestStore = useAttendanceRequestStore();
-
+  const overtimeStore = useOvertimeStore();
   return (
     <StoreContext.Provider
       value={{
@@ -110,6 +111,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         projectStore,
         policiesStore,
         attendanceRequestStore,
+        overtimeStore,
       }}
     >
       {children}

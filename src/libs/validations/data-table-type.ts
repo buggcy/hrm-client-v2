@@ -13,6 +13,7 @@ import { AttendanceRequest } from './attendance-request';
 import { AnnouncementType } from './hr-announcements';
 import { HRPayrollListType } from './hr-payroll';
 import { HrPerksListType } from './hr-perks';
+import { OvertimeListType } from './overtime';
 import { PolicyListType } from './policies';
 
 type DataTableType =
@@ -28,6 +29,7 @@ type DataTableType =
   | EmployeePayrollListType
   | LeaveHistoryListType
   | EmployeeDobTableListType
-  | HRPayrollListType;
+  | HRPayrollListType
+  | OvertimeListType;
 
 export default DataTableType;
