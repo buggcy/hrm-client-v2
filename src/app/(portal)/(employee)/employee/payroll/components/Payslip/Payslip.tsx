@@ -34,6 +34,8 @@ interface PayslipProps {
   sickLeaves?: number;
   annualLeaves?: number;
   taxAmount?: number;
+  overtimeMinute?: number;
+  totalOvertime?: number;
 }
 
 const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
@@ -57,6 +59,8 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       sickLeaves,
       annualLeaves,
       taxAmount,
+      overtimeMinute,
+      totalOvertime,
     },
     ref,
   ) => {
@@ -178,7 +182,12 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
                 })}
               </tbody>
             </table>
-
+            <div className="flex justify-between border-t border-gray-300 p-2">
+              <p>
+                <strong>Total Overtime {`(${overtimeMinute}) Minutes`}:</strong>
+              </p>
+              <p>{`${formatCurrency(totalOvertime) || 0}`}</p>
+            </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
                 <strong>Total Perk Amount:</strong>
