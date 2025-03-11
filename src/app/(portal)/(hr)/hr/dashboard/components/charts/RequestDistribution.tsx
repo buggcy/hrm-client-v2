@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 
 import { Label, Pie, PieChart } from 'recharts';
 
@@ -56,32 +57,38 @@ export function RequestDistribution({ data }: RequestDistributionProps) {
       {
         employee: 'employee',
         count: data?.employee || 0,
-        fill: 'var(--color-employee)',
+        fill: 'hsl(var(--chart-1))',
+        link: '/approval',
       },
       {
         employee: 'leave',
         count: data?.leave || 0,
-        fill: 'var(--color-leave)',
+        fill: 'hsl(var(--chart-2))',
+        link: '/manage-attendance/leave-requests',
       },
       {
         employee: 'perk',
         count: data?.perk || 0,
-        fill: 'var(--color-perk)',
+        fill: 'hsl(var(--chart-5))',
+        link: '/manage-perks/perk-requests',
       },
       {
         employee: 'resignation',
         count: data?.resignation || 0,
-        fill: 'var(--color-resignation)',
+        fill: 'hsl(var(--chart-3))',
+        link: '/resigned-employees',
       },
       {
         employee: 'overtime',
         count: data?.overtime || 0,
-        fill: 'var(--color-overtime)',
+        fill: 'hsl(var(--chart-4))',
+        link: '/manage-attendance/overtime-request',
       },
       {
         employee: 'attandence',
         count: data?.attandence || 0,
-        fill: 'var(--color-attandence)',
+        fill: '#79ade4',
+        link: '/manage-attendance/attendance-requests',
       },
     ],
     [data],
@@ -97,44 +104,22 @@ export function RequestDistribution({ data }: RequestDistributionProps) {
       </CardHeader>
       <CardContent className="flex flex-1 flex-row items-center justify-between pb-0">
         <div className="flex flex-col gap-2 text-sm">
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
-            <p>
-              <span className="font-bold">{data?.employee || 0}</span> Employee
-            </p>
-          </div>
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
-            <p>
-              <span className="font-bold">{data?.leave || 0}</span> Leave
-            </p>
-          </div>
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
-            <p>
-              <span className="font-bold">{data?.perk || 0}</span> Perk
-            </p>
-          </div>
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
-            <p>
-              <span className="font-bold">{data?.resignation || 0}</span>{' '}
-              Resignation
-            </p>
-          </div>
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]"></div>
-            <p>
-              <span className="font-bold">{data?.overtime || 0}</span> Overtime
-            </p>
-          </div>
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[#79ade4]"></div>
-            <p>
-              <span className="font-bold">{data?.attandence || 0}</span>{' '}
-              Attendance
-            </p>
-          </div>
+          {chartData.map(item => (
+            <Link
+              key={item.employee}
+              className="flex flex-row items-center gap-1"
+              href={'/hr' + item?.link}
+            >
+              <div
+                className="size-2 rounded-full"
+                style={{ backgroundColor: item.fill }}
+              ></div>
+              <p className="hover:underline">
+                <span className="font-bold">{item.count}</span>{' '}
+                {chartConfig[item.employee as keyof typeof chartConfig].label}
+              </p>
+            </Link>
+          ))}
         </div>
         <ChartContainer
           config={chartConfig}
