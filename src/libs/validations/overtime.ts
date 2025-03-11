@@ -49,6 +49,31 @@ const overtimeRequestApiResponseSchema = z.object({
   data: z.array(overtimeSchema),
 });
 
+const requestChartSchema = z.object({
+  totalCount: z.number(),
+  approvedCount: z.number(),
+  canceledCount: z.number(),
+  rejectedCount: z.number(),
+  pendingCount: z.number(),
+});
+
+const monthsChartSchema = z.object({
+  month: z.string(),
+  year: z.number(),
+  approvedMinutes: z.number(),
+  rejectedMinutes: z.number(),
+});
+
+const overtimeChartApiResponseSchema = z.object({
+  chartData1: z.array(monthsChartSchema),
+  chartData2: requestChartSchema,
+});
+
+export type MonthsSummary = z.infer<typeof monthsChartSchema>;
+export type RequestChart = z.infer<typeof requestChartSchema>;
+export type OvertimeChartApiResponse = z.infer<
+  typeof overtimeChartApiResponseSchema
+>;
 export type OvertimeListApiResponse = z.infer<typeof overtimeApiResponseSchema>;
 export type OvertimeRequestListApiResponse = z.infer<
   typeof overtimeRequestApiResponseSchema
@@ -62,4 +87,5 @@ export {
   paginationSchema,
   userSchema,
   overtimeRequestApiResponseSchema,
+  overtimeChartApiResponseSchema,
 };

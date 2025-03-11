@@ -38,6 +38,10 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
         accessPermissions.some(
           permission =>
             permission.name === 'accessAttendanceRequest' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessOvertimeRequest' && permission.allowed,
         )
       ),
       children: [
@@ -67,8 +71,7 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
           href: '/employee/attendance/overtime-request',
           disabled: !accessPermissions.some(
             permission =>
-              permission.name === 'accessAttendanceRequest' &&
-              permission.allowed,
+              permission.name === 'accessOvertimeRequest' && permission.allowed,
           ),
         },
         {

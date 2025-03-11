@@ -73,6 +73,13 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       { name: 'Salary Deduction', amount: salaryDeduction },
       ...(perks.decrements || []),
     ];
+    const allIncrements = [
+      {
+        name: `Total Overtime (${overtimeMinute}) Minutes`,
+        amount: totalOvertime,
+      },
+      ...(perks.increments || []),
+    ];
 
     return (
       <div
@@ -157,11 +164,11 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
 
                 {Array.from({
                   length: Math.max(
-                    perks.increments?.length || 0,
+                    allIncrements.length || 0,
                     allDecrements.length,
                   ),
                 }).map((_, index) => {
-                  const increment = perks.increments?.[index];
+                  const increment = allIncrements[index];
                   const decrement = allDecrements[index];
                   return (
                     <tr key={index}>
@@ -182,12 +189,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
                 })}
               </tbody>
             </table>
-            <div className="flex justify-between border-t border-gray-300 p-2">
-              <p>
-                <strong>Total Overtime {`(${overtimeMinute}) Minutes`}:</strong>
-              </p>
-              <p>{`${formatCurrency(totalOvertime) || 0}`}</p>
-            </div>
+
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
                 <strong>Total Perk Amount:</strong>
