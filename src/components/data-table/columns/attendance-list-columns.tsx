@@ -117,7 +117,7 @@ export const attendanceListColumns: ColumnDef<AttendanceListType>[] = [
   {
     accessorKey: 'Start_Date',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Start Timea" />
+      <DataTableColumnHeader column={column} title="Start Time" />
     ),
     cell: ({ row }) => {
       const date = new Date(Date.parse(row.getValue('Start_Date')));

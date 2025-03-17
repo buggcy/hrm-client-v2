@@ -15,13 +15,18 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useOvertimeQuery } from '@/hooks/overtime/useOvertime.hook';
+import {
+  useOvertimeQuery,
+  useOvertimeRecordsQuery,
+} from '@/hooks/overtime/useOvertime.hook';
 import { OvertimeListArrayType } from '@/libs/validations/overtime';
 import { searchOvertime } from '@/services/employee/overtime.service';
 import { useAuthStore } from '@/stores/auth';
 import { OvertimeStoreType } from '@/stores/employee/overtime';
 import { formatedDate } from '@/utils';
 
+import { MonthlyOvertimeGraph } from '../chart/OvertimeBarChart';
+import { OvertimeRequestChart } from '../chart/OvertimeRequest';
 import { AddEditOvertime } from '../model/ApplyOvertime';
 
 import { MessageErrorResponse } from '@/types';
@@ -49,6 +54,17 @@ const OvertimeTable: FunctionComponent<TableProps> = () => {
   const [status, setStatus] = useState<string[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('');
+  const { data: overtimeRecord, refetch: refetchRecord } =
+    useOvertimeRecordsQuery(
+      {
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
+        userId,
+      },
+      {
+        enabled: !!userId,
+      },
+    );
   const {
     data: getOvertime,
     isLoading,
@@ -133,6 +149,7 @@ const OvertimeTable: FunctionComponent<TableProps> = () => {
     } else {
       void (async () => {
         await refetch();
+        await refetchRecord();
       })();
     }
   }, [
@@ -145,19 +162,27 @@ const OvertimeTable: FunctionComponent<TableProps> = () => {
     userId,
     selectedDate?.from,
     selectedDate?.to,
+    refetchRecord,
   ]);
 
   useEffect(() => {}, [getOvertime, selectedDate]);
-
+  useEffect(() => {}, [overtimeRecord, selectedDate]);
   useEffect(() => {
     if (refetchOvertimeList) {
       void (async () => {
         await refetch();
+        await refetchRecord();
       })();
 
       setRefetchOvertimeList(false);
     }
-  }, [refetchOvertimeList, setRefetchOvertimeList, refetch, status]);
+  }, [
+    refetchOvertimeList,
+    setRefetchOvertimeList,
+    refetch,
+    status,
+    refetchRecord,
+  ]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -212,7 +237,10 @@ const OvertimeTable: FunctionComponent<TableProps> = () => {
           </Button>
         </div>
       </Header>
-
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <MonthlyOvertimeGraph data={overtimeRecord?.chartData1 ?? []} />
+        <OvertimeRequestChart data={overtimeRecord?.chartData2} />
+      </div>
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (

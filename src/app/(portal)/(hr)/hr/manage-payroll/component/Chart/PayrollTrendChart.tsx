@@ -38,12 +38,127 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 interface PayrollTrendChartProps {
-  chartData?: PayrollTrendChart[];
+  chartData: PayrollTrendChart[];
 }
 
 export function MonthlyPayrollTrendChart({
   chartData,
 }: PayrollTrendChartProps) {
+  const allMonths = [
+    {
+      month: 'January',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'February',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'March',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'April',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'May',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'June',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'July',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'August',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'September',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'October',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'November',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+    {
+      month: 'December',
+      Total_Working_Minutes: 0,
+      Total_Remaining_Minutes: 0,
+      Total_Absent_Deduction: 0,
+    },
+  ];
+  const currentMonthIndex = new Date().getMonth();
+
+  const rotatedMonths = [
+    ...allMonths.slice(currentMonthIndex + 1),
+    ...allMonths.slice(0, currentMonthIndex + 1),
+  ];
+  const monthIndexMap: { [key: string]: number } = {
+    January: 0,
+    February: 1,
+    March: 2,
+    April: 3,
+    May: 4,
+    June: 5,
+    July: 6,
+    August: 7,
+    September: 8,
+    October: 9,
+    November: 10,
+    December: 11,
+  };
+
+  if (chartData && Array.isArray(chartData)) {
+    chartData.forEach((item: PayrollTrendChart) => {
+      if (!item?.month) return;
+
+      const itemMonthIndex = monthIndexMap[item.month];
+      if (itemMonthIndex === undefined) return;
+
+      const rotatedIndex = (itemMonthIndex - (currentMonthIndex + 1) + 12) % 12;
+
+      if (rotatedMonths[rotatedIndex]) {
+        rotatedMonths[rotatedIndex].Total_Working_Minutes +=
+          item.Total_Working_Minutes || 0;
+        rotatedMonths[rotatedIndex].Total_Remaining_Minutes +=
+          item.Total_Remaining_Minutes || 0;
+        rotatedMonths[rotatedIndex].Total_Absent_Deduction +=
+          item.Total_Absent_Deduction || 0;
+      }
+    });
+  }
+
   return (
     <Card className="size-full">
       <CardHeader>
@@ -61,7 +176,7 @@ export function MonthlyPayrollTrendChart({
         >
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={rotatedMonths}
             margin={{
               left: 12,
               right: 12,

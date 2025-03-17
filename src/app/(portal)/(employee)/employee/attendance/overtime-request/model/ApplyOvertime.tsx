@@ -160,7 +160,7 @@ export function AddEditOvertime({
   };
   return (
     <Dialog open={open} onOpenChange={onCloseChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
             {type === 'add' ? 'Apply For Overtime' : 'Edit Overtime'}
@@ -180,7 +180,6 @@ export function AddEditOvertime({
                     initialDate={field.value}
                     onDateChange={field.onChange}
                     className="h-auto"
-                    disabled={date => date < new Date()}
                   />
                 )}
               />

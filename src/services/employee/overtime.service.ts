@@ -1,5 +1,7 @@
 import {
   overtimeApiResponseSchema,
+  OvertimeChartApiResponse,
+  overtimeChartApiResponseSchema,
   OvertimeListApiResponse,
   overtimeRequestApiResponseSchema,
   OvertimeRequestListApiResponse,
@@ -153,4 +155,49 @@ export const AcceptRejectOvertime = async ({
     body,
   );
   return { message };
+};
+
+export const getOvertimeRecord = async (
+  params: {
+    from?: string;
+    to?: string;
+    userId?: string;
+  } = {},
+): Promise<OvertimeChartApiResponse> => {
+  const defaultParams: {
+    from?: string;
+    to?: string;
+    userId?: string;
+  } = {
+    from: '',
+    to: '',
+    userId: '',
+  };
+
+  const mergedParams = {
+    ...defaultParams,
+    ...params,
+  };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(
+      `/overtime/statistics?${queryParams.toString()}`,
+    );
+    return schemaParse(overtimeChartApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching overtime requests chart records:', error);
+    throw error;
+  }
 };

@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { parse } from 'date-fns';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -17,12 +18,19 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 
 import { ConfigurationType } from '@/libs/validations/hr-configuration';
-import { addTimeCutOffType } from '@/services/hr/hrConfiguration.service';
-
-import { formatUTCToLocalTime } from '../../manage-attendance/attendance-list/components/AttendanceDialog';
+import {
+  addTimeCutOffType,
+  editTimecutoff,
+} from '@/services/hr/hrConfiguration.service';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -61,24 +69,25 @@ export function AddEditTimecutoff({
   setRefetchConfigurationList,
   TypeToEdit,
 }: DialogProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
     setError,
+    setValue,
+    watch,
   } = useForm<TypeFormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       type: '',
       inTime:
-        type === 'edit' && TypeToEdit?.startTime
-          ? formatUTCToLocalTime(TypeToEdit.startTime)
-          : '',
+        type === 'edit' && TypeToEdit?.startTime ? TypeToEdit.startTime : '',
       outTime:
-        type === 'edit' && TypeToEdit?.endTime
-          ? formatUTCToLocalTime(TypeToEdit.endTime ?? '')
-          : '',
+        type === 'edit' && TypeToEdit?.endTime ? TypeToEdit.endTime ?? '' : '',
     },
   });
 
@@ -86,9 +95,27 @@ export function AddEditTimecutoff({
     if (type === 'edit' && TypeToEdit) {
       reset({
         type: TypeToEdit?.timeCutOff?.toString() || '',
+        inTime: TypeToEdit?.startTime || '',
+        outTime: TypeToEdit?.endTime || '',
       });
     }
   }, [TypeToEdit, type, reset]);
+
+  const inTime = watch('inTime');
+  const outTime = watch('outTime');
+  const timecutoff = watch('type');
+
+  useEffect(() => {
+    if (inTime && outTime) {
+      const start = parse(inTime, 'hh:mm a', new Date());
+      const end = parse(outTime, 'hh:mm a', new Date());
+
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+        const diffInMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+        setValue('type', diffInMinutes.toString());
+      }
+    }
+  }, [inTime, outTime, setValue]);
 
   useEffect(() => {
     if (!open) {
@@ -96,52 +123,72 @@ export function AddEditTimecutoff({
     }
   }, [open, reset]);
 
-  const { mutate: AddTimeCutOffMutate, isPending: AddTimeCutOffPending } =
-    useMutation({
-      mutationFn: addTimeCutOffType,
-      onSuccess: response => {
-        toast({
-          title: 'Success',
-          description: response?.message || 'Time Cut Off Added Successfully!',
-          variant: 'success',
-        });
-        reset();
-        setRefetchConfigurationList(true);
-        onCloseChange(false);
-      },
-      onError: (err: AxiosError<MessageErrorResponse>) => {
-        toast({
-          title: 'Error',
-          description: err.message || 'Error on adding time cut off!',
-          variant: 'error',
-        });
-      },
-    });
+  const handleMutation = useMutation({
+    mutationFn: (data: {
+      userId: string;
+      timeCutOff: number;
+      startTime: string;
+      endTime: string;
+      id?: string;
+    }) => {
+      if (type === 'edit' && !data.id) {
+        throw new Error('ID is required for editing time cutoff');
+      }
+      return type === 'add'
+        ? addTimeCutOffType(data)
+        : editTimecutoff({ ...data, id: data.id as string });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description:
+          response?.message ||
+          `Time Cut Off ${type === 'add' ? 'Added' : 'Updated'} Successfully!`,
+        variant: 'success',
+      });
+      reset();
+      setRefetchConfigurationList(true);
+      onCloseChange(false);
+    },
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err.message ||
+          `Error on ${type === 'add' ? 'adding' : 'updating'} time cut off!`,
+        variant: 'error',
+      });
+    },
+  });
+
+  const { mutate: handleMutate, isPending: isMutating } = handleMutation;
 
   const onSubmit = (data: TypeFormData) => {
-    if (!Number(data?.type)) {
-      setError('type', {
-        message: 'Time Cut Off must be a number',
-      });
-      return;
-    }
-    if (Number(data?.type) <= 0) {
+    const timeCutOffValue = Number(data?.type);
+
+    if (isNaN(timeCutOffValue) || timeCutOffValue <= 0) {
       setError('type', {
         message: 'Time Cut Off must be a positive number',
       });
       return;
     }
-    const addTimeCutOffPayload = {
+
+    const payload = {
+      ...(type === 'edit' && { id: TypeToEdit?._id ?? '' }),
       userId,
-      timeCutOff: Number(data?.type),
+      timeCutOff: timeCutOffValue,
       startTime: data?.inTime,
       endTime: data?.outTime,
     };
 
-    if (type === 'add') {
-      AddTimeCutOffMutate(addTimeCutOffPayload);
-    }
+    handleMutate(payload);
   };
+  useEffect(() => {
+    if (timecutoff && inputRef.current) {
+      inputRef.current.focus();
+      setIsFocused(true);
+    }
+  }, [timecutoff]);
 
   return (
     <Dialog open={open} onOpenChange={onCloseChange}>
@@ -162,7 +209,7 @@ export function AddEditTimecutoff({
                 control={control}
                 render={({ field }) => (
                   <TimePicker
-                    time={field.value}
+                    time={field.value || ''}
                     onTimeChange={field.onChange}
                   />
                 )}
@@ -182,7 +229,7 @@ export function AddEditTimecutoff({
                 control={control}
                 render={({ field }) => (
                   <TimePicker
-                    time={field.value}
+                    time={field.value || ''}
                     onTimeChange={field.onChange}
                   />
                 )}
@@ -193,21 +240,42 @@ export function AddEditTimecutoff({
                 </span>
               )}
             </div>
+
             <div className="flex flex-col">
               <Label htmlFor="type" className="mb-4 text-left">
-                {'Time Cut Off Minutes'}
-                <span className="text-red-600">*</span>
+                Time Cut Off Minutes<span className="text-red-600">*</span>
               </Label>
               <Controller
                 name="type"
                 control={control}
                 render={({ field }) => (
-                  <Input
-                    type="text"
-                    id="type"
-                    placeholder={`Enter Time Cut Off Minutes...`}
-                    {...field}
-                  />
+                  <TooltipProvider>
+                    <Tooltip open={isFocused}>
+                      <TooltipTrigger asChild>
+                        <Input
+                          type="text"
+                          id="type"
+                          placeholder="Enter Time Cut Off Minutes..."
+                          {...field}
+                          ref={inputRef}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() => setIsFocused(false)}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <ul className="list-disc pl-5">
+                          <li>
+                            Check these minutes carefully as they will impact
+                            payroll.
+                          </li>
+                          <li>
+                            These minutes determine the allocated hours for the
+                            employee.
+                          </li>
+                        </ul>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               />
               {errors.type && (
@@ -218,10 +286,7 @@ export function AddEditTimecutoff({
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="submit"
-              disabled={type === 'add' ? AddTimeCutOffPending : false}
-            >
+            <Button type="submit" disabled={isMutating}>
               {type === 'add' ? 'Add' : 'Edit'}
             </Button>
           </DialogFooter>

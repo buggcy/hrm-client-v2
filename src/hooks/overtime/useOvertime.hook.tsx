@@ -1,11 +1,13 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import {
+  OvertimeChartApiResponse,
   OvertimeListApiResponse,
   OvertimeRequestListApiResponse,
 } from '@/libs/validations/overtime';
 import {
   getOvertime,
+  getOvertimeRecord,
   getOvertimeRequest,
   RequestBodyParams,
   RequestParams,
@@ -38,3 +40,20 @@ export const useOvertimeRequestsQuery = (
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<OvertimeRequestListApiResponse, Error>;
+
+export const useOvertimeRecordsQuery = (
+  params: {
+    from?: string;
+    to?: string;
+    userId?: string;
+  },
+  config: UseQueryConfig = {},
+) =>
+  useQuery({
+    queryKey: ['overtimeRecord', params],
+    queryFn: () => getOvertimeRecord(params),
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<OvertimeChartApiResponse, Error>;

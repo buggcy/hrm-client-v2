@@ -123,6 +123,8 @@ export function EmployeePayrollListRowActions({
           sickLeaves={payslipData?.Leaves?.sick || 0}
           annualLeaves={payslipData?.Leaves?.annual || 0}
           taxAmount={payslipData?.Tax_Amount || 0}
+          overtimeMinute={payslipData?.overtimeMinute || 0}
+          totalOvertime={payslipData?.totalOvertime || 0}
         />,
       );
     } else {
