@@ -134,7 +134,7 @@ export const attendanceListColumns: ColumnDef<AttendanceListType>[] = [
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {isAbsent ? '00:00 am' : time}
+            {isAbsent ? 'N/A' : time}
           </span>
         </div>
       );

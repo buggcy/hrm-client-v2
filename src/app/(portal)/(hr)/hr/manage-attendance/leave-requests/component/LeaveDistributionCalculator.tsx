@@ -64,6 +64,7 @@ function distributeLeaves(
   end: Date,
   joiningDate: Date,
   leaveData?: EmployeeLeavesDataApiResponse,
+  allowAnnual?: boolean,
 ) {
   const leaveDistribution: {
     date: Date;
@@ -113,8 +114,11 @@ function distributeLeaves(
       const remainingLeaves = Math.max(monthlyLeavesAllowed - takenLeaves, 0);
       const paidLeaves = Math.min(totalDaysRequested, remainingLeaves);
       const unpaidLeaves = totalDaysRequested - paidLeaves;
-      const availableAnnualLeaves =
+      let availableAnnualLeaves =
         getAvailableAnnualLeaves(joiningDate, start, leaveData) || 0;
+      if (!allowAnnual) {
+        availableAnnualLeaves = 0;
+      }
       const takenAnnualLeaves = getPaidAnnualLeavesThisCycle(
         joiningDate,
         start,

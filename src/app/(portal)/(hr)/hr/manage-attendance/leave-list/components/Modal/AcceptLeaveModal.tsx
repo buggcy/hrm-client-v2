@@ -33,6 +33,7 @@ type AcceptProps = {
   }[];
   onChange: (date: number, isPaid: boolean, isAnnual: boolean) => void;
   isAnnualLeave?: boolean;
+  allowAnnual?: boolean;
 };
 
 export default function AcceptLeaveDialog({
@@ -43,6 +44,7 @@ export default function AcceptLeaveDialog({
   leaveDistribution,
   onChange,
   isAnnualLeave,
+  allowAnnual,
 }: AcceptProps) {
   return (
     <>
@@ -97,7 +99,9 @@ export default function AcceptLeaveDialog({
                             <SelectItem value="paid">Leave</SelectItem>
                           )}
                           <SelectItem value="unpaid">Unpaid Leave</SelectItem>
-                          <SelectItem value="annual">Annual Leave</SelectItem>
+                          {(isAnnualLeave || allowAnnual) && (
+                            <SelectItem value="annual">Annual Leave</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                     </div>

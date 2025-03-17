@@ -75,6 +75,7 @@ export const LeaveRequestCard = ({
         endDate,
         joiningDate,
         leaveData,
+        person?.allowAnnual,
       );
       setLeaveDistribution(distribution);
     }
@@ -442,6 +443,7 @@ export const LeaveRequestCard = ({
         leaveDistribution={leaveDistribution}
         onChange={onChange}
         isAnnualLeave={person?.Leave_Type === 'Annual'}
+        allowAnnual={person?.allowAnnual}
       />
     </>
   );

@@ -9,7 +9,9 @@ import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import CustomDayPicker from '@/components/CustomDayPicker';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -46,7 +48,7 @@ import {
 import { AuthStoreType } from '@/stores/auth';
 import { LeaveHistoryStoreType } from '@/stores/employee/leave-history';
 
-import distributeLeaves from './LeaveDistributionCalculator';
+import distributeLeaves, { getTotalDays } from './LeaveDistributionCalculator';
 
 const applyLeaveSchema = z
   .object({
@@ -63,6 +65,7 @@ const applyLeaveSchema = z
       .refine(file => file === null || file.size <= 800 * 1024, {
         message: 'File size should be less than 800KB',
       }),
+    allowAnnual: z.boolean().optional(),
   })
   .refine(data => data.Start_Date <= data.End_Date, {
     message: 'End date must be greater than or equal to the start date',
@@ -110,18 +113,20 @@ export function ApplyLeaveDialog({
     resolver: zodResolver(applyLeaveSchema),
     defaultValues: {
       User_ID: user?.id || '',
-      Start_Date: data?.Start_Date ? new Date(data.Start_Date) : new Date(),
-      End_Date: data?.End_Date ? new Date(data.End_Date) : new Date(),
+      Start_Date: data?.Start_Date ? new Date(data.Start_Date) : undefined,
+      End_Date: data?.End_Date ? new Date(data.End_Date) : undefined,
       Status: 'Pending',
       Title: data?.Title || '',
       Leave_Type: data?.Leave_Type || '',
       Description: data?.Description || '',
       proofDocument: null,
+      allowAnnual: data?.allowAnnual ? true : false,
     },
   });
   const startDate = watch('Start_Date');
   const endDate = watch('End_Date');
   const leaveType = watch('Leave_Type');
+  const allowAnnual = watch('allowAnnual');
 
   useEffect(() => {
     if (!open) {
@@ -211,6 +216,33 @@ export function ApplyLeaveDialog({
   }, [startDate, endDate, leaveType, leaveData, user?.Joining_Date]);
 
   const onSubmit = (form: ApplyLeaveFormData) => {
+    if (form.Start_Date.getDay() === 0 || form.Start_Date.getDay() === 6) {
+      toast({
+        title: 'Error',
+        description: 'Start date cannot be on weekends!',
+        variant: 'error',
+      });
+      return;
+    }
+    if (form.End_Date.getDay() === 0 || form.End_Date.getDay() === 6) {
+      toast({
+        title: 'Error',
+        description: 'End date cannot be on weekends!',
+        variant: 'error',
+      });
+      return;
+    }
+    const totalDays = getTotalDays(form.Start_Date, form.End_Date);
+    if (totalDays > 15) {
+      toast({
+        title: 'Error',
+        description:
+          'Leave duration cannot exceed 15 days. Submit multiple requests if needed.',
+        variant: 'error',
+      });
+      return;
+    }
+
     const startDateLocal = new Date(form.Start_Date);
     const endDateLocal = new Date(form.End_Date);
 
@@ -245,6 +277,7 @@ export function ApplyLeaveDialog({
         leaveDistribution?.annualLeaves.toString() || '',
       );
     }
+    formData.append('allowAnnual', allowAnnual?.toString() || '');
     if (data) {
       updateLeave({
         id: id || '',
@@ -433,6 +466,50 @@ export function ApplyLeaveDialog({
                 </span>
               )}
             </div>
+            {(leaveDistribution?.unpaidLeaves &&
+              leaveDistribution?.unpaidLeaves > 0) ||
+            (leaveDistribution?.annualLeaves &&
+              leaveDistribution?.annualLeaves > 0 &&
+              (leaveType === 'Casual' || leaveType === 'Sick')) ? (
+              <div className="flex w-full flex-col gap-4">
+                <Badge
+                  variant="warning"
+                  className="rounded-md p-2 text-sm normal-case"
+                >
+                  Note: You&apos;ve exceeded your {leaveType} Leave quota.
+                  Remaining leaves can be deducted from annual leave or marked
+                  as unpaid.
+                </Badge>
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-row items-center gap-4">
+                    <Controller
+                      name="allowAnnual"
+                      control={control}
+                      render={({ field }) => (
+                        <Checkbox
+                          id="allowAnnual"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      )}
+                    />
+                    <Label htmlFor="allowAnnual" className="mb-0 text-left">
+                      Allow Annual Leaves Deduction
+                    </Label>
+                  </div>
+                  {allowAnnual && (
+                    <Badge
+                      variant="warning"
+                      className="rounded-md p-2 text-sm normal-case"
+                    >
+                      HR will decide the allocation if you choose annual leave.
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div></div>
+            )}
           </div>
 
           <DialogFooter>
