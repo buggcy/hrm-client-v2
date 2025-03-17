@@ -94,6 +94,7 @@ const leaveListSchema = z.object({
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
   leaveData: EmployeeLeavesDataApiResponseSchema.optional(),
+  allowAnnual: z.boolean().optional(),
 });
 
 const leaveListRecordSchema = z.object({

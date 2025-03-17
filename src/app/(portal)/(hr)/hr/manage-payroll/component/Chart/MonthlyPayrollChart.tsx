@@ -15,7 +15,7 @@ import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 
 import { PayrollMonthlyChart } from '@/types/hr-payroll.types';
 interface ChartDataProps {
-  payrollData: PayrollMonthlyChart[];
+  payrollData?: PayrollMonthlyChart[];
 }
 
 const MonthlyPayrollGraph: FunctionComponent<ChartDataProps> = ({

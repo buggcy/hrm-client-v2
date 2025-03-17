@@ -38,7 +38,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 interface PayrollTrendChartProps {
-  chartData: PayrollTrendChart[];
+  chartData?: PayrollTrendChart[];
 }
 
 export function MonthlyPayrollTrendChart({

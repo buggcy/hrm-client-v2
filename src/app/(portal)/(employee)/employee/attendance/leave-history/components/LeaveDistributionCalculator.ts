@@ -1,6 +1,6 @@
 import { EmployeeLeavesDataApiResponse } from '@/types/leave-history.types';
 
-function getTotalDays(start: Date, end: Date): number {
+export function getTotalDays(start: Date, end: Date): number {
   const startDate = new Date(start.toISOString().slice(0, 10));
   const endDate = new Date(end.toISOString().slice(0, 10));
 
@@ -92,7 +92,7 @@ function distributeLeaves(
     const monthlyLeavesAllowed = leaveData.monthlyLeavesAllowed;
     const monthlyLeaveRecords = leaveData.monthlyLeaveRecords;
 
-    const totalDaysRequested = start === end ? 1 : getTotalDays(start, end) + 1;
+    const totalDaysRequested = start === end ? 1 : getTotalDays(start, end);
     let paidLeaves = 0;
     let annualLeavesUsed = 0;
     let unpaidLeaves = 0;
