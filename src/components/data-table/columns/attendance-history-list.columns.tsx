@@ -1,6 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import moment from 'moment-timezone';
 
 import { attendance_history_status_options } from '@/components/filters';
 import { Badge } from '@/components/ui/badge';
@@ -91,12 +92,11 @@ export const attendanceHistoryListColumns: ColumnDef<AttendanceHistoryListType>[
       cell: ({ row }) => {
         const date = new Date(Date.parse(row.getValue('Start_Date')));
 
-        const time = date.toLocaleTimeString('en-PK', {
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true,
-          timeZone: 'Asia/Karachi',
-        });
+        const time = date
+          ? moment(date).utc().format('HH:mm') === '00:00'
+            ? '00:00'
+            : moment(date).tz('Asia/Karachi').format('H:mm')
+          : '00:00';
         return (
           <div className="flex space-x-2">
             <span className="max-w-[500px] truncate font-medium">{time}</span>
@@ -113,12 +113,11 @@ export const attendanceHistoryListColumns: ColumnDef<AttendanceHistoryListType>[
       cell: ({ row }) => {
         const date = new Date(Date.parse(row.getValue('End_Date')));
         const endDate = row.getValue('End_Date');
-        const time = date.toLocaleTimeString('en-PK', {
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true,
-          timeZone: 'Asia/Karachi',
-        });
+        const time = date
+          ? moment(date).utc().format('HH:mm') === '00:00'
+            ? '00:00'
+            : moment(date).tz('Asia/Karachi').format('H:mm')
+          : '00:00';
         return (
           <div className="flex space-x-2">
             <span className="max-w-[500px] truncate font-medium">
