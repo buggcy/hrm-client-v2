@@ -4,11 +4,9 @@ import React from 'react';
 
 import { Calendar, DollarSign, Mail, Phone, User } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -26,7 +24,6 @@ export function ViewTbaEmployeeDialog({
   data,
   open,
   onOpenChange,
-  onCloseChange,
 }: ViewTbaEmployeeDialogProps) {
   const firstName = data?.firstName;
   const lastName = data?.lastName;
@@ -101,11 +98,6 @@ export function ViewTbaEmployeeDialog({
             <span className="pl-1">{joiningDate}</span>
           </div>
         </div>
-        <DialogFooter>
-          <Button onClick={onCloseChange} size="sm">
-            Close
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
