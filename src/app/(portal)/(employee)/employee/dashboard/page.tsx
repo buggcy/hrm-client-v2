@@ -53,13 +53,17 @@ const EmployeeDashboard: FunctionComponent<EmployeeDashboardProps> = () => {
     }
 
     messages.push(
-      `Attendance Spotlight: You've been present for ${noOfPresents} days, missed ${noOfAbsents} days, and ${
+      `Attendance Spotlight: ${
+        noOfPresents > 0 ? `Present for ${noOfPresents} days` : ''
+      }${noOfPresents > 0 && (noOfAbsents > 0 || noOfLeaves > 0) ? ', ' : ''}
+      ${noOfAbsents > 0 ? `Missed ${noOfAbsents} days` : ''}
+      ${(noOfPresents > 0 || noOfAbsents > 0) && noOfLeaves > 0 ? ', and ' : ''}
+      ${
         noOfLeaves > 0
-          ? `taken ${noOfLeaves} leave(s) to recharge`
+          ? `Taken ${noOfLeaves} leave(s) to recharge`
           : "haven't taken any leave yet"
-      }. Keep up the momentum!`,
+      }! Keep up the momentum!`,
     );
-
     messages.push(`Have a great day ahead!  Keep making an impact!`);
 
     messages.push(
