@@ -36,6 +36,13 @@ const HrDashboardme: FunctionComponent<HrDashboardmeProps> = () => {
   const { data: departmentRecord } = useDepartmentRecordQuery();
 
   const subheadings = useMemo(() => {
+    const defaultMessage =
+      'Gathering workforce insights... Stay tuned for real-time HR updates!';
+
+    if (!data) {
+      return [defaultMessage];
+    }
+
     return [
       `Managing a team of    ${
         ((data?.employeeCount?.fullTime && data?.employeeCount?.intern) || 0) >
