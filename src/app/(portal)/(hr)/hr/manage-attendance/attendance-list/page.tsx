@@ -85,7 +85,17 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
-        <Header subheading="Track and Manage Attendance Seamlessly for Every User!">
+        <Header
+          subheading={`Stay on top of attendance management! ${
+            (pendingAttendanceRequests?.requests.length || 0) > 0
+              ? `${pendingAttendanceRequests?.requests.length} pending attendance requests`
+              : ''
+          }${
+            (pendingList?.totalCount || 0) > 0
+              ? ` and ${pendingList?.totalCount} overtime requests`
+              : ''
+          }. Add, review, refresh and approve with ease!`.trim()}
+        >
           <div className="flex flex-wrap items-center gap-2 md:flex-nowrap">
             <DateRangePicker
               timeRange={timeRange}

@@ -5,14 +5,14 @@ import { ClipboardList, ThumbsDown } from 'lucide-react';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
-import { useEmployeeApprovalStatsQuery } from '@/hooks/employee/useApprovalEmployee.hook';
+import { CardData } from '@/services/hr/employee.service';
 
 import { AddAreaChart } from './AddAreaChart';
 import { RedicalChart } from './RedicalChart';
-
-function AddEmpCards() {
-  const { data } = useEmployeeApprovalStatsQuery();
-
+interface Props {
+  data?: CardData;
+}
+function AddEmpCards({ data }: Props) {
   return (
     <div className="flex w-full justify-between gap-4 max-lg:flex-col max-lg:items-center">
       <AddAreaChart />

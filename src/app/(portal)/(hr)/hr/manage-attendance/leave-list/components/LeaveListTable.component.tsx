@@ -214,7 +214,25 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
 
   return (
     <>
-      <Header subheading="Easily Track and Approve Employee Leave Requests!">
+      <Header
+        subheading={`Manage employee leave requests effortlessly! ${
+          (leaveListRecords?.pendingCount || 0) > 0
+            ? `${leaveListRecords?.pendingCount} pending`
+            : ''
+        }${
+          (leaveListRecords?.approvedCount || 0) > 0
+            ? `, ${leaveListRecords?.approvedCount} approved`
+            : ''
+        }${
+          (leaveListRecords?.rejectedCount || 0) > 0
+            ? `, ${leaveListRecords?.rejectedCount} rejected`
+            : ''
+        }${
+          (leaveListRecords?.canceledCount || 0) > 0
+            ? `, ${leaveListRecords?.canceledCount} cancelled`
+            : ''
+        }. Assign and track leaves with ease!`.trim()}
+      >
         <div className="flex flex-col md:flex-row">
           <div className="mr-0 flex flex-row gap-2 md:mr-2">
             <DateRangePicker

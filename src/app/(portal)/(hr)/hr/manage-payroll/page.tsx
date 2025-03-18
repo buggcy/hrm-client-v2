@@ -14,6 +14,9 @@ import {
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 
+import { usePayrollStatisticsQuery } from '@/hooks/hr/useHrPayroll.hook';
+import { formatedDate } from '@/utils';
+
 import { RefreshPayrollDialog } from './component/Model/RefreshModel';
 import PayrollCard from './component/PayrollCard';
 import PayrollTable from './components/PayrollTable.component';
@@ -22,6 +25,10 @@ export default function ManagePayrollPage() {
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
   const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
+  const { data: payrollStats } = usePayrollStatisticsQuery({
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
+  });
   const handleRefreshDialogOpen = () => {
     setRefreshDialogOpen(true);
   };
@@ -39,7 +46,29 @@ export default function ManagePayrollPage() {
           </LayoutHeaderButtonsBlock>
         </LayoutHeader>
         <LayoutWrapper wrapperClassName="flex flex-1">
-          <Header subheading="Swift payroll, zero stress, happier employees.">
+          <Header
+            subheading={`Powering paydays with precision! ${
+              (payrollStats?.records?.totalPaid || 0) > 0
+                ? `${payrollStats?.records?.totalPaid} salaries processed,`
+                : ''
+            }${
+              (payrollStats?.records?.totalUnpaid || 0) > 0
+                ? ` ${payrollStats?.records?.totalUnpaid} awaiting disbursement`
+                : ''
+            }${
+              (payrollStats?.records?.totalPaidAmount || 0) > 0
+                ? `, $${payrollStats?.records?.totalPaidAmount} paid`
+                : ''
+            }${
+              (payrollStats?.records?.totalAmountTobePaid || 0) > 0
+                ? `, $${payrollStats?.records?.totalAmountTobePaid} pending`
+                : ''
+            }${
+              (payrollStats?.records?.totalSalaryDeduction || 0) > 0
+                ? `, $${payrollStats?.records?.totalSalaryDeduction} deductions applied`
+                : ''
+            }. Keep payroll seamless and employees motivated!`.trim()}
+          >
             <DateRangePicker
               timeRange={timeRange}
               selectedDate={selectedDate}
@@ -52,7 +81,7 @@ export default function ManagePayrollPage() {
           </Header>
           <div className="mt-6">
             <Suspense fallback={<div>Loading...</div>}>
-              <PayrollCard dates={selectedDate} />
+              <PayrollCard payrollStats={payrollStats} />
             </Suspense>
           </div>
 
