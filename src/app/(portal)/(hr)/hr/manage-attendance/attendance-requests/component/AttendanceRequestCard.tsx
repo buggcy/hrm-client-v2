@@ -220,30 +220,32 @@ export const AttendanceRequestCard = ({
               {formatMinutesToHours(request?.Total_Time)}
             </span>
           </div>
-          <div className="flex justify-between">
-            <p className="text-sm font-semibold">{'Proof Document'}</p>
-            <span className="truncate text-sm font-medium text-muted-foreground">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span>
-                      <Eye
-                        className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
-                        onClick={() =>
-                          request?.Document &&
-                          window.open(String(request?.Document), '_blank')
-                        }
-                        size={18}
-                      />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
-                    Click to Preview Document
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </span>
-          </div>
+          {request?.Document && (
+            <div className="flex justify-between">
+              <p className="text-sm font-semibold">{'Proof Document'}</p>
+              <span className="truncate text-sm font-medium text-muted-foreground">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Eye
+                          className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                          onClick={() =>
+                            request?.Document &&
+                            window.open(String(request?.Document), '_blank')
+                          }
+                          size={18}
+                        />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="mb-2 rounded-md border bg-white p-2 text-black">
+                      Click to Preview Document
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </span>
+            </div>
+          )}
           <div className="flex flex-col">
             <p className="text-sm font-semibold">{'Reason'}</p>
             <span className="ml-3 truncate text-sm font-medium text-muted-foreground">

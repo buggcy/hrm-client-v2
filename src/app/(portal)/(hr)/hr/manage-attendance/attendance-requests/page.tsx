@@ -19,7 +19,7 @@ import AttendanceApproval from './component/AttendanceApproval';
 
 interface HrLeaveRequestsProps {}
 
-const HrLeaveRequests: FunctionComponent<HrLeaveRequestsProps> = () => {
+const AttendanceRequestPage: FunctionComponent<HrLeaveRequestsProps> = () => {
   const router = useRouter();
 
   return (
@@ -52,4 +52,4 @@ const HrLeaveRequests: FunctionComponent<HrLeaveRequestsProps> = () => {
   );
 };
 
-export default HrLeaveRequests;
+export default AttendanceRequestPage;

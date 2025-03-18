@@ -25,7 +25,6 @@ import {
   addEducationType,
   addExperienceType,
   addFeedbackType,
-  addTimeCutOffType,
   editDesignationType,
   editEducationType,
   editExperienceType,
@@ -63,7 +62,6 @@ export function AddEditTypeDialog({
     handleSubmit,
     formState: { errors },
     reset,
-    setError,
   } = useForm<TypeFormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -97,10 +95,6 @@ export function AddEditTypeDialog({
     } else if (moduleType === 'Feedback' && type === 'edit' && TypeToEdit) {
       reset({
         type: TypeToEdit?.feedbackType || '',
-      });
-    } else if (moduleType === 'TimeCutOff' && type === 'edit' && TypeToEdit) {
-      reset({
-        type: TypeToEdit?.timeCutOff?.toString() || '',
       });
     }
   }, [TypeToEdit, type, reset, moduleType]);
@@ -294,28 +288,6 @@ export function AddEditTypeDialog({
       },
     });
 
-  const { mutate: AddTimeCutOffMutate, isPending: AddTimeCutOffPending } =
-    useMutation({
-      mutationFn: addTimeCutOffType,
-      onSuccess: response => {
-        toast({
-          title: 'Success',
-          description: response?.message || 'Time Cut Off Added Successfully!',
-          variant: 'success',
-        });
-        reset();
-        setRefetchConfigurationList(true);
-        onCloseChange(false);
-      },
-      onError: (err: AxiosError<MessageErrorResponse>) => {
-        toast({
-          title: 'Error',
-          description: err.message || 'Error on adding time cut off!',
-          variant: 'error',
-        });
-      },
-    });
-
   const onSubmit = (data: TypeFormData) => {
     if (moduleType === 'Education') {
       const addEducationPayload = {
@@ -387,28 +359,6 @@ export function AddEditTypeDialog({
         EditFeedbackMutate(editFeedbackPayload);
       }
     }
-    if (moduleType === 'TimeCutOff') {
-      if (!Number(data?.type)) {
-        setError('type', {
-          message: 'Time Cut Off must be a number',
-        });
-        return;
-      }
-      if (Number(data?.type) <= 0) {
-        setError('type', {
-          message: 'Time Cut Off must be a positive number',
-        });
-        return;
-      }
-      const addTimeCutOffPayload = {
-        userId,
-        timeCutOff: Number(data?.type),
-      };
-
-      if (moduleType === 'TimeCutOff' && type === 'add') {
-        AddTimeCutOffMutate(addTimeCutOffPayload);
-      }
-    }
   };
 
   return (
@@ -432,9 +382,7 @@ export function AddEditTypeDialog({
                           ? 'Edit Feedback Type'
                           : moduleType === 'Feedback' && type === 'add'
                             ? 'Add Feedback Type'
-                            : moduleType === 'TimeCutOff' && type === 'add'
-                              ? 'Add Time Cut Off'
-                              : 'Edit Time Cut Off'}
+                            : ''}
           </DialogTitle>
         </DialogHeader>
         <form className="grid gap-8 py-4" onSubmit={handleSubmit(onSubmit)}>
@@ -451,7 +399,7 @@ export function AddEditTypeDialog({
                   <Input
                     type="text"
                     id="type"
-                    placeholder={`Enter ${moduleType === 'TimeCutOff' ? 'Time Cut Off' : moduleType + 'Type'}...`}
+                    placeholder={`Enter ${moduleType + 'Type'}...`}
                     {...field}
                   />
                 )}
@@ -486,7 +434,7 @@ export function AddEditTypeDialog({
               )}
               {errors.type && (
                 <span className="text-sm text-red-500">
-                  {`${moduleType === 'TimeCutOff' ? '' : moduleType} ${errors.type.message}`}
+                  {`${moduleType} ${errors.type.message}`}
                 </span>
               )}
             </div>
@@ -511,9 +459,7 @@ export function AddEditTypeDialog({
                               ? AddFeedbackPending
                               : moduleType === 'Feedback' && type === 'edit'
                                 ? EditFeedbackPending
-                                : moduleType === 'TimeCutOff' && type === 'add'
-                                  ? AddTimeCutOffPending
-                                  : false
+                                : false
               }
             >
               {moduleType === 'Education' && type === 'add'
@@ -532,9 +478,7 @@ export function AddEditTypeDialog({
                             ? 'Add'
                             : moduleType === 'Feedback' && type === 'edit'
                               ? 'Edit'
-                              : moduleType === 'TimeCutOff' && type === 'add'
-                                ? 'Add'
-                                : 'Edit'}
+                              : ''}
             </Button>
           </DialogFooter>
         </form>

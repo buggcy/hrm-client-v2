@@ -49,12 +49,17 @@ const MonthlyLeaveRecordSchema = z.object({
   month: z.number(),
   casualLeaves: z.number(),
   sickLeaves: z.number(),
+  paidLeaves: z.number(),
+  unpaidLeaves: z.number(),
   _id: z.string(),
 });
 
 const AnnualLeaveRecordSchema = z.object({
   year: z.number(),
+  month: z.number(),
   annualLeaves: z.number(),
+  paidLeaves: z.number(),
+  unpaidLeaves: z.number(),
   _id: z.string(),
 });
 

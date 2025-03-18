@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { subYears } from 'date-fns';
+import { subDays, subYears } from 'date-fns';
 import {
   FieldErrors,
   FormProvider,
@@ -50,8 +50,8 @@ const imageFileSchema = z
       ),
     { message: 'File must be a JPG, JPEG, PNG image or a PDF document.' },
   )
-  .refine(file => file && file.size / 1024 <= 200, {
-    message: 'File size must be less than 200KB.',
+  .refine(file => file && file.size / 1024 <= 800, {
+    message: 'File size must be less than 800KB.',
   });
 
 const imageSchema = z.preprocess(
@@ -151,10 +151,7 @@ const mainFormSchema = z.object({
     Emergency_Phone: z
       .string()
       .regex(/^(03|\+923)/, 'Phone number must start with "03" or "+923"'),
-    DOB: z
-      .date()
-      .max(new Date(), 'Invalid date of birth')
-      .max(minAgeDate, 'You must be at least 18 years old'),
+    DOB: z.date().max(minAgeDate, 'You must be at least 18 years old'),
     Marital_Status: z.string().optional(),
     Blood_Group: z.string().optional(),
     Gender: z.string().min(1, 'Gender is required'),
@@ -288,7 +285,7 @@ export function VerifyCodeForm(): JSX.Element {
           Emergency_Phone: employee?.Emergency_Phone || '',
           DOB: employee?.DOB
             ? new Date(employee.DOB)
-            : subYears(new Date(), 18),
+            : subDays(subYears(new Date(), 18), 1),
           Marital_Status: employee?.Marital_Status || '',
           Blood_Group: employee?.Blood_Group || '',
           Gender: employee?.Gender || '',
@@ -445,6 +442,7 @@ export function VerifyCodeForm(): JSX.Element {
   ) => {
     const isValid = await methods.trigger(currentTab);
     if (isValid) {
+      methods.clearErrors();
       setActiveTab(nextTab);
     }
   };

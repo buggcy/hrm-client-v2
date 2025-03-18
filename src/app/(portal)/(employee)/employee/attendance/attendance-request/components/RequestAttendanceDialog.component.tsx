@@ -42,8 +42,8 @@ const requestAttendanceSchema = z
     proofDocument: z
       .instanceof(File)
       .nullable()
-      .refine(file => file === null || file.size <= 5 * 1024 * 1024, {
-        message: 'File size should be less than 5MB',
+      .refine(file => file === null || file.size <= 800 * 1024, {
+        message: 'File size should be less than 800KB',
       }),
   })
   .refine(data => timeFormatRegex.test(data.inTime), {

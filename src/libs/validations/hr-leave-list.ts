@@ -22,6 +22,7 @@ const userIdSchema = z.object({
   Avatar: z.string().optional(),
   Designation: z.string().optional(),
   contactNo: z.string().optional(),
+  Joining_Date: z.string().optional(),
 });
 
 const approvedIdSchema = z.object({
@@ -29,6 +30,50 @@ const approvedIdSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   Avatar: z.string().optional(),
+});
+
+const MonthlyLeaveRecordSchema = z.object({
+  year: z.number(),
+  month: z.number(),
+  casualLeaves: z.number(),
+  sickLeaves: z.number(),
+  paidLeaves: z.number(),
+  unpaidLeaves: z.number(),
+  _id: z.string(),
+});
+
+const AnnualLeaveRecordSchema = z.object({
+  year: z.number(),
+  month: z.number(),
+  annualLeaves: z.number(),
+  paidLeaves: z.number(),
+  unpaidLeaves: z.number(),
+  _id: z.string(),
+});
+
+const ExtraLeaveSchema = z.object({
+  userId: z.string().optional(),
+  title: z.string(),
+  leavesAllowed: z.number(),
+  leavesTaken: z.number(),
+  month: z.number().optional(),
+  year: z.number().optional(),
+  _id: z.string(),
+});
+
+const EmployeeLeavesDataApiResponseSchema = z.object({
+  _id: z.string(),
+  userId: z.string(),
+  allowedCasualLeaves: z.number(),
+  allowedSickLeaves: z.number(),
+  monthlyLeavesAllowed: z.number(),
+  monthlyLeaveRecords: z.array(MonthlyLeaveRecordSchema),
+  annualLeavesAllowed: z.number(),
+  annualLeavesRecords: z.array(AnnualLeaveRecordSchema),
+  extraLeaves: z.array(ExtraLeaveSchema),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  __v: z.number(),
 });
 
 const leaveListSchema = z.object({
@@ -48,6 +93,8 @@ const leaveListSchema = z.object({
   rejectedReason: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
+  leaveData: EmployeeLeavesDataApiResponseSchema.optional(),
+  allowAnnual: z.boolean().optional(),
 });
 
 const leaveListRecordSchema = z.object({

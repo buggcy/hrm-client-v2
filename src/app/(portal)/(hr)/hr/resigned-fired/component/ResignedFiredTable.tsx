@@ -1,7 +1,7 @@
 'use client';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -25,6 +25,8 @@ import { MessageErrorResponse } from '@/types';
 const ResignedFiredEmployeeTable: FunctionComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const path = usePathname();
+
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
   const { setRefetchEmployeeList, refetchEmployeeList } = employeeStore;
 
@@ -158,7 +160,10 @@ const ResignedFiredEmployeeTable: FunctionComponent = () => {
     <>
       <Header subheading="Creating a culture where people thrive and businesses grow.">
         <Button asChild>
-          <Link href="/hr/resigned-employees" className="flex items-center">
+          <Link
+            href={`${path.startsWith('/manager') ? '/manager' : '/hr'}/resigned-employees`}
+            className="flex items-center"
+          >
             View Resignations
             <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted text-gray-600 dark:text-gray-300">
               {resignedFiredEmployeeList?.totalPendingCount || 0}

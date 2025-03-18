@@ -30,7 +30,7 @@ const chartConfig = {
   },
   absent: {
     label: 'Absent',
-    color: 'hsl(var(--chart-4))',
+    color: 'hsl(var(--chart-3))',
   },
 } satisfies ChartConfig;
 

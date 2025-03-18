@@ -30,7 +30,7 @@ import PerkTable from './components/HrPerksRequestsTable.component';
 
 interface AddPerksProps {}
 
-const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
+const PerksPage: FunctionComponent<AddPerksProps> = () => {
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
   const { authStore } = useStores() as { authStore: AuthStoreType };
@@ -104,4 +104,4 @@ const AddPerksPage: FunctionComponent<AddPerksProps> = () => {
   );
 };
 
-export default AddPerksPage;
+export default PerksPage;

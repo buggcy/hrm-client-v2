@@ -84,12 +84,17 @@ export interface MonthlyLeaveRecord {
   month: number;
   casualLeaves: number;
   sickLeaves: number;
+  paidLeaves: number;
+  unpaidLeaves: number;
   _id: string;
 }
 
 export interface AnnualLeaveRecord {
   year: number;
+  month: number;
   annualLeaves: number;
+  paidLeaves: number;
+  unpaidLeaves: number;
   _id: string;
 }
 

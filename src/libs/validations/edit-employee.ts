@@ -132,6 +132,7 @@ const incrementRecordSchema = z.object({
   title: z.string(),
   amount: z.number(),
   desiredSalary: z.number().optional(),
+  appliedDate: z.string(),
   date: z.string(),
   _id: z.string(),
 });

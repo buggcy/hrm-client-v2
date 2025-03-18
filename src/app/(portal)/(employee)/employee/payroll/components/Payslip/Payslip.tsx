@@ -1,6 +1,8 @@
 import React, { forwardRef } from 'react';
 import Image from 'next/image';
 
+import { formatCurrency } from '@/components/data-table/columns/hr-payroll.columns';
+
 // eslint-disable-next-line import/no-unresolved
 import buggcy_logo from '/public/images/buggcy/logo-buggcy.png';
 
@@ -31,6 +33,9 @@ interface PayslipProps {
   casualLeaves?: number;
   sickLeaves?: number;
   annualLeaves?: number;
+  taxAmount?: number;
+  overtimeMinute?: number;
+  totalOvertime?: number;
 }
 
 const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
@@ -53,11 +58,29 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       casualLeaves,
       sickLeaves,
       annualLeaves,
+      taxAmount,
+      overtimeMinute,
+      totalOvertime,
     },
     ref,
   ) => {
     const totalEarningsWithoutPerks =
       totalEarnings - (totalPerkIncrement || 0) + (totalPerkDecrement || 0);
+    const totalPerkAmount =
+      (totalPerkIncrement || 0) - (totalPerkDecrement || 0);
+    const allDecrements = [
+      { name: 'Tax Deduction', amount: taxAmount },
+      { name: 'Salary Deduction', amount: salaryDeduction },
+      ...(perks.decrements || []),
+    ];
+    const allIncrements = [
+      {
+        name: `Total Overtime (${overtimeMinute}) Minutes`,
+        amount: totalOvertime,
+      },
+      ...(perks.increments || []),
+    ];
+
     return (
       <div
         className="relative box-border flex justify-center bg-gray-100 p-10 font-sans"
@@ -130,33 +153,36 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
                   <td className="border-b border-gray-300 p-2 text-center">
                     Basic Salary
                   </td>
-                  <td className="border-b border-gray-300 p-2 text-center">{`Rs ${basicSalary}`}</td>
+                  <td className="border-b border-gray-300 p-2 text-center">{`${formatCurrency(basicSalary)}`}</td>
                   <td className="border-b border-gray-300 p-2 text-center">
-                    Absent Deduction
+                    Absent/Late Deduction
                   </td>
-                  <td className="border-b border-gray-300 p-2 text-center">{`Rs ${absentDeduction}`}</td>
+                  <td className="border-b border-gray-300 p-2 text-center">
+                    {`${formatCurrency(absentDeduction)}`}
+                  </td>
                 </tr>
+
                 {Array.from({
                   length: Math.max(
-                    perks.increments?.length || 0,
-                    perks.decrements?.length || 0,
+                    allIncrements.length || 0,
+                    allDecrements.length,
                   ),
                 }).map((_, index) => {
-                  const increment = perks.increments?.[index];
-                  const decrement = perks.decrements?.[index];
+                  const increment = allIncrements[index];
+                  const decrement = allDecrements[index];
                   return (
                     <tr key={index}>
                       <td className="border-b border-gray-300 p-2 text-center">
                         {increment ? increment.name : ''}
                       </td>
                       <td className="border-b border-gray-300 p-2 text-center">
-                        {increment ? `Rs ${increment.amount}` : ''}
+                        {increment ? `${formatCurrency(increment.amount)}` : ''}
                       </td>
                       <td className="border-b border-gray-300 p-2 text-center">
                         {decrement ? decrement.name : ''}
                       </td>
                       <td className="border-b border-gray-300 p-2 text-center">
-                        {decrement ? `Rs ${decrement.amount}` : ''}
+                        {decrement ? `${formatCurrency(decrement.amount)}` : ''}
                       </td>
                     </tr>
                   );
@@ -166,39 +192,21 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
 
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
-                <strong>Total Earnings:</strong>
+                <strong>Total Perk Amount:</strong>
               </p>
-              <p>{`Rs ${totalEarningsWithoutPerks > 0 ? totalEarningsWithoutPerks : 0}`}</p>
-            </div>
-            <div className="flex justify-between border-t border-gray-300 p-2">
-              <p>
-                <strong>Total Perk Increments:</strong>
-              </p>
-              <p>{`Rs ${totalPerkIncrement || 0}`}</p>
-            </div>
-            <div className="flex justify-between border-t border-gray-300 p-2">
-              <p>
-                <strong>Total Perk Decrements:</strong>
-              </p>
-              <p>{`Rs ${totalPerkDecrement || 0}`}</p>
-            </div>
-            <div className="flex justify-between border-t border-gray-300 p-2">
-              <p>
-                <strong>Salary Deductions:</strong>
-              </p>
-              <p>{`Rs ${salaryDeduction}`}</p>
-            </div>
-            <div className="flex justify-between border-t border-gray-300 p-2">
-              <p>
-                <strong>Total Deductions:</strong>
-              </p>
-              <p>{`Rs ${salaryDeduction + (totalPerkDecrement || 0)}`}</p>
+              <p>{`${formatCurrency(totalPerkAmount) || 0}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
                 <strong>Net Salary:</strong>
               </p>
-              <p>{`Rs ${totalAfterTax > 0 ? totalAfterTax : 0}`}</p>
+              <p>{`${totalAfterTax > 0 ? formatCurrency(totalAfterTax) : 0}`}</p>
+            </div>
+            <div className="flex justify-between border-t border-gray-300 p-2">
+              <p>
+                <strong>Total Earnings:</strong>
+              </p>
+              <p>{`${totalEarningsWithoutPerks > 0 ? formatCurrency(totalEarningsWithoutPerks) : 0}`}</p>
             </div>
           </div>
           <div className="mb-4 text-center">

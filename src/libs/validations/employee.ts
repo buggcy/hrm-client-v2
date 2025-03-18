@@ -168,6 +168,8 @@ const employeePayrollSchema = z.object({
     .optional(),
   totalPerkDecrement: z.number().optional(),
   totalPerkIncrement: z.number().optional(),
+  overtimeMinute: z.number().optional(),
+  totalOvertime: z.number().optional(),
 });
 
 const hrEventsSchema = z.object({

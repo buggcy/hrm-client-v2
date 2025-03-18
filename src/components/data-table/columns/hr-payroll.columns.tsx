@@ -118,19 +118,33 @@ export const hrPayrollColumns: ColumnDef<HRPayrollListType>[] = [
     ),
     cell: ({ row }) => {
       const basicSalary = row.original?.Basic_Salary || 0;
-      const increments = row.original?.Increments;
-      const totalIncrements =
-        increments?.reduce((acc, increment) => acc + increment.amount, 0) || 0;
+
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {formatCurrency(basicSalary + totalIncrements)}
+            {formatCurrency(basicSalary)}
           </span>
         </div>
       );
     },
   },
+  {
+    accessorKey: 'totalOvertime',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Overtime Pay" />
+    ),
+    cell: ({ row }) => {
+      const overtimePay = row.original?.totalOvertime || 0;
 
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {formatCurrency(overtimePay) || 0}
+          </span>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: 'Tax_Amount',
     header: ({ column }) => (

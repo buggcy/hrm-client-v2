@@ -2,8 +2,15 @@
 
 import { FunctionComponent, Suspense, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { ClipboardList, EllipsisVertical, Plus, RefreshCw } from 'lucide-react';
+import {
+  ClipboardList,
+  Clock,
+  EllipsisVertical,
+  Plus,
+  RefreshCw,
+} from 'lucide-react';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
@@ -22,8 +29,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useStores } from '@/providers/Store.Provider';
 
 import { useAttendanceRequestsQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
+import { useOvertimeRequestsQuery } from '@/hooks/overtime/useOvertime.hook';
+import { AuthStoreType } from '@/stores/auth';
 import { formatedDate } from '@/utils';
 
 import AttendanceCharts from './components/AttendanceCharts';
@@ -34,14 +44,19 @@ import { RefreshAttendanceDialog } from './components/RefreshAttendanceDialog';
 interface HrAttendanceListProps {}
 
 const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
+  const path = usePathname();
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange();
-
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
   const { data: pendingAttendanceRequests } = useAttendanceRequestsQuery({
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
   });
-
+  const { data: pendingList } = useOvertimeRequestsQuery({
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
 
@@ -84,10 +99,11 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                   {Array.isArray(pendingAttendanceRequests?.requests) &&
                     pendingAttendanceRequests.requests.length > 0 && (
                       <Link
-                        href="/hr/manage-attendance/attendance-requests"
+                        href={`${path.startsWith('/manager') ? '/manager' : 'hr'}/manage-attendance/attendance-requests`}
                         className="absolute right-0 top-0 z-10 ml-2 flex size-6 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full border bg-white text-black shadow-md"
                       >
-                        {pendingAttendanceRequests.requests.length}
+                        {pendingAttendanceRequests.requests.length +
+                          (pendingList?.totalCount || 0)}
                       </Link>
                     )}
 
@@ -100,24 +116,44 @@ const HrAttendanceList: FunctionComponent<HrAttendanceListProps> = () => {
                   className="flex flex-row gap-1"
                 >
                   <RefreshCw size={16} />
-                  <span className="hidden lg:block">Refresh Attendance</span>
+                  <span className="lg:block">Refresh Attendance</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleDialogOpen}
                   className="flex flex-row gap-1"
                 >
                   <Plus size={16} />
-                  <span className="hidden sm:block">Add Attendance</span>
+                  <span className="sm:block">Add Attendance</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex flex-row gap-1">
                   <ClipboardList size={16} />
                   <Link
-                    href="/hr/manage-attendance/attendance-requests"
+                    href={
+                      user?.roleId === 3
+                        ? '/manager/manage-attendance/attendance-requests'
+                        : '/hr/manage-attendance/attendance-requests'
+                    }
                     className="flex items-center"
                   >
                     Attendance Requests
                     <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
                       {pendingAttendanceRequests?.requests.length || 0}
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex flex-row gap-1">
+                  <Clock size={16} />
+                  <Link
+                    href={
+                      user?.roleId === 3
+                        ? '/manager/manage-attendance/overtime-request'
+                        : '/hr/manage-attendance/overtime-request'
+                    }
+                    className="flex items-center"
+                  >
+                    Overtime Requests
+                    <span className="ml-2 flex size-6 items-center justify-center rounded-full bg-muted">
+                      {pendingList?.totalCount || 0}
                     </span>
                   </Link>
                 </DropdownMenuItem>

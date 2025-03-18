@@ -2,6 +2,7 @@ import {
   AlertOctagon,
   CalendarClock,
   ClipboardPlus,
+  Clock,
   DollarSignIcon,
   Gift,
   Home,
@@ -37,6 +38,10 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
         accessPermissions.some(
           permission =>
             permission.name === 'accessAttendanceRequest' && permission.allowed,
+        ) ||
+        accessPermissions.some(
+          permission =>
+            permission.name === 'accessOvertimeRequest' && permission.allowed,
         )
       ),
       children: [
@@ -58,6 +63,15 @@ export const employeeMenu = (accessPermissions: Permission[]): MenuItem[] => {
             permission =>
               permission.name === 'accessAttendanceRequest' &&
               permission.allowed,
+          ),
+        },
+        {
+          title: 'Overtime Request',
+          icon: Clock,
+          href: '/employee/attendance/overtime-request',
+          disabled: !accessPermissions.some(
+            permission =>
+              permission.name === 'accessOvertimeRequest' && permission.allowed,
           ),
         },
         {

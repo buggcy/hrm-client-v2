@@ -84,6 +84,8 @@ const HRPayrollSchema = z.object({
     .optional(),
   totalPerkDecrement: z.number().optional(),
   totalPerkIncrement: z.number().optional(),
+  overtimeMinute: z.number().optional(),
+  totalOvertime: z.number().optional(),
 });
 
 const HRPayrollApiResponseSchema = z.object({

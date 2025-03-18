@@ -26,13 +26,8 @@ import { rejectLeaveRecord } from '@/services/hr/leave-list.service';
 
 import { MessageErrorResponse } from '@/types';
 
-type AcceptRejectProps = {
+type RejectProps = {
   isOpen: boolean;
-  title: string;
-  type: string;
-  isPending: boolean;
-  description: string;
-  onSubmit: () => void;
   showActionToggle: (open: boolean) => void;
   id: string;
   hrId?: string;
@@ -44,18 +39,13 @@ const FormSchema = z.object({
 
 export type RejectFormData = z.infer<typeof FormSchema>;
 
-export default function AcceptRejectLeaveDialog({
+export default function RejectLeaveDialog({
   isOpen,
-  title,
-  type,
-  description,
-  isPending,
-  onSubmit,
   showActionToggle,
   id,
   hrId,
   setRefetchLeaveList,
-}: AcceptRejectProps) {
+}: RejectProps) {
   const {
     control,
     handleSubmit,
@@ -106,78 +96,58 @@ export default function AcceptRejectLeaveDialog({
         <form>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle> {title}</AlertDialogTitle>
+              <AlertDialogTitle>Reject Leave Request</AlertDialogTitle>
               <AlertDialogDescription>
-                {type === 'accept' ? (
-                  description
-                ) : (
-                  <>
-                    <div className="grid gap-8 py-4">
-                      <div className="flex flex-wrap">
-                        <div className="flex flex-1 flex-col">
-                          <Label
-                            htmlFor="reason"
-                            className="mb-2 text-left dark:text-white"
-                          >
-                            Rejection Reason{' '}
-                            <span className="text-red-600">*</span>
-                          </Label>
-                          <Controller
-                            name="reason"
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                type="text"
-                                id="reason"
-                                placeholder={'Please Enter Rejection Reason'}
-                                {...field}
-                              />
-                            )}
+                <div className="grid gap-8 py-4">
+                  <div className="flex flex-wrap">
+                    <div className="flex flex-1 flex-col">
+                      <Label
+                        htmlFor="reason"
+                        className="mb-2 text-left dark:text-white"
+                      >
+                        Rejection Reason <span className="text-red-600">*</span>
+                      </Label>
+                      <Controller
+                        name="reason"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            type="text"
+                            id="reason"
+                            placeholder={'Please Enter Rejection Reason'}
+                            {...field}
                           />
-                          <div className="flex justify-start p-1">
-                            {errors.reason && (
-                              <span className="text-sm text-red-500">
-                                {errors.reason.message}
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                        )}
+                      />
+                      <div className="flex justify-start p-1">
+                        {errors.reason && (
+                          <span className="text-sm text-red-500">
+                            {errors.reason.message}
+                          </span>
+                        )}
                       </div>
                     </div>
-                  </>
-                )}
+                  </div>
+                </div>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel
                 onClick={() => {
-                  if (type !== 'accept') {
-                    reset();
-                  }
+                  reset();
                   showActionToggle(false);
                 }}
               >
                 Close
               </AlertDialogCancel>
-              {type === 'accept' ? (
-                <Button
-                  type="button"
-                  variant={'default'}
-                  onClick={onSubmit}
-                  disabled={isPending}
-                >
-                  {'Accept'}
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  variant={'destructive'}
-                  disabled={RejectPending}
-                  onClick={handleSubmit(handleReject)}
-                >
-                  {'Reject'}
-                </Button>
-              )}
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={RejectPending}
+                onClick={handleSubmit(handleReject)}
+              >
+                Reject
+              </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </form>

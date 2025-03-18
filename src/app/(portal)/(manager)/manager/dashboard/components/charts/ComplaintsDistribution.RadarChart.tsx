@@ -22,33 +22,25 @@ import {
 } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 
-// Sample data for the chart
-const departmentData = [
-  { department: 'Sales', complaints: 45, resolutionRate: 80, turnovers: 5 },
-  { department: 'HR', complaints: 20, resolutionRate: 95, turnovers: 2 },
-  {
-    department: 'Engineering',
-    complaints: 30,
-    resolutionRate: 85,
-    turnovers: 8,
-  },
-  { department: 'Marketing', complaints: 25, resolutionRate: 90, turnovers: 3 },
-  { department: 'Finance', complaints: 15, resolutionRate: 100, turnovers: 1 },
-  {
-    department: 'Customer Support',
-    complaints: 60,
-    resolutionRate: 75,
-    turnovers: 10,
-  },
-];
+import { ManagerComplaintStatsType } from '@/libs/validations/manager-dashboard';
 
-export default function ComplaintsDistribution() {
+export default function ComplaintsDistribution({
+  complaintStats,
+}: {
+  complaintStats: ManagerComplaintStatsType[];
+}) {
+  const sortedData = complaintStats
+    ? [...complaintStats].sort(
+        (a, b) => a.year - b.year || a.monthNum - b.monthNum,
+      )
+    : [];
+
   return (
     <Card className="col-span-1 md:col-span-2">
       <CardHeader>
         <CardTitle>Complaints Overview</CardTitle>
         <CardDescription>
-          Complaints, Resolution Rates, and Turnovers by Department (Q4 2024)
+          Complaints, Resolution Rates, and Turnovers (Last 6 Months)
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -62,26 +54,23 @@ export default function ComplaintsDistribution() {
               label: 'Resolution Rate',
               color: 'hsl(var(--chart-2))',
             },
-            turnovers: {
-              label: 'Turnovers',
+            turnover: {
+              label: 'Turnover',
               color: 'hsl(var(--chart-3))',
             },
           }}
-          className="h-[200px] w-full"
+          className="h-[250px] w-full"
         >
           <ResponsiveContainer>
-            <ComposedChart
-              data={departmentData}
-              margin={{ top: 20, bottom: 5 }}
-            >
+            <ComposedChart data={sortedData} margin={{ top: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="department" />
+              <XAxis dataKey="month" />
               <YAxis
                 yAxisId="left"
                 orientation="left"
                 stroke="var(--color-complaints)"
                 label={{
-                  value: 'Complaints',
+                  value: 'Complaints & Turnovers',
                   angle: -90,
                   position: 'insideLeft',
                   dx: 10,
@@ -93,7 +82,7 @@ export default function ComplaintsDistribution() {
                 orientation="right"
                 stroke="var(--color-resolutionRate)"
                 label={{
-                  value: 'Resolution Rate',
+                  value: 'Resolution Rate (%)',
                   angle: 90,
                   position: 'insideRight',
                   dx: 0,
@@ -133,8 +122,8 @@ export default function ComplaintsDistribution() {
                 yAxisId="left"
               />
               <Bar
-                dataKey="turnovers"
-                fill="var(--color-turnovers)"
+                dataKey="turnover"
+                fill="var(--color-turnover)"
                 yAxisId="left"
               />
               <Line

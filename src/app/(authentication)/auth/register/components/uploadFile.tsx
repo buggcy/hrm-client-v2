@@ -20,15 +20,20 @@ const Dropzone: React.FC = () => {
     watch('educationalDocument.deletedAdditionalDocuments') || [];
   const fileErrors = errors.educationalDocument?.Additional_Documents;
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-
+  const handleFileChange = (files: FileList | null) => {
     if (files && files.length > 0) {
       setValue('educationalDocument.Additional_Documents', [
         ...addDoc,
         ...Array.from(files),
       ]);
     }
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    handleFileChange(event.dataTransfer.files);
   };
 
   const handleRemoveFile = (index: number) => {
@@ -81,6 +86,9 @@ const Dropzone: React.FC = () => {
         <Label
           htmlFor="dropzone-file"
           className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-secondary-foreground hover:border-primary hover:bg-background"
+          onDrop={handleDrop}
+          onDragOver={event => event.preventDefault()}
+          onDragEnter={event => event.preventDefault()}
         >
           <div className="flex flex-col items-center justify-center pb-6 pt-5">
             <Upload className="mb-2 size-8" />
@@ -97,7 +105,7 @@ const Dropzone: React.FC = () => {
             id="dropzone-file"
             type="file"
             className="hidden"
-            onChange={handleFileChange}
+            onChange={e => handleFileChange(e.target.files)}
             accept="image/jpeg, image/png, image/jpg, application/pdf"
             multiple
           />

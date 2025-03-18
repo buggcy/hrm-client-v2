@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 
 import { Label, Pie, PieChart } from 'recharts';
 
@@ -36,6 +37,14 @@ const chartConfig = {
     label: 'Resignation',
     color: 'hsl(var(--chart-3))',
   },
+  overtime: {
+    label: 'Overtime',
+    color: 'hsl(var(--chart-4))',
+  },
+  attandence: {
+    label: 'Attendance',
+    color: '#79ade4',
+  },
 } satisfies ChartConfig;
 
 interface RequestDistributionProps {
@@ -48,22 +57,38 @@ export function RequestDistribution({ data }: RequestDistributionProps) {
       {
         employee: 'employee',
         count: data?.employee || 0,
-        fill: 'var(--color-employee)',
+        fill: 'hsl(var(--chart-1))',
+        link: '/approval',
       },
       {
         employee: 'leave',
         count: data?.leave || 0,
-        fill: 'var(--color-leave)',
+        fill: 'hsl(var(--chart-2))',
+        link: '/manage-attendance/leave-requests',
       },
       {
         employee: 'perk',
         count: data?.perk || 0,
-        fill: 'var(--color-perk)',
+        fill: 'hsl(var(--chart-5))',
+        link: '/manage-perks/perk-requests',
       },
       {
         employee: 'resignation',
         count: data?.resignation || 0,
-        fill: 'var(--color-resignation)',
+        fill: 'hsl(var(--chart-3))',
+        link: '/resigned-employees',
+      },
+      {
+        employee: 'overtime',
+        count: data?.overtime || 0,
+        fill: 'hsl(var(--chart-4))',
+        link: '/manage-attendance/overtime-request',
+      },
+      {
+        employee: 'attandence',
+        count: data?.attandence || 0,
+        fill: '#79ade4',
+        link: '/manage-attendance/attendance-requests',
       },
     ],
     [data],
@@ -74,36 +99,27 @@ export function RequestDistribution({ data }: RequestDistributionProps) {
 
   return (
     <Card className="col-span-1 flex min-h-[250px] flex-col">
-      <CardHeader className="items-center pb-2">
+      <CardHeader className="pb-2">
         <CardTitle>Pending Requests</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-row items-center justify-between pb-0">
         <div className="flex flex-col gap-2 text-sm">
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
-            <p>
-              <span className="font-bold">{data?.employee || 0}</span> Employee
-            </p>
-          </div>
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
-            <p>
-              <span className="font-bold">{data?.leave || 0}</span> Leave
-            </p>
-          </div>
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-5))]"></div>
-            <p>
-              <span className="font-bold">{data?.perk || 0}</span> Perk
-            </p>
-          </div>
-          <div className="flex flex-row items-center gap-1">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]"></div>
-            <p>
-              <span className="font-bold">{data?.resignation || 0}</span>{' '}
-              Resignation
-            </p>
-          </div>
+          {chartData.map(item => (
+            <Link
+              key={item.employee}
+              className="flex flex-row items-center gap-1"
+              href={'/hr' + item?.link}
+            >
+              <div
+                className="size-2 rounded-full"
+                style={{ backgroundColor: item.fill }}
+              ></div>
+              <p className="hover:underline">
+                <span className="font-bold">{item.count}</span>{' '}
+                {chartConfig[item.employee as keyof typeof chartConfig].label}
+              </p>
+            </Link>
+          ))}
         </div>
         <ChartContainer
           config={chartConfig}

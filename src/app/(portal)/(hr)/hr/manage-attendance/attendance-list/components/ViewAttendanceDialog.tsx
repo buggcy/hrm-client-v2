@@ -8,6 +8,7 @@ import {
   Calendar,
   Clock,
 } from 'lucide-react';
+import moment from 'moment-timezone';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -45,9 +46,15 @@ export function ViewAttendanceDialog({
   const avatar = user?.Avatar;
   const initials = `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
 
-  const startTime = formatUTCToLocalTime(data?.Start_Date);
+  const startTime = data?.Start_Date
+    ? moment(data?.Start_Date).utc().format('HH:mm') === '00:00'
+      ? '00:00'
+      : formatUTCToLocalTime(data?.Start_Date)
+    : '00:00';
   const endTime = data?.End_Date
-    ? formatUTCToLocalTime(data?.End_Date ?? '')
+    ? moment(data?.End_Date).utc().format('HH:mm') === '00:00'
+      ? '00:00'
+      : formatUTCToLocalTime(data?.End_Date)
     : '00:00';
   const totalTimeStr = data?.Total_Time;
   let totalTimeInMinutes = 0;
@@ -102,33 +109,25 @@ export function ViewAttendanceDialog({
         </div>
 
         <div className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
-          <div className="flex items-center">
-            <Calendar className="mr-2" size={16} />
+          <div className="flex items-center gap-2 py-2">
+            <Calendar size={16} />
             <span>Date:</span>
-            <span className="ml-4">{date.toLocaleDateString()}</span>
+            <span>{date ? new Date(date).toDateString() : 'N/A'}</span>
           </div>
-          <div className="flex items-center py-2">
-            <Clock size={16} className="mr-2" />
+          <div className="flex items-center gap-2 py-2">
+            <Clock size={16} />
             <span>Total Time:</span>
-            <span className="pl-1">{totalTime}</span>
+            <span>{totalTime}</span>
           </div>
-          <div className="flex items-center py-2">
-            <AlarmClockCheck
-              size={16}
-              color="hsl(var(--chart-1))"
-              className="mr-2"
-            />{' '}
+          <div className="flex items-center gap-2 py-2">
+            <AlarmClockCheck size={16} color="hsl(var(--chart-1))" />
             <span>Start Time:</span>
-            <span className="ml-4">{startTime}</span>
+            <span>{startTime}</span>
           </div>
-          <div className="flex items-center py-2">
-            <AlarmClockMinus
-              size={16}
-              color="hsl(var(--chart-3))"
-              className="mr-2"
-            />
+          <div className="flex items-center gap-2 py-2">
+            <AlarmClockMinus size={16} color="hsl(var(--chart-3))" />
             <span>End Time:</span>
-            <span className="ml-4">{endTime}</span>
+            <span>{endTime}</span>
           </div>
         </div>
 

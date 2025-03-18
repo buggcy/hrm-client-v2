@@ -235,9 +235,6 @@ export const approvePerkRequest = async ({
   employeeId: string;
   perkId: string;
 }): Promise<SuccessMessageResponse> => {
-  console.log('id', id);
-  console.log('employeeId', employeeId);
-  console.log('perkId', perkId);
   const { message }: SuccessMessageResponse = await baseAPI.put(
     `/hr/employee/${employeeId}/perks/${perkId}/perk-requests/${id}/approve`,
   );
