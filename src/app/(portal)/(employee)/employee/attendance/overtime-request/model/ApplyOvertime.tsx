@@ -55,6 +55,10 @@ export function AddEditOvertime({
 }: DialogProps) {
   const { user } = useAuthStore();
   const userId: string | undefined = user?.id;
+  const userJoiningDate = user?.Joining_Date
+    ? new Date(user.Joining_Date)
+    : null;
+
   const {
     control,
     handleSubmit,
@@ -66,7 +70,7 @@ export function AddEditOvertime({
     defaultValues: {
       overtimeMinutes: TypeToEdit?.overtimeMinutes?.toString() || '',
       reason: TypeToEdit?.reason || '',
-      date: TypeToEdit?.date ? new Date(TypeToEdit.date) : new Date(),
+      date: TypeToEdit?.date ? new Date(TypeToEdit.date) : undefined,
     },
   });
 
@@ -74,7 +78,7 @@ export function AddEditOvertime({
     if (type === 'edit' && TypeToEdit) {
       reset({
         overtimeMinutes: TypeToEdit?.overtimeMinutes?.toString() || '',
-        date: TypeToEdit?.date ? new Date(TypeToEdit.date) : new Date(),
+        date: TypeToEdit?.date ? new Date(TypeToEdit.date) : undefined,
         reason: TypeToEdit?.reason || '',
       });
     }
@@ -180,6 +184,18 @@ export function AddEditOvertime({
                     initialDate={field.value}
                     onDateChange={field.onChange}
                     className="h-auto"
+                    disabled={(date: Date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+
+                      const isFutureOrToday = date >= today;
+
+                      const isBeforeJoining = userJoiningDate
+                        ? date < userJoiningDate
+                        : false;
+
+                      return isFutureOrToday || isBeforeJoining;
+                    }}
                   />
                 )}
               />
