@@ -87,16 +87,6 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
 
   const data = row.original;
 
-  const formatDate = (dateString: string): string => {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    };
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', options);
-  };
-
   const today = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: '2-digit',
@@ -146,7 +136,14 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
 
       root.render(
         <Payslip
-          payslipDate={payslipData.Date ? formatDate(payslipData.Date) : 'N/A'}
+          payslipDate={
+            payslipData.Date
+              ? new Date(payslipData.Date).toLocaleString('en-US', {
+                  month: 'long',
+                  year: 'numeric',
+                })
+              : 'N/A'
+          }
           date={today || ''}
           employeeName={payslipData.Employee_Name || 'N/A'}
           employeeDesignation={data?.Emp_ID?.Designation || 'N/A'}
