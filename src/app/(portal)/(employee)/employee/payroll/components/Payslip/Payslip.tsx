@@ -70,7 +70,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       (totalPerkIncrement || 0) - (totalPerkDecrement || 0);
     const allDecrements = [
       { name: 'Tax Deduction', amount: taxAmount },
-      { name: 'Salary Deduction', amount: salaryDeduction },
+
       ...(perks.decrements || []),
     ];
     const allIncrements = [
@@ -192,15 +192,21 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
 
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
+                <strong>Net Salary:</strong>
+              </p>
+              <p>{`${totalAfterTax > 0 ? formatCurrency(totalAfterTax) : 0}`}</p>
+            </div>
+            <div className="flex justify-between border-t border-gray-300 p-2">
+              <p>
                 <strong>Total Perk Amount:</strong>
               </p>
               <p>{`${formatCurrency(totalPerkAmount) || 0}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
-                <strong>Net Salary:</strong>
+                <strong>Total Deduction:</strong>
               </p>
-              <p>{`${totalAfterTax > 0 ? formatCurrency(totalAfterTax) : 0}`}</p>
+              <p>{`${salaryDeduction > 0 ? formatCurrency(salaryDeduction) : `Rs. 0`}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>

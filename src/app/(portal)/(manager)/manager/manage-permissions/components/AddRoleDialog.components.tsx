@@ -25,7 +25,14 @@ import { addRoles } from '@/services/manager/manage-permissions.service';
 import { MessageErrorResponse } from '@/types';
 
 const addPermissionSchema = z.object({
-  roleId: z.number(),
+  roleId: z.preprocess(
+    val => (val === '' ? undefined : Number(val)),
+    z
+      .number({ invalid_type_error: 'Role ID is required' })
+      .int('Role ID must be an integer')
+      .positive('Role ID must be a positive number')
+      .refine(val => val !== 0, { message: 'Role ID cannot be zero' }),
+  ),
   roleName: z.string().min(1, 'Role Name is required'),
 });
 
@@ -52,7 +59,7 @@ export function AddRoleDialog({
   } = useForm<AddRoleFormData>({
     resolver: zodResolver(addPermissionSchema),
     defaultValues: {
-      roleId: 0,
+      roleId: undefined,
       roleName: '',
     },
   });
@@ -112,6 +119,10 @@ export function AddRoleDialog({
                     id="roleId"
                     placeholder="Enter Role ID"
                     type="number"
+                    onChange={e => {
+                      const value = e.target.value;
+                      field.onChange(value ? Number(value) : '');
+                    }}
                   />
                 )}
               />

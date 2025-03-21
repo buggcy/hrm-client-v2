@@ -13,7 +13,10 @@ import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useApprovalEmployeeQuery } from '@/hooks/employee/useApprovalEmployee.hook';
+import {
+  useApprovalEmployeeQuery,
+  useEmployeeApprovalStatsQuery,
+} from '@/hooks/employee/useApprovalEmployee.hook';
 import { AuthStoreType } from '@/stores/auth';
 import { getWritePermissions } from '@/utils/permissions.utils';
 
@@ -24,6 +27,7 @@ import { AddEmployeeDialog } from '../manage-employees/components/EmployeeModal'
 export default function AddEmployeesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data } = useApprovalEmployeeQuery();
+  const { data: hrEmployeeApprovalStats } = useEmployeeApprovalStatsQuery();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
@@ -44,7 +48,27 @@ export default function AddEmployeesPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
-        <Header subheading="Creating a culture where people thrive and businesses grow.">
+        <Header
+          subheading={`Shape your dream team with ease! ${
+            data?.length && data?.length > 0
+              ? `${data?.length} new requests—`
+              : ''
+          }
+          ${
+            hrEmployeeApprovalStats?.Card2Data?.pending
+              ? `${hrEmployeeApprovalStats?.Card2Data?.pending} pending, `
+              : ''
+          }    
+          ${
+            hrEmployeeApprovalStats?.Card2Data?.rejected
+              ? `${hrEmployeeApprovalStats?.Card2Data?.rejected} rejected, `
+              : ''
+          }${
+            hrEmployeeApprovalStats?.Card2Data?.tba
+              ? `${hrEmployeeApprovalStats?.Card2Data?.tba} to be added. `
+              : ''
+          } Keep your hiring process seamless!`.trim()}
+        >
           {addPermission && (
             <Button
               variant="default"
@@ -67,7 +91,7 @@ export default function AddEmployeesPage() {
           </Button>
         </Header>
         <div className="my-6 flex flex-col gap-5">
-          <AddEmpCards />
+          <AddEmpCards data={hrEmployeeApprovalStats} />
           <Suspense fallback={<div>Loading...</div>}>
             <UnApprovedEmployeeTable />
           </Suspense>

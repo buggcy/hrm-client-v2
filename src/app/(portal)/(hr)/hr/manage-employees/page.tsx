@@ -51,7 +51,9 @@ export default function ManageEmployeesPage() {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
-        <Header subheading="Transforming employee management into a journey of growth and success."></Header>
+        <Header
+          subheading={`Leading a dynamic team of ${Number(hrDashboardStats?.employeeCount?.fullTime || 0) + Number(hrDashboardStats?.employeeCount?.intern || 0)} professionals—drive efficiency, streamline operations, and empower your workforce like never before!`}
+        ></Header>
         <div className="mb-6">
           <ChartsPage
             hrDashboardStats={hrDashboardStats?.employeeCount}

@@ -4,21 +4,26 @@ import Link from 'next/link';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useAttendanceReport } from '@/hooks/employee/useAttendenceReport';
 import { useEmployeeAttendance } from '@/hooks/employee/useEmployeeAttendance';
 import { useUserId } from '@/hooks/employee/useUserId';
 
 import { EmployeeAttendenceCard } from './AttendenceRecord';
 import Typography from '../components/Typography';
 
-const EmployeeCard = ({ from, to }: { from: string; to?: string }) => {
+import { AttendanceReport } from '@/types/attendence.types';
+
+const EmployeeCard = ({
+  attendanceReport,
+}: {
+  attendanceReport?: AttendanceReport | null;
+}) => {
   const userId = useUserId();
   const {
     data: empdata,
     isLoading,
     isFetching,
   } = useEmployeeAttendance(userId);
-  const { data: attendanceReport } = useAttendanceReport(userId, { from, to });
+
   useEffect(() => {}, [userId, empdata]);
   const totalHoursOfWeek =
     isLoading || isFetching ? '0' : empdata?.totalHoursOfWeek || '0';
