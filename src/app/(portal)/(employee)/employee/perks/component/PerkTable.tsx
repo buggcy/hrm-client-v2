@@ -1,5 +1,5 @@
 'use client';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { ZodError } from 'zod';
@@ -99,7 +99,18 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
       setRefetchPerkList(false);
     }
   }, [refetchPerkList, setRefetchPerkList, refetch, refetchRecord, status]);
+  const totalApprovedPerks = useMemo(() => {
+    return (
+      perkPostList?.data
+        ?.filter(item => item.hrApproval === 'approved')
+        ?.reduce((sum, item) => sum + Number(item.incrementAmount || 0), 0) || 0
+    );
+  }, [perkPostList?.data]);
 
+  const perksTagline =
+    totalApprovedPerks > 0
+      ? `Level up your lifestyle! Enjoy perks worth $${totalApprovedPerks}—because you deserve the best!`
+      : 'Elevate Your Lifestyle — Discover Perks Designed for You!';
   useEffect(() => {
     if (error) {
       if (error instanceof ZodError) {
@@ -147,7 +158,7 @@ const PerkTable: FunctionComponent<PerkTableProps> = ({ user, handleAdd }) => {
 
   return (
     <>
-      <Header subheading="Elevate Your Lifestyle — Discover Perks Designed for You!">
+      <Header subheading={perksTagline}>
         <DateRangePicker
           timeRange={timeRange}
           selectedDate={selectedDate}

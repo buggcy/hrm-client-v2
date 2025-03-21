@@ -64,7 +64,25 @@ const PerksPage: FunctionComponent<AddPerksProps> = () => {
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
       <LayoutWrapper className="flex flex-col gap-8 px-2">
-        <Header subheading="Empower your team with perks that inspire and benefits that last.">
+        <Header
+          subheading={`Unlock a world of rewards for your team! ${
+            (perkRequests?.data.length || 0) > 0
+              ? `${perkRequests?.data.length} new requests,`
+              : ''
+          }${
+            (hrPerkRecords?.records?.totalPerkAssigned || 0) > 0
+              ? ` ${hrPerkRecords?.records?.totalPerkAssigned} assigned`
+              : ''
+          }${
+            (hrPerkRecords?.records?.totalApprovedPerks || 0) > 0
+              ? `, ${hrPerkRecords?.records?.totalApprovedPerks} approved`
+              : ''
+          }${
+            (hrPerkRecords?.records?.totalRejectedPerks || 0) > 0
+              ? `, ${hrPerkRecords?.records?.totalRejectedPerks} rejected`
+              : ''
+          }. Keep your workforce motivated and engaged!`.trim()}
+        >
           <DateRangePicker
             timeRange={timeRange}
             selectedDate={selectedDate}

@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import { useHrDashboardStatsQuery } from '@/hooks/hr/useDasdhboard.hook';
-import { useDepartmentRecordQuery } from '@/hooks/hr/useProjectDepartment.hook';
+import { HrDashboardStatsApiResponse } from '@/libs/validations/hr-dashboard';
+import { DepartmentChartApiResponse } from '@/libs/validations/project-department';
 
 import { AttendanceDistribution } from './charts/AttendanceDistribution';
 import { EmployeeDistribution } from './charts/EmployeeDistribution';
@@ -16,16 +16,15 @@ import { TopDepartmentChart } from '../../manage-department/component/Chart/TopD
 interface HrDashboardmeProps {
   from: string;
   to?: string;
+  data?: HrDashboardStatsApiResponse;
+  departmentRecord?: DepartmentChartApiResponse;
 }
-const HrDashboardCharts = ({ from, to }: HrDashboardmeProps) => {
-  const isEnabled = !!from;
-  const { data } = useHrDashboardStatsQuery(
-    { from, to },
-    {
-      enabled: isEnabled,
-    },
-  );
-  const { data: departmentRecord } = useDepartmentRecordQuery();
+const HrDashboardCharts = ({
+  from,
+  to,
+  data,
+  departmentRecord,
+}: HrDashboardmeProps) => {
   return (
     <div className="flex size-full flex-col gap-4">
       <div className="grid w-full grid-cols-1 gap-x-0 gap-y-4 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-0">

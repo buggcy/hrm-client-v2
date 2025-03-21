@@ -1,5 +1,5 @@
 'use client';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
@@ -183,7 +183,13 @@ const OvertimeTable: FunctionComponent<TableProps> = () => {
     status,
     refetchRecord,
   ]);
-
+  const approvedOvertimeMinutes = useMemo(() => {
+    return (
+      getOvertime?.data
+        ?.filter(item => item.status === 'Approved')
+        ?.reduce((sum, item) => sum + Number(item.overtimeMinutes || 0), 0) || 0
+    );
+  }, [getOvertime?.data]);
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
@@ -218,13 +224,14 @@ const OvertimeTable: FunctionComponent<TableProps> = () => {
     setModal(true);
   };
 
+  const overtimeTagline =
+    approvedOvertimeMinutes > 0
+      ? `Hard work pays off! ${approvedOvertimeMinutes} minutes of approved overtime—your dedication shines!`
+      : 'Go the extra mile! Request overtime seamlessly and stay updated on your approval status anytime.';
+
   return (
     <>
-      <Header
-        subheading={
-          'Go the extra mile! Request overtime seamlessly and stay updated on your approval status anytime.'
-        }
-      >
+      <Header subheading={overtimeTagline}>
         <div className="flex items-center gap-2">
           <DateRangePicker
             timeRange={timeRange}

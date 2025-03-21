@@ -163,7 +163,7 @@ export function AddPermissionDialog({
           <div className="grid grid-cols-1 gap-8">
             <div className="flex flex-col">
               <Label htmlFor="permissionType" className="mb-2 text-left">
-                Leave Type
+                Permission Type
               </Label>
               <Controller
                 name="permissionType"
