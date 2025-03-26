@@ -3,6 +3,8 @@ import { AxiosResponse } from 'axios';
 import {
   EmployeePayrollApiResponse,
   employeePayrollApiResponseSchema,
+  EmployeePayrollChartApiResponse,
+  employeePayrollChartApiResponseSchema,
 } from '@/libs/validations/employee';
 import { baseAPI, schemaParse } from '@/utils';
 
@@ -25,6 +27,8 @@ export interface PayrollV2Params {
   limit?: number;
   userId?: string;
   status?: string[];
+  month?: string;
+  year?: string;
 }
 
 export const postPayout = async (
@@ -35,6 +39,8 @@ export const postPayout = async (
     limit: 5,
     userId: '',
     status: [],
+    month: '',
+    year: '',
   };
 
   const mergedParams = { ...defaultParams, ...params };
@@ -54,16 +60,20 @@ export const searchPayoutList = async ({
   limit,
   userId,
   status = [],
+  month,
+  year,
 }: {
   query: string;
   page: number;
   limit: number;
   userId: string;
   status: string[];
+  month?: string;
+  year?: string;
 }): Promise<EmployeePayrollApiResponse> => {
   const { data, pagination }: EmployeePayrollApiResponse = await baseAPI.post(
     `/search/payout`,
-    { query, page, limit, userId, status },
+    { query, page, limit, userId, status, month, year },
   );
 
   return { data, pagination };
@@ -142,4 +152,16 @@ export const deleteEmployeePayrollRecord = async (
 ): Promise<AxiosResponse> => {
   const res = await baseAPI.delete(`/employee/${id}`);
   return res;
+};
+
+export const getPayrollMonthlyChart = async (
+  userId: string,
+): Promise<EmployeePayrollChartApiResponse> => {
+  try {
+    const response = await baseAPI.get(`/employee/monthly/payroll/${userId}`);
+    return schemaParse(employeePayrollChartApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching payroll monthly chart records:', error);
+    throw error;
+  }
 };

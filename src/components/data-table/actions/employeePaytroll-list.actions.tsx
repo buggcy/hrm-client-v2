@@ -51,16 +51,6 @@ export function EmployeePayrollListRowActions({
     React.useState<boolean>(false);
   const data = row.original;
 
-  const formatDate = (dateString: string): string => {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    };
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', options);
-  };
-
   const today = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: '2-digit',
@@ -94,21 +84,22 @@ export function EmployeePayrollListRowActions({
           .map(dept => dept.departmentName.replace(' Department', ''))
           .join(', ');
       const basicSalary = payslipData.Basic_Salary || 0;
-      const increments = payslipData.Increments;
-      const totalIncrements =
-        increments?.reduce(
-          (acc, increment) => acc + (increment.amount || 0),
-          0,
-        ) || 0;
-      const incrementedSalary = basicSalary + totalIncrements;
+
       root.render(
         <Payslip
-          payslipDate={payslipData.Date ? formatDate(payslipData.Date) : 'N/A'}
+          payslipDate={
+            payslipData.Date
+              ? new Date(payslipData.Date).toLocaleString('en-US', {
+                  month: 'long',
+                  year: 'numeric',
+                })
+              : 'N/A'
+          }
           date={today || ''}
           employeeName={payslipData.Employee_Name || 'N/A'}
           employeeDesignation={user?.Designation || 'N/A'}
           employeeDepartment={departmentNames || 'N/A'}
-          basicSalary={incrementedSalary}
+          basicSalary={basicSalary}
           absentDeduction={payslipData.Absent_Deduction || 0}
           totalEarnings={payslipData.Net_Salary || 1}
           totalAfterTax={
@@ -125,6 +116,7 @@ export function EmployeePayrollListRowActions({
           taxAmount={payslipData?.Tax_Amount || 0}
           overtimeMinute={payslipData?.overtimeMinute || 0}
           totalOvertime={payslipData?.totalOvertime || 0}
+          late={payslipData?.Late || 0}
         />,
       );
     } else {

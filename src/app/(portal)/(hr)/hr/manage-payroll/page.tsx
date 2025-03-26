@@ -17,14 +17,17 @@ import { Button } from '@/components/ui/button';
 import { usePayrollStatisticsQuery } from '@/hooks/hr/useHrPayroll.hook';
 import { formatedDate } from '@/utils';
 
+import { GeneratePayrollDialog } from './component/Model/GeneratePayroll';
 import { RefreshPayrollDialog } from './component/Model/RefreshModel';
 import PayrollCard from './component/PayrollCard';
 import PayrollTable from './components/PayrollTable.component';
 
 export default function ManagePayrollPage() {
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
-    useTimeRange();
+    useTimeRange('Payroll');
+
   const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
+  const [isGenerate, setIsGenerate] = useState<boolean>(false);
   const { data: payrollStats } = usePayrollStatisticsQuery({
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
@@ -35,6 +38,13 @@ export default function ManagePayrollPage() {
 
   const handleRefreshDialogClose = () => {
     setRefreshDialogOpen(false);
+  };
+  const handleOpen = () => {
+    setIsGenerate(true);
+  };
+
+  const handleClose = () => {
+    setIsGenerate(false);
   };
   return (
     <>
@@ -65,7 +75,7 @@ export default function ManagePayrollPage() {
                 : ''
             }${
               (payrollStats?.records?.totalSalaryDeduction || 0) > 0
-                ? `, $${payrollStats?.records?.totalSalaryDeduction} deductions applied`
+                ? `, $${Math.round(payrollStats?.records?.totalSalaryDeduction || 0)} deductions applied`
                 : ''
             }. Keep payroll seamless and employees motivated!`.trim()}
           >
@@ -77,6 +87,9 @@ export default function ManagePayrollPage() {
             />
             <Button size={'sm'} onClick={handleRefreshDialogOpen}>
               Refresh Payroll
+            </Button>
+            <Button size={'sm'} onClick={handleOpen}>
+              Generate Payroll
             </Button>
           </Header>
           <div className="mt-6">
@@ -96,6 +109,11 @@ export default function ManagePayrollPage() {
         open={RefreshDialogOpen}
         onOpenChange={handleRefreshDialogClose}
         onCloseChange={handleRefreshDialogClose}
+      />
+      <GeneratePayrollDialog
+        open={isGenerate}
+        onOpenChange={handleClose}
+        onCloseChange={handleClose}
       />
     </>
   );
