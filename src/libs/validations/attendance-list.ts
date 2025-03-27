@@ -57,9 +57,9 @@ const breakSchema = z.object({
 });
 
 const userSchema = z.object({
-  _id: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
+  _id: z.string().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
   companyEmail: z.string().optional(),
   Avatar: z.string().optional().nullable(),
   Tahometer_ID: z.string().optional(),
@@ -83,8 +83,11 @@ const attendanceListSchema = z.object({
   date: z.string(),
   breaks: z.array(breakSchema),
   Productivity: z.string(),
-  user: userSchema,
+  user: userSchema.optional(),
+  Remaining_Minutes: z.string().optional(),
   Late_Minutes: z.number().optional(),
+  createdAt: z.string().optional(),
+  __v: z.number().optional(),
 });
 
 const attendanceListApiResponseSchema = z.object({

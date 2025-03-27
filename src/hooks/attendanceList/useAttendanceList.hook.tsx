@@ -1,6 +1,9 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { AttendanceRequestApiResponse } from '@/libs/validations/attendance-list';
+import {
+  AttendanceApiResponse,
+  AttendanceRequestApiResponse,
+} from '@/libs/validations/attendance-list';
 import {
   AttendanceListParams,
   AttendanceRequestParams,
@@ -10,10 +13,7 @@ import {
 } from '@/services/hr/attendance-list.service';
 
 import { UseQueryConfig } from '@/types';
-import {
-  AttendanceDistributionApiResponse,
-  AttendanceListApiResponse,
-} from '@/types/attendance-list.types';
+import { AttendanceDistributionApiResponse } from '@/types/attendance-list.types';
 
 export const useAttendanceListQuery = (
   params: AttendanceListParams,
@@ -26,7 +26,7 @@ export const useAttendanceListQuery = (
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5,
     ...config,
-  }) as UseQueryResult<AttendanceListApiResponse, Error>;
+  }) as UseQueryResult<AttendanceApiResponse, Error>;
 
 export const useAttendanceRequestsQuery = (
   params: AttendanceRequestParams,
