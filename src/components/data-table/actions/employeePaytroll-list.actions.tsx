@@ -102,9 +102,7 @@ export function EmployeePayrollListRowActions({
           basicSalary={basicSalary}
           absentDeduction={payslipData.Absent_Deduction || 0}
           totalEarnings={payslipData.Net_Salary || 1}
-          totalAfterTax={
-            (payslipData.Net_Salary || 0) - (payslipData.Tax_Amount || 0)
-          }
+          netSalary={payslipData.Net_Salary || 0}
           salaryDeduction={payslipData.Total_SalaryDeducton || 0}
           paymentStatus={payslipData.Pay_Status || 'N/A'}
           perks={payslipData?.perks || { increments: [], decrements: [] }}

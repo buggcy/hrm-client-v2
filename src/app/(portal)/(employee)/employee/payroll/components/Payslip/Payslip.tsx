@@ -15,7 +15,7 @@ interface PayslipProps {
   basicSalary: number;
   absentDeduction: number;
   totalEarnings: number;
-  totalAfterTax: number;
+  netSalary: number;
   salaryDeduction: number;
   paymentStatus: string;
   perks: {
@@ -50,7 +50,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       basicSalary,
       absentDeduction,
       totalEarnings,
-      totalAfterTax,
+      netSalary,
       salaryDeduction,
       paymentStatus,
       perks,
@@ -197,7 +197,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Net Salary:</strong>
               </p>
-              <p>{`${totalAfterTax > 0 ? formatCurrency(totalAfterTax) : 0}`}</p>
+              <p>{`${netSalary > 0 ? formatCurrency(netSalary) : 0}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
