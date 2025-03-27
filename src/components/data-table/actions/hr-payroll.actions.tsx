@@ -6,14 +6,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
-import { Eye, HandCoins, MoreHorizontal, RefreshCw } from 'lucide-react';
+import {
+  Eye,
+  HandCoins,
+  MoreHorizontal,
+  RefreshCw,
+  Trash2,
+} from 'lucide-react';
 import moment from 'moment';
 import { createRoot } from 'react-dom/client';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { LoadingButton } from '@/components/LoadingButton';
-import DeleteDialog from '@/components/modals/delete-modal';
+import ConfirmDialog from '@/components/modals/cancel-modal';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -41,11 +47,12 @@ import { useStores } from '@/providers/Store.Provider';
 import Payslip from '@/app/(portal)/(employee)/employee/payroll/components/Payslip/Payslip';
 import { EmployeePayrollListType } from '@/libs/validations/employee';
 import { HRPayrollListType } from '@/libs/validations/hr-payroll';
-import { deleteEmployeeRecord } from '@/services/hr/employee.service';
-import { refreshPayroll } from '@/services/hr/hr-payroll.service';
+import {
+  deletePayroll,
+  refreshPayroll,
+} from '@/services/hr/hr-payroll.service';
 import { payPayroll } from '@/services/hr/payroll.service';
 import { AuthStoreType } from '@/stores/auth';
-import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
 import { EmployeeStoreType } from '@/stores/hr/employee';
 
 import { MessageErrorResponse } from '@/types';
@@ -75,10 +82,6 @@ const FormSchema = (netSalary: number) =>
   });
 
 export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
-  const { employeePayrollStore } = useStores() as {
-    employeePayrollStore: EmployeePayrollStoreType;
-  };
-  const { setRefetchEmployeePayrollList } = employeePayrollStore;
   const [dialogContent] = React.useState<React.ReactNode | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
@@ -225,6 +228,30 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
     },
   });
 
+  const { mutate: deleteMutate, isPending: isDelete } = useMutation({
+    mutationFn: deletePayroll,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on deleting payroll!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      setRefetchEmployeeList(true);
+      setShowDeleteDialog(false);
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutate(data?._id);
+  };
   const handlePay = (data: PayFormData) => {
     mutate(data);
   };
@@ -277,17 +304,27 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
               Refresh
             </DropdownMenuItem>
           </DialogTrigger>
+          <DialogTrigger asChild>
+            <DropdownMenuItem
+              className="text-red-600"
+              onSelect={() => setShowDeleteDialog(true)}
+            >
+              <Trash2 className="mr-2 size-4" />
+              Delete Payroll
+            </DropdownMenuItem>
+          </DialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
       {dialogContent && <DialogContent>{dialogContent}</DialogContent>}
-      <DeleteDialog
-        id={data._id}
+
+      <ConfirmDialog
         isOpen={showDeleteDialog}
         showActionToggle={setShowDeleteDialog}
-        mutationFunc={deleteEmployeeRecord}
-        setRefetch={setRefetchEmployeePayrollList}
+        title={'Confirm Delete'}
+        isPending={isDelete}
+        description={'Are your sure you want to delete this payroll?'}
+        handleDelete={handleDelete}
       />
-
       <AlertDialog open={showPayDialog} onOpenChange={setShowPayDialog}>
         <form>
           <AlertDialogContent>

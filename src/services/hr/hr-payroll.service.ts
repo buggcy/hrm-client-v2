@@ -76,3 +76,13 @@ export const generatePayroll = async ({
   );
   return { message };
 };
+
+export const deletePayroll = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/delete/payroll/${id}`,
+  );
+
+  return { message };
+};
