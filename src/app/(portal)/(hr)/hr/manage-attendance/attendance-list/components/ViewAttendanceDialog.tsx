@@ -40,7 +40,8 @@ export function ViewAttendanceDialog({
   open,
   onOpenChange,
 }: DialogDemoProps) {
-  const user: AttendanceUser = data?.user;
+  const user: AttendanceUser | undefined = data?.user;
+
   const firstName = user?.firstName;
   const lastName = user?.lastName;
   const avatar = user?.Avatar;
