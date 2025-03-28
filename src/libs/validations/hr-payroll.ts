@@ -49,6 +49,7 @@ const HRPayrollSchema = z.object({
       casual: z.number().optional(),
       sick: z.number().optional(),
       annual: z.number().optional(),
+      unpaid: z.number().optional(),
     })
     .optional(),
   Late: z.number().optional(),

@@ -5,6 +5,7 @@ export const attendance_history_status = [
   'Absent',
   'Leave',
   'Holiday',
+  'Unpaid Leave',
 ] as const;
 
 const paginationSchema = z.object({

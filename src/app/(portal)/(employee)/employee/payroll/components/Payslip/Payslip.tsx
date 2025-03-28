@@ -37,6 +37,7 @@ interface PayslipProps {
   overtimeMinute?: number;
   totalOvertime?: number;
   late?: number;
+  unpaidLeaves?: number;
 }
 
 const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
@@ -63,6 +64,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       overtimeMinute,
       totalOvertime,
       late,
+      unpaidLeaves,
     },
     ref,
   ) => {
@@ -237,6 +239,9 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
             </li>
             <li className="flex justify-between border-b border-gray-300 p-2">
               <p>Annual Leaves</p> <span>{annualLeaves || 0}</span>
+            </li>
+            <li className="flex justify-between border-b border-gray-300 p-2">
+              <p>Unpaid Leaves</p> <span>{unpaidLeaves || 0}</span>
             </li>
           </ul>
           <div className="mt-6">

@@ -111,6 +111,7 @@ export function EmployeePayrollListRowActions({
           casualLeaves={payslipData?.Leaves?.casual || 0}
           sickLeaves={payslipData?.Leaves?.sick || 0}
           annualLeaves={payslipData?.Leaves?.annual || 0}
+          unpaidLeaves={payslipData?.Leaves?.unpaid || 0}
           taxAmount={payslipData?.Tax_Amount || 0}
           overtimeMinute={payslipData?.overtimeMinute || 0}
           totalOvertime={payslipData?.totalOvertime || 0}

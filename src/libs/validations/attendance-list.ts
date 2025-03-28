@@ -48,6 +48,7 @@ export const attendance_history_status = [
   'Absent',
   'Leave',
   'Holiday',
+  'Unpaid Leave',
 ] as const;
 
 const breakSchema = z.object({
@@ -78,7 +79,7 @@ const attendanceListSchema = z.object({
   Start_Date: z.string(),
   End_Date: z.string().nullable(),
   Total_Time: z.string(),
-  Status: z.string(),
+  Status: z.enum(attendance_history_status),
   isDeleted: z.boolean(),
   date: z.string(),
   breaks: z.array(breakSchema),

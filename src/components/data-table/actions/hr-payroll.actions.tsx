@@ -155,6 +155,7 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
           totalPerkDecrement={payslipData.totalPerkDecrement || 0}
           casualLeaves={payslipData?.Leaves?.casual || 0}
           sickLeaves={payslipData?.Leaves?.sick || 0}
+          unpaidLeaves={payslipData?.Leaves?.unpaid || 0}
           annualLeaves={payslipData?.Leaves?.annual || 0}
           taxAmount={payslipData?.Tax_Amount || 0}
           overtimeMinute={payslipData?.overtimeMinute || 0}
