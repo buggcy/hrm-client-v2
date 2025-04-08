@@ -39,7 +39,15 @@ interface DialogProps {
 }
 
 const FormSchema = z.object({
-  overtimeMinutes: z.string().min(1, 'Overtime Minutes is required'),
+  overtimeMinutes: z
+    .string()
+    .min(1, 'Overtime Minutes is required')
+    .refine(value => !isNaN(Number(value)), {
+      message: 'Overtime Minutes must be a number',
+    })
+    .refine(value => Number(value) > 0, {
+      message: 'Overtime Minutes must be a positive number',
+    }),
   date: z.date(),
   reason: z.string().min(1, 'Overtime Reason is required'),
 });
@@ -105,7 +113,8 @@ export function AddEditOvertime({
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
-        description: err.message || 'Error on appling for overtime !',
+        description:
+          err?.response?.data?.message || 'Error on appling for overtime !',
         variant: 'error',
       });
     },

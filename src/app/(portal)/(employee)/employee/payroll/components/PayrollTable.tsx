@@ -12,15 +12,23 @@ import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { usePayrollQuery } from '@/hooks/payroll/usePayroll.hook';
+import {
+  usePayrollChartQuery,
+  usePayrollQuery,
+} from '@/hooks/payroll/usePayroll.hook';
 import { EmployeePayrollListType } from '@/libs/validations/employee';
 import { searchPayoutList } from '@/services/employee/employeePayroll.service';
 import { AuthStoreType } from '@/stores/auth';
 import { EmployeePayrollStoreType } from '@/stores/employee/employeePayroll';
 
+import PayrollCards from './PayrollCards';
+
 import { MessageErrorResponse } from '@/types';
 
-const PayrollTable: FunctionComponent = () => {
+const PayrollTable: FunctionComponent<{ month: string; year: string }> = ({
+  month,
+  year,
+}) => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
   const searchParams = useSearchParams();
@@ -50,7 +58,15 @@ const PayrollTable: FunctionComponent = () => {
       limit,
       userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
       status,
+      month,
+      year,
     },
+    {
+      enabled: !!user?.Tahometer_ID && !!month && !!year,
+    },
+  );
+  const { data: payrollChart, refetch: refetchPayroll } = usePayrollChartQuery(
+    user?.Tahometer_ID ? user.Tahometer_ID : '',
     {
       enabled: !!user?.Tahometer_ID,
     },
@@ -115,6 +131,8 @@ const PayrollTable: FunctionComponent = () => {
         limit,
         status,
         userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
+        month,
+        year,
       });
     } else {
       void (async () => {
@@ -129,6 +147,8 @@ const PayrollTable: FunctionComponent = () => {
     mutate,
     status,
     user?.Tahometer_ID,
+    month,
+    year,
   ]);
 
   useEffect(() => {
@@ -141,6 +161,7 @@ const PayrollTable: FunctionComponent = () => {
     if (refetchEmployeePayrollList) {
       void (async () => {
         await refetch();
+        await refetchPayroll();
       })();
 
       setRefetchEmployeePayrollList(false);
@@ -152,6 +173,7 @@ const PayrollTable: FunctionComponent = () => {
     setRefetchEmployeePayrollList,
     refetch,
     status,
+    refetchPayroll,
   ]);
 
   const handleSearchChange = (term: string) => {
@@ -182,6 +204,12 @@ const PayrollTable: FunctionComponent = () => {
 
   return (
     <>
+      <PayrollCards
+        month={month}
+        year={year}
+        payrollChart={payrollChart?.monthlyPayroll || []}
+      />
+
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={9} rowCount={limit} />
       ) : (

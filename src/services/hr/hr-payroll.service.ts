@@ -59,3 +59,30 @@ export const refreshPayroll = async ({
   );
   return { message };
 };
+
+export const generatePayroll = async ({
+  userIds,
+  month,
+  year,
+}: {
+  userIds: string[];
+  month?: string;
+  year?: string;
+}): Promise<SuccessMessageResponse> => {
+  const body = { userIds, month, year };
+  const { message }: SuccessMessageResponse = await baseAPI.post(
+    `/generate-payroll`,
+    body,
+  );
+  return { message };
+};
+
+export const deletePayroll = async (
+  id: string,
+): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/delete/payroll/${id}`,
+  );
+
+  return { message };
+};

@@ -115,8 +115,7 @@ const AttendanceListTable: FunctionComponent<AttendanceHistoryTableProps> = ({
       </div>
     );
 
-  const tableData: AttendanceListType[] = (attendanceList?.data ||
-    []) as AttendanceListType[];
+  const tableData: AttendanceListType[] = attendanceList?.data ?? [];
 
   const tablePageCount: number | undefined =
     attendanceList?.pagination.totalPages;
