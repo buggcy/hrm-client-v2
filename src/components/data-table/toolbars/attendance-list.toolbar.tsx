@@ -74,7 +74,6 @@ export function AttendanceListToolbar<TData extends DataTableType>({
           inputClassName="h-8 w-[150px] lg:w-[250px]"
           loading={searchLoading}
         />
-
         <DataTableFacetedFilter
           onFilterChange={setFilterValue}
           title="Status"
@@ -82,12 +81,13 @@ export function AttendanceListToolbar<TData extends DataTableType>({
           filterValue={filterValue}
         />
 
-        {(isFiltered || searchTerm) && (
+        {(isFiltered || searchTerm || filterValue.length > 0) && (
           <Button
             variant="ghost"
             onClick={() => {
               table.resetColumnFilters();
               onSearch('');
+              setFilterValue([]);
             }}
             className="h-8 px-2 lg:px-3"
           >

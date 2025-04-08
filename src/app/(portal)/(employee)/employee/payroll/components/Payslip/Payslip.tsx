@@ -15,7 +15,7 @@ interface PayslipProps {
   basicSalary: number;
   absentDeduction: number;
   totalEarnings: number;
-  totalAfterTax: number;
+  netSalary: number;
   salaryDeduction: number;
   paymentStatus: string;
   perks: {
@@ -36,6 +36,8 @@ interface PayslipProps {
   taxAmount?: number;
   overtimeMinute?: number;
   totalOvertime?: number;
+  late?: number;
+  unpaidLeaves?: number;
 }
 
 const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
@@ -49,7 +51,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       basicSalary,
       absentDeduction,
       totalEarnings,
-      totalAfterTax,
+      netSalary,
       salaryDeduction,
       paymentStatus,
       perks,
@@ -61,6 +63,8 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       taxAmount,
       overtimeMinute,
       totalOvertime,
+      late,
+      unpaidLeaves,
     },
     ref,
   ) => {
@@ -69,6 +73,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
     const totalPerkAmount =
       (totalPerkIncrement || 0) - (totalPerkDecrement || 0);
     const allDecrements = [
+      { name: 'Late Check-In Deduction', amount: late },
       { name: 'Tax Deduction', amount: taxAmount },
 
       ...(perks.decrements || []),
@@ -155,7 +160,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
                   </td>
                   <td className="border-b border-gray-300 p-2 text-center">{`${formatCurrency(basicSalary)}`}</td>
                   <td className="border-b border-gray-300 p-2 text-center">
-                    Absent/Late Deduction
+                    Absent Deduction
                   </td>
                   <td className="border-b border-gray-300 p-2 text-center">
                     {`${formatCurrency(absentDeduction)}`}
@@ -194,7 +199,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Net Salary:</strong>
               </p>
-              <p>{`${totalAfterTax > 0 ? formatCurrency(totalAfterTax) : 0}`}</p>
+              <p>{`${netSalary > 0 ? formatCurrency(netSalary) : 0}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
@@ -234,6 +239,9 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
             </li>
             <li className="flex justify-between border-b border-gray-300 p-2">
               <p>Annual Leaves</p> <span>{annualLeaves || 0}</span>
+            </li>
+            <li className="flex justify-between border-b border-gray-300 p-2">
+              <p>Unpaid Leaves</p> <span>{unpaidLeaves || 0}</span>
             </li>
           </ul>
           <div className="mt-6">
