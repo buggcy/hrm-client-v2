@@ -1,6 +1,8 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
+
+import { Banknote, EllipsisVertical, RefreshCw } from 'lucide-react';
 
 import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
@@ -13,8 +15,15 @@ import {
 } from '@/components/Layout';
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 import { usePayrollStatisticsQuery } from '@/hooks/hr/useHrPayroll.hook';
+import { useHRPayrollListQuery } from '@/hooks/payroll/useHRPayroll.hook';
 import { formatedDate } from '@/utils';
 
 import { GeneratePayrollDialog } from './component/Model/GeneratePayroll';
@@ -25,13 +34,27 @@ import PayrollTable from './components/PayrollTable.component';
 export default function ManagePayrollPage() {
   const { timeRange, selectedDate, setTimeRange, handleSetDate } =
     useTimeRange('Payroll');
-
+  const currentDate = new Date().getDate();
   const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
   const [isGenerate, setIsGenerate] = useState<boolean>(false);
   const { data: payrollStats } = usePayrollStatisticsQuery({
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
   });
+  const { data: payrollList, refetch } = useHRPayrollListQuery({
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
+  });
+  const [hasPayrollData, setHasPayrollData] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (payrollList?.data && payrollList.data.length > 0) {
+      setHasPayrollData(true);
+    } else {
+      setHasPayrollData(false);
+    }
+  }, [payrollList]);
+
   const handleRefreshDialogOpen = () => {
     setRefreshDialogOpen(true);
   };
@@ -46,6 +69,7 @@ export default function ManagePayrollPage() {
   const handleClose = () => {
     setIsGenerate(false);
   };
+
   return (
     <>
       <Layout>
@@ -57,27 +81,7 @@ export default function ManagePayrollPage() {
         </LayoutHeader>
         <LayoutWrapper wrapperClassName="flex flex-1">
           <Header
-            subheading={`Powering paydays with precision! ${
-              (payrollStats?.records?.totalPaid || 0) > 0
-                ? `${payrollStats?.records?.totalPaid} salaries processed,`
-                : ''
-            }${
-              (payrollStats?.records?.totalUnpaid || 0) > 0
-                ? ` ${payrollStats?.records?.totalUnpaid} awaiting disbursement`
-                : ''
-            }${
-              (payrollStats?.records?.totalPaidAmount || 0) > 0
-                ? `, $${payrollStats?.records?.totalPaidAmount} paid`
-                : ''
-            }${
-              (payrollStats?.records?.totalAmountTobePaid || 0) > 0
-                ? `, $${payrollStats?.records?.totalAmountTobePaid} pending`
-                : ''
-            }${
-              (payrollStats?.records?.totalSalaryDeduction || 0) > 0
-                ? `, $${Math.round(payrollStats?.records?.totalSalaryDeduction || 0)} deductions applied`
-                : ''
-            }. Keep payroll seamless and employees motivated!`.trim()}
+            subheading={`Seamless Payroll Management: Refresh, Generate, and Track with Confidence!`}
           >
             <DateRangePicker
               timeRange={timeRange}
@@ -85,12 +89,37 @@ export default function ManagePayrollPage() {
               setTimeRange={setTimeRange}
               setDate={handleSetDate}
             />
-            <Button size={'sm'} onClick={handleRefreshDialogOpen}>
-              Refresh Payroll
-            </Button>
-            <Button size={'sm'} onClick={handleOpen}>
-              Generate Payroll
-            </Button>
+            {currentDate <= 5 ? (
+              <Button size={'sm'} onClick={handleOpen}>
+                Generate Payroll
+              </Button>
+            ) : null}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button className="relative px-2 py-1">
+                  <EllipsisVertical size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="bottom" align="end">
+                <DropdownMenuItem
+                  onClick={handleRefreshDialogOpen}
+                  className="flex flex-row gap-1"
+                >
+                  <RefreshCw size={16} />
+                  <span className="lg:block">Refresh Payroll</span>
+                </DropdownMenuItem>
+                {!(currentDate <= 5) && (
+                  <DropdownMenuItem
+                    className="flex flex-row gap-1"
+                    onClick={handleOpen}
+                  >
+                    <Banknote size={16} />
+                    <span className="lg:block">Generate Payroll</span>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </Header>
           <div className="mt-6">
             <Suspense fallback={<div>Loading...</div>}>
@@ -114,6 +143,8 @@ export default function ManagePayrollPage() {
         open={isGenerate}
         onOpenChange={handleClose}
         onCloseChange={handleClose}
+        hasData={hasPayrollData}
+        refetch={refetch}
       />
     </>
   );

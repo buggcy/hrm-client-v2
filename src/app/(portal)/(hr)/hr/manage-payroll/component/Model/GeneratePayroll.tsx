@@ -40,6 +40,8 @@ interface DialogProps {
   open: boolean;
   onOpenChange: () => void;
   onCloseChange: () => void;
+  hasData: boolean;
+  refetch: () => void;
 }
 interface Employee {
   id: string;
@@ -53,6 +55,8 @@ export function GeneratePayrollDialog({
   open,
   onOpenChange,
   onCloseChange,
+  hasData,
+  refetch,
 }: DialogProps) {
   const {
     control,
@@ -117,15 +121,19 @@ export function GeneratePayrollDialog({
       onCloseChange();
       setIsAllSelected(false);
       setRefetchEmployeeList(true);
+      refetch();
     },
   });
 
   useEffect(() => {
     if (!open) {
-      setDate(new Date());
+      const defaultDate = hasData
+        ? new Date()
+        : new Date(new Date().setMonth(new Date().getMonth() - 1));
+      setDate(defaultDate);
       setSelectedEmployees([]);
     }
-  }, [open]);
+  }, [hasData, open]);
 
   useEffect(() => {
     if (users?.users && users.users.length > 0) {
