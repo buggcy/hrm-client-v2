@@ -89,7 +89,7 @@ export function RefreshAttendanceDialog({
 
   const onSubmit = (data: RefreshAttendanceFormData) => {
     mutate({
-      userIds: [user?.Tahometer_ID || ''],
+      userIds: [user?.id || ''],
       from: data.fromDate.toLocaleDateString('en-CA'),
       to: data.toDate.toLocaleDateString('en-CA'),
     });

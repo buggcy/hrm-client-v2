@@ -73,7 +73,7 @@ export function AttendanceHistoryRowActions({ row }: DataTableRowActionsProps) {
 
   const handleRefreshAttendance = () => {
     mutate({
-      userIds: [user?.Tahometer_ID || ''],
+      userIds: [user?.id || ''],
       from: row.original.date.split('T')[0],
       to: row.original.date.split('T')[0],
     });
