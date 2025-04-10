@@ -146,7 +146,7 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
           employeeDepartment={departmentNames || 'N/A'}
           basicSalary={basicSalary}
           absentDeduction={payslipData.Absent_Deduction || 0}
-          totalEarnings={payslipData.Net_Salary || 1}
+          totalEarnings={payslipData.Net_Salary || 0}
           netSalary={payslipData.Net_Salary || 0}
           salaryDeduction={payslipData.Total_SalaryDeducton || 0}
           paymentStatus={payslipData.Pay_Status || 'N/A'}

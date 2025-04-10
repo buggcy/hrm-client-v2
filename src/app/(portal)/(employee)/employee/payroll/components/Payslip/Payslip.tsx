@@ -199,7 +199,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Net Salary:</strong>
               </p>
-              <p>{`${netSalary > 0 ? formatCurrency(netSalary) : 0}`}</p>
+              <p>{`${netSalary > 0 ? formatCurrency(netSalary) : formatCurrency(0)}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
@@ -211,13 +211,13 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Total Deduction:</strong>
               </p>
-              <p>{`${salaryDeduction > 0 ? formatCurrency(salaryDeduction) : `Rs. 0`}`}</p>
+              <p>{`${salaryDeduction > 0 ? formatCurrency(salaryDeduction) : formatCurrency(0)}`}</p>
             </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
                 <strong>Total Earnings:</strong>
               </p>
-              <p>{`${totalEarningsWithoutPerks > 0 ? formatCurrency(totalEarningsWithoutPerks) : 0}`}</p>
+              <p>{`${totalEarningsWithoutPerks > 0 ? formatCurrency(totalEarningsWithoutPerks) : formatCurrency(0)}`}</p>
             </div>
           </div>
           <div className="mb-4 text-center">
