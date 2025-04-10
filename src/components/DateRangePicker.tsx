@@ -32,8 +32,10 @@ export type TimeRange =
   | 'Last 12 Months'
   | 'Last 6 Months'
   | 'Custom';
-export const useTimeRange = () => {
-  const [timeRange, setTimeRange] = useState<TimeRange>('Current Month');
+export const useTimeRange = (title?: string) => {
+  const [timeRange, setTimeRange] = useState<TimeRange>(
+    title ? 'Last Month' : 'Current Month',
+  );
   const [selectedDate, setSelectedDate] = useState<DateRange | undefined>({
     from: subDays(new Date(), 30),
     to: new Date(),

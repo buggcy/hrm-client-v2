@@ -123,7 +123,7 @@ export function AttendanceDialog({
   } = useForm<AddAttendanceFormData>({
     resolver: zodResolver(addAttendanceSchema),
     defaultValues: {
-      employee: type === 'edit' ? data?.user._id : '',
+      employee: type === 'edit' ? data?.user?._id : '',
       date:
         type === 'edit' && data?.date
           ? new Date(data.date)

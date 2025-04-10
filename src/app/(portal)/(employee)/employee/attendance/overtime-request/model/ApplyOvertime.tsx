@@ -39,7 +39,15 @@ interface DialogProps {
 }
 
 const FormSchema = z.object({
-  overtimeMinutes: z.string().min(1, 'Overtime Minutes is required'),
+  overtimeMinutes: z
+    .string()
+    .min(1, 'Overtime Minutes is required')
+    .refine(value => !isNaN(Number(value)), {
+      message: 'Overtime Minutes must be a number',
+    })
+    .refine(value => Number(value) > 0, {
+      message: 'Overtime Minutes must be a positive number',
+    }),
   date: z.date(),
   reason: z.string().min(1, 'Overtime Reason is required'),
 });
@@ -55,6 +63,10 @@ export function AddEditOvertime({
 }: DialogProps) {
   const { user } = useAuthStore();
   const userId: string | undefined = user?.id;
+  const userJoiningDate = user?.Joining_Date
+    ? new Date(user.Joining_Date)
+    : null;
+
   const {
     control,
     handleSubmit,
@@ -66,7 +78,7 @@ export function AddEditOvertime({
     defaultValues: {
       overtimeMinutes: TypeToEdit?.overtimeMinutes?.toString() || '',
       reason: TypeToEdit?.reason || '',
-      date: TypeToEdit?.date ? new Date(TypeToEdit.date) : new Date(),
+      date: TypeToEdit?.date ? new Date(TypeToEdit.date) : undefined,
     },
   });
 
@@ -74,7 +86,7 @@ export function AddEditOvertime({
     if (type === 'edit' && TypeToEdit) {
       reset({
         overtimeMinutes: TypeToEdit?.overtimeMinutes?.toString() || '',
-        date: TypeToEdit?.date ? new Date(TypeToEdit.date) : new Date(),
+        date: TypeToEdit?.date ? new Date(TypeToEdit.date) : undefined,
         reason: TypeToEdit?.reason || '',
       });
     }
@@ -101,7 +113,8 @@ export function AddEditOvertime({
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
-        description: err.message || 'Error on appling for overtime !',
+        description:
+          err?.response?.data?.message || 'Error on appling for overtime !',
         variant: 'error',
       });
     },
@@ -180,6 +193,18 @@ export function AddEditOvertime({
                     initialDate={field.value}
                     onDateChange={field.onChange}
                     className="h-auto"
+                    disabled={(date: Date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+
+                      const isFutureOrToday = date >= today;
+
+                      const isBeforeJoining = userJoiningDate
+                        ? date < userJoiningDate
+                        : false;
+
+                      return isFutureOrToday || isBeforeJoining;
+                    }}
                   />
                 )}
               />

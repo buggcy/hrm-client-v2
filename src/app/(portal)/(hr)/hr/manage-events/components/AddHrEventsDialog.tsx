@@ -83,7 +83,7 @@ export function HrEventsDialogDemo({
       Start_Date: today,
       End_Date: today,
       EventType: '',
-      status: '',
+      status: 'true',
     },
   });
 
@@ -159,9 +159,6 @@ export function HrEventsDialogDemo({
                     initialDate={field.value}
                     onDateChange={field.onChange}
                     className="h-auto"
-                    disabled={date =>
-                      date < today || date < new Date('1900-01-01')
-                    }
                   />
                 )}
               />
@@ -183,9 +180,6 @@ export function HrEventsDialogDemo({
                     initialDate={field.value}
                     onDateChange={field.onChange}
                     className="h-auto"
-                    disabled={date =>
-                      date < today || date < new Date('1900-01-01')
-                    }
                   />
                 )}
               />
@@ -266,7 +260,7 @@ export function HrEventsDialogDemo({
                 render={({ field }) => (
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value || 'true'}
                   >
                     <SelectTrigger className="relative z-50 w-full rounded-md border px-3 py-2 text-left text-sm">
                       <SelectValue placeholder="Select status" />

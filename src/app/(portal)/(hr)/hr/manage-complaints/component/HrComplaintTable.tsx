@@ -198,7 +198,25 @@ const HrComplaintTable: FunctionComponent<Props> = () => {
     : getComplaints?.pagination?.totalPages || 0;
   return (
     <>
-      <Header subheading="Efficiently Track, Review, and Resolve Employee Complaints!">
+      <Header
+        subheading={`Resolve workplace concerns seamlessly! 
+          ${
+            (complaintRecords?.records?.pendingCount || 0) > 0
+              ? ` ${complaintRecords?.records?.pendingCount} complaints pending,`
+              : ''
+          }
+              
+           ${
+             (complaintRecords?.records?.resolvedCount || 0) > 0
+               ? ` ${complaintRecords?.records?.resolvedCount} complaints resolved`
+               : ''
+           } 
+                ${
+                  (complaintRecords?.records?.canceledCount || 0) > 0
+                    ? ` ${complaintRecords?.records?.canceledCount} complaints canceled`
+                    : ''
+                }—track, review, and take action on every complaint efficiently!!`}
+      >
         <DateRangePicker
           timeRange={timeRange}
           selectedDate={selectedDate}
