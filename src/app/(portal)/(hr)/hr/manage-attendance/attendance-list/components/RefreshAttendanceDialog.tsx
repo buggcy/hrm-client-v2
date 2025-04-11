@@ -128,9 +128,9 @@ export function RefreshAttendanceDialog({
   }, [users]);
 
   const handleEmployeeChange = (selectedIds: string[]) => {
-    const selectedEmps = employees.filter(emp => selectedIds.includes(emp.id));
-    const selectedEmpIds = selectedEmps.map(emp => emp.Tahometer_ID || '');
-    setSelectedEmployees(selectedEmpIds);
+    // const selectedEmps = employees.filter(emp => selectedIds.includes(emp.id));
+    // const selectedEmpIds = selectedEmps.map(emp => emp.Tahometer_ID || '');
+    setSelectedEmployees(selectedIds);
   };
 
   useEffect(() => {

@@ -45,8 +45,8 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
   const todayDate = moment().format('YYYY-MM-DD');
 
   const { data } = useTodayAttendence(
-    user?.Tahometer_ID || '',
-    user?.Tahometer_ID ? todayDate : '',
+    user?.id || '',
+    user?.id ? todayDate : '',
   );
   const startTime = moment(data?.data?.Start_Date).format('hh:mm A');
 
@@ -83,7 +83,7 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
   useEffect(() => {
     if (user) {
       mutate({
-        id: user?.Tahometer_ID ? user.Tahometer_ID : '',
+        id: user?.id ? user.id : '',
         from: formatedDate(selectedDate?.from),
         to: formatedDate(selectedDate?.to),
       });
@@ -93,7 +93,7 @@ const AttendanceHistory: FunctionComponent<EmployeeDashboardProps> = () => {
   useEffect(() => {
     if (refetchAttendanceHistoryList) {
       mutate({
-        id: user?.Tahometer_ID ? user.Tahometer_ID : '',
+        id: user?.id ? user.id : '',
         from: selectedDate?.from?.toISOString(),
         to: selectedDate?.to?.toISOString(),
       });
