@@ -56,19 +56,19 @@ const PayrollTable: FunctionComponent<{ month: string; year: string }> = ({
     {
       page,
       limit,
-      userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
+      userId: user?.id ? user.id : '',
       status,
       month,
       year,
     },
     {
-      enabled: !!user?.Tahometer_ID && !!month && !!year,
+      enabled: !!user?.id && !!month && !!year,
     },
   );
   const { data: payrollChart, refetch: refetchPayroll } = usePayrollChartQuery(
-    user?.Tahometer_ID ? user.Tahometer_ID : '',
+    user?.id ? user.id : '',
     {
-      enabled: !!user?.Tahometer_ID,
+      enabled: !!user?.id,
     },
   );
 

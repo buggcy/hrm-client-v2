@@ -24,7 +24,7 @@ const PayrollCards: FunctionComponent<PayrollCardsProps> = ({
   const { user } = authStore;
 
   const { data: payrollList, error } = usePayrollQuery({
-    userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
+    userId: user?.id ? user.id : '',
     month,
     year,
   });

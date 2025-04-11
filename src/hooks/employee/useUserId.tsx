@@ -11,7 +11,7 @@ export const useUserId = (): string | null => {
 
   useEffect(() => {
     if (user) {
-      const userId: string = user?.Tahometer_ID || '';
+      const userId: string = user?.id || '';
       setUserId(userId);
     }
   }, [user]);
