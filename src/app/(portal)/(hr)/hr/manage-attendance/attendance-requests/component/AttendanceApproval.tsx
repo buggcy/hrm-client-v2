@@ -2,8 +2,6 @@
 
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
-import Header from '@/components/Header/Header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -14,11 +12,16 @@ import { formatedDate } from '@/utils';
 
 import { AttendanceRequest } from './ViewAttendanceRequest';
 
-interface HrAttendanceRequestsProps {}
+interface HrAttendanceRequestsProps {
+  selectedDate?: {
+    from?: Date;
+    to?: Date;
+  };
+}
 
-const AttendanceApproval: FunctionComponent<HrAttendanceRequestsProps> = () => {
-  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
-    useTimeRange();
+const AttendanceApproval: FunctionComponent<HrAttendanceRequestsProps> = ({
+  selectedDate,
+}) => {
   const { attendanceListStore } = useStores() as {
     attendanceListStore: AttendanceListStoreType;
   };
@@ -54,14 +57,6 @@ const AttendanceApproval: FunctionComponent<HrAttendanceRequestsProps> = () => {
 
   return (
     <>
-      <Header subheading="Review and Approve Employee Attendance Requests">
-        <DateRangePicker
-          timeRange={timeRange}
-          selectedDate={selectedDate}
-          setTimeRange={setTimeRange}
-          setDate={handleSetDate}
-        />
-      </Header>
       <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-4 lg:gap-6">
         {isLoading || isFetching ? (
           <Skeleton className="h-6 w-full" />

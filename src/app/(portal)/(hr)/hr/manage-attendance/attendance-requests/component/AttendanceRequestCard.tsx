@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import {
   Tooltip,
   TooltipContent,
@@ -23,8 +25,11 @@ import {
   acceptAttendanceRequest,
   rejectAttendanceRequest,
 } from '@/services/hr/attendance-list.service';
+import { AuthStoreType } from '@/stores/auth';
 import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
 import { cn } from '@/utils';
+
+import RejectRequestModel from '../../leave-list/components/Modal/RejectionModal';
 
 import { MessageErrorResponse } from '@/types';
 
@@ -36,8 +41,12 @@ export const AttendanceRequestCard = ({
   const { attendanceListStore } = useStores() as {
     attendanceListStore: AttendanceListStoreType;
   };
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
+  const userId: string | undefined = user?.id;
   const { setRefetchAttendanceList } = attendanceListStore;
-
+  const [selectedReqId, setSelectedReqId] = useState<string>('');
+  const [showRejectDialog, setShowRejectDialog] = useState<boolean>(false);
   const { mutate: AcceptMutate, isPending: AcceptPending } = useMutation({
     mutationFn: ({ id }: { id: string }) => acceptAttendanceRequest(id),
     onError: (err: AxiosError<MessageErrorResponse>) => {
@@ -59,7 +68,7 @@ export const AttendanceRequestCard = ({
   });
 
   const { mutate: RejectMutate, isPending: RejectPending } = useMutation({
-    mutationFn: ({ id }: { id: string }) => rejectAttendanceRequest(id),
+    mutationFn: rejectAttendanceRequest,
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
@@ -75,15 +84,12 @@ export const AttendanceRequestCard = ({
         variant: 'success',
       });
       setRefetchAttendanceList(true);
+      setShowRejectDialog(false);
     },
   });
 
   const handleAccept = (requestId: string) => {
     AcceptMutate({ id: requestId });
-  };
-
-  const handleReject = (requestId: string) => {
-    RejectMutate({ id: requestId });
   };
 
   const formatTime12Hour = (dateString: string | undefined | null) => {
@@ -258,9 +264,9 @@ export const AttendanceRequestCard = ({
             className="p-2 text-sm"
             variant="outline"
             onClick={() => {
-              handleReject(request?._id);
+              setSelectedReqId(request?._id);
+              setShowRejectDialog(true);
             }}
-            disabled={RejectPending}
           >
             Reject Request
           </Button>
@@ -276,6 +282,14 @@ export const AttendanceRequestCard = ({
           </Button>
         </CardFooter>
       </Card>
+      <RejectRequestModel
+        isOpen={showRejectDialog}
+        showActionToggle={setShowRejectDialog}
+        id={selectedReqId}
+        hrId={userId}
+        RejectMutate={RejectMutate}
+        RejectPending={RejectPending}
+      />
     </>
   );
 };

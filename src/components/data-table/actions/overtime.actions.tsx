@@ -25,6 +25,7 @@ import { AddEditOvertime } from '@/app/(portal)/(employee)/employee/attendance/o
 import ViewOvertime from '@/app/(portal)/(employee)/employee/attendance/overtime-request/model/ViewRequest';
 import { OvertimeListType } from '@/libs/validations/overtime';
 import { updateOvertime } from '@/services/employee/overtime.service';
+import { useAuthStore } from '@/stores/auth';
 import { OvertimeStoreType } from '@/stores/employee/overtime';
 
 import { MessageErrorResponse } from '@/types';
@@ -43,7 +44,8 @@ export function OvertimeRowActions({ row }: DataTableRowActionsProps) {
     null,
   );
   const [isView, setIsView] = React.useState<boolean>(false);
-
+  const { user } = useAuthStore();
+  const roleId: number | undefined = user?.roleId;
   const { overtimeStore } = useStores() as {
     overtimeStore: OvertimeStoreType;
   };
@@ -110,7 +112,7 @@ export function OvertimeRowActions({ row }: DataTableRowActionsProps) {
             View Request
           </DropdownMenuItem>
 
-          {row?.getValue('status') === 'Pending' ? (
+          {row?.getValue('status') === 'Pending' && roleId === 2 ? (
             <>
               <DialogTrigger asChild onClick={() => handleEdit(data)}>
                 <DropdownMenuItem>

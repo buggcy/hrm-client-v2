@@ -18,7 +18,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
 
@@ -125,11 +125,9 @@ export default function AcceptOrRejectOvertime({
                             name="reason"
                             control={control}
                             render={({ field }) => (
-                              <Input
-                                type="text"
-                                id="reason"
-                                placeholder={'Please Enter Rejection Reason'}
-                                {...field}
+                              <FormattedTextArea
+                                value={field.value || ''}
+                                onChange={field.onChange}
                               />
                             )}
                           />
