@@ -127,13 +127,13 @@ export function RefreshPayrollDialog({
 
   const handleEmployeeChange = (selectedIds: string[]) => {
     const selectedEmps = employees.filter(emp => selectedIds.includes(emp.id));
-    const selectedEmpIds = selectedEmps.map(emp => emp.Tahometer_ID || '');
+    const selectedEmpIds = selectedEmps.map(emp => emp.id || '');
     setSelectedEmployees(selectedEmpIds);
   };
 
   useEffect(() => {
     if (isAllSelected) {
-      setSelectedEmployees(employees.map(emp => emp.Tahometer_ID || ''));
+      setSelectedEmployees(employees.map(emp => emp.id || ''));
       setValue(
         'employee',
         employees.map(emp => emp.id),
