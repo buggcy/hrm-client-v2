@@ -40,6 +40,7 @@ interface DialogProps {
   open: boolean;
   onOpenChange: () => void;
   onCloseChange: () => void;
+  refetch: () => void;
 }
 interface Employee {
   id: string;
@@ -53,6 +54,7 @@ export function RefreshPayrollDialog({
   open,
   onOpenChange,
   onCloseChange,
+  refetch,
 }: DialogProps) {
   const {
     control,
@@ -102,6 +104,7 @@ export function RefreshPayrollDialog({
       onCloseChange();
       setIsAllSelected(false);
       setRefetchEmployeeList(true);
+      refetch();
     },
   });
 
