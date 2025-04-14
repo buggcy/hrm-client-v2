@@ -40,6 +40,8 @@ interface DialogProps {
   open: boolean;
   onOpenChange: () => void;
   onCloseChange: () => void;
+  hasData: boolean;
+  refetch: () => void;
 }
 interface Employee {
   id: string;
@@ -53,6 +55,8 @@ export function GeneratePayrollDialog({
   open,
   onOpenChange,
   onCloseChange,
+  hasData,
+  refetch,
 }: DialogProps) {
   const {
     control,
@@ -117,15 +121,19 @@ export function GeneratePayrollDialog({
       onCloseChange();
       setIsAllSelected(false);
       setRefetchEmployeeList(true);
+      refetch();
     },
   });
 
   useEffect(() => {
     if (!open) {
-      setDate(new Date());
+      const defaultDate = hasData
+        ? new Date()
+        : new Date(new Date().setMonth(new Date().getMonth() - 1));
+      setDate(defaultDate);
       setSelectedEmployees([]);
     }
-  }, [open]);
+  }, [hasData, open]);
 
   useEffect(() => {
     if (users?.users && users.users.length > 0) {
@@ -142,7 +150,7 @@ export function GeneratePayrollDialog({
   useEffect(() => {
     if (open && employees.length > 0) {
       setIsAllSelected(true);
-      const allEmployeeIds = employees.map(emp => emp.Tahometer_ID || '');
+      const allEmployeeIds = employees.map(emp => emp.id || '');
       const allEmployeeFormIds = employees.map(emp => emp.id);
 
       setSelectedEmployees(allEmployeeIds);
@@ -151,7 +159,7 @@ export function GeneratePayrollDialog({
   }, [open, employees, setValue]);
   const handleEmployeeChange = (selectedIds: string[]) => {
     const selectedEmps = employees.filter(emp => selectedIds.includes(emp.id));
-    const selectedEmpIds = selectedEmps.map(emp => emp.Tahometer_ID || '');
+    const selectedEmpIds = selectedEmps.map(emp => emp.id || '');
     setSelectedEmployees(selectedEmpIds);
     if (selectedIds.length === employees.length) {
       setIsAllSelected(true);
@@ -162,7 +170,7 @@ export function GeneratePayrollDialog({
 
   useEffect(() => {
     if (isAllSelected) {
-      setSelectedEmployees(employees.map(emp => emp.Tahometer_ID || ''));
+      setSelectedEmployees(employees.map(emp => emp.id || ''));
       setValue(
         'employee',
         employees.map(emp => emp.id),

@@ -146,7 +146,7 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
           employeeDepartment={departmentNames || 'N/A'}
           basicSalary={basicSalary}
           absentDeduction={payslipData.Absent_Deduction || 0}
-          totalEarnings={payslipData.Net_Salary || 1}
+          totalEarnings={payslipData.Net_Salary || 0}
           netSalary={payslipData.Net_Salary || 0}
           salaryDeduction={payslipData.Total_SalaryDeducton || 0}
           paymentStatus={payslipData.Pay_Status || 'N/A'}
@@ -258,7 +258,7 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
     const month = moment(row?.Date).format('MM');
     const year = moment(row?.Date).format('YYYY');
     RefreshMutate({
-      userIds: [row?.User_ID || ''],
+      userIds: [row?.Emp_ID?._id || ''],
       month,
       year,
     });

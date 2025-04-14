@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -138,9 +139,14 @@ export function SignInForm() {
           )}
         />
         <FormMessage />
-        <Button className="w-full" type="submit" disabled={isPending}>
-          Sign In {isPending && '...'}
-        </Button>
+        <LoadingButton
+          className="w-full"
+          type="submit"
+          loading={isPending}
+          disabled={isPending}
+        >
+          Sign In
+        </LoadingButton>
       </form>
     </Form>
   );
