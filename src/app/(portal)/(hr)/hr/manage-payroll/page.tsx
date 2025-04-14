@@ -37,10 +37,11 @@ export default function ManagePayrollPage() {
   const currentDate = new Date().getDate();
   const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
   const [isGenerate, setIsGenerate] = useState<boolean>(false);
-  const { data: payrollStats } = usePayrollStatisticsQuery({
-    from: formatedDate(selectedDate?.from),
-    to: formatedDate(selectedDate?.to),
-  });
+  const { data: payrollStats, refetch: refetchStats } =
+    usePayrollStatisticsQuery({
+      from: formatedDate(selectedDate?.from),
+      to: formatedDate(selectedDate?.to),
+    });
   const { data: payrollList, refetch } = useHRPayrollListQuery({
     from: formatedDate(selectedDate?.from),
     to: formatedDate(selectedDate?.to),
@@ -69,7 +70,9 @@ export default function ManagePayrollPage() {
   const handleClose = () => {
     setIsGenerate(false);
   };
-
+  const refetchAll = async () => {
+    await Promise.all([refetch(), refetchStats()]);
+  };
   return (
     <>
       <Layout>
@@ -138,13 +141,14 @@ export default function ManagePayrollPage() {
         open={RefreshDialogOpen}
         onOpenChange={handleRefreshDialogClose}
         onCloseChange={handleRefreshDialogClose}
+        refetch={refetchAll}
       />
       <GeneratePayrollDialog
         open={isGenerate}
         onOpenChange={handleClose}
         onCloseChange={handleClose}
         hasData={hasPayrollData}
-        refetch={refetch}
+        refetch={refetchAll}
       />
     </>
   );

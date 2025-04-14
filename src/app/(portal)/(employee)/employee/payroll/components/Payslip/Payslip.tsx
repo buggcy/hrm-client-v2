@@ -217,7 +217,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Total Earnings:</strong>
               </p>
-              <p>{`${totalEarningsWithoutPerks > 0 ? formatCurrency(totalEarningsWithoutPerks) : formatCurrency(0)}`}</p>
+              <p>{`${totalEarningsWithoutPerks && netSalary > 0 ? formatCurrency(totalEarningsWithoutPerks) : formatCurrency(0)}`}</p>
             </div>
           </div>
           <div className="mb-4 text-center">

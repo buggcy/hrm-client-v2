@@ -258,7 +258,7 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
     const month = moment(row?.Date).format('MM');
     const year = moment(row?.Date).format('YYYY');
     RefreshMutate({
-      userIds: [row?.User_ID || ''],
+      userIds: [row?.Emp_ID?._id || ''],
       month,
       year,
     });
