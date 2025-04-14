@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { DateRange } from 'react-day-picker';
 import { ZodError } from 'zod';
 
-import { attendanceRequestListColumns } from '@/components/data-table/columns/attendance-request-list.columns';
+import { hrAttendanceRequestListColumns } from '@/components/data-table/columns/hr-attendance-request.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
@@ -129,7 +129,7 @@ const AttendanceRequestHRTable: FunctionComponent<
         <DataTable
           searchLoading={isLoading || isFetching}
           data={tableData || []}
-          columns={attendanceRequestListColumns}
+          columns={hrAttendanceRequestListColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,

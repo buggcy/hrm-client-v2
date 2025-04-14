@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { ZodError } from 'zod';
 
-import { overtimeColumns } from '@/components/data-table/columns/overtime.columns';
+import { hrOvertimeColumns } from '@/components/data-table/columns/hr-overtime.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
@@ -182,7 +182,7 @@ const OvertimeHRTable: FunctionComponent<TableProps> = ({ selectedDate }) => {
         <DataTable
           searchLoading={isPending}
           data={tableData || []}
-          columns={overtimeColumns}
+          columns={hrOvertimeColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
