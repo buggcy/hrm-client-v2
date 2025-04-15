@@ -3,8 +3,8 @@
 import React, { Suspense, useEffect, useState } from 'react';
 
 import { Banknote, EllipsisVertical, RefreshCw } from 'lucide-react';
+import moment from 'moment';
 
-import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
 import Header from '@/components/Header/Header';
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -13,6 +13,7 @@ import {
   LayoutHeaderButtonsBlock,
   LayoutWrapper,
 } from '@/components/Layout';
+import { MonthPickerComponent } from '@/components/MonthPicker';
 import { Notification } from '@/components/NotificationIcon';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +25,6 @@ import {
 
 import { usePayrollStatisticsQuery } from '@/hooks/hr/useHrPayroll.hook';
 import { useHRPayrollListQuery } from '@/hooks/payroll/useHRPayroll.hook';
-import { formatedDate } from '@/utils';
 
 import { GeneratePayrollDialog } from './component/Model/GeneratePayroll';
 import { RefreshPayrollDialog } from './component/Model/RefreshModel';
@@ -32,19 +32,27 @@ import PayrollCard from './component/PayrollCard';
 import PayrollTable from './components/PayrollTable.component';
 
 export default function ManagePayrollPage() {
-  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
-    useTimeRange('Payroll');
+  const initialDate = moment().subtract(1, 'month').toDate();
+  const [date, setDate] = useState<Date>(initialDate);
+
+  const setDateValue = (selectedDate: Date | null) => {
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  };
+  const month = moment(date).format('MM');
+  const year = moment(date).format('YYYY');
   const currentDate = new Date().getDate();
   const [RefreshDialogOpen, setRefreshDialogOpen] = useState(false);
   const [isGenerate, setIsGenerate] = useState<boolean>(false);
   const { data: payrollStats, refetch: refetchStats } =
     usePayrollStatisticsQuery({
-      from: formatedDate(selectedDate?.from),
-      to: formatedDate(selectedDate?.to),
+      month,
+      year,
     });
   const { data: payrollList, refetch } = useHRPayrollListQuery({
-    from: formatedDate(selectedDate?.from),
-    to: formatedDate(selectedDate?.to),
+    month,
+    year,
   });
   const [hasPayrollData, setHasPayrollData] = useState<boolean>(false);
 
@@ -86,11 +94,10 @@ export default function ManagePayrollPage() {
           <Header
             subheading={`Seamless Payroll Management: Refresh, Generate, and Track with Confidence!`}
           >
-            <DateRangePicker
-              timeRange={timeRange}
-              selectedDate={selectedDate}
-              setTimeRange={setTimeRange}
-              setDate={handleSetDate}
+            <MonthPickerComponent
+              setDateValue={setDateValue}
+              initialDate={date}
+              minDate={new Date(0, 0, 1)}
             />
             {currentDate <= 5 ? (
               <Button size={'sm'} onClick={handleOpen}>
@@ -132,7 +139,7 @@ export default function ManagePayrollPage() {
 
           <div className="mt-6">
             <Suspense fallback={<div>Loading...</div>}>
-              <PayrollTable dates={selectedDate} />
+              <PayrollTable month={month} year={year} />
             </Suspense>
           </div>
         </LayoutWrapper>

@@ -11,8 +11,8 @@ import { SuccessMessageResponse } from './employee.service';
 export interface HRPayrollListParams {
   page?: number;
   limit?: number;
-  from?: string;
-  to?: string;
+  month?: string;
+  year?: string;
   payStatus?: string[];
 }
 
@@ -22,8 +22,8 @@ export const getPayrollList = async (
   const defaultParams: HRPayrollListParams = {
     page: 1,
     limit: 5,
-    from: new Date().toISOString(),
-    to: new Date().toISOString(),
+    month: '',
+    year: '',
     payStatus: [],
   };
 
@@ -42,20 +42,20 @@ export const searchHRPayrollList = async ({
   query,
   page,
   limit,
-  from = new Date().toISOString(),
-  to = new Date().toISOString(),
+  month,
+  year,
   payStatus = [],
 }: {
   query: string;
   page: number;
   limit: number;
-  from: string;
-  to: string;
+  month?: string;
+  year?: string;
   payStatus: string[];
 }): Promise<HRPayrollApiResponse> => {
   const { data, pagination }: HRPayrollApiResponse = await baseAPI.post(
     `/v2/payroll/search`,
-    { query, page, limit, from, to, payStatus },
+    { query, page, limit, month, year, payStatus },
   );
 
   return { data, pagination };

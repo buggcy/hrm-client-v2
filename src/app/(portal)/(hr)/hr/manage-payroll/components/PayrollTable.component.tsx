@@ -4,7 +4,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { DateRange } from 'react-day-picker';
 import { ZodError } from 'zod';
 
 import { hrPayrollColumns } from '@/components/data-table/columns/hr-payroll.columns';
@@ -17,15 +16,18 @@ import { useHRPayrollListQuery } from '@/hooks/payroll/useHRPayroll.hook';
 import { HRPayrollListType } from '@/libs/validations/hr-payroll';
 import { searchHRPayrollList } from '@/services/hr/payroll.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
-import { formatedDate } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
 interface PayrollTableProps {
-  dates?: DateRange;
+  month?: string;
+  year?: string;
 }
 
-const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
+const PayrollTable: FunctionComponent<PayrollTableProps> = ({
+  month,
+  year,
+}) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
@@ -49,8 +51,8 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
   } = useHRPayrollListQuery({
     page,
     limit,
-    from: formatedDate(dates?.from),
-    to: formatedDate(dates?.to),
+    month,
+    year,
     payStatus: statusFilter,
   });
 
@@ -111,8 +113,8 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
         query: debouncedSearchTerm,
         page,
         limit,
-        from: formatedDate(dates?.from),
-        to: formatedDate(dates?.to),
+        month,
+        year,
         payStatus: statusFilter,
       });
     } else {
@@ -120,7 +122,16 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({ dates }) => {
         await refetch();
       })();
     }
-  }, [debouncedSearchTerm, refetch, mutate, page, limit, dates, statusFilter]);
+  }, [
+    debouncedSearchTerm,
+    refetch,
+    mutate,
+    page,
+    limit,
+    month,
+    year,
+    statusFilter,
+  ]);
 
   useEffect(() => {
     if (refetchEmployeeList) {
