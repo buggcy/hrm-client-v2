@@ -39,7 +39,7 @@ type AcceptRejectProps = {
   hrId?: string;
   setRefetchOvertimeList: (value: boolean) => void;
 };
-const FormSchema = z.object({
+export const FormSchema = z.object({
   reason: z.string().min(1, 'Rejection reason is required'),
 });
 
