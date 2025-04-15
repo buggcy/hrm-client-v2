@@ -45,7 +45,11 @@ export const attendanceListColumns: ColumnDef<AttendanceListType>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const user: AttendanceUser = row.getValue('user');
+      const user: AttendanceUser | null = row.getValue('user') || null;
+
+      if (!user || Object.keys(user).length === 0) {
+        return <span className="italic text-gray-500">User not available</span>;
+      }
       const firstName = user?.firstName;
       const lastName = user?.lastName;
       const avatar = user?.Avatar;

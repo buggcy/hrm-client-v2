@@ -52,7 +52,7 @@ const AttendanceHistoryTable: FunctionComponent<
   } = useAttendanceHistoryListQuery({
     page,
     limit,
-    id: user?.Tahometer_ID,
+    id: user?.id || '',
     from: formatedDate(dates?.from),
     to: formatedDate(dates?.to),
     status: statusFilter,

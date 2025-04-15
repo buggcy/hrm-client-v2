@@ -123,7 +123,7 @@ export function AttendanceDialog({
   } = useForm<AddAttendanceFormData>({
     resolver: zodResolver(addAttendanceSchema),
     defaultValues: {
-      employee: type === 'edit' ? data?.user.Tahometer_ID : '',
+      employee: type === 'edit' ? data?.user?._id : '',
       date:
         type === 'edit' && data?.date
           ? new Date(data.date)
@@ -302,10 +302,7 @@ export function AttendanceDialog({
                           Select Employee
                         </SelectItem>
                         {users?.users.map(user => (
-                          <SelectItem
-                            key={user._id}
-                            value={user.Tahometer_ID || '0'}
-                          >
+                          <SelectItem key={user._id} value={user._id || '0'}>
                             {user.firstName} {user.lastName}
                           </SelectItem>
                         ))}

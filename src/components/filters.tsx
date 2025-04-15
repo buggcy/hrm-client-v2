@@ -4,6 +4,7 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUp,
+  Ban,
   Briefcase,
   Bug,
   CheckCircle,
@@ -192,6 +193,11 @@ export const attendance_history_status_options = [
     label: 'Holiday',
     icon: Circle,
   },
+  {
+    value: 'Unpaid Leave',
+    label: 'Unpaid Leave',
+    icon: Ban,
+  },
 ];
 
 export const attendance_request_status_options = [
@@ -310,6 +316,11 @@ export const attendance_list_status_options = [
   {
     value: 'Holiday',
     label: 'Holiday',
+    icon: Circle,
+  },
+  {
+    value: 'Unpaid Leave',
+    label: 'Unpaid Leave',
     icon: Circle,
   },
 ];

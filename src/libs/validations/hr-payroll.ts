@@ -49,6 +49,7 @@ const HRPayrollSchema = z.object({
       casual: z.number().optional(),
       sick: z.number().optional(),
       annual: z.number().optional(),
+      unpaid: z.number().optional(),
     })
     .optional(),
   Late: z.number().optional(),
@@ -86,6 +87,8 @@ const HRPayrollSchema = z.object({
   totalPerkIncrement: z.number().optional(),
   overtimeMinute: z.number().optional(),
   totalOvertime: z.number().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 const HRPayrollApiResponseSchema = z.object({

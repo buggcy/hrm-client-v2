@@ -134,6 +134,7 @@ const employeePayrollSchema = z.object({
       casual: z.number().optional(),
       sick: z.number().optional(),
       annual: z.number().optional(),
+      unpaid: z.number().optional(),
     })
     .optional(),
   Late: z.number().optional(),
@@ -170,6 +171,8 @@ const employeePayrollSchema = z.object({
   totalPerkIncrement: z.number().optional(),
   overtimeMinute: z.number().optional(),
   totalOvertime: z.number().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 const hrEventsSchema = z.object({
@@ -271,7 +274,10 @@ const resignedSchema = z.object({
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
-
+const monthlyChartSchema = z.object({
+  month: z.string(),
+  Net_Salary: z.number(),
+});
 const employeeApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeeListSchema),
@@ -287,9 +293,19 @@ const employeePayrollApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(employeePayrollSchema),
 });
+
+const employeePayrollChartApiResponseSchema = z.object({
+  monthlyPayroll: z.array(monthlyChartSchema),
+});
+
 export type EmployeePayrollApiResponse = z.infer<
   typeof employeePayrollApiResponseSchema
 >;
+
+export type EmployeePayrollChartApiResponse = z.infer<
+  typeof employeePayrollChartApiResponseSchema
+>;
+
 const employeeDobApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: employeeDobDataSchema,
@@ -351,4 +367,5 @@ export {
   employeeDobApiResponseSchema,
   pendingResignedApiResponseSchema,
   employeeFiredResignedApiResponseSchema,
+  employeePayrollChartApiResponseSchema,
 };

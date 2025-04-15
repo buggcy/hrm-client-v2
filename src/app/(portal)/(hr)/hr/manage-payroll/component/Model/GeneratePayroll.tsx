@@ -25,7 +25,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useAttendanceUsersQuery } from '@/hooks/attendanceList/useEmployeesList.hook';
-import { refreshPayroll } from '@/services/hr/hr-payroll.service';
+import { generatePayroll } from '@/services/hr/hr-payroll.service';
 import { EmployeeStoreType } from '@/stores/hr/employee';
 
 import { MessageErrorResponse } from '@/types';
@@ -40,6 +40,7 @@ interface DialogProps {
   open: boolean;
   onOpenChange: () => void;
   onCloseChange: () => void;
+  hasData: boolean;
   refetch: () => void;
 }
 interface Employee {
@@ -50,10 +51,11 @@ interface Employee {
   Tahometer_ID?: string;
 }
 
-export function RefreshPayrollDialog({
+export function GeneratePayrollDialog({
   open,
   onOpenChange,
   onCloseChange,
+  hasData,
   refetch,
 }: DialogProps) {
   const {
@@ -84,13 +86,28 @@ export function RefreshPayrollDialog({
       setDate(selectedDate);
     }
   };
+  const handleSelectAllChange = () => {
+    if (isAllSelected) {
+      setIsAllSelected(false);
+      setSelectedEmployees([]);
+      setValue('employee', []);
+    } else {
+      const allEmployeeIds = employees.map(emp => emp.Tahometer_ID || '');
+      const allEmployeeFormIds = employees.map(emp => emp.id);
+
+      setIsAllSelected(true);
+      setSelectedEmployees(allEmployeeIds);
+      setValue('employee', allEmployeeFormIds);
+    }
+  };
+
   const { mutate, isPending } = useMutation({
-    mutationFn: refreshPayroll,
+    mutationFn: generatePayroll,
     onError: (err: AxiosError<MessageErrorResponse>) => {
       toast({
         title: 'Error',
         description:
-          err?.response?.data?.message || 'Error on refreshing the payroll!',
+          err?.response?.data?.message || 'Error on generating the payroll!',
         variant: 'error',
       });
     },
@@ -110,10 +127,13 @@ export function RefreshPayrollDialog({
 
   useEffect(() => {
     if (!open) {
-      setDate(new Date());
+      const defaultDate = hasData
+        ? new Date()
+        : new Date(new Date().setMonth(new Date().getMonth() - 1));
+      setDate(defaultDate);
       setSelectedEmployees([]);
     }
-  }, [open]);
+  }, [hasData, open]);
 
   useEffect(() => {
     if (users?.users && users.users.length > 0) {
@@ -127,11 +147,25 @@ export function RefreshPayrollDialog({
       setEmployees(updatedEmployees);
     }
   }, [users]);
+  useEffect(() => {
+    if (open && employees.length > 0) {
+      setIsAllSelected(true);
+      const allEmployeeIds = employees.map(emp => emp.id || '');
+      const allEmployeeFormIds = employees.map(emp => emp.id);
 
+      setSelectedEmployees(allEmployeeIds);
+      setValue('employee', allEmployeeFormIds);
+    }
+  }, [open, employees, setValue]);
   const handleEmployeeChange = (selectedIds: string[]) => {
     const selectedEmps = employees.filter(emp => selectedIds.includes(emp.id));
     const selectedEmpIds = selectedEmps.map(emp => emp.id || '');
     setSelectedEmployees(selectedEmpIds);
+    if (selectedIds.length === employees.length) {
+      setIsAllSelected(true);
+    } else {
+      setIsAllSelected(false);
+    }
   };
 
   useEffect(() => {
@@ -166,7 +200,7 @@ export function RefreshPayrollDialog({
     >
       <DialogContent className="md:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Refresh Payroll</DialogTitle>
+          <DialogTitle>Generate Payroll</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8 pt-4">
           <div className="grid grid-cols-1 gap-4">
@@ -182,9 +216,7 @@ export function RefreshPayrollDialog({
                   <Checkbox
                     id="allEmployees"
                     checked={isAllSelected}
-                    onCheckedChange={() => {
-                      setIsAllSelected(!isAllSelected);
-                    }}
+                    onCheckedChange={handleSelectAllChange}
                   />
                 </div>
               </div>
@@ -224,7 +256,7 @@ export function RefreshPayrollDialog({
 
           <DialogFooter>
             <Button type="submit" disabled={isPending || isLoading}>
-              Refresh
+              Generate
             </Button>
           </DialogFooter>
         </form>

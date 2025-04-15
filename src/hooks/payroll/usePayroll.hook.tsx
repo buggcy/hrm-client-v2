@@ -1,7 +1,11 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { EmployeePayrollApiResponse } from '@/libs/validations/employee';
 import {
+  EmployeePayrollApiResponse,
+  EmployeePayrollChartApiResponse,
+} from '@/libs/validations/employee';
+import {
+  getPayrollMonthlyChart,
   PayrollV2Params,
   postPayout,
 } from '@/services/employee/employeePayroll.service';
@@ -20,3 +24,16 @@ export const usePayrollQuery = (
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<EmployeePayrollApiResponse, Error>;
+
+export const usePayrollChartQuery = (
+  userId: string,
+  config: UseQueryConfig = {},
+) =>
+  useQuery({
+    queryKey: ['payrollChart', userId],
+    queryFn: () => getPayrollMonthlyChart(userId),
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<EmployeePayrollChartApiResponse, Error>;

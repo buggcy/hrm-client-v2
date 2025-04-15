@@ -10,24 +10,23 @@ import { AuthStoreType } from '@/stores/auth';
 import { MonthlyPayrollGraph } from './Cards/MonthlyPayrollCard';
 import { StackedRadialChart } from './Cards/StackedRadialChart';
 
-interface PayrollItem {
-  Date: string;
-  Basic_Salary: number;
-  Net_Salary: number;
-  Pay_Status: string;
-  Paid_Amount: number;
-  Tax_Amount: number;
-  Absent_Deduction: number;
-  Total_SalaryDeducton: number;
-  Working_Days: number;
+interface PayrollCardsProps {
+  month: string;
+  year: string;
+  payrollChart: { month: string; Net_Salary: number }[];
 }
-
-const PayrollCards: FunctionComponent = () => {
+const PayrollCards: FunctionComponent<PayrollCardsProps> = ({
+  month,
+  year,
+  payrollChart,
+}) => {
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
 
   const { data: payrollList, error } = usePayrollQuery({
-    userId: user?.Tahometer_ID ? user.Tahometer_ID : '',
+    userId: user?.id ? user.id : '',
+    month,
+    year,
   });
 
   if (error) {
@@ -70,10 +69,6 @@ const PayrollCards: FunctionComponent = () => {
     (acc, increment) => acc + (increment.amount ?? 0),
     0,
   );
-
-  const filteredPayrollData = payrollData?.filter(
-    item => item.Date !== undefined,
-  ) as PayrollItem[];
 
   return (
     <div>
@@ -127,7 +122,7 @@ const PayrollCards: FunctionComponent = () => {
 
       <div className="flex w-full flex-col gap-4 lg:flex-row">
         <div className="w-full lg:w-[75.7%]">
-          <MonthlyPayrollGraph payrollData={filteredPayrollData} />
+          <MonthlyPayrollGraph payrollChart={payrollChart || []} />
         </div>
         <div className="w-full lg:w-[24.3%]">
           <StackedRadialChart
