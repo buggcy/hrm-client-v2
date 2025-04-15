@@ -49,25 +49,7 @@ export default function AddEmployeesPage() {
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
         <Header
-          subheading={`Shape your dream team with ease! ${
-            data?.length && data?.length > 0
-              ? `${data?.length} new requests—`
-              : ''
-          }
-          ${
-            hrEmployeeApprovalStats?.Card2Data?.pending
-              ? `${hrEmployeeApprovalStats?.Card2Data?.pending} pending, `
-              : ''
-          }    
-          ${
-            hrEmployeeApprovalStats?.Card2Data?.rejected
-              ? `${hrEmployeeApprovalStats?.Card2Data?.rejected} rejected, `
-              : ''
-          }${
-            hrEmployeeApprovalStats?.Card2Data?.tba
-              ? `${hrEmployeeApprovalStats?.Card2Data?.tba} to be added. `
-              : ''
-          } Keep your hiring process seamless!`.trim()}
+          subheading={`Shape your dream team with ease! Keep your hiring process seamless!`.trim()}
         >
           {addPermission && (
             <Button

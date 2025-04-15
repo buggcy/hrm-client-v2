@@ -19,15 +19,15 @@ function AddEmpCards({ data }: Props) {
       <div className="flex w-full flex-row gap-5 lg:w-1/5 lg:flex-col">
         <Card className="flex h-full flex-col justify-center bg-white p-1 shadow-sm dark:bg-[#18181b] max-lg:w-full">
           <CardHeader className="flex gap-2 p-3">
-            <ThumbsDown className="size-5 text-green-900" />
+            <ThumbsDown className="size-5 text-green-600 dark:text-green-300" />
           </CardHeader>
           <CardContent className="p-3">
             <div className="flex justify-between">
               <div className="flex items-center justify-between gap-5">
-                <h2 className="text-[16px] font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="text-[16px] font-semibold text-gray-600 dark:text-gray-300">
                   Expired Invitations:
                 </h2>
-                <p className="text-xl font-bold text-green-900 dark:text-green-900">
+                <p className="text-xl font-bold text-green-600 dark:text-gray-300">
                   {(data?.Card3Data.tba.expired || 0) +
                     (data?.Card3Data.Rejected.expired || 0)}
                 </p>
@@ -38,15 +38,15 @@ function AddEmpCards({ data }: Props) {
 
         <Card className="flex h-full flex-col justify-center bg-white p-1 shadow-sm dark:bg-[#18181b] max-lg:w-full">
           <CardHeader className="flex gap-2 p-3">
-            <ClipboardList className="size-5 text-green-900" />
+            <ClipboardList className="size-5 text-green-600 dark:text-green-300" />
           </CardHeader>
           <CardContent className="p-3">
             <div className="flex justify-between">
               <div className="flex items-center justify-between gap-5">
-                <h2 className="text-[16px] font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="text-[16px] font-semibold text-gray-600 dark:text-gray-300">
                   Pending Invitations:
                 </h2>
-                <p className="text-xl font-bold text-green-900 dark:text-green-900">
+                <p className="text-xl font-bold text-green-600 dark:text-gray-300">
                   {(data?.Card3Data.tba.pending || 0) +
                     (data?.Card3Data.Rejected.pending || 0)}
                 </p>
