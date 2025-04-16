@@ -6,62 +6,65 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { ZodError } from 'zod';
 
-import { hrPayrollColumns } from '@/components/data-table/columns/hr-payroll.columns';
+import { hrOvertimeColumns } from '@/components/data-table/columns/hr-overtime.columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableLoading } from '@/components/data-table/data-table-skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useHRPayrollListQuery } from '@/hooks/payroll/useHRPayroll.hook';
-import { HRPayrollListType } from '@/libs/validations/hr-payroll';
-import { searchHRPayrollList } from '@/services/hr/payroll.service';
-import { EmployeeStoreType } from '@/stores/hr/employee';
+import { useOvertimeQuery } from '@/hooks/overtime/useOvertime.hook';
+import { OvertimeListArrayType } from '@/libs/validations/overtime';
+import { searchOvertime } from '@/services/employee/overtime.service';
+import { OvertimeStoreType } from '@/stores/employee/overtime';
+import { formatedDate } from '@/utils';
 
 import { MessageErrorResponse } from '@/types';
 
-interface PayrollTableProps {
-  month?: string;
-  year?: string;
+interface TableProps {
+  selectedDate?: {
+    from?: Date;
+    to?: Date;
+  };
 }
-
-const PayrollTable: FunctionComponent<PayrollTableProps> = ({
-  month,
-  year,
-}) => {
+const OvertimeHRTable: FunctionComponent<TableProps> = ({ selectedDate }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { employeeStore } = useStores() as { employeeStore: EmployeeStoreType };
-  const { setRefetchEmployeeList, refetchEmployeeList } = employeeStore;
+
+  const { overtimeStore } = useStores() as {
+    overtimeStore: OvertimeStoreType;
+  };
+  const { setRefetchOvertimeList, refetchOvertimeList } = overtimeStore;
 
   const page = Number(searchParams.get('page')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
   const initialSearchTerm = searchParams.get('search') || '';
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
 
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
+  const [status, setStatus] = useState<string[]>([]);
 
   const {
-    data: payrollList,
+    data: getOvertime,
     isLoading,
     isFetching,
     error,
     refetch,
-  } = useHRPayrollListQuery({
+  } = useOvertimeQuery({
     page,
     limit,
-    month,
-    year,
-    payStatus: statusFilter,
+    from: formatedDate(selectedDate?.from),
+    to: formatedDate(selectedDate?.to),
+    status,
+    userId: '',
   });
 
   const {
     mutate,
     isPending,
-    data: searchHRPayroll,
+    data: searchData,
   } = useMutation({
-    mutationFn: searchHRPayrollList,
+    mutationFn: searchOvertime,
     onError: (err: unknown) => {
       const axiosError = err as AxiosError<MessageErrorResponse>;
       toast({
@@ -113,9 +116,9 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({
         query: debouncedSearchTerm,
         page,
         limit,
-        month,
-        year,
-        payStatus: statusFilter,
+        userId: '',
+        from: formatedDate(selectedDate?.from),
+        to: formatedDate(selectedDate?.to),
       });
     } else {
       void (async () => {
@@ -128,26 +131,22 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({
     mutate,
     page,
     limit,
-    month,
-    year,
-    statusFilter,
+    status,
+    selectedDate?.from,
+    selectedDate?.to,
   ]);
 
+  useEffect(() => {}, [getOvertime, selectedDate]);
+
   useEffect(() => {
-    if (refetchEmployeeList) {
+    if (refetchOvertimeList) {
       void (async () => {
         await refetch();
       })();
 
-      setRefetchEmployeeList(false);
+      setRefetchOvertimeList(false);
     }
-  }, [refetchEmployeeList, setRefetchEmployeeList, refetch]);
-
-  useEffect(() => {
-    void (async () => {
-      await refetch();
-    })();
-  }, [statusFilter, refetch]);
+  }, [refetchOvertimeList, setRefetchOvertimeList, refetch, status]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -163,27 +162,27 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({
   if (error)
     return (
       <div className="py-4 text-center text-red-500">
-        Failed to load Payroll. Please check the data.
+        Failed to load Overtime requests. Please check the data.
       </div>
     );
 
-  const tableData: HRPayrollListType[] = debouncedSearchTerm
-    ? searchHRPayroll?.data || []
-    : payrollList?.data || [];
+  const tableData: OvertimeListArrayType = debouncedSearchTerm
+    ? searchData?.data || []
+    : getOvertime?.data || [];
 
   const tablePageCount: number = debouncedSearchTerm
-    ? searchHRPayroll?.pagination?.totalPages || 0
-    : payrollList?.pagination?.totalPages || 0;
+    ? searchData?.pagination?.totalPages || 0
+    : getOvertime?.pagination?.totalPages || 0;
 
   return (
     <>
       {isLoading || isFetching ? (
-        <DataTableLoading columnCount={7} rowCount={limit} />
+        <DataTableLoading columnCount={6} rowCount={limit} />
       ) : (
         <DataTable
           searchLoading={isPending}
           data={tableData || []}
-          columns={hrPayrollColumns}
+          columns={hrOvertimeColumns}
           pagination={{
             pageCount: tablePageCount || 1,
             page: page,
@@ -192,13 +191,13 @@ const PayrollTable: FunctionComponent<PayrollTableProps> = ({
           }}
           onSearch={handleSearchChange}
           searchTerm={searchTerm}
-          toolbarType={'hrPayrollList'}
-          setFilterValue={setStatusFilter}
-          filterValue={statusFilter}
+          toolbarType={'getOvertime'}
+          setFilterValue={setStatus}
+          filterValue={status}
         />
       )}
     </>
   );
 };
 
-export default PayrollTable;
+export default OvertimeHRTable;

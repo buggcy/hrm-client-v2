@@ -178,11 +178,15 @@ export const acceptLeaveRecord = async (
   return { message };
 };
 
-export const rejectLeaveRecord = async (
-  id: string,
-  hrId: string,
-  rejectedReason?: string,
-): Promise<SuccessMessageResponse> => {
+export const rejectLeaveRecord = async ({
+  id,
+  hrId,
+  rejectedReason,
+}: {
+  id: string;
+  hrId?: string;
+  rejectedReason?: string;
+}): Promise<SuccessMessageResponse> => {
   const { message }: SuccessMessageResponse = await baseAPI.post(
     `/approve-leave/${id}`,
     {
