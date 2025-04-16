@@ -171,6 +171,8 @@ const employeePayrollSchema = z.object({
   totalPerkIncrement: z.number().optional(),
   overtimeMinute: z.number().optional(),
   totalOvertime: z.number().optional(),
+  shortMinutes: z.number().optional(),
+  shortMinutesDeduction: z.number().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });

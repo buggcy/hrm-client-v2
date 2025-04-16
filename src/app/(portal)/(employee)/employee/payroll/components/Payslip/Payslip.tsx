@@ -36,6 +36,8 @@ interface PayslipProps {
   taxAmount?: number;
   overtimeMinute?: number;
   totalOvertime?: number;
+  shortMinutes?: number;
+  shortMinutesDeduction?: number;
   late?: number;
   unpaidLeaves?: number;
 }
@@ -65,6 +67,8 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       totalOvertime,
       late,
       unpaidLeaves,
+      shortMinutes,
+      shortMinutesDeduction,
     },
     ref,
   ) => {
@@ -73,6 +77,10 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
     const totalPerkAmount =
       (totalPerkIncrement || 0) - (totalPerkDecrement || 0);
     const allDecrements = [
+      {
+        name: `Total Short (${shortMinutes}) Minutes`,
+        amount: shortMinutesDeduction,
+      },
       { name: 'Late Check-In Deduction', amount: late },
       { name: 'Tax Deduction', amount: taxAmount },
 
