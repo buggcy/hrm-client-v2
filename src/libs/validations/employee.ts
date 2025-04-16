@@ -324,6 +324,19 @@ const pendingResignedApiResponseSchema = z.object({
   totalCount: z.number(),
   data: z.array(resignedSchema),
 });
+
+const deviceChartSchema = z.object({
+  month: z.string(),
+  desktop: z.number(),
+  mobile: z.number(),
+});
+const deviceChartApiResponseSchema = z.object({
+  data: z.array(deviceChartSchema),
+});
+export type DeviceChartApiResponse = z.infer<
+  typeof deviceChartApiResponseSchema
+>;
+
 export type ResignedListApiResponse = z.infer<typeof resignedApiResponseSchema>;
 export type PendingResignedListApiResponse = z.infer<
   typeof pendingResignedApiResponseSchema
@@ -368,4 +381,5 @@ export {
   pendingResignedApiResponseSchema,
   employeeFiredResignedApiResponseSchema,
   employeePayrollChartApiResponseSchema,
+  deviceChartApiResponseSchema,
 };

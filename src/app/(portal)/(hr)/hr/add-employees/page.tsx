@@ -15,6 +15,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import {
   useApprovalEmployeeQuery,
+  useDeviceChart,
   useEmployeeApprovalStatsQuery,
 } from '@/hooks/employee/useApprovalEmployee.hook';
 import { AuthStoreType } from '@/stores/auth';
@@ -27,6 +28,8 @@ import { AddEmployeeDialog } from '../manage-employees/components/EmployeeModal'
 export default function AddEmployeesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data } = useApprovalEmployeeQuery();
+  const { data: deviceChart } = useDeviceChart();
+  console.log(`deviceChart :`, deviceChart);
   const { data: hrEmployeeApprovalStats } = useEmployeeApprovalStatsQuery();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
