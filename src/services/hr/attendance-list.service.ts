@@ -193,11 +193,21 @@ export const acceptAttendanceRequest = async (
   return { message };
 };
 
-export const rejectAttendanceRequest = async (
-  id: string,
-): Promise<SuccessMessageResponse> => {
-  const { message }: SuccessMessageResponse = await baseAPI.post(
+export const rejectAttendanceRequest = async ({
+  id,
+  hrId,
+  rejectedReason,
+}: {
+  id: string;
+  hrId?: string;
+  rejectedReason?: string;
+}): Promise<SuccessMessageResponse> => {
+  const { message }: SuccessMessageResponse = await baseAPI.put(
     `/rejectAttendanceRequest/${id}`,
+    {
+      hrId,
+      rejectedReason,
+    },
   );
   return { message };
 };

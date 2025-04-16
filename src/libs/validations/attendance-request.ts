@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { employeeListSchema } from './attendance-list';
+
 const attendance_request_status = [
   'Pending',
   'Approved',
@@ -16,7 +18,10 @@ const paginationSchema = z.object({
 
 const attendanceRequestSchema = z.object({
   _id: z.string(),
-  userId: z.string(),
+  userId: employeeListSchema.extend({
+    contactNo: z.string().optional(),
+    Designation: z.string().optional(),
+  }),
   date: z.string(),
   Start_Date: z.string(),
   End_Date: z.string(),

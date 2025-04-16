@@ -2,8 +2,6 @@
 
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { DateRangePicker, useTimeRange } from '@/components/DateRangePicker';
-import Header from '@/components/Header/Header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -14,11 +12,16 @@ import { formatedDate } from '@/utils';
 
 import { OvertimeRequest } from './OvertimeRequest';
 
-interface HrAttendanceRequestsProps {}
+interface HrAttendanceRequestsProps {
+  selectedDate?: {
+    from?: Date;
+    to?: Date;
+  };
+}
 
-const OvertimeApproval: FunctionComponent<HrAttendanceRequestsProps> = () => {
-  const { timeRange, selectedDate, setTimeRange, handleSetDate } =
-    useTimeRange();
+const OvertimeApproval: FunctionComponent<HrAttendanceRequestsProps> = ({
+  selectedDate,
+}) => {
   const { overtimeStore } = useStores() as {
     overtimeStore: OvertimeStoreType;
   };
@@ -53,15 +56,7 @@ const OvertimeApproval: FunctionComponent<HrAttendanceRequestsProps> = () => {
 
   return (
     <>
-      <Header subheading="Review and Approve Employee Overtime Requests">
-        <DateRangePicker
-          timeRange={timeRange}
-          selectedDate={selectedDate}
-          setTimeRange={setTimeRange}
-          setDate={handleSetDate}
-        />
-      </Header>
-      <div className="mb-2 mt-4 grid h-full grid-cols-1 sm:gap-2 lg:grid-cols-4 lg:gap-6">
+      <div className="mt-4 grid w-full grid-cols-1 gap-4 overflow-hidden sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {isLoading || isFetching ? (
           <Skeleton className="h-6 w-full" />
         ) : pendingList?.totalCount ? (

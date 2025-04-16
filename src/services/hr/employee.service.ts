@@ -47,6 +47,7 @@ export interface FireBody {
 export interface ApprovedRejectResignationBody {
   hrId: string;
   isApproved: string;
+  rejectionReason?: string;
 }
 
 export interface ApprovedRejectResignationParams {

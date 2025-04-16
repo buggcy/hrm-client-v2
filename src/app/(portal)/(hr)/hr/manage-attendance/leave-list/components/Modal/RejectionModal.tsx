@@ -1,10 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -18,20 +16,21 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Label } from '@/components/ui/label';
-import { toast } from '@/components/ui/use-toast';
-
-import { rejectLeaveRecord } from '@/services/hr/leave-list.service';
-
-import { MessageErrorResponse } from '@/types';
 
 type RejectProps = {
   isOpen: boolean;
   showActionToggle: (open: boolean) => void;
   id: string;
   hrId?: string;
-  setRefetchLeaveList: (value: boolean) => void;
+
+  RejectMutate: (data: {
+    id: string;
+    hrId?: string;
+    rejectedReason?: string;
+  }) => void;
+  RejectPending: boolean;
 };
 const FormSchema = z.object({
   reason: z.string().min(1, 'Rejection reason is required'),
@@ -39,12 +38,13 @@ const FormSchema = z.object({
 
 export type RejectFormData = z.infer<typeof FormSchema>;
 
-export default function RejectLeaveDialog({
+export default function RejectRequestModel({
   isOpen,
   showActionToggle,
   id,
   hrId,
-  setRefetchLeaveList,
+  RejectMutate,
+  RejectPending,
 }: RejectProps) {
   const {
     control,
@@ -57,36 +57,11 @@ export default function RejectLeaveDialog({
       reason: '',
     },
   });
-
-  const { mutate: RejectMutate, isPending: RejectPending } = useMutation({
-    mutationFn: ({
-      id,
-      hrId,
-      rejectedReason,
-    }: {
-      id: string;
-      hrId: string | undefined;
-      rejectedReason: string;
-    }) => rejectLeaveRecord(id, hrId!, rejectedReason),
-    onError: (err: AxiosError<MessageErrorResponse>) => {
-      toast({
-        title: 'Error',
-        description:
-          err?.response?.data?.message || 'Error on approval request!',
-        variant: 'error',
-      });
-    },
-    onSuccess: response => {
-      toast({
-        title: 'Success',
-        description: response?.message,
-        variant: 'success',
-      });
+  useEffect(() => {
+    if (!isOpen) {
       reset();
-      setRefetchLeaveList(true);
-      showActionToggle(false);
-    },
-  });
+    }
+  }, [isOpen, reset]);
   const handleReject = (data: RejectFormData) => {
     RejectMutate({ id, hrId, rejectedReason: data?.reason });
   };
@@ -96,7 +71,7 @@ export default function RejectLeaveDialog({
         <form>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Reject Leave Request</AlertDialogTitle>
+              <AlertDialogTitle>Reject Request</AlertDialogTitle>
               <AlertDialogDescription>
                 <div className="grid gap-8 py-4">
                   <div className="flex flex-wrap">
@@ -111,14 +86,13 @@ export default function RejectLeaveDialog({
                         name="reason"
                         control={control}
                         render={({ field }) => (
-                          <Input
-                            type="text"
-                            id="reason"
-                            placeholder={'Please Enter Rejection Reason'}
-                            {...field}
+                          <FormattedTextArea
+                            value={field.value || ''}
+                            onChange={field.onChange}
                           />
                         )}
                       />
+
                       <div className="flex justify-start p-1">
                         {errors.reason && (
                           <span className="text-sm text-red-500">

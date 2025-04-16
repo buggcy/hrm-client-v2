@@ -160,6 +160,8 @@ export function HRPayrollListRowActions({ row }: DataTableRowActionsProps) {
           taxAmount={payslipData?.Tax_Amount || 0}
           overtimeMinute={payslipData?.overtimeMinute || 0}
           totalOvertime={payslipData?.totalOvertime || 0}
+          shortMinutes={payslipData?.shortMinutes || 0}
+          shortMinutesDeduction={payslipData?.shortMinutesDeduction || 0}
           late={payslipData?.Late || 0}
         />,
       );
