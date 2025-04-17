@@ -135,7 +135,7 @@ export function RefreshAttendanceDialog({
 
   useEffect(() => {
     if (isAllSelected) {
-      setSelectedEmployees(employees.map(emp => emp.Tahometer_ID || ''));
+      setSelectedEmployees(employees.map(emp => emp.id || ''));
       setValue(
         'employee',
         employees.map(emp => emp.id),
