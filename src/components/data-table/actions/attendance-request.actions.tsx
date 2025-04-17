@@ -20,6 +20,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { AttendanceRequest } from '@/libs/validations/attendance-request';
 import { cancelAttendanceRequest } from '@/services/employee/attendance-request.service';
+import { useAuthStore } from '@/stores/auth';
 import { AttendanceRequestStoreType } from '@/stores/employee/attendance-request';
 
 interface DataTableRowActionsProps {
@@ -33,11 +34,12 @@ export function AttendanceRequestRowActions({ row }: DataTableRowActionsProps) {
   const { setRefetchAttendanceRequestList } = attendanceRequestStore;
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const data = row.original;
-
+  const { user } = useAuthStore();
+  const roleId: number | undefined = user?.roleId;
   return (
     <Dialog>
       <DropdownMenu>
-        {row.original.Status === 'Pending' && (
+        {row.original.Status === 'Pending' && roleId === 2 && (
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"

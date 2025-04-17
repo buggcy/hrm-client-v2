@@ -115,6 +115,8 @@ export function EmployeePayrollListRowActions({
           taxAmount={payslipData?.Tax_Amount || 0}
           overtimeMinute={payslipData?.overtimeMinute || 0}
           totalOvertime={payslipData?.totalOvertime || 0}
+          shortMinutes={payslipData?.shortMinutes || 0}
+          shortMinutesDeduction={payslipData?.shortMinutesDeduction || 0}
           late={payslipData?.Late || 0}
         />,
       );
@@ -146,7 +148,7 @@ export function EmployeePayrollListRowActions({
     const month = moment(row?.Date).format('MM');
     const year = moment(row?.Date).format('YYYY');
     mutate({
-      userIds: [row?.User_ID || ''],
+      userIds: [row?.Emp_ID?._id || ''],
       month,
       year,
     });

@@ -31,14 +31,17 @@ import { useStores } from '@/providers/Store.Provider';
 
 import { useAllowLeaveListQuery } from '@/hooks/hr/useLeaveList.hook';
 import { LeaveListType } from '@/libs/validations/hr-leave-list';
-import { acceptLeaveRecord } from '@/services/hr/leave-list.service';
+import {
+  acceptLeaveRecord,
+  rejectLeaveRecord,
+} from '@/services/hr/leave-list.service';
 import { AuthStoreType } from '@/stores/auth';
 import { LeaveListStoreType } from '@/stores/hr/leave-list';
 import { cn } from '@/utils';
 
 import distributeLeaves from './LeaveDistributionCalculator';
 import AcceptLeaveDialog from '../../leave-list/components/Modal/AcceptLeaveModal';
-import RejectLeaveDialog from '../../leave-list/components/Modal/RejectLeaveModal';
+import RejectRequestModel from '../../leave-list/components/Modal/RejectionModal';
 
 import { IPersona, MessageErrorResponse } from '@/types';
 
@@ -123,7 +126,26 @@ export const LeaveRequestCard = ({
       setShowAcceptDialog(false);
     },
   });
-
+  const { mutate: RejectMutate, isPending: RejectPending } = useMutation({
+    mutationFn: rejectLeaveRecord,
+    onError: (err: AxiosError<MessageErrorResponse>) => {
+      toast({
+        title: 'Error',
+        description:
+          err?.response?.data?.message || 'Error on approval request!',
+        variant: 'error',
+      });
+    },
+    onSuccess: response => {
+      toast({
+        title: 'Success',
+        description: response?.message,
+        variant: 'success',
+      });
+      setRefetchLeaveList(true);
+      setShowRejectDialog(false);
+    },
+  });
   const selectedFromDate = new Date(selectedDate?.from ?? Date.now());
   const currentYear = selectedFromDate.getFullYear();
   const currentMonth = selectedFromDate.getMonth() + 1;
@@ -428,12 +450,13 @@ export const LeaveRequestCard = ({
           </Button>
         </CardFooter>
       </Card>
-      <RejectLeaveDialog
+      <RejectRequestModel
         isOpen={showRejectDialog}
         showActionToggle={setShowRejectDialog}
         id={selectedLeaveId}
         hrId={userId}
-        setRefetchLeaveList={setRefetchLeaveList}
+        RejectMutate={RejectMutate}
+        RejectPending={RejectPending}
       />
       <AcceptLeaveDialog
         isOpen={showAcceptDialog}

@@ -64,6 +64,8 @@ const userSchema = z.object({
   companyEmail: z.string().optional(),
   Avatar: z.string().optional().nullable(),
   Tahometer_ID: z.string().optional(),
+  Designation: z.string().optional(),
+  contactNo: z.string().optional(),
 });
 
 const paginationSchema = z.object({
@@ -110,7 +112,7 @@ export const bloodgroupStatus = [
   'AB-',
 ] as const;
 
-const employeeListSchema = z.object({
+export const employeeListSchema = z.object({
   _id: z.string(),
   firstName: z.string(),
   lastName: z.string(),

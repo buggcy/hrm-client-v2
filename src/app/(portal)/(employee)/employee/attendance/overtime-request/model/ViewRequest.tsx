@@ -116,9 +116,12 @@ const ViewOvertime = ({ open, onCloseChange, data }: ViewProps) => {
                 <p className="text-sm font-semibold">Rejection Reason</p>
               </div>
               <div className="w-7/12">
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {data?.rejectionReason}
-                </p>
+                <p
+                  className="text-sm text-gray-600 dark:text-gray-300"
+                  dangerouslySetInnerHTML={{
+                    __html: data?.rejectionReason || '',
+                  }}
+                ></p>
               </div>
             </div>
           )}

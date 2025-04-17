@@ -26,7 +26,7 @@ import { AuthStoreType } from '@/stores/auth';
 import { cn } from '@/utils';
 import { getWritePermissions } from '@/utils/permissions.utils';
 
-import AcceptRejectDialog from './AcceptRejectResignedModal';
+import AcceptRejectResignedDialog from './AcceptRejectResignedModal';
 
 import { IPersona, MessageErrorResponse } from '@/types';
 
@@ -49,8 +49,10 @@ export const ResignedRequestCard = ({
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
   const userId: string | undefined = user?.id;
+
   const [modal, setModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('');
+  const [requestCard, setRequestCard] = useState<ResignedListType | null>(null);
 
   const [selectedId, setSelectedId] = useState<string>('');
   const [employeeId, setEmployeeId] = useState<string>('');
@@ -82,17 +84,6 @@ export const ResignedRequestCard = ({
       body: {
         hrId: userId ?? '',
         isApproved: 'Approved',
-      },
-    });
-  };
-
-  const handleReject = () => {
-    mutate({
-      id: selectedId,
-      employeeId: employeeId,
-      body: {
-        hrId: userId ?? '',
-        isApproved: 'Rejected',
       },
     });
   };
@@ -269,6 +260,7 @@ export const ResignedRequestCard = ({
               onClick={() => {
                 setModalType('reject');
                 setSelectedId(person?._id);
+                setRequestCard(person);
                 setEmployeeId(person?.employee ? person?.employee?._id : '');
                 setModal(true);
               }}
@@ -290,14 +282,27 @@ export const ResignedRequestCard = ({
           </CardFooter>
         )}
       </Card>
-      <AcceptRejectDialog
+
+      <AcceptRejectResignedDialog
+        type={modalType}
         isOpen={modal}
         showActionToggle={setModal}
-        title={`Confirm ${modalType === 'accept' ? 'Accept' : 'Reject'}`}
+        title={
+          modalType === 'accept'
+            ? 'Accept Resigned Request'
+            : 'Reject Resigned Request'
+        }
         isPending={isPending}
-        description={`Are your sure you want to ${modalType === 'accept' ? 'accept' : 'reject'} this resignation request?`}
-        handleDelete={modalType === 'accept' ? handleAccept : handleReject}
-        type={modalType}
+        RejectPending={isPending}
+        description={
+          modalType === 'accept'
+            ? 'Are you sure you want to accept this resignation request?'
+            : ''
+        }
+        onSubmit={handleAccept}
+        request={requestCard}
+        hrId={userId}
+        RejectMutate={mutate}
       />
     </>
   );
