@@ -29,7 +29,7 @@ export default function AddEmployeesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data } = useApprovalEmployeeQuery();
   const { data: deviceChart } = useDeviceChart();
-  console.log(`deviceChart :`, deviceChart);
+
   const { data: hrEmployeeApprovalStats } = useEmployeeApprovalStatsQuery();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
@@ -76,7 +76,10 @@ export default function AddEmployeesPage() {
           </Button>
         </Header>
         <div className="my-6 flex flex-col gap-5">
-          <AddEmpCards data={hrEmployeeApprovalStats} />
+          <AddEmpCards
+            data={hrEmployeeApprovalStats}
+            deviceChart={deviceChart}
+          />
           <Suspense fallback={<div>Loading...</div>}>
             <UnApprovedEmployeeTable />
           </Suspense>

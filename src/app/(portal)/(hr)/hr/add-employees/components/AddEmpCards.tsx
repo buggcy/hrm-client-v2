@@ -5,17 +5,19 @@ import { ClipboardList, ThumbsDown } from 'lucide-react';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
+import { DeviceChartApiResponse } from '@/libs/validations/employee';
 import { CardData } from '@/services/hr/employee.service';
 
 import { AddAreaChart } from './AddAreaChart';
 import { RedicalChart } from './RedicalChart';
 interface Props {
   data?: CardData;
+  deviceChart?: DeviceChartApiResponse;
 }
-function AddEmpCards({ data }: Props) {
+function AddEmpCards({ data, deviceChart }: Props) {
   return (
     <div className="flex w-full justify-between gap-4 max-lg:flex-col max-lg:items-center">
-      <AddAreaChart />
+      <AddAreaChart chartData={deviceChart?.data} />
       <div className="flex w-full flex-row gap-5 lg:w-1/5 lg:flex-col">
         <Card className="flex h-full flex-col justify-center bg-white p-1 shadow-sm dark:bg-[#18181b] max-lg:w-full">
           <CardHeader className="flex gap-2 p-3">

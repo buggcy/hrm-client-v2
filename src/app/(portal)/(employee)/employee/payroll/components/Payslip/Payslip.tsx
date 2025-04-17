@@ -72,8 +72,6 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
     },
     ref,
   ) => {
-    const totalEarningsWithoutPerks =
-      totalEarnings - (totalPerkIncrement || 0) + (totalPerkDecrement || 0);
     const totalPerkAmount =
       (totalPerkIncrement || 0) - (totalPerkDecrement || 0);
     const allDecrements = [
@@ -225,7 +223,7 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               <p>
                 <strong>Total Earnings:</strong>
               </p>
-              <p>{`${totalEarningsWithoutPerks && netSalary > 0 ? formatCurrency(totalEarningsWithoutPerks) : formatCurrency(0)}`}</p>
+              <p>{`${totalEarnings > 0 ? formatCurrency(totalEarnings) : formatCurrency(0)}`}</p>
             </div>
           </div>
           <div className="mb-4 text-center">
