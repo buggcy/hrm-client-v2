@@ -197,7 +197,7 @@ export const attendanceListColumns: ColumnDef<AttendanceListType>[] = [
   {
     accessorKey: 'breaks',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="No. of Beaks" />
+      <DataTableColumnHeader column={column} title="No. of Breaks" />
     ),
     cell: ({ row }) => {
       const breaks: AttendanceBreaks[] = row.getValue('breaks');
