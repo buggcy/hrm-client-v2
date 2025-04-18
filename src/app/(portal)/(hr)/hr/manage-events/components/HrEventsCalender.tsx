@@ -82,7 +82,6 @@ const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
             variant="outline"
             size="sm"
             onClick={() => onNavigate('PREV')}
-            className=""
             style={{
               color: 'hsl(var(--forground))',
               borderTop: '1px solid hsl(var(--border))',
@@ -94,6 +93,7 @@ const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
               fontSize: '12px',
               height: '25px',
             }}
+            className="text-foreground dark:bg-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
           >
             <ChevronLeft className="size-4" />
             <span className="sr-only">Previous</span>
@@ -102,7 +102,6 @@ const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
             variant="outline"
             size="sm"
             onClick={() => onNavigate('NEXT')}
-            className=""
             style={{
               color: 'hsl(var(--forground))',
               borderLeft: 'none',
@@ -115,6 +114,7 @@ const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
               height: '25px',
               border: '1px solid hsl(var(--border))',
             }}
+            className="text-foreground dark:bg-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
           >
             <ChevronRight className="size-4" />
             <span className="sr-only">Next</span>
@@ -124,7 +124,6 @@ const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
           variant="outline"
           size="sm"
           onClick={() => onNavigate('TODAY')}
-          className=""
           style={{
             fontSize: '12px',
             padding: '4px 12px',
@@ -132,6 +131,7 @@ const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
             color: 'hsl(var(--forground))',
             border: '1px solid hsl(var(--border))',
           }}
+          className="text-foreground dark:bg-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
         >
           Today
         </Button>
@@ -147,7 +147,7 @@ const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
             variant="outline"
             size="sm"
             onClick={() => onView(name)}
-            className={cn(view === name ? 'rbc-active' : '')}
+            // className={cn(view === name ? 'rbc-active' : '')}
             style={{
               fontSize: '12px',
               padding: '4px 12px',
@@ -160,6 +160,7 @@ const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
                   ? 'hsl(var(--forground))'
                   : 'hsl(var(--muted-foreground))',
             }}
+            className={`${cn(view === name ? 'rbc-active' : '')} text-foreground dark:bg-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white`}
           >
             {name.charAt(0).toUpperCase() + name.slice(1)}
           </Button>
@@ -251,11 +252,17 @@ export default function HrEventsCalendar() {
           isVisible
             ? 'translate-y-0 scale-100 opacity-100'
             : '-translate-y-4 scale-95 opacity-0'
-        } bg-white dark:bg-muted-foreground`}
+        } bg-white dark:bg-gray-300`}
         style={{
           width: '200px',
-          left: x - 10,
-          top: y - 18,
+          left:
+            event.Event_Type === 'holiday' || event.Event_Type === 'company'
+              ? x - 100
+              : x - 164,
+          top:
+            event.Event_Type === 'holiday' || event.Event_Type === 'company'
+              ? y - 85
+              : y - 88,
           padding: '10px',
         }}
       >
@@ -294,7 +301,7 @@ export default function HrEventsCalendar() {
           </h3>
         </div>
 
-        <div className="m-1 text-center text-sm text-gray-600 dark:text-gray-300">{`${event?.title}`}</div>
+        <div className="m-1 text-center text-sm text-gray-600 dark:text-gray-600">{`${event?.title}`}</div>
 
         <div
           className="absolute size-3 rotate-45"
@@ -425,8 +432,8 @@ export default function HrEventsCalendar() {
       setTooltip({
         visible: true,
         event,
-        x: rect.left + window.scrollX - 5,
-        y: rect.top + window.scrollY - 70,
+        x: rect.left,
+        y: rect.top,
       });
     };
 
@@ -442,11 +449,13 @@ export default function HrEventsCalendar() {
         onMouseLeave={handleMouseLeave}
       >
         {event.Event_Type === 'birthday' && (
-          <Cake className="mr-2 inline-block size-4" />
+          <Cake className="inline-block size-4" />
         )}
+
         {event.Event_Type === 'anniversary' && (
-          <Gift color="#0F172A" className="mr-2 inline-block size-4" />
+          <Gift color="#0F172A" className="inline-block size-4" />
         )}
+
         {event.Event_Type === 'company' || event.Event_Type === 'holiday'
           ? event.title
           : ''}
