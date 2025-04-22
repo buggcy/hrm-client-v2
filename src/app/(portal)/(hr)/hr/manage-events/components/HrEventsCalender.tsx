@@ -4,31 +4,26 @@ import { useEffect, useState } from 'react';
 
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import {
-  Cake,
-  CalendarCog,
-  ChevronLeft,
-  ChevronRight,
-  Gift,
-} from 'lucide-react';
-import {
-  Calendar,
-  dateFnsLocalizer,
-  ToolbarProps,
-  View,
-  Views,
-} from 'react-big-calendar';
+import { Cake, Gift } from 'lucide-react';
+import { Calendar, dateFnsLocalizer, View, Views } from 'react-big-calendar';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useStores } from '@/providers/Store.Provider';
 
 import { useEmployeeDobStatsQuery } from '@/hooks/employee/useApprovalEmployee.hook';
 import { useHrEventsQuery } from '@/hooks/hrEvents/useHrEventsQuery';
-import { HrEventsListType } from '@/libs/validations/employee';
+import {
+  CustomEventProps,
+  EmployeeDob,
+  HrEventsListType,
+  MyEvent,
+} from '@/libs/validations/employee';
 import { HrEventsStoreType } from '@/stores/hr/hrEvents';
 import { cn } from '@/utils';
 
+import Tooltip from './calendar-component/CalendarToolbar';
+import { eventStyleGetter } from './calendar-component/calenderStyle';
+import CustomToolbar from './calendar-component/CustomToolbar';
 import { ViewHrEvent } from './ViewHrEvent';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -36,25 +31,6 @@ import './index.css';
 
 const locales = {
   'en-US': enUS,
-};
-
-type MyEvent = {
-  id?: string;
-  title: string;
-  start: Date;
-  end: Date;
-  Event_Name?: string;
-  Event_Start?: string;
-  Event_End?: string;
-  Event_Type?: string;
-  Event_Discription?: string;
-  isEnabled?: boolean;
-};
-type EmployeeDob = {
-  firstName: string;
-  lastName: string;
-  DOB?: string;
-  Joining_Date?: string;
 };
 
 const localizer = dateFnsLocalizer({
@@ -68,109 +44,20 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const CustomToolbar: React.FC<ToolbarProps<MyEvent, object>> = ({
-  date,
-  onNavigate,
-  onView,
-  view,
-}) => {
-  return (
-    <div className={cn('rbc-toolbar')}>
-      <div className="flex space-x-3">
-        <div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onNavigate('PREV')}
-            style={{
-              color: 'hsl(var(--forground))',
-              borderTop: '1px solid hsl(var(--border))',
-              borderLeft: '1px solid hsl(var(--border))',
-              borderBottom: '1px solid hsl(var(--border))',
-              borderRight: 'none',
-              borderRadius: ' 5px 0 0 5px ',
-              padding: '4px',
-              fontSize: '12px',
-              height: '25px',
-            }}
-            className="text-foreground dark:bg-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-          >
-            <ChevronLeft className="size-4" />
-            <span className="sr-only">Previous</span>
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onNavigate('NEXT')}
-            style={{
-              color: 'hsl(var(--forground))',
-              borderLeft: 'none',
-              borderTop: '1px solid hsl(var(--border))',
-              borderRight: '1px solid hsl(var(--border))',
-              borderBottom: '1px solid hsl(var(--border))',
-              borderRadius: ' 0 4px 4px 0 ',
-              padding: '4px',
-              fontSize: '12px',
-              height: '25px',
-              border: '1px solid hsl(var(--border))',
-            }}
-            className="text-foreground dark:bg-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-          >
-            <ChevronRight className="size-4" />
-            <span className="sr-only">Next</span>
-          </Button>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onNavigate('TODAY')}
-          style={{
-            fontSize: '12px',
-            padding: '4px 12px',
-            height: '25px',
-            color: 'hsl(var(--forground))',
-            border: '1px solid hsl(var(--border))',
-          }}
-          className="text-foreground dark:bg-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-        >
-          Today
-        </Button>
-      </div>
-      <span className={cn('rbc-toolbar-label text-lg')}>
-        {format(date, 'MMMM yyyy')}
-      </span>
-
-      <div className={cn('rbc-btn-group')}>
-        {(['month', 'week', 'day', 'agenda'] as View[]).map(name => (
-          <Button
-            key={name}
-            variant="outline"
-            size="sm"
-            onClick={() => onView(name)}
-            // className={cn(view === name ? 'rbc-active' : '')}
-            style={{
-              fontSize: '12px',
-              padding: '4px 12px',
-              height: '25px',
-              border: '1px solid hsl(var(--border))',
-
-              backgroundColor: view === name ? '#e6e6e670' : '',
-              color:
-                view === name
-                  ? 'hsl(var(--forground))'
-                  : 'hsl(var(--muted-foreground))',
-            }}
-            className={`${cn(view === name ? 'rbc-active' : '')} text-foreground dark:bg-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white`}
-          >
-            {name.charAt(0).toUpperCase() + name.slice(1)}
-          </Button>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 export default function HrEventsCalendar() {
+  const page = 1;
+  const limit = 1000;
+
+  const { hrEventsStore } = useStores() as {
+    hrEventsStore: HrEventsStoreType;
+  };
+  const { setRefetchHrEventsList, refetchHrEventsList } = hrEventsStore;
+
+  const { data: hrEventsList, refetch } = useHrEventsQuery({
+    page: page,
+    limit: limit,
+  });
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<View>(Views.MONTH);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -200,121 +87,6 @@ export default function HrEventsCalendar() {
     y: 0,
   });
 
-  const Tooltip: React.FC<{ event?: MyEvent; x: number; y: number }> = ({
-    event,
-    x,
-    y,
-  }) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const [isDarkMode, setIsDarkMode] = useState(false);
-
-    useEffect(() => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    }, []);
-
-    useEffect(() => {
-      if (event) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    }, [event]);
-
-    if (!event) return null;
-
-    const tooltipStyles = {
-      birthday: {
-        backgroundColor: isDarkMode ? '#f9c74f' : '#fdf0c1',
-      },
-      holiday: {
-        backgroundColor: isDarkMode ? 'hsl(var(--success))' : '#b8e6c1',
-      },
-      nonHoliday: {
-        backgroundColor: isDarkMode ? 'hsl(var(--primary))' : '#a8dff5',
-      },
-      anniversary: {
-        backgroundColor: isDarkMode ? '#0F172A' : '#8caabf',
-      },
-    };
-
-    const currentStyle =
-      event.Event_Type === 'birthday'
-        ? tooltipStyles.birthday
-        : event.Event_Type === 'holiday'
-          ? tooltipStyles.holiday
-          : event.Event_Type === 'anniversary'
-            ? tooltipStyles.anniversary
-            : tooltipStyles.nonHoliday;
-
-    return (
-      <div
-        className={`absolute z-50 rounded-lg shadow-lg transition-all duration-500 ease-in-out${
-          isVisible
-            ? 'translate-y-0 scale-100 opacity-100'
-            : '-translate-y-4 scale-95 opacity-0'
-        } bg-white dark:bg-gray-300`}
-        style={{
-          width: '200px',
-          left:
-            event.Event_Type === 'holiday' || event.Event_Type === 'company'
-              ? x - 100
-              : x - 164,
-          top:
-            event.Event_Type === 'holiday' || event.Event_Type === 'company'
-              ? y - 85
-              : y - 88,
-          padding: '10px',
-        }}
-      >
-        <div
-          className="mb-1 flex flex-row justify-center gap-1 rounded-lg border p-1"
-          style={{
-            backgroundColor: currentStyle.backgroundColor,
-            border: 'none',
-          }}
-        >
-          {event.Event_Type === 'birthday' ? (
-            <Cake
-              size={18}
-              className="font-extrabold text-[#f9c74f] dark:text-[#fdf0c1]"
-            />
-          ) : event.Event_Type === 'anniversary' ? (
-            <Gift
-              size={18}
-              className="font-extrabold text-[#0F172A] dark:text-[#8caabf]"
-            />
-          ) : (
-            <CalendarCog
-              size={18}
-              className={`font-extrabold ${
-                event?.Event_Type === 'holiday'
-                  ? 'text-success dark:text-[#b8e6c1]'
-                  : 'text-primary dark:text-[#a8dff5]'
-              }`}
-            />
-          )}
-          <h3 className="text-center text-sm font-bold text-gray-900 dark:text-white">
-            {event?.Event_Type
-              ? event?.Event_Type?.charAt(0)?.toUpperCase() +
-                event?.Event_Type?.slice(1)?.toLowerCase()
-              : ''}
-          </h3>
-        </div>
-
-        <div className="m-1 text-center text-sm text-gray-600 dark:text-gray-600">{`${event?.title}`}</div>
-
-        <div
-          className="absolute size-3 rotate-45"
-          style={{
-            bottom: '-6px',
-            left: 'calc(50% - 6px)',
-            backgroundColor: currentStyle.backgroundColor,
-          }}
-        ></div>
-      </div>
-    );
-  };
-
   useEffect(() => {
     const prefersDarkMode = window.matchMedia(
       '(prefers-color-scheme: dark)',
@@ -335,37 +107,6 @@ export default function HrEventsCalendar() {
   const onView = (newView: View) => {
     setCurrentView(newView);
   };
-
-  const eventStyleGetter = (event: MyEvent) => {
-    let className = 'event-style';
-
-    if (event.Event_Type === 'holiday') {
-      className = 'event-holiday';
-    } else if (event.Event_Type === 'company') {
-      className = 'event-non-holiday';
-    } else if (event.Event_Type === 'birthday') {
-      className = 'event-birthday';
-    } else if (event.Event_Type === 'anniversary') {
-      className = 'event-anniversary';
-    }
-
-    return {
-      className,
-    };
-  };
-
-  const page = 1;
-  const limit = 1000;
-
-  const { hrEventsStore } = useStores() as {
-    hrEventsStore: HrEventsStoreType;
-  };
-  const { setRefetchHrEventsList, refetchHrEventsList } = hrEventsStore;
-
-  const { data: hrEventsList, refetch } = useHrEventsQuery({
-    page: page,
-    limit: limit,
-  });
 
   useEffect(() => {
     if (refetchHrEventsList) {
@@ -421,10 +162,6 @@ export default function HrEventsCalendar() {
     Event_Discription: event.Event_Discription,
     isEnabled: event?.isEnabled === true,
   }));
-
-  type CustomEventProps = {
-    event: MyEvent;
-  };
 
   const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
     const handleMouseEnter = (e: React.MouseEvent) => {
@@ -552,6 +289,7 @@ export default function HrEventsCalendar() {
             endAccessor="end"
             className="calendar-height"
             date={currentDate}
+            popup
             view={currentView}
             onNavigate={onNavigate}
             onView={onView}
