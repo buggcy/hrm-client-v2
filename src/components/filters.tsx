@@ -10,19 +10,19 @@ import {
   CheckCircle,
   CheckCircle2,
   Circle,
-  CircleArrowOutUpRight,
   CircleFadingPlus,
   HelpCircle,
   Loader,
+  Mars,
   Minus,
   PackagePlus,
-  PersonStanding,
   Plus,
   ScrollText,
   Sun,
   Timer,
   UserMinus,
   UserX,
+  Venus,
   XCircle,
 } from 'lucide-react';
 
@@ -94,12 +94,12 @@ export const gender_options = [
   {
     value: 'male',
     label: 'Male',
-    icon: CircleArrowOutUpRight,
+    icon: Mars,
   },
   {
     value: 'female',
     label: 'Female',
-    icon: PersonStanding,
+    icon: Venus,
   },
 ];
 

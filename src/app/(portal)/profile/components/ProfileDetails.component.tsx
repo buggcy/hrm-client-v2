@@ -190,7 +190,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
             <Link href="/profile-setting">
               <Button
                 variant="ghost"
-                className="w-full border border-gray-300 bg-transparent text-black"
+                className="w-full border border-gray-300 bg-transparent text-black dark:text-white"
               >
                 Edit Profile
               </Button>

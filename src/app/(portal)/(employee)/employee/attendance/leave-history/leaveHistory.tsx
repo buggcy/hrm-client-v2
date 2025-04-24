@@ -15,7 +15,10 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
-import { useLeaveListPostQuery } from '@/hooks/hr/useLeaveList.hook';
+import {
+  useEmployeeLeaveChart,
+  useLeaveListPostQuery,
+} from '@/hooks/hr/useLeaveList.hook';
 import { LeaveListArrayType } from '@/libs/validations/hr-leave-list';
 import { searchLeaveList } from '@/services/hr/leave-list.service';
 import { AuthStoreType } from '@/stores/auth';
@@ -58,6 +61,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
     useState<string>(initialSearchTerm);
   const [status, setStatus] = useState<string[]>([]);
+  const { data, refetch: refetchStats } = useEmployeeLeaveChart(user?.id || '');
   const {
     data: leavePostList,
     isLoading,
@@ -142,6 +146,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
     } else {
       void (async () => {
         await refetch();
+        await refetchStats();
       })();
     }
   }, [
@@ -154,12 +159,14 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
     selectedDate?.from,
     selectedDate?.to,
     user?.id,
+    refetchStats,
   ]);
 
   useEffect(() => {
     if (refetchLeaveHistoryList) {
       void (async () => {
         await refetch();
+        await refetchStats();
       })();
 
       setRefetchLeaveHistoryList(false);
@@ -170,8 +177,10 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
     limit,
     setRefetchLeaveHistoryList,
     refetch,
+    refetchStats,
   ]);
   useEffect(() => {}, [leavePostList, selectedDate]);
+  useEffect(() => {}, [data]);
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
@@ -210,7 +219,7 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
         </Button>
       </Header>
 
-      <LeaveCards date={selectedDate} />
+      <LeaveCards data={data} />
 
       {isLoading || isFetching ? (
         <DataTableLoading columnCount={7} rowCount={limit} />
