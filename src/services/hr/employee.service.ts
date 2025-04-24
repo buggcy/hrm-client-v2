@@ -4,6 +4,8 @@ import { ApprovalEmployeeType } from '@/app/(portal)/(hr)/hr/approval/ApprovalCa
 import { AddEmployeeFormData } from '@/app/(portal)/(hr)/hr/manage-employees/components/EmployeeModal';
 import {
   cardDataSchema,
+  DeviceChartApiResponse,
+  deviceChartApiResponseSchema,
   EmployeeApiResponse,
   employeeApiResponseSchema,
   employeeDobDataSchema,
@@ -489,4 +491,14 @@ export const DeleteResignation = async ({
     `/delete/resignation/${id}`,
   );
   return { message };
+};
+
+export const getHrDeviceChart = async (): Promise<DeviceChartApiResponse> => {
+  try {
+    const response = await baseAPI.get('/devices/statistics');
+    return schemaParse(deviceChartApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching device charts:', error);
+    throw error;
+  }
 };

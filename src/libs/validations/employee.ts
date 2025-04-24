@@ -300,6 +300,36 @@ const employeePayrollChartApiResponseSchema = z.object({
   monthlyPayroll: z.array(monthlyChartSchema),
 });
 
+export const myEventSchema = z.object({
+  id: z.string().optional(),
+  title: z.string(),
+  start: z.date(),
+  end: z.date(),
+  Event_Name: z.string().optional(),
+  Event_Start: z.string().optional(),
+  Event_End: z.string().optional(),
+  Event_Type: z.string().optional(),
+  Event_Discription: z.string().optional(),
+  isEnabled: z.boolean().optional(),
+});
+
+export type MyEvent = z.infer<typeof myEventSchema>;
+
+export const employeeDobSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  DOB: z.string().optional(),
+  Joining_Date: z.string().optional(),
+});
+
+export type EmployeeDob = z.infer<typeof employeeDobSchema>;
+
+export const customEventPropsSchema = z.object({
+  event: myEventSchema,
+});
+
+export type CustomEventProps = z.infer<typeof customEventPropsSchema>;
+
 export type EmployeePayrollApiResponse = z.infer<
   typeof employeePayrollApiResponseSchema
 >;
@@ -326,6 +356,19 @@ const pendingResignedApiResponseSchema = z.object({
   totalCount: z.number(),
   data: z.array(resignedSchema),
 });
+
+const deviceChartSchema = z.object({
+  month: z.string(),
+  desktop: z.number(),
+  mobile: z.number(),
+});
+const deviceChartApiResponseSchema = z.object({
+  data: z.array(deviceChartSchema),
+});
+export type DeviceChartApiResponse = z.infer<
+  typeof deviceChartApiResponseSchema
+>;
+
 export type ResignedListApiResponse = z.infer<typeof resignedApiResponseSchema>;
 export type PendingResignedListApiResponse = z.infer<
   typeof pendingResignedApiResponseSchema
@@ -370,4 +413,5 @@ export {
   pendingResignedApiResponseSchema,
   employeeFiredResignedApiResponseSchema,
   employeePayrollChartApiResponseSchema,
+  deviceChartApiResponseSchema,
 };

@@ -1,12 +1,16 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { EmployeeListType } from '@/libs/validations/employee';
+import {
+  DeviceChartApiResponse,
+  EmployeeListType,
+} from '@/libs/validations/employee';
 import {
   approvalEmployeeList,
   CardData,
   DobData,
   getAddEmployeeCharts,
   getEmpDobDate,
+  getHrDeviceChart,
 } from '@/services/hr/employee.service';
 
 import { UseQueryConfig } from '@/types';
@@ -40,3 +44,13 @@ export const useEmployeeDobStatsQuery = (config: UseQueryConfig = {}) =>
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<DobData[], Error>;
+
+export const useDeviceChart = (config: UseQueryConfig = {}) =>
+  useQuery({
+    queryKey: ['deviceChart'],
+    queryFn: () => getHrDeviceChart(),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+  }) as UseQueryResult<DeviceChartApiResponse, Error>;

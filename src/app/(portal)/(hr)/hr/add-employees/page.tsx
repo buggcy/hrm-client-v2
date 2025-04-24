@@ -15,6 +15,7 @@ import { useStores } from '@/providers/Store.Provider';
 
 import {
   useApprovalEmployeeQuery,
+  useDeviceChart,
   useEmployeeApprovalStatsQuery,
 } from '@/hooks/employee/useApprovalEmployee.hook';
 import { AuthStoreType } from '@/stores/auth';
@@ -27,6 +28,8 @@ import { AddEmployeeDialog } from '../manage-employees/components/EmployeeModal'
 export default function AddEmployeesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data } = useApprovalEmployeeQuery();
+  const { data: deviceChart } = useDeviceChart();
+
   const { data: hrEmployeeApprovalStats } = useEmployeeApprovalStatsQuery();
   const { authStore } = useStores() as { authStore: AuthStoreType };
   const { user } = authStore;
@@ -49,25 +52,7 @@ export default function AddEmployeesPage() {
       </LayoutHeader>
       <LayoutWrapper wrapperClassName="flex flex-1">
         <Header
-          subheading={`Shape your dream team with ease! ${
-            data?.length && data?.length > 0
-              ? `${data?.length} new requests—`
-              : ''
-          }
-          ${
-            hrEmployeeApprovalStats?.Card2Data?.pending
-              ? `${hrEmployeeApprovalStats?.Card2Data?.pending} pending, `
-              : ''
-          }    
-          ${
-            hrEmployeeApprovalStats?.Card2Data?.rejected
-              ? `${hrEmployeeApprovalStats?.Card2Data?.rejected} rejected, `
-              : ''
-          }${
-            hrEmployeeApprovalStats?.Card2Data?.tba
-              ? `${hrEmployeeApprovalStats?.Card2Data?.tba} to be added. `
-              : ''
-          } Keep your hiring process seamless!`.trim()}
+          subheading={`Shape your dream team with ease! Keep your hiring process seamless!`.trim()}
         >
           {addPermission && (
             <Button
@@ -91,7 +76,10 @@ export default function AddEmployeesPage() {
           </Button>
         </Header>
         <div className="my-6 flex flex-col gap-5">
-          <AddEmpCards data={hrEmployeeApprovalStats} />
+          <AddEmpCards
+            data={hrEmployeeApprovalStats}
+            deviceChart={deviceChart}
+          />
           <Suspense fallback={<div>Loading...</div>}>
             <UnApprovedEmployeeTable />
           </Suspense>

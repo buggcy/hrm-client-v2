@@ -19,15 +19,13 @@ import {
 } from '@/components/ui/chart';
 
 export const description = 'An area chart with a legend';
-
-const chartData = [
-  { month: 'January', desktop: 186, mobile: 80 },
-  { month: 'February', desktop: 305, mobile: 200 },
-  { month: 'March', desktop: 237, mobile: 120 },
-  { month: 'April', desktop: 73, mobile: 190 },
-  { month: 'May', desktop: 209, mobile: 130 },
-  { month: 'June', desktop: 214, mobile: 140 },
-];
+interface AreaChartProps {
+  chartData?: {
+    month: string;
+    desktop: number;
+    mobile: number;
+  }[];
+}
 
 const chartConfig = {
   desktop: {
@@ -40,7 +38,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function AddAreaChart() {
+export function AddAreaChart({ chartData }: AreaChartProps) {
   return (
     <Card className="h-[330px] w-[55%] max-lg:w-full">
       <CardHeader>
