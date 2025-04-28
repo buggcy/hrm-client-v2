@@ -249,9 +249,15 @@ export function RequestAttendanceDialog({
                     initialDate={field.value}
                     onDateChange={field.onChange}
                     className="h-auto"
-                    disabled={date =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
+                    disabled={date => {
+                      const currentDate = new Date();
+                      const startOfCurrentMonth = new Date(
+                        currentDate.getFullYear(),
+                        currentDate.getMonth(),
+                        1,
+                      );
+                      return date < startOfCurrentMonth;
+                    }}
                   />
                 )}
               />
