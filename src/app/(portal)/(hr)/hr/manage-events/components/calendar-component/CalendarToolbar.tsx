@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Cake, CalendarArrowUp, Gift } from 'lucide-react';
+import { Cake, CalendarArrowDown, CalendarArrowUp, Gift } from 'lucide-react';
 
 import { MyEvent } from '@/libs/validations/employee';
 
@@ -90,7 +90,7 @@ const Tooltip: React.FC<{ event?: MyEvent; x: number; y: number }> = ({
         ) : event.Event_Type === 'holiday' ? (
           <CalendarArrowUp size={18} className="font-extrabold text-white" />
         ) : event.Event_Type === 'company' ? (
-          <CalendarArrowUp size={18} className="font-extrabold text-white" />
+          <CalendarArrowDown size={18} className="font-extrabold text-white" />
         ) : (
           <> </>
         )}
