@@ -2,11 +2,13 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import {
   AttendanceApiResponse,
+  AttendanceByDateApiResponse,
   AttendanceRequestApiResponse,
 } from '@/libs/validations/attendance-list';
 import {
   AttendanceListParams,
   AttendanceRequestParams,
+  getAttendanceByUserIdAndDate,
   getAttendanceDistributionStats,
   getAttendanceList,
   getAttendanceRequestList,
@@ -53,3 +55,18 @@ export const useAttendanceOverviewQuery = (
     refetchInterval: 1000 * 60 * 5,
     ...config,
   }) as UseQueryResult<AttendanceDistributionApiResponse, Error>;
+
+export const useAttendanceByDateQuery = (
+  id: string,
+  date: string,
+  config: UseQueryConfig = {},
+) =>
+  useQuery({
+    queryKey: ['attendanceByDate', id, date],
+    queryFn: () => getAttendanceByUserIdAndDate({ id, date }),
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5,
+    ...config,
+    enabled: !!id && !!date,
+  }) as UseQueryResult<AttendanceByDateApiResponse, Error>;
