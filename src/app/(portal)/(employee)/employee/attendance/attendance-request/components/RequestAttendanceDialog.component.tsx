@@ -250,13 +250,25 @@ export function RequestAttendanceDialog({
                     onDateChange={field.onChange}
                     className="h-auto"
                     disabled={date => {
-                      const currentDate = new Date();
-                      const startOfCurrentMonth = new Date(
-                        currentDate.getFullYear(),
-                        currentDate.getMonth(),
+                      const today = new Date();
+
+                      const startOfMonth = new Date(
+                        today.getFullYear(),
+                        today.getMonth(),
                         1,
                       );
-                      return date < startOfCurrentMonth;
+
+                      return (
+                        date < startOfMonth ||
+                        date.getMonth() !== today.getMonth() ||
+                        date.getFullYear() !== today.getFullYear() ||
+                        date >=
+                          new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            today.getDate(),
+                          )
+                      );
                     }}
                   />
                 )}
