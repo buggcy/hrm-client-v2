@@ -27,7 +27,7 @@ const ConfigurationTypeTable: FunctionComponent<
       <Header subheading="Easily Add and Manage Configuration Types!">
         <div className="flex flex-col-reverse justify-between gap-4 sm:flex-row">
           <Select value={selectedType} onValueChange={setSelectedType}>
-            <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[64%]">
+            <div className="z-10 grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 md:max-w-[64%]">
               <SelectTrigger className="relative z-50 rounded-md border px-3 py-2 text-left text-sm">
                 <SelectValue>{selectedType}</SelectValue>
               </SelectTrigger>
