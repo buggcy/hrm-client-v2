@@ -98,7 +98,7 @@ const attendanceListApiResponseSchema = z.object({
   data: z.array(attendanceListSchema),
 });
 export const attendanceByDateApiResponseSchema = z.object({
-  data: z.array(attendanceListSchema),
+  data: attendanceListSchema,
 });
 export type AttendanceByDateApiResponse = z.infer<
   typeof attendanceByDateApiResponseSchema
