@@ -56,7 +56,7 @@ const OvertimeApproval: FunctionComponent<HrAttendanceRequestsProps> = ({
 
   return (
     <>
-      <div className="mt-4 grid w-full grid-cols-1 gap-4 overflow-hidden sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-4 grid w-full grid-cols-1 gap-4 overflow-visible sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {isLoading || isFetching ? (
           <Skeleton className="h-6 w-full" />
         ) : pendingList?.totalCount ? (

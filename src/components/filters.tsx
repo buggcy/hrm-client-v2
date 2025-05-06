@@ -198,6 +198,16 @@ export const attendance_history_status_options = [
     label: 'Unpaid Leave',
     icon: Ban,
   },
+  {
+    value: 'Half Day Leave',
+    label: 'Half Day',
+    icon: Circle,
+  },
+  {
+    value: 'Quarter Day Leave',
+    label: 'Quarter Day',
+    icon: Circle,
+  },
 ];
 
 export const attendance_request_status_options = [
@@ -321,6 +331,16 @@ export const attendance_list_status_options = [
   {
     value: 'Unpaid Leave',
     label: 'Unpaid Leave',
+    icon: Circle,
+  },
+  {
+    value: 'Half Day Leave',
+    label: 'Half Day',
+    icon: Circle,
+  },
+  {
+    value: 'Quarter Day Leave',
+    label: 'Quarter Day',
     icon: Circle,
   },
 ];

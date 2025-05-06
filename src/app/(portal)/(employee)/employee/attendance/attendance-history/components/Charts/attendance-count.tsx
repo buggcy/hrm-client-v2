@@ -20,15 +20,15 @@ const chartConfig = {
   },
   lci: {
     label: 'Late Check-ins',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-5))',
   },
   leaves: {
     label: 'Leaves',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--chart-2))',
   },
   absent: {
     label: 'Absent',
-    color: 'hsl(var(--chart-4))',
+    color: 'hsl(var(--chart-3))',
   },
 } satisfies ChartConfig;
 

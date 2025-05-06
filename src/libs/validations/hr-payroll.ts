@@ -53,6 +53,7 @@ const HRPayrollSchema = z.object({
     })
     .optional(),
   Late: z.number().optional(),
+  Late_Minutes: z.number().optional(),
   Total_Minutes_Monthly: z.number().optional(),
   Total_Remaining_Minutes: z.number().optional(),
   Net_Salary: z.number().optional(),

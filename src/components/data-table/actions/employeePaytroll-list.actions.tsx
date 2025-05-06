@@ -118,6 +118,7 @@ export function EmployeePayrollListRowActions({
           shortMinutes={payslipData?.shortMinutes || 0}
           shortMinutesDeduction={payslipData?.shortMinutesDeduction || 0}
           late={payslipData?.Late || 0}
+          lateMinutes={payslipData?.Late_Minutes || 0}
         />,
       );
     } else {

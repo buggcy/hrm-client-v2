@@ -2,12 +2,6 @@
 
 import { useState } from 'react';
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@radix-ui/react-tooltip';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { Mail, Phone, UserCog } from 'lucide-react';
@@ -17,6 +11,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -81,9 +81,28 @@ export const OvertimeCard = ({ request }: { request: OvertimeListType }) => {
     <>
       <Card
         className={cn(
-          'group flex flex-col justify-between rounded-md p-4 outline-primary hover:shadow',
+          'group relative flex flex-col justify-between rounded-md p-4 outline-primary hover:shadow',
         )}
       >
+        {request.createdAt &&
+          request.date &&
+          request.createdAt > request.date && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className="absolute right-0 top-0 flex size-8 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-error">
+                    !
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    Leave request was made after the start date. Please check
+                    the request details.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         <CardContent className="flex flex-col gap-2 p-0">
           <div className="flex items-center justify-between">
             <Avatar className="size-12">

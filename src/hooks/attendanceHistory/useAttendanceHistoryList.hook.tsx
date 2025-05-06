@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { AttendanceHistoryApiResponse } from '@/libs/validations/attendance-history';
 import {
   AttendanceHistoryListParams,
   getAttendanceHistoryList,
@@ -7,10 +8,7 @@ import {
 } from '@/services/employee/attendance-history.service';
 
 import { UseQueryConfig } from '@/types';
-import {
-  AttendanceHistoryApiResponse,
-  todayAttendenceApiResponse,
-} from '@/types/attendance-history.types';
+import { todayAttendenceApiResponse } from '@/types/attendance-history.types';
 
 export const useAttendanceHistoryListQuery = (
   params: AttendanceHistoryListParams,
