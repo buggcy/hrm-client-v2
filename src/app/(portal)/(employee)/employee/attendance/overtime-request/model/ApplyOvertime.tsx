@@ -197,13 +197,26 @@ export function AddEditOvertime({
                       const today = new Date();
                       today.setHours(0, 0, 0, 0);
 
+                      const currentDate = new Date();
+                      const startOfCurrentMonth = new Date(
+                        currentDate.getFullYear(),
+                        currentDate.getMonth(),
+                        1,
+                      );
+
                       const isFutureOrToday = date >= today;
 
                       const isBeforeJoining = userJoiningDate
                         ? date < userJoiningDate
                         : false;
 
-                      return isFutureOrToday || isBeforeJoining;
+                      const isBeforeStartOfMonth = date < startOfCurrentMonth;
+
+                      return (
+                        isFutureOrToday ||
+                        isBeforeJoining ||
+                        isBeforeStartOfMonth
+                      );
                     }}
                   />
                 )}

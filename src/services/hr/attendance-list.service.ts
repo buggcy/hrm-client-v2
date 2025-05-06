@@ -1,6 +1,8 @@
 import { AddAttendanceFormData } from '@/app/(portal)/(hr)/hr/manage-attendance/attendance-list/components/AttendanceDialog';
 import {
   AttendanceApiResponse,
+  AttendanceByDateApiResponse,
+  attendanceByDateApiResponseSchema,
   AttendanceDistributionStatsApiResponseSchema,
   attendanceListApiResponseSchema,
   AttendanceListStatsApiResponseSchema,
@@ -272,4 +274,15 @@ export const refreshAttendance = async ({
     body,
   );
   return { message };
+};
+
+export const getAttendanceByUserIdAndDate = async ({
+  date,
+  id,
+}: {
+  date: string;
+  id: string;
+}): Promise<AttendanceByDateApiResponse> => {
+  const res = await baseAPI.get(`/read/${id}/attendance/${date}`);
+  return schemaParse(attendanceByDateApiResponseSchema)(res);
 };

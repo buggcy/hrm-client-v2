@@ -208,15 +208,19 @@ const LeaveHistoryPage: FunctionComponent<LeaveHistoryPageProps> = () => {
   return (
     <div className="flex flex-col gap-12">
       <Header subheading="Manage your leave requests and track their status with ease.">
-        <DateRangePicker
-          timeRange={timeRange}
-          selectedDate={selectedDate}
-          setTimeRange={setTimeRange}
-          setDate={handleSetDate}
-        />
-        <Button variant="default" onClick={handleDialogOpen}>
-          Apply Leave Form
-        </Button>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+            <DateRangePicker
+              timeRange={timeRange}
+              selectedDate={selectedDate}
+              setTimeRange={setTimeRange}
+              setDate={handleSetDate}
+            />
+            <Button variant="default" onClick={handleDialogOpen}>
+              Apply Leave Form
+            </Button>
+          </div>
+        </div>
       </Header>
 
       <LeaveCards data={data} />

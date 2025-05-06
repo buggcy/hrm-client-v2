@@ -42,20 +42,42 @@ const configurationSchema = z.object({
   updatedAt: z.string().optional(),
 });
 
+const taxSchema = z.object({
+  _id: z.string(),
+  __v: z.number(),
+  userId: userIdSchema,
+  from: z.number(),
+  to: z.number(),
+  percentage: z.number(),
+  isDeleted: z.boolean(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+});
+
 const configurationApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(configurationSchema),
 });
-
+const taxApiResponseSchema = z.object({
+  pagination: paginationSchema,
+  data: z.array(taxSchema),
+});
 export type ConfigurationApiResponse = z.infer<
   typeof configurationApiResponseSchema
 >;
 export type ConfigurationType = z.infer<typeof configurationSchema>;
 export type ConfigurationArrayType = z.infer<typeof configurationSchema>[] | [];
 
+export type TaxApiResponse = z.infer<typeof taxApiResponseSchema>;
+export type TaxType = z.infer<typeof taxSchema>;
+
+export type TaxArrayType = z.infer<typeof taxSchema>[] | [];
+
 export {
   configurationSchema,
   userIdSchema,
   paginationSchema,
   configurationApiResponseSchema,
+  taxApiResponseSchema,
+  taxSchema,
 };
