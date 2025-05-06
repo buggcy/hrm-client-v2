@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -32,7 +33,6 @@ import { useStores } from '@/providers/Store.Provider';
 import { useAllPerkQuery } from '@/hooks/employee/usePerkList.hook';
 import { AvailPerk } from '@/services/employee/perk.service';
 import { PerkStoreType } from '@/stores/employee/perks';
-import { validateFile } from '@/utils/fileValidation.utils';
 
 import { MessageErrorResponse } from '@/types';
 import { Perk } from '@/types/perk.types';
@@ -48,7 +48,17 @@ interface PerkModalProps {
 const FormSchema = z.object({
   perkId: z.string().min(1, 'Please select a perk'),
   increment: z.string().min(1, 'Amount is required'),
-  file: z.string().optional(),
+  description: z.string().min(1, 'Description is required'),
+  file: z
+    .instanceof(File)
+    .refine(file => file.size <= 800 * 1024, 'File size must not exceed 800KB')
+    .refine(
+      file =>
+        ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'].includes(
+          file.type,
+        ),
+      'Only PDF, PNG, JPG, and JPEG files are allowed',
+    ),
 });
 
 export type PerkFormData = z.infer<typeof FormSchema>;
@@ -79,7 +89,8 @@ export function PerkModal({
     defaultValues: {
       perkId: '',
       increment: '0',
-      file: '',
+      description: '',
+      file: undefined,
     },
   });
 
@@ -108,26 +119,6 @@ export function PerkModal({
   });
 
   const onSubmit = (data: PerkFormData) => {
-    const fileInput = document.getElementById('file') as HTMLInputElement;
-    const file = fileInput?.files ? fileInput.files[0] : null;
-    if (!file) {
-      setError('file', {
-        type: 'manual',
-        message: 'Proof Document is Required!',
-      });
-      return;
-    }
-    const fileError = validateFile(file);
-    if (fileError) {
-      setError('file', {
-        type: 'manual',
-        message: fileError,
-      });
-      return;
-    } else {
-      clearErrors('file');
-    }
-
     if (Number(data?.increment) > assignedIncrement) {
       setError('increment', {
         type: 'manual',
@@ -139,9 +130,11 @@ export function PerkModal({
     }
     const formData = new FormData();
     formData.append('incrementAmount', data?.increment);
+    const file = data?.file;
     if (file) {
       formData.append('proofPerkDocument', file);
     }
+    formData.append('description', data?.description);
 
     const payload = {
       employeeId: user?.id,
@@ -246,6 +239,27 @@ export function PerkModal({
                       )}
                     </div>
                   </div>
+                  <div className="flex flex-col">
+                    <Label htmlFor="description" className="mb-2 text-left">
+                      Description <span className="text-red-600">*</span>
+                    </Label>
+                    <Controller
+                      name="description"
+                      control={control}
+                      render={({ field }) => (
+                        <FormattedTextArea
+                          value={field.value || ''}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+
+                    {errors.description && (
+                      <span className="text-sm text-red-500">
+                        {errors.description.message}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex flex-wrap">
                     <div className="flex flex-1 flex-col">
                       <Label htmlFor="file" className="mb-2 text-left">
@@ -258,8 +272,12 @@ export function PerkModal({
                           <Input
                             type="file"
                             id="file"
+                            accept=".png, .jpeg, .jpg, .pdf"
                             placeholder="Browse for a file to upload..."
-                            {...field}
+                            onChange={e => {
+                              const file = e.target.files?.[0];
+                              field.onChange(file);
+                            }}
                           />
                         )}
                       />

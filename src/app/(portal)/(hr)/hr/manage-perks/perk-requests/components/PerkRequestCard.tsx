@@ -121,6 +121,18 @@ const PerkRequestCard = ({
               </Tooltip>
             </TooltipProvider>
           </div>
+          <div>
+            <p className="flex items-center gap-4">
+              <strong>Description: </strong>
+            </p>
+            <div className="description-content max-h-60 overflow-y-auto rounded-md bg-muted/70 p-4 text-sm">
+              {perkRequest.description && (
+                <p
+                  dangerouslySetInnerHTML={{ __html: perkRequest.description }}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </CardContent>
       <CardFooter className="flex flex-row justify-end gap-4 p-0 pt-6">
