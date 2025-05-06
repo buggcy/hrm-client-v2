@@ -96,6 +96,7 @@ export function PerkListRowActions({ row }: DataTableRowActionsProps) {
   };
 
   const handleView = (perk: TransformedPerkData) => {
+    console.log('perk', perk);
     setSelectedPerk(perk);
     setIsView(true);
   };

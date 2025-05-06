@@ -8,6 +8,12 @@
   border: 1px solid hsl(var(--border)) !important;
 }
 
+.rbc-toolbar button:focus {
+  background: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
 .rbc-month-view {
   border: 0px !important;
 }
@@ -53,14 +59,16 @@
 }
 
 .event-holiday {
-  background-color: #d4edda;
+  background-color: hsl(var(--success) / 0.1);
   color: hsl(var(--success));
   border-radius: 4px;
   font-size: 12px;
+  padding-right: 0px;
+  text-transform: capitalize;
 }
 
 .event-non-holiday {
-  background-color: #e7f7fd;
+  background-color: hsl(var(--primary) / 0.1);
   color: hsl(var(--primary));
   border-radius: 4px;
   font-size: 12px;
@@ -68,12 +76,12 @@
 
 .dark .event-holiday {
   background-color: hsl(var(--success));
-  color: #d4edda;
+  color: #ffffff;
 }
 
 .dark .event-non-holiday {
   background-color: hsl(var(--primary));
-  color: #e7f7fd;
+  color: #ffffff;
 }
 
 .calendar-height {
@@ -97,31 +105,26 @@
 }
 
 .event-birthday {
-  background-color: hsl(var(--transparent));
-  color: #f9a602;
+  background-color: hsl(var(--warning) / 0.1);
+  color: hsl(var(--warning));
   border-radius: 4px;
   font-size: 12px;
-  width: fit-content;
-  display: flex;
   padding-right: 0px;
-  margin-left: auto;
 }
 
 .dark .event-birthday {
-  background-color: #f9a602;
-  color: #fff;
+  background-color: hsl(var(--warning));
+  color: #ffffff;
 }
 .event-anniversary {
-  background-color: hsl(var(--transparent));
-  color: #f43f5e;
+  background-color: hsl(var(--danger) / 0.1);
+  color: hsl(var(--danger));
   border-radius: 4px;
   font-size: 12px;
   padding-right: 0px;
-  width: fit-content;
-  margin-left: auto;
 }
 
 .dark .event-anniversary {
-  background-color: #f43f5e;
-  color: #ffe4e6;
+  background-color: hsl(var(--danger));
+  color: #ffffff;
 }

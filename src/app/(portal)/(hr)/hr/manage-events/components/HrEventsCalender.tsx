@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { Cake, Gift } from 'lucide-react';
+import { Cake, CalendarArrowDown, CalendarArrowUp, Gift } from 'lucide-react';
 import { Calendar, dateFnsLocalizer, View, Views } from 'react-big-calendar';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -186,16 +186,44 @@ export default function HrEventsCalendar() {
         onMouseLeave={handleMouseLeave}
       >
         {event.Event_Type === 'birthday' && (
-          <Cake className="inline-block size-4" />
+          <div className="flex items-center space-x-1">
+            <Cake className="inline-block size-4" />{' '}
+            <span className="mt-1 truncate" title={event.title}>
+              {event.title}
+            </span>
+          </div>
         )}
 
         {event.Event_Type === 'anniversary' && (
-          <Gift color="#0F172A" className="inline-block size-4" />
+          <div className="flex items-center space-x-1 py-0.5">
+            <Gift className="inline-block size-4" />
+            <span className="truncate" title={event.title}>
+              {event.title}
+            </span>
+          </div>
         )}
 
-        {event.Event_Type === 'company' || event.Event_Type === 'holiday'
-          ? event.title
-          : ''}
+        {event.Event_Type === 'company' ? (
+          <div className="flex items-center space-x-1 py-0.5">
+            <CalendarArrowDown className="inline-block size-4" />
+            <span className="truncate" title={event.title}>
+              {event.title}
+            </span>
+          </div>
+        ) : (
+          ''
+        )}
+
+        {event.Event_Type === 'holiday' ? (
+          <div className="flex items-center space-x-1 py-0.5">
+            <CalendarArrowUp className="inline-block size-4" />
+            <span className="truncate" title={event.title}>
+              {event.title}
+            </span>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     );
   };

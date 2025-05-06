@@ -67,7 +67,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
           ),
         },
         {
-          title: 'Resigned/Fired',
+          title: 'Resigned & Fired',
           icon: UserMinus,
           href: '/hr/resigned-fired',
           disabled: !accessPermissions.some(
@@ -149,7 +149,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
           ),
         },
         {
-          title: 'Manage Birthday',
+          title: 'Birthdays & Anniversaries',
           icon: CalendarCog,
           href: '/hr/manage-birthday',
           disabled: !accessPermissions.some(
@@ -175,7 +175,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
       ),
       children: [
         {
-          title: 'Attendance List',
+          title: 'Attendance',
           icon: ClipboardList,
           href: '/hr/manage-attendance/attendance-list',
           disabled: !accessPermissions.some(
@@ -184,7 +184,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
           ),
         },
         {
-          title: 'Leave List',
+          title: 'Leave',
           icon: CalendarDays,
           href: '/hr/manage-attendance/leave-list',
           disabled: !accessPermissions.some(
@@ -246,7 +246,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
       ),
       children: [
         {
-          title: 'Manage Policy',
+          title: 'Policy',
           icon: BadgeCheck,
           href: '/hr/manage-policies',
           disabled: !accessPermissions.some(
@@ -265,7 +265,7 @@ export const hrMenu = (accessPermissions: Permission[]): MenuItem[] => {
       ),
       children: [
         {
-          title: 'Manage Configuration',
+          title: 'Configurations',
           icon: Settings,
           href: '/hr/manage-configuration',
           disabled: !accessPermissions.some(

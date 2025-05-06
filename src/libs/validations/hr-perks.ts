@@ -71,6 +71,7 @@ const HrPerkRequestsSchema = z.object({
   assignedIncrementAmount: z.number(),
   incrementAmount: z.number(),
   dateApplied: z.string(),
+  description: z.string().optional(),
   userId: z.object({
     _id: z.string(),
     firstName: z.string(),
