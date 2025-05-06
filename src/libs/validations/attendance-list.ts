@@ -97,7 +97,12 @@ const attendanceListApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(attendanceListSchema),
 });
-
+export const attendanceByDateApiResponseSchema = z.object({
+  data: attendanceListSchema,
+});
+export type AttendanceByDateApiResponse = z.infer<
+  typeof attendanceByDateApiResponseSchema
+>;
 export const gender = ['male', 'female'] as const;
 export const approvalStatus = ['Approved', 'Pending', 'Rejected'] as const;
 export const maritalStatus = ['married', 'unmarried'] as const;

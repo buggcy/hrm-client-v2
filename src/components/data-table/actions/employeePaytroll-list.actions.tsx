@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Row } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { Eye, MoreHorizontal, RefreshCw } from 'lucide-react';
@@ -50,7 +50,7 @@ export function EmployeePayrollListRowActions({
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
   const data = row.original;
-
+  const queryClient = useQueryClient();
   const today = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: '2-digit',
@@ -135,13 +135,14 @@ export function EmployeePayrollListRowActions({
         variant: 'error',
       });
     },
-    onSuccess: response => {
+    onSuccess: async response => {
       toast({
         title: 'Success',
         description: response?.message,
         variant: 'success',
       });
       setRefetchEmployeePayrollList(true);
+      await queryClient.invalidateQueries({ queryKey: ['employeePayroll'] });
     },
   });
   const handleRefresh = (row: EmployeePayrollListType) => {

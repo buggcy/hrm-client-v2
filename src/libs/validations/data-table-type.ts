@@ -11,6 +11,7 @@ import { LeaveHistoryListType } from '@/libs/validations/leave-history';
 
 import { AttendanceRequest } from './attendance-request';
 import { AnnouncementType } from './hr-announcements';
+import { TaxType } from './hr-configuration';
 import { HRPayrollListType } from './hr-payroll';
 import { HrPerksListType } from './hr-perks';
 import { OvertimeListType } from './overtime';
@@ -30,6 +31,7 @@ type DataTableType =
   | LeaveHistoryListType
   | EmployeeDobTableListType
   | HRPayrollListType
-  | OvertimeListType;
+  | OvertimeListType
+  | TaxType;
 
 export default DataTableType;
