@@ -65,6 +65,7 @@ function distributeLeaves(
   joiningDate: Date,
   leaveData?: EmployeeLeavesDataApiResponse,
   allowAnnual?: boolean,
+  leaveDuration?: 'Full' | 'Half' | 'Quarter',
 ) {
   const leaveDistribution: {
     date: Date;
@@ -72,8 +73,13 @@ function distributeLeaves(
     isAnnual: boolean;
   }[] = [];
   const totalDaysRequested =
-    start.toISOString() === end.toISOString() ? 1 : getTotalDays(start, end);
-
+    leaveDuration === 'Half'
+      ? 0.5
+      : leaveDuration === 'Quarter'
+        ? 0.25
+        : start.toISOString() === end.toISOString()
+          ? 1
+          : getTotalDays(start, end);
   if (type === 'Annual') {
     const daysAllowed = getAvailableAnnualLeaves(joiningDate, end, leaveData);
     const daysTakenThisCycle = getPaidAnnualLeavesThisCycle(

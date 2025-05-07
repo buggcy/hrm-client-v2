@@ -1,6 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 import {
   Card,
@@ -21,7 +29,23 @@ export interface ChartData {
   status?: string;
   startTime?: string | number | Date;
   endTime?: string | number | Date;
+  fill?: string;
 }
+
+const getBarColor = (status?: string) => {
+  if (!status) return '#30BBF2';
+
+  switch (status.toLowerCase()) {
+    case 'holiday':
+      return '#4CAF50';
+    case 'leave':
+      return '#FF9800';
+    case 'absent':
+      return '#F44336';
+    default:
+      return '#30BBF2';
+  }
+};
 
 export function BChart({ from, to }: { from: string; to: string }) {
   const userId = useUserId();
@@ -80,13 +104,27 @@ export function BChart({ from, to }: { from: string; to: string }) {
     });
   };
 
-  const currentWeekData =
-    chartData && Array.isArray(chartData) ? getCurrentWeekData(chartData) : [];
-  const dataToShow: ChartData[] = isMonthlyView
-    ? Array.isArray(chartData)
-      ? chartData
-      : []
-    : currentWeekData;
+  const currentWeekData = useMemo(() => {
+    return chartData && Array.isArray(chartData)
+      ? getCurrentWeekData(chartData)
+      : [];
+  }, [chartData]);
+  const dataToShow: ChartData[] = useMemo(() => {
+    return isMonthlyView
+      ? Array.isArray(chartData)
+        ? chartData
+        : []
+      : currentWeekData;
+  }, [isMonthlyView, chartData, currentWeekData]);
+
+  const dataWithColors = useMemo(() => {
+    if (isLoading || isFetching) return placeholderData;
+
+    return dataToShow.map(entry => ({
+      ...entry,
+      fill: getBarColor(entry.status),
+    }));
+  }, [isLoading, isFetching, placeholderData, dataToShow]);
 
   const chartConfig = {
     Hours: {
@@ -101,6 +139,10 @@ export function BChart({ from, to }: { from: string; to: string }) {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   const isCurrentMonth = inputMonth === currentMonth;
+
+  const fillColor = (entry: ChartData) => {
+    return entry.fill || '#30BBF2';
+  };
 
   return (
     <Card className="lg:h-[570px]">
@@ -139,7 +181,7 @@ export function BChart({ from, to }: { from: string; to: string }) {
           className="h-full lg:aspect-auto lg:h-[450px] lg:max-w-[1000px]"
         >
           <BarChart
-            data={isLoading || isFetching ? placeholderData : dataToShow}
+            data={dataWithColors}
             width={600}
             height={300}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -192,7 +234,24 @@ export function BChart({ from, to }: { from: string; to: string }) {
                 return null;
               }}
             />
-            <Bar dataKey="Hours" fill="#30BBF2" barSize={20} />
+            <Bar
+              dataKey="Hours"
+              barSize={20}
+              fillOpacity={1}
+              stroke="none"
+              isAnimationActive={true}
+              animationDuration={500}
+              animationEasing="ease"
+              name="Hours"
+            >
+              {dataWithColors.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={fillColor(entry)}
+                  strokeWidth={0}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>

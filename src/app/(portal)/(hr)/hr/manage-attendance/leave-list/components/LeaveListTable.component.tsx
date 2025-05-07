@@ -165,8 +165,6 @@ const HrLeaveListTable: FunctionComponent<HrLeaveListProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetchChartData]);
 
-  useEffect(() => {}, [leavePostList, selectedDate]);
-  useEffect(() => {}, [leaveListRecords, selectedDate]);
   useEffect(() => {
     if (refetchLeaveList) {
       void (async () => {

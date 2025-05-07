@@ -83,6 +83,7 @@ const leaveListSchema = z.object({
   ApprovedBy_ID: approvedIdSchema.optional(),
   Status: z.enum(LeaveStatus).optional(),
   Leave_Type: z.string().optional(),
+  Leave_Duration: z.string().optional(),
   Start_Date: z.string().optional(),
   End_Date: z.string().optional(),
   Title: z.string().optional(),

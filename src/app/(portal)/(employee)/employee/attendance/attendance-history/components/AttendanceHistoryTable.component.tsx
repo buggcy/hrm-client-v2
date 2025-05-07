@@ -120,8 +120,8 @@ const AttendanceHistoryTable: FunctionComponent<
       </div>
     );
 
-  const tableData: AttendanceHistoryListType[] = (attendanceHistoryList?.data ||
-    []) as AttendanceHistoryListType[];
+  const tableData: AttendanceHistoryListType[] =
+    attendanceHistoryList?.data || [];
 
   const tablePageCount: number | undefined =
     attendanceHistoryList?.pagination.totalPages;

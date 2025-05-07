@@ -7,6 +7,7 @@ import {
   AlarmClockMinus,
   Calendar,
   Clock,
+  MonitorPause,
 } from 'lucide-react';
 import moment from 'moment-timezone';
 
@@ -131,6 +132,35 @@ export function ViewAttendanceDialog({
             <span>{endTime}</span>
           </div>
         </div>
+
+        {data?.partialLeave && (
+          <div className="flex items-center gap-2 py-2">
+            <MonitorPause color="hsl(var(--chart-3))" size={16} />
+            <span>Leave Time:</span>
+            <span>
+              {(() => {
+                const startTime = new Date(
+                  data?.partialLeave?.Start_Date || '',
+                ).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                });
+                const endTime = new Date(
+                  data?.partialLeave?.End_Date || '',
+                ).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                });
+                return `${startTime} - ${endTime}`;
+              })()}
+              {' ('}
+              {(new Date(data?.partialLeave?.End_Date || '').getTime() -
+                new Date(data?.partialLeave?.Start_Date || '').getTime()) /
+                3600000}{' '}
+              Hours{')'}
+            </span>
+          </div>
+        )}
 
         <div className="w-full border-t-2 pt-4">
           <div className="flex flex-row justify-between">

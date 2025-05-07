@@ -68,6 +68,21 @@ export const hrLeaveListColumns: ColumnDef<LeaveListType>[] = [
     },
   },
   {
+    accessorKey: 'Leave_Duration',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Leave Duration" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue('Leave_Duration')} Day Leave
+          </span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'Start_Date',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Start Date" />

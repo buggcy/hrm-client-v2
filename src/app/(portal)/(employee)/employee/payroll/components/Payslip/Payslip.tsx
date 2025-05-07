@@ -39,6 +39,7 @@ interface PayslipProps {
   shortMinutes?: number;
   shortMinutesDeduction?: number;
   late?: number;
+  lateMinutes?: number;
   unpaidLeaves?: number;
 }
 
@@ -53,12 +54,9 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       basicSalary,
       absentDeduction,
       totalEarnings,
-      netSalary,
       salaryDeduction,
       paymentStatus,
       perks,
-      totalPerkIncrement,
-      totalPerkDecrement,
       casualLeaves,
       sickLeaves,
       annualLeaves,
@@ -66,27 +64,26 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
       overtimeMinute,
       totalOvertime,
       late,
+      lateMinutes,
       unpaidLeaves,
       shortMinutes,
       shortMinutesDeduction,
     },
     ref,
   ) => {
-    const totalPerkAmount =
-      (totalPerkIncrement || 0) - (totalPerkDecrement || 0);
     const allDecrements = [
       {
-        name: `Total Short (${shortMinutes}) Minutes`,
+        name: `Total Short Minutes (${shortMinutes})`,
         amount: shortMinutesDeduction,
       },
-      { name: 'Late Check-In Deduction', amount: late },
+      { name: `Total Late Minutes (${lateMinutes})`, amount: late },
       { name: 'Tax Deduction', amount: taxAmount },
 
       ...(perks.decrements || []),
     ];
     const allIncrements = [
       {
-        name: `Total Overtime (${overtimeMinute}) Minutes`,
+        name: `Total Overtime Minutes (${overtimeMinute})`,
         amount: totalOvertime,
       },
       ...(perks.increments || []),
@@ -201,18 +198,6 @@ const Payslip = forwardRef<HTMLDivElement, PayslipProps>(
               </tbody>
             </table>
 
-            <div className="flex justify-between border-t border-gray-300 p-2">
-              <p>
-                <strong>Net Salary:</strong>
-              </p>
-              <p>{`${netSalary > 0 ? formatCurrency(netSalary) : formatCurrency(0)}`}</p>
-            </div>
-            <div className="flex justify-between border-t border-gray-300 p-2">
-              <p>
-                <strong>Total Perk Amount:</strong>
-              </p>
-              <p>{`${formatCurrency(totalPerkAmount) || 0}`}</p>
-            </div>
             <div className="flex justify-between border-t border-gray-300 p-2">
               <p>
                 <strong>Total Deduction:</strong>

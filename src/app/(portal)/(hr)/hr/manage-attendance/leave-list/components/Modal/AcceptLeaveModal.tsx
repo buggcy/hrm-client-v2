@@ -34,6 +34,7 @@ type AcceptProps = {
   onChange: (date: number, isPaid: boolean, isAnnual: boolean) => void;
   isAnnualLeave?: boolean;
   allowAnnual?: boolean;
+  leaveDuration?: 'Full' | 'Half' | 'Quarter';
 };
 
 export default function AcceptLeaveDialog({
@@ -45,6 +46,7 @@ export default function AcceptLeaveDialog({
   onChange,
   isAnnualLeave,
   allowAnnual,
+  leaveDuration,
 }: AcceptProps) {
   return (
     <>
@@ -71,39 +73,124 @@ export default function AcceptLeaveDialog({
                         </Badge>
                         {leave.date.toLocaleDateString('en-CA')}{' '}
                       </p>
-                      <Select
-                        defaultValue={
-                          isAnnualLeave
-                            ? leave.isAnnual && leave.isPaid
-                              ? 'annual'
-                              : 'unpaid'
-                            : leave.isPaid && leave.isAnnual
-                              ? 'annual'
-                              : leave.isPaid && !leave.isAnnual
-                                ? 'paid'
+                      {leaveDuration === 'Full' ? (
+                        <Select
+                          defaultValue={
+                            isAnnualLeave
+                              ? leave.isAnnual && leave.isPaid
+                                ? 'annual'
                                 : 'unpaid'
-                        }
-                        onValueChange={value =>
-                          onChange(
-                            index,
-                            value === 'paid' || value === 'annual',
-                            value === 'annual',
-                          )
-                        }
-                      >
-                        <SelectTrigger className="max-w-[170px] text-foreground">
-                          <SelectValue className="text-current" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {!isAnnualLeave && (
-                            <SelectItem value="paid">Leave</SelectItem>
-                          )}
-                          <SelectItem value="unpaid">Unpaid Leave</SelectItem>
-                          {(isAnnualLeave || allowAnnual) && (
-                            <SelectItem value="annual">Annual Leave</SelectItem>
-                          )}
-                        </SelectContent>
-                      </Select>
+                              : leave.isPaid && leave.isAnnual
+                                ? 'annual'
+                                : leave.isPaid && !leave.isAnnual
+                                  ? 'paid'
+                                  : 'unpaid'
+                          }
+                          onValueChange={value =>
+                            onChange(
+                              index,
+                              value === 'paid' || value === 'annual',
+                              value === 'annual',
+                            )
+                          }
+                        >
+                          <SelectTrigger className="max-w-[170px] text-foreground">
+                            <SelectValue className="text-current" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {!isAnnualLeave && (
+                              <SelectItem value="paid">Leave</SelectItem>
+                            )}
+                            <SelectItem value="unpaid">Unpaid Leave</SelectItem>
+                            {(isAnnualLeave || allowAnnual) && (
+                              <SelectItem value="annual">
+                                Annual Leave
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      ) : leaveDuration === 'Half' ? (
+                        <Select
+                          defaultValue={
+                            isAnnualLeave
+                              ? leave.isAnnual && leave.isPaid
+                                ? 'annual_half'
+                                : 'unpaid_half'
+                              : leave.isPaid && leave.isAnnual
+                                ? 'annual_half'
+                                : leave.isPaid && !leave.isAnnual
+                                  ? 'paid_half'
+                                  : 'unpaid_half'
+                          }
+                          onValueChange={value =>
+                            onChange(
+                              index,
+                              value === 'paid_half' || value === 'annual_half',
+                              value === 'annual_half',
+                            )
+                          }
+                        >
+                          <SelectTrigger className="max-w-[170px] text-foreground">
+                            <SelectValue className="text-current" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {!isAnnualLeave && (
+                              <SelectItem value="paid_half">
+                                Half Day Leave
+                              </SelectItem>
+                            )}
+                            <SelectItem value="unpaid_half">
+                              Unpaid Half Day Leave
+                            </SelectItem>
+                            {(isAnnualLeave || allowAnnual) && (
+                              <SelectItem value="annual_half">
+                                Annual Half Day Leave
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Select
+                          defaultValue={
+                            isAnnualLeave
+                              ? leave.isAnnual && leave.isPaid
+                                ? 'annual_quarter'
+                                : 'unpaid_quarter'
+                              : leave.isPaid && leave.isAnnual
+                                ? 'annual_quarter'
+                                : leave.isPaid && !leave.isAnnual
+                                  ? 'paid_quarter'
+                                  : 'unpaid_quarter'
+                          }
+                          onValueChange={value =>
+                            onChange(
+                              index,
+                              value === 'paid_quarter' ||
+                                value === 'annual_quarter',
+                              value === 'annual_quarter',
+                            )
+                          }
+                        >
+                          <SelectTrigger className="max-w-[170px] text-foreground">
+                            <SelectValue className="text-current" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {!isAnnualLeave && (
+                              <SelectItem value="paid_quarter">
+                                Quarter Day Leave
+                              </SelectItem>
+                            )}
+                            <SelectItem value="unpaid_quarter">
+                              Unpaid Quarter Day Leave
+                            </SelectItem>
+                            {(isAnnualLeave || allowAnnual) && (
+                              <SelectItem value="annual_quarter">
+                                Annual Quarter Day Leave
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      )}
                     </div>
                   ))}
                 </div>

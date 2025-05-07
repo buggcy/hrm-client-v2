@@ -1,4 +1,5 @@
 import {
+  AttendanceHistoryApiResponse,
   attendanceHistoryApiResponseSchema,
   AttendanceStatsApiResponseSchema,
 } from '@/libs/validations/attendance-history';
@@ -6,7 +7,6 @@ import { baseAPI, schemaParse } from '@/utils';
 
 import {
   AttendanceApiResponse,
-  AttendanceHistoryApiResponse,
   todayAttendenceApiResponse,
 } from '@/types/attendance-history.types';
 

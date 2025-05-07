@@ -2,12 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@radix-ui/react-tooltip';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { Eye, Mail, Phone, UserCog } from 'lucide-react';
@@ -26,6 +20,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -72,6 +72,10 @@ export const LeaveRequestCard = ({
       const joiningDate = new Date(person.User_ID.Joining_Date || '');
       const leaveData = person?.leaveData;
       const leaveType = person.Leave_Type as 'Casual' | 'Sick' | 'Annual';
+      const leaveDuration = person.Leave_Duration as
+        | 'Full'
+        | 'Half'
+        | 'Quarter';
       const distribution = distributeLeaves(
         leaveType,
         startDate,
@@ -79,6 +83,7 @@ export const LeaveRequestCard = ({
         joiningDate,
         leaveData,
         person?.allowAnnual,
+        leaveDuration,
       );
       setLeaveDistribution(distribution);
     }
@@ -192,7 +197,7 @@ export const LeaveRequestCard = ({
     <>
       <Card
         className={cn(
-          'group flex flex-col justify-between rounded-md p-4 outline-primary hover:shadow',
+          'group relative flex flex-col justify-between rounded-md p-4 outline-primary hover:shadow',
           {
             'ring ring-primary': selected,
             'cursor-pointer': isSelectable,
@@ -200,6 +205,25 @@ export const LeaveRequestCard = ({
         )}
         onClick={handleSelect}
       >
+        {person.createdAt &&
+          person.Start_Date &&
+          person.createdAt > person.Start_Date && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className="absolute right-0 top-0 flex size-8 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-error">
+                    !
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    Leave request was made after the start date. Please check
+                    the request details.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         <CardContent className="flex flex-col gap-2 p-0">
           <div className="flex items-center justify-between">
             <Avatar className="size-12">
@@ -340,7 +364,9 @@ export const LeaveRequestCard = ({
             </span>
           </div>
           <div className="flex justify-between">
-            <p className="text-sm font-semibold">Start Date</p>
+            <p className="text-sm font-semibold">
+              {person?.Leave_Duration === 'Full' ? 'Start' : ''} Date
+            </p>
             <span className="text-sm font-medium text-muted-foreground">
               {person?.Start_Date
                 ? (() => {
@@ -359,32 +385,69 @@ export const LeaveRequestCard = ({
                 : 'N/A'}
             </span>
           </div>
+          {person?.Leave_Duration === 'Full' && (
+            <div className="flex justify-between">
+              <p className="text-sm font-semibold">End Date</p>
+              <span className="text-sm font-medium text-muted-foreground">
+                {person?.End_Date
+                  ? (() => {
+                      const field = new Date(Date.parse(person?.End_Date));
+                      const day = field.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                      });
+                      const date = field.toDateString().slice(4);
+                      return (
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{day}</Badge>
+                          <span className="max-w-[500px] truncate">{date}</span>
+                        </div>
+                      );
+                    })()
+                  : 'N/A'}
+              </span>
+            </div>
+          )}
+          {person?.Leave_Duration === 'Full' && (
+            <div className="flex flex-row justify-between">
+              <p className="text-sm font-semibold">Leave Duration</p>
+              <span className="truncate text-sm font-medium text-muted-foreground">
+                {`${durationInDays} ${durationInDays === 1 ? 'day' : 'days'}`}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between">
-            <p className="text-sm font-semibold">End Date</p>
-            <span className="text-sm font-medium text-muted-foreground">
-              {person?.End_Date
-                ? (() => {
-                    const field = new Date(Date.parse(person?.End_Date));
-                    const day = field.toLocaleDateString('en-US', {
-                      weekday: 'short',
-                    });
-                    const date = field.toDateString().slice(4);
-                    return (
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline">{day}</Badge>
-                        <span className="max-w-[500px] truncate">{date}</span>
-                      </div>
-                    );
-                  })()
-                : 'N/A'}
-            </span>
-          </div>
-          <div className="flex flex-row justify-between">
             <p className="text-sm font-semibold">Leave Duration</p>
-            <span className="truncate text-sm font-medium text-muted-foreground">
-              {`${durationInDays} ${durationInDays === 1 ? 'day' : 'days'}`}
+            <span className="text-sm font-medium text-muted-foreground">
+              {person?.Leave_Duration || 'N/A'} Day
             </span>
           </div>
+          {person?.Leave_Duration !== 'Full' && (
+            <div className="flex justify-between">
+              <p className="text-sm font-semibold">Time Span</p>
+              <span className="text-sm font-medium text-muted-foreground">
+                {(() => {
+                  const startTime = new Date(
+                    person?.Start_Date || '',
+                  ).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                  const endTime = new Date(
+                    person?.End_Date || '',
+                  ).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                  return `${startTime} - ${endTime}`;
+                })()}
+                {' ('}
+                {(new Date(person?.End_Date || '').getTime() -
+                  new Date(person?.Start_Date || '').getTime()) /
+                  3600000}{' '}
+                Hours{')'}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between">
             <p className="text-sm font-semibold">{'Proof Document'}</p>
             <span className="truncate text-sm font-medium text-muted-foreground">
@@ -467,6 +530,7 @@ export const LeaveRequestCard = ({
         onChange={onChange}
         isAnnualLeave={person?.Leave_Type === 'Annual'}
         allowAnnual={person?.allowAnnual}
+        leaveDuration={person?.Leave_Duration as 'Full' | 'Half' | 'Quarter'}
       />
     </>
   );
