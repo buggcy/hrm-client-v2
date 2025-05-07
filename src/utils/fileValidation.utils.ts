@@ -7,17 +7,19 @@ export const validateFile = (file: File | null): string => {
     'image/jpg',
     'video/quicktime',
     'video/x-msvideo',
+    'application/pdf',
+    'application/msword',
   ];
 
-  const maxSize = 200 * 1024; // 200KB
+  const maxSize = 800 * 1024;
 
   let error = '';
 
   if (file && !validTypes.includes(file.type)) {
     error =
-      'Invalid file type. Only JPG, SVG, JPEG, GIF, PNG, MOV, and AVI are allowed.';
+      'Invalid file type. Only JPG, SVG, JPEG, GIF, PNG, MOV, AVI, PDF and DOC are allowed.';
   } else if (file && file.size > maxSize) {
-    error = 'File size exceeds the 200KB limit.';
+    error = 'File size exceeds the 800KB limit.';
   }
 
   return error;

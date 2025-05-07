@@ -9,6 +9,7 @@ import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import CustomDayPicker from '@/components/CustomDayPicker';
+import TimePicker from '@/components/TimePicker';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -39,6 +40,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { useConfigurationQuery } from '@/hooks/hr/useConfigurationList.hook';
 import { LeaveListType } from '@/libs/validations/hr-leave-list';
 import {
   applyLeaveData,
@@ -58,6 +60,9 @@ const applyLeaveSchema = z
     Status: z.string(),
     Title: z.string().min(1, 'Title is required'),
     Leave_Type: z.string().min(1, 'Leave Type is required'),
+    Leave_Duration: z.string().min(1, 'Leave Time is required'),
+    Leave_Duration_Start: z.string(),
+    Leave_Duration_End: z.string(),
     Description: z.string().min(1, 'Description is required'),
     proofDocument: z
       .instanceof(File)
@@ -70,9 +75,69 @@ const applyLeaveSchema = z
   .refine(data => data.Start_Date <= data.End_Date, {
     message: 'End date must be greater than or equal to the start date',
     path: ['End_Date'],
-  });
+  })
+  .refine(
+    data => {
+      const startDate = new Date(data.Start_Date);
+      return startDate.getDay() !== 0 && startDate.getDay() !== 6;
+    },
+    {
+      message: 'Start date cannot be on weekends',
+      path: ['Start_Date'],
+    },
+  )
+  .refine(
+    data => {
+      const endDate = new Date(data.End_Date);
+      return endDate.getDay() !== 0 && endDate.getDay() !== 6;
+    },
+    {
+      message: 'End date cannot be on weekends',
+      path: ['End_Date'],
+    },
+  )
+  .refine(
+    data => {
+      const startDate = new Date(data.Start_Date);
+      const endDate = new Date(data.End_Date);
+      const totalDays = getTotalDays(startDate, endDate);
+      return totalDays <= 15;
+    },
+    {
+      message: 'Leave duration cannot exceed 15 days',
+      path: ['End_Date'],
+    },
+  )
+  .refine(
+    data => {
+      const startDate = new Date(data.Start_Date);
+      const endDate = new Date(data.End_Date);
+      return !(
+        startDate.getDate() !== endDate.getDate() &&
+        data.Leave_Duration !== 'Full'
+      );
+    },
+    {
+      message: 'Half day or quarter day leave cannot span multiple days',
+      path: ['Leave_Duration'],
+    },
+  );
 
 export type ApplyLeaveFormData = z.infer<typeof applyLeaveSchema>;
+
+export function convertTo24Hour(timeStr: string) {
+  const [time, modifier] = timeStr.split(' ');
+  let hours = time.split(':')[0];
+  const minutes = time.split(':')[1];
+
+  if (hours === '12') {
+    hours = modifier === 'AM' ? '00' : '12';
+  } else if (modifier === 'PM') {
+    hours = String(parseInt(hours, 10) + 12);
+  }
+
+  return `${hours.padStart(2, '0')}:${minutes}`;
+}
 
 interface DialogDemoProps {
   open: boolean;
@@ -111,6 +176,7 @@ export function ApplyLeaveDialog({
     watch,
   } = useForm<ApplyLeaveFormData>({
     resolver: zodResolver(applyLeaveSchema),
+    mode: 'onChange',
     defaultValues: {
       User_ID: user?.id || '',
       Start_Date: data?.Start_Date ? new Date(data.Start_Date) : undefined,
@@ -118,6 +184,21 @@ export function ApplyLeaveDialog({
       Status: 'Pending',
       Title: data?.Title || '',
       Leave_Type: data?.Leave_Type || '',
+      Leave_Duration: data?.Leave_Duration || '',
+      Leave_Duration_Start: data?.Start_Date
+        ? new Date(data.Start_Date).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+        : '',
+
+      Leave_Duration_End: data?.End_Date
+        ? new Date(data.End_Date).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+        : '',
+
       Description: data?.Description || '',
       proofDocument: null,
       allowAnnual: data?.allowAnnual ? true : false,
@@ -127,6 +208,12 @@ export function ApplyLeaveDialog({
   const endDate = watch('End_Date');
   const leaveType = watch('Leave_Type');
   const allowAnnual = watch('allowAnnual');
+  const Leave_Duration = watch('Leave_Duration');
+  const { data: typesData } = useConfigurationQuery({
+    page: 1,
+    limit: 1,
+    status: 'timecutoff',
+  });
 
   useEffect(() => {
     if (!open) {
@@ -243,39 +330,54 @@ export function ApplyLeaveDialog({
       return;
     }
 
-    const startDateLocal = new Date(form.Start_Date);
-    const endDateLocal = new Date(form.End_Date);
-
-    const startDateUtcPlus5 = new Date(
-      startDateLocal.getTime() + 5 * 60 * 60 * 1000,
+    const startDateFormatted = form.Start_Date.toLocaleDateString('en-CA');
+    const endDateFormatted = form.End_Date.toLocaleDateString('en-CA');
+    const startTime = convertTo24Hour(
+      Leave_Duration === 'Full' ? '00:00 AM' : form.Leave_Duration_Start,
     );
-    const endDateUtcPlus5 = new Date(
-      endDateLocal.getTime() + 5 * 60 * 60 * 1000,
+    const endTime = convertTo24Hour(
+      Leave_Duration === 'Full' ? '00:00 AM' : form.Leave_Duration_End,
     );
+    const startDate = `${startDateFormatted}T${startTime}+${Leave_Duration === 'Full' ? '00:00' : '05:00'}`;
+    const endDate = `${endDateFormatted}T${endTime}+${Leave_Duration === 'Full' ? '00:00' : '05:00'}`;
+    const sd = new Date(startDate);
+    const ed = new Date(endDate);
+    const timeDiff = Math.abs(sd.getTime() - ed.getTime()) / (1000 * 3600);
+    if (
+      Leave_Duration === 'Half' &&
+      typesData?.data[0]?.timeCutOff &&
+      timeDiff > typesData?.data[0]?.timeCutOff / 120
+    ) {
+      toast({
+        title: 'Error',
+        description: `Leave duration cannot exceed ${typesData?.data[0]?.timeCutOff / 120} hours for half-day leave.`,
+        variant: 'error',
+      });
+      return;
+    }
+    if (
+      Leave_Duration === 'Quarter' &&
+      typesData?.data[0]?.timeCutOff &&
+      timeDiff > typesData?.data[0]?.timeCutOff / 240
+    ) {
+      toast({
+        title: 'Error',
+        description: `Leave duration cannot exceed ${typesData?.data[0]?.timeCutOff / 240} hours for quarter-day leave.`,
+        variant: 'error',
+      });
+      return;
+    }
     const formData = new FormData();
     formData.append('User_ID', user?.id || '');
-    formData.append('Start_Date', startDateUtcPlus5.toISOString());
-    formData.append('End_Date', endDateUtcPlus5.toISOString());
+    formData.append('Start_Date', startDate);
+    formData.append('End_Date', endDate);
     formData.append('Status', 'Pending');
     formData.append('Title', form.Title);
     formData.append('Leave_Type', form.Leave_Type);
+    formData.append('Leave_Duration', form.Leave_Duration);
     formData.append('Description', form.Description);
     if (form.proofDocument) {
       formData.append('proofDocument', form.proofDocument);
-    }
-    formData.append('paidLeaves', leaveDistribution?.leaves.toString() || '');
-    formData.append(
-      'unpaidLeaves',
-      leaveDistribution?.unpaidLeaves.toString() || '',
-    );
-    if (
-      leaveDistribution?.annualLeaves &&
-      leaveDistribution?.annualLeaves > 0
-    ) {
-      formData.append(
-        'annualLeaves',
-        leaveDistribution?.annualLeaves.toString() || '',
-      );
     }
     formData.append('allowAnnual', allowAnnual?.toString() || '');
     if (data) {
@@ -309,7 +411,15 @@ export function ApplyLeaveDialog({
                       initialDate={field.value}
                       onDateChange={field.onChange}
                       className="h-auto"
-                      disabled={date => date < new Date()}
+                      // disabled={date => {
+                      //   const currentDate = new Date();
+                      //   const startOfCurrentMonth = new Date(
+                      //     currentDate.getFullYear(),
+                      //     currentDate.getMonth(),
+                      //     1,
+                      //   );
+                      //   return date < startOfCurrentMonth;
+                      // }}
                     />
                   )}
                 />
@@ -331,7 +441,15 @@ export function ApplyLeaveDialog({
                       initialDate={field.value}
                       onDateChange={field.onChange}
                       className="h-auto"
-                      disabled={date => date < new Date()}
+                      // disabled={date => {
+                      //   const currentDate = new Date();
+                      //   const startOfCurrentMonth = new Date(
+                      //     currentDate.getFullYear(),
+                      //     currentDate.getMonth(),
+                      //     1,
+                      //   );
+                      //   return date < startOfCurrentMonth;
+                      // }}
                     />
                   )}
                 />
@@ -375,6 +493,87 @@ export function ApplyLeaveDialog({
                 <span className="text-sm text-red-500">
                   {errors.Leave_Type.message}
                 </span>
+              )}
+            </div>
+            <div className="flex flex-col gap-4">
+              <div className="flex w-full flex-col">
+                <Label htmlFor="Leave_Duration" className="mb-2 text-left">
+                  Leave Time
+                </Label>
+                <Controller
+                  name="Leave_Duration"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className="relative z-50 w-full rounded-md border px-3 py-2 text-left text-sm">
+                        <SelectValue placeholder="Select Leave Time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup className="text-sm">
+                          <SelectItem value="None" disabled>
+                            Select Leave Time
+                          </SelectItem>
+                          <SelectItem value="Full">Full Day</SelectItem>
+                          <SelectItem value="Half">Half Day</SelectItem>
+                          <SelectItem value="Quarter">Quarter Day</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                      <ChevronDown className="absolute ml-[240px] mt-8 size-4" />
+                    </Select>
+                  )}
+                />
+                {errors.Leave_Duration && (
+                  <span className="mt-2 text-sm text-red-500">
+                    {errors.Leave_Duration.message}
+                  </span>
+                )}
+              </div>
+              {Leave_Duration && Leave_Duration !== 'Full' && (
+                <div className="flex w-full flex-col items-start gap-4 sm:flex-row">
+                  <div className="flex w-full flex-1 flex-col">
+                    <Label htmlFor="inTime" className="mb-2 text-left">
+                      Start Time <span className="text-red-600">*</span>
+                    </Label>
+                    <Controller
+                      name="Leave_Duration_Start"
+                      control={control}
+                      render={({ field }) => (
+                        <TimePicker
+                          time={field.value}
+                          onTimeChange={field.onChange}
+                        />
+                      )}
+                    />
+                    {errors.Leave_Duration_Start && (
+                      <span className="text-sm text-red-500">
+                        {errors.Leave_Duration_Start.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex w-full flex-1 flex-col">
+                    <Label htmlFor="inTime" className="mb-2 text-left">
+                      End Time <span className="text-red-600">*</span>
+                    </Label>
+                    <Controller
+                      name="Leave_Duration_End"
+                      control={control}
+                      render={({ field }) => (
+                        <TimePicker
+                          time={field.value}
+                          onTimeChange={field.onChange}
+                        />
+                      )}
+                    />
+                    {errors.Leave_Duration_End && (
+                      <span className="text-sm text-red-500">
+                        {errors.Leave_Duration_End.message}
+                      </span>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
             <div className="flex flex-col">

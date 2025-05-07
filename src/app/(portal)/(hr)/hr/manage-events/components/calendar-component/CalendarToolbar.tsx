@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Cake, CalendarCog, Gift } from 'lucide-react';
+import { Cake, CalendarArrowDown, CalendarArrowUp, Gift } from 'lucide-react';
 
 import { MyEvent } from '@/libs/validations/employee';
 
@@ -28,16 +28,22 @@ const Tooltip: React.FC<{ event?: MyEvent; x: number; y: number }> = ({
 
   const tooltipStyles = {
     birthday: {
-      backgroundColor: isDarkMode ? '#f9c74f' : '#fdf0c1',
+      backgroundColor: isDarkMode
+        ? 'hsl(var(--warning))'
+        : 'hsl(var(--warning))',
     },
     holiday: {
-      backgroundColor: isDarkMode ? 'hsl(var(--success))' : '#b8e6c1',
+      backgroundColor: isDarkMode
+        ? 'hsl(var(--success))'
+        : 'hsl(var(--success))',
     },
     nonHoliday: {
-      backgroundColor: isDarkMode ? 'hsl(var(--primary))' : '#a8dff5',
+      backgroundColor: isDarkMode
+        ? 'hsl(var(--primary))'
+        : 'hsl(var(--primary))',
     },
     anniversary: {
-      backgroundColor: isDarkMode ? '#0F172A' : '#8caabf',
+      backgroundColor: isDarkMode ? 'hsl(var(--danger))' : 'hsl(var(--danger))',
     },
   };
 
@@ -78,34 +84,22 @@ const Tooltip: React.FC<{ event?: MyEvent; x: number; y: number }> = ({
         }}
       >
         {event.Event_Type === 'birthday' ? (
-          <Cake
-            size={18}
-            className="font-extrabold text-[#f9c74f] dark:text-[#fdf0c1]"
-          />
+          <Cake size={18} className="font-extrabold text-white" />
         ) : event.Event_Type === 'anniversary' ? (
-          <Gift
-            size={18}
-            className="font-extrabold text-[#0F172A] dark:text-[#8caabf]"
-          />
+          <Gift size={18} className="font-extrabold text-white" />
+        ) : event.Event_Type === 'holiday' ? (
+          <CalendarArrowUp size={18} className="font-extrabold text-white" />
+        ) : event.Event_Type === 'company' ? (
+          <CalendarArrowDown size={18} className="font-extrabold text-white" />
         ) : (
-          <CalendarCog
-            size={18}
-            className={`font-extrabold ${
-              event?.Event_Type === 'holiday'
-                ? 'text-success dark:text-[#b8e6c1]'
-                : 'text-primary dark:text-[#a8dff5]'
-            }`}
-          />
+          <> </>
         )}
-        <h3 className="text-center text-sm font-bold text-gray-900 dark:text-white">
-          {event?.Event_Type
-            ? event?.Event_Type?.charAt(0)?.toUpperCase() +
-              event?.Event_Type?.slice(1)?.toLowerCase()
-            : ''}
+        <h3 className="text-center text-sm font-bold capitalize text-white">
+          {event?.Event_Type}
         </h3>
       </div>
 
-      <div className="m-1 text-center text-sm text-gray-600 dark:text-gray-600">{`${event?.title}`}</div>
+      <div className="m-1 text-center text-sm capitalize text-gray-600">{`${event?.title}`}</div>
 
       <div
         className="absolute size-3 rotate-45"

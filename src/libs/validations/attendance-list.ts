@@ -49,6 +49,8 @@ export const attendance_history_status = [
   'Leave',
   'Holiday',
   'Unpaid Leave',
+  'Half Day Leave',
+  'Quarter Day Leave',
 ] as const;
 
 const breakSchema = z.object({
@@ -91,13 +93,26 @@ const attendanceListSchema = z.object({
   Late_Minutes: z.number().optional(),
   createdAt: z.string().optional(),
   __v: z.number().optional(),
+  partialLeave: z
+    .object({
+      _id: z.string(),
+      Start_Date: z.string(),
+      End_Date: z.string(),
+    })
+    .optional()
+    .nullable(),
 });
 
 const attendanceListApiResponseSchema = z.object({
   pagination: paginationSchema,
   data: z.array(attendanceListSchema),
 });
-
+export const attendanceByDateApiResponseSchema = z.object({
+  data: attendanceListSchema,
+});
+export type AttendanceByDateApiResponse = z.infer<
+  typeof attendanceByDateApiResponseSchema
+>;
 export const gender = ['male', 'female'] as const;
 export const approvalStatus = ['Approved', 'Pending', 'Rejected'] as const;
 export const maritalStatus = ['married', 'unmarried'] as const;

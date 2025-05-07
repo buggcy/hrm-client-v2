@@ -65,6 +65,7 @@ export interface HrPerkRequests {
   assignedIncrementAmount: number;
   incrementAmount: number;
   dateApplied: string;
+  description?: string;
   userId: {
     _id: string;
     firstName: string;

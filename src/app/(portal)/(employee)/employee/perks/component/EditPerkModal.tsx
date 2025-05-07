@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { Eye } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -15,8 +16,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
@@ -40,6 +48,7 @@ const FormSchema = z.object({
   perkId: z.string().min(1, 'Please select a perk'),
   requestId: z.string().min(1, 'Request ID is required'),
   increment: z.string().min(1, 'Amount is required'),
+  description: z.string().min(1, 'Description is required'),
   file: z.string().optional(),
 });
 
@@ -70,6 +79,7 @@ export function EditPerkModal({
       perkId: '',
       requestId: '',
       increment: perkToEdit?.incrementAmount.toString() || '',
+      description: perkToEdit?.perkDescription || '',
       file: '',
     },
   });
@@ -126,6 +136,7 @@ export function EditPerkModal({
     if (file) {
       formData.append('proofPerkDocument', file);
     }
+    formData.append('description', data?.description);
 
     const payload = {
       employeeId: user?.id,
@@ -142,6 +153,7 @@ export function EditPerkModal({
         perkId: perkToEdit.id || '',
         requestId: perkToEdit.requestId || '',
         increment: perkToEdit.incrementAmount.toString(),
+        description: perkToEdit.perkDescription || '',
         file: '',
       });
     }
@@ -180,10 +192,55 @@ export function EditPerkModal({
                   )}
                 </div>
               </div>
+              <div className="flex flex-col">
+                <Label htmlFor="description" className="mb-2 text-left">
+                  Description <span className="text-red-600">*</span>
+                </Label>
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field }) => (
+                    <FormattedTextArea
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+
+                {errors.description && (
+                  <span className="text-sm text-red-500">
+                    {errors.description.message}
+                  </span>
+                )}
+              </div>
               <div className="flex flex-wrap">
                 <div className="flex flex-1 flex-col">
                   <Label htmlFor="file" className="mb-2 text-left">
                     Proof Document
+                    {perkToEdit && perkToEdit?.document && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span>
+                              <Eye
+                                className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                                onClick={() =>
+                                  perkToEdit?.document &&
+                                  window.open(
+                                    String(perkToEdit?.document),
+                                    '_blank',
+                                  )
+                                }
+                                size={18}
+                              />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            Click to Preview Document
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
                   </Label>
                   <Controller
                     name="file"

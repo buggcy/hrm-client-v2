@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import moment from 'moment-timezone';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -18,19 +19,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import FormattedTextArea from '@/components/ui/FormattedTextArea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import {
+  calculateTimeDifference,
+  convertTo24Hour,
+  formatUTCToLocalTime,
+  timeFormatRegex,
+} from '@/app/(portal)/(hr)/hr/manage-attendance/attendance-list/components/AttendanceDialog';
+import { useAttendanceByDateQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
 import { AttendanceRequestType } from '@/libs/validations/attendance-history';
 import { requestAttendance } from '@/services/employee/attendance-request.service';
 import { AuthStoreType } from '@/stores/auth';
 import { AttendanceRequestStoreType } from '@/stores/employee/attendance-request';
 
 import { MessageErrorResponse } from '@/types';
-
-const timeFormatRegex = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
 
 const requestAttendanceSchema = z
   .object({
@@ -58,36 +65,6 @@ const requestAttendanceSchema = z
     path: ['date'],
     message: 'Date cannot be in the future',
   });
-
-export function formatUTCToLocalTime(utcDateString: string) {
-  const utcDate = new Date(utcDateString);
-
-  utcDate.setHours(utcDate.getHours());
-
-  const hours = utcDate.getHours();
-  const minutes = utcDate.getMinutes();
-
-  const amPm = hours >= 12 ? 'PM' : 'AM';
-
-  const formattedHours = hours % 12 || 12;
-  const formattedMinutes = String(minutes).padStart(2, '0');
-
-  return `${formattedHours.toString().padStart(2, '0')}:${formattedMinutes} ${amPm}`;
-}
-
-export function convertTo24Hour(timeStr: string) {
-  const [time, modifier] = timeStr.split(' '); // Split time and AM/PM part
-  let hours = time.split(':')[0];
-  const minutes = time.split(':')[1];
-
-  if (hours === '12') {
-    hours = modifier === 'AM' ? '00' : '12';
-  } else if (modifier === 'PM') {
-    hours = String(parseInt(hours, 10) + 12);
-  }
-
-  return `${hours.padStart(2, '0')}:${minutes}`;
-}
 
 export type RequestAttendanceFormData = z.infer<typeof requestAttendanceSchema>;
 
@@ -131,40 +108,46 @@ export function RequestAttendanceDialog({
       proofDocument: null,
     },
   });
+  const { authStore } = useStores() as { authStore: AuthStoreType };
+  const { user } = authStore;
+
+  const selectedDate = watch('date');
+  const { data: attendanceByDate } = useAttendanceByDateQuery(
+    user?.id || '',
+    selectedDate ? selectedDate.toLocaleDateString('en-CA') : '',
+    {
+      enabled: !!user?.id && !!selectedDate,
+    },
+  );
 
   const { attendanceRequestStore } = useStores() as {
     attendanceRequestStore: AttendanceRequestStoreType;
   };
   const { setRefetchAttendanceRequestList } = attendanceRequestStore;
-  const { authStore } = useStores() as { authStore: AuthStoreType };
-  const { user } = authStore;
 
   const inTime = watch('inTime');
   const outTime = watch('outTime');
+  useEffect(() => {
+    if (attendanceByDate?.data) {
+      const startUTC = attendanceByDate.data.Start_Date;
+      const endUTC = attendanceByDate.data.End_Date;
+      const totalTime = attendanceByDate.data.Total_Time;
 
-  const calculateTimeDifference = (startTime: string, endTime: string) => {
-    const parseTime = (time: string) => {
-      const [hour, minute, period] = time.split(/[: ]/);
-      const hours = (parseInt(hour, 10) % 12) + (period === 'PM' ? 12 : 0);
-      return { hours, minutes: parseInt(minute, 10) };
-    };
+      const startTime =
+        startUTC && moment(startUTC).utc().format('HH:mm') === '00:00'
+          ? '00:00'
+          : moment(startUTC).tz('Asia/Karachi').format('H:mm');
 
-    const start = parseTime(startTime);
-    const end = parseTime(endTime);
+      const endTime =
+        endUTC && moment(endUTC).utc().format('HH:mm') === '00:00'
+          ? '00:00'
+          : moment(endUTC).tz('Asia/Karachi').format('H:mm');
 
-    const startDate = new Date();
-    startDate.setHours(start.hours, start.minutes, 0, 0);
-
-    const endDate = new Date();
-    endDate.setHours(end.hours, end.minutes, 0, 0);
-
-    const differenceInMilliseconds = endDate.getTime() - startDate.getTime();
-    const differenceInMinutes = Math.floor(
-      differenceInMilliseconds / 1000 / 60,
-    );
-
-    return differenceInMinutes;
-  };
+      setValue('inTime', startTime);
+      setValue('outTime', endTime);
+      setValue('totalTime', totalTime ? parseInt(totalTime, 10) : 0);
+    }
+  }, [attendanceByDate, setValue]);
 
   useEffect(() => {
     if (inTime && outTime) {
@@ -249,9 +232,27 @@ export function RequestAttendanceDialog({
                     initialDate={field.value}
                     onDateChange={field.onChange}
                     className="h-auto"
-                    disabled={date =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
+                    disabled={date => {
+                      const today = new Date();
+
+                      const startOfMonth = new Date(
+                        today.getFullYear(),
+                        today.getMonth(),
+                        1,
+                      );
+
+                      return (
+                        date < startOfMonth ||
+                        date.getMonth() !== today.getMonth() ||
+                        date.getFullYear() !== today.getFullYear() ||
+                        date >=
+                          new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            today.getDate(),
+                          )
+                      );
+                    }}
                   />
                 )}
               />
@@ -323,30 +324,7 @@ export function RequestAttendanceDialog({
                 </span>
               )}
             </div>
-
-            <div className="flex flex-1 flex-col">
-              <Label htmlFor="reason" className="mb-2 text-left">
-                Status <span className="text-red-600">*</span>
-              </Label>
-              <Controller
-                name="reason"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="reason"
-                    placeholder="Reason"
-                    className="w-full"
-                  />
-                )}
-              />
-              {errors.reason && (
-                <span className="text-sm text-red-500">
-                  {errors.reason.message}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
+            <div className="col-span-full flex flex-1 flex-col">
               <Label htmlFor="proofDocument" className="mb-2 text-left">
                 Choose Document
               </Label>
@@ -368,6 +346,26 @@ export function RequestAttendanceDialog({
               {errors.proofDocument && (
                 <span className="text-sm text-red-500">
                   {errors.proofDocument.message}
+                </span>
+              )}
+            </div>
+            <div className="col-span-full flex flex-1 flex-col">
+              <Label htmlFor="reason" className="mb-2 text-left">
+                Reason <span className="text-red-600">*</span>
+              </Label>
+              <Controller
+                name="reason"
+                control={control}
+                render={({ field }) => (
+                  <FormattedTextArea
+                    value={field.value || ''}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.reason && (
+                <span className="text-sm text-red-500">
+                  {errors.reason.message}
                 </span>
               )}
             </div>

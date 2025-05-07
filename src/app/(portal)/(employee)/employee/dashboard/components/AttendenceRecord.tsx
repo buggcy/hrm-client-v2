@@ -77,7 +77,7 @@ export function EmployeeAttendenceCard({
             Attendance Records
           </CardTitle>
           <Link
-            href="/employee/attendance/leave-history"
+            href="/employee/attendance/attendance-history"
             className="text-xs text-blue-600 hover:underline dark:text-blue-400"
           >
             View Stats
@@ -87,7 +87,7 @@ export function EmployeeAttendenceCard({
 
       <CardContent>
         <hr className="mb-1 mt-0 border-gray-200 dark:border-gray-700" />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col-reverse items-start justify-between sm:flex-row sm:items-center">
           <div className="mb-2 flex flex-col gap-5 text-sm">
             <div className="flex flex-row items-center gap-1">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-1))]"></div>
@@ -120,7 +120,7 @@ export function EmployeeAttendenceCard({
           </div>
           <ChartContainer
             config={chartConfig}
-            className="aspect-square w-full max-w-[150px]"
+            className="mx-auto aspect-square w-full max-w-[150px] sm:mx-0"
           >
             <PieChart>
               <ChartTooltip

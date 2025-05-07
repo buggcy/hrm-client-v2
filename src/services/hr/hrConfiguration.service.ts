@@ -1,6 +1,8 @@
 import {
   ConfigurationApiResponse,
   configurationApiResponseSchema,
+  TaxApiResponse,
+  taxApiResponseSchema,
 } from '@/libs/validations/hr-configuration';
 import { baseAPI, schemaParse } from '@/utils';
 
@@ -230,6 +232,99 @@ export const editTimecutoff = async (payload: {
       startTime,
       endTime,
     },
+  );
+  return { message };
+};
+
+export const getTaxType = async (
+  params: ConfigurationParams = {},
+): Promise<TaxApiResponse> => {
+  const defaultParams: ConfigurationParams = {
+    status: '',
+    page: 1,
+    limit: 5,
+  };
+
+  const mergedParams = { ...defaultParams, ...params };
+
+  const queryParams = new URLSearchParams(
+    Object.entries(mergedParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+  );
+
+  try {
+    const response = await baseAPI.get(`/tax/all?${queryParams.toString()}`);
+    return schemaParse(taxApiResponseSchema)(response);
+  } catch (error) {
+    console.error('Error fetching tax type list!', error);
+    throw error;
+  }
+};
+
+export const searchTax = async ({
+  query,
+  page,
+  limit,
+}: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<TaxApiResponse> => {
+  const { data, pagination }: TaxApiResponse = await baseAPI.get(
+    `/search/tax?page=${page}&limit=${limit}&query=${query}`,
+  );
+  return { data, pagination };
+};
+
+export const addTax = async (payload: {
+  userId: string;
+  from: number;
+  to: number;
+  percentage: number;
+}): Promise<SuccessMessageResponse> => {
+  const { userId, from, to, percentage } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.post(`/add/tax`, {
+    userId,
+    from,
+    to,
+    percentage,
+  });
+  return { message };
+};
+
+export const editTax = async (payload: {
+  id: string;
+  userId: string;
+  from: number;
+  to: number;
+  percentage: number;
+}): Promise<SuccessMessageResponse> => {
+  const { id, userId, from, to, percentage } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.put(
+    `/edit/tax/${id}`,
+    {
+      userId,
+      from,
+      to,
+      percentage,
+    },
+  );
+  return { message };
+};
+
+export const deleteTax = async (payload: {
+  id: string;
+}): Promise<SuccessMessageResponse> => {
+  const { id } = payload;
+  const { message }: SuccessMessageResponse = await baseAPI.delete(
+    `/delete/tax/${id}`,
   );
   return { message };
 };

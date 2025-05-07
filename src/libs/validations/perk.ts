@@ -71,6 +71,8 @@ const transformedPerkDataSchema = z.object({
   requestId: employeePerkApplicationSchema.shape._id,
   assignedIncrementAmount: z.number(),
   description: z.string(),
+  perkDescription: z.string().optional(),
+  document: z.string(),
 });
 
 export type TransformedPerkData = z.infer<typeof transformedPerkDataSchema>;
@@ -86,6 +88,8 @@ const perkListSchema = z.object({
   requestId: employeePerkApplicationSchema.shape._id,
   assignedIncrementAmount: z.number(),
   description: z.string(),
+  perkDescription: z.string().optional(),
+  document: z.string(),
 });
 
 const perkApiResponseSchema = z.object({

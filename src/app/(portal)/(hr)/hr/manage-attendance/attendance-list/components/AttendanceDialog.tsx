@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { ChevronDown } from 'lucide-react';
+import moment from 'moment-timezone';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -32,6 +33,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { useStores } from '@/providers/Store.Provider';
 
+import { useAttendanceByDateQuery } from '@/hooks/attendanceList/useAttendanceList.hook';
 import { useAttendanceUsersQuery } from '@/hooks/attendanceList/useEmployeesList.hook';
 import { AttendanceListType } from '@/libs/validations/attendance-list';
 import {
@@ -42,7 +44,7 @@ import { AttendanceListStoreType } from '@/stores/hr/attendance-list';
 
 import { MessageErrorResponse } from '@/types';
 
-const timeFormatRegex = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
+export const timeFormatRegex = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
 
 const addAttendanceSchema = z
   .object({
@@ -96,6 +98,28 @@ export function convertTo24Hour(timeStr: string) {
   return `${hours.padStart(2, '0')}:${minutes}`;
 }
 
+export const calculateTimeDifference = (startTime: string, endTime: string) => {
+  const parseTime = (time: string) => {
+    const [hour, minute, period] = time.split(/[: ]/);
+    const hours = (parseInt(hour, 10) % 12) + (period === 'PM' ? 12 : 0);
+    return { hours, minutes: parseInt(minute, 10) };
+  };
+
+  const start = parseTime(startTime);
+  const end = parseTime(endTime);
+
+  const startDate = new Date();
+  startDate.setHours(start.hours, start.minutes, 0, 0);
+
+  const endDate = new Date();
+  endDate.setHours(end.hours, end.minutes, 0, 0);
+
+  const differenceInMilliseconds = endDate.getTime() - startDate.getTime();
+  const differenceInMinutes = Math.floor(differenceInMilliseconds / 1000 / 60);
+
+  return differenceInMinutes;
+};
+
 export type AddAttendanceFormData = z.infer<typeof addAttendanceSchema>;
 
 interface AttendanceDialogProps {
@@ -141,6 +165,15 @@ export function AttendanceDialog({
       Status: type === 'edit' && data?.Status ? data.Status : '',
     },
   });
+  const selectedDate = watch('date');
+  const selectedEmployee = watch('employee');
+  const { data: attendanceByDate } = useAttendanceByDateQuery(
+    selectedEmployee || '',
+    selectedDate ? selectedDate.toLocaleDateString('en-CA') : '',
+    {
+      enabled: !!selectedEmployee && !!selectedDate,
+    },
+  );
 
   const { attendanceListStore } = useStores() as {
     attendanceListStore: AttendanceListStoreType;
@@ -152,30 +185,6 @@ export function AttendanceDialog({
   const date = watch('date');
   const employee = watch('employee');
 
-  const calculateTimeDifference = (startTime: string, endTime: string) => {
-    const parseTime = (time: string) => {
-      const [hour, minute, period] = time.split(/[: ]/);
-      const hours = (parseInt(hour, 10) % 12) + (period === 'PM' ? 12 : 0);
-      return { hours, minutes: parseInt(minute, 10) };
-    };
-
-    const start = parseTime(startTime);
-    const end = parseTime(endTime);
-
-    const startDate = new Date();
-    startDate.setHours(start.hours, start.minutes, 0, 0);
-
-    const endDate = new Date();
-    endDate.setHours(end.hours, end.minutes, 0, 0);
-
-    const differenceInMilliseconds = endDate.getTime() - startDate.getTime();
-    const differenceInMinutes = Math.floor(
-      differenceInMilliseconds / 1000 / 60,
-    );
-
-    return differenceInMinutes;
-  };
-
   useEffect(() => {
     if (inTime && outTime) {
       const totalMinutes = calculateTimeDifference(inTime, outTime);
@@ -185,7 +194,7 @@ export function AttendanceDialog({
 
   useEffect(() => {
     const fetchData = async () => {
-      const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const formattedDate = `${date?.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
       if (open && employee) {
         const response = await getDateAttendance({
@@ -216,6 +225,28 @@ export function AttendanceDialog({
 
     void fetchData();
   }, [date, employee, open, setValue]);
+
+  useEffect(() => {
+    if (attendanceByDate?.data) {
+      const startUTC = attendanceByDate.data.Start_Date;
+      const endUTC = attendanceByDate.data.End_Date;
+      const totalTime = attendanceByDate.data.Total_Time;
+
+      const startTime =
+        startUTC && moment(startUTC).utc().format('HH:mm') === '00:00'
+          ? '00:00'
+          : moment(startUTC).tz('Asia/Karachi').format('H:mm');
+
+      const endTime =
+        endUTC && moment(endUTC).utc().format('HH:mm') === '00:00'
+          ? '00:00'
+          : moment(endUTC).tz('Asia/Karachi').format('H:mm');
+
+      setValue('inTime', startTime);
+      setValue('outTime', endTime);
+      setValue('totalTime', totalTime ? parseInt(totalTime, 10) : 0);
+    }
+  }, [attendanceByDate, setValue]);
 
   const { data: users, isLoading } = useAttendanceUsersQuery();
 

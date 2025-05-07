@@ -37,6 +37,7 @@ import { ManageAnnouncementsToolbar } from './toolbars/hr-manage-announcements.t
 import { HRPayrollListToolbar } from './toolbars/hr-payroll.toolbar';
 import { HrPerkListToolbar } from './toolbars/hr-perk-list-toolbar';
 import { HrPolicyToolbar } from './toolbars/hr-policy-toolbar';
+import { TaxTypeToolbar } from './toolbars/hr-tax-type.toolbar';
 import { HrEmpAnniversaryListToolbar } from './toolbars/hrEmpAnniversaryTable-list.toolbar';
 import { HrEmpDobListToolbar } from './toolbars/hrEmpDobTable-list.toolbar';
 import { HrEventsListToolbar } from './toolbars/hrEvents-list.toolbar';
@@ -273,6 +274,15 @@ export function DataTable<TData extends DataTableType, TValue>({
             searchTerm={searchTerm}
             setFilterValue={setFilterValue}
             filterValue={filterValue}
+          />
+        );
+      case 'getTax':
+        return (
+          <TaxTypeToolbar
+            table={table}
+            searchLoading={searchLoading}
+            onSearch={onSearch}
+            searchTerm={searchTerm}
           />
         );
       default:

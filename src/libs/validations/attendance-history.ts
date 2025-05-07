@@ -6,6 +6,8 @@ export const attendance_history_status = [
   'Leave',
   'Holiday',
   'Unpaid Leave',
+  'Half Day Leave',
+  'Quarter Day Leave',
 ] as const;
 
 const paginationSchema = z.object({
@@ -30,6 +32,14 @@ const attendanceHistoryListSchema = z.object({
   Productivity: z.string(),
   Status: z.enum(attendance_history_status),
   breaks: z.array(breakSchema),
+  partialLeave: z
+    .object({
+      _id: z.string(),
+      Start_Date: z.string(),
+      End_Date: z.string(),
+    })
+    .optional()
+    .nullable(),
 });
 
 const attendanceHistoryApiResponseSchema = z.object({

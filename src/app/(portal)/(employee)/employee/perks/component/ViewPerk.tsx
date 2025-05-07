@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Eye } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -7,6 +9,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { TransformedPerkData } from '@/libs/validations/perk';
 
@@ -40,40 +48,40 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
             </Badge>
           </div>
           <div className="flex flex-row justify-between">
-            <div className="w-6/12">
+            <div>
               <p className="text-sm font-semibold">Perk Name</p>
             </div>
-            <div className="w-6/12">
+            <div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.name}
               </p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
-            <div className="w-6/12">
+            <div>
               <p className="text-sm font-semibold">Assigned Amount</p>
             </div>
-            <div className="w-6/12">
+            <div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.assignedIncrementAmount} PKR
               </p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
-            <div className="w-6/12">
+            <div>
               <p className="text-sm font-semibold">Deducted Amount</p>
             </div>
-            <div className="w-6/12">
+            <div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.incrementAmount} PKR
               </p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
-            <div className="w-6/12">
+            <div>
               <p className="text-sm font-semibold">Applied Date</p>
             </div>
-            <div className="w-6/12">
+            <div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {viewData?.dateApplied
                   ? (() => {
@@ -93,11 +101,43 @@ const ViewPerk = ({ open, onCloseChange, viewData }: ViewPerkProps) => {
               </p>
             </div>
           </div>
+          {viewData?.document && (
+            <div className="flex flex-row justify-between">
+              <div>
+                <p className="text-sm font-semibold">Proof Document</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Eye
+                            className="ml-2 inline cursor-pointer text-primary/80 hover:text-primary"
+                            onClick={() =>
+                              viewData?.document &&
+                              window.open(String(viewData?.document), '_blank')
+                            }
+                            size={18}
+                          />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>Click to Preview Document</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </p>
+              </div>
+            </div>
+          )}
           <div className="flex flex-col justify-between">
             <p className="text-sm font-semibold">Perk Description</p>
-            <p className="text-justify indent-16 text-gray-600 dark:text-gray-300">
-              {viewData?.description}
-            </p>
+            <div className="description-content max-h-60 overflow-y-auto rounded-md bg-muted/70 p-4 text-sm">
+              {viewData?.perkDescription && (
+                <p
+                  dangerouslySetInnerHTML={{ __html: viewData.perkDescription }}
+                />
+              )}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
