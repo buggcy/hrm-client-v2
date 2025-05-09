@@ -1,4 +1,4 @@
-import { FunctionComponent, Suspense } from 'react';
+import { FunctionComponent } from 'react';
 
 import { HighTrafficBanner } from '@/components/HighTrafficBanner';
 import {
@@ -22,10 +22,8 @@ const ManageConfiguration: FunctionComponent<ManageConfigurationProps> = () => {
           <Notification />
         </LayoutHeaderButtonsBlock>
       </LayoutHeader>
-      <LayoutWrapper className="flex flex-col gap-12 px-2">
-        <Suspense fallback={<div>Loading...</div>}>
-          <ConfigurationTypeTable />
-        </Suspense>
+      <LayoutWrapper className="flex flex-col gap-6 px-2">
+        <ConfigurationTypeTable />
       </LayoutWrapper>
     </Layout>
   );
